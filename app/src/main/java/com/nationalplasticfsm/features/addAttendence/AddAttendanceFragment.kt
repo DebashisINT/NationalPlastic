@@ -2802,6 +2802,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             }
             if(pendingCollDataList.size>0){
                 Pref.IsPendingColl=true
+                Pref.NotiCountFlag = true
             }else{
                 Pref.IsPendingColl=false
             }
@@ -2840,6 +2841,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             }
             if(pendingCollDataList.size>0){
                 Pref.IsPendingColl=true
+                Pref.NotiCountFlag = true
             }else{
                 Pref.IsPendingColl=false
             }
@@ -2890,6 +2892,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             progress_wheel.stopSpinning()
             if(shopList.size>0){
                 Pref.IsZeroOrder=true
+                Pref.NotiCountFlag = true
             }else{
                 Pref.IsZeroOrder=false
             }

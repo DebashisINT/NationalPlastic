@@ -4275,6 +4275,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
             Pref.OnLeaveForTodayStatus=""
         }
 
+        Pref.NotiCountFlag = false
+        Pref.IsPendingColl = false
+        Pref.IsZeroOrder = false
+
         progress_wheel.stopSpinning()
 
 

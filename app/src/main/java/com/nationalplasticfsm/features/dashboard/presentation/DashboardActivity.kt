@@ -3556,8 +3556,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
 
 
     fun openShareIntents() {
-        openShare()
-        return
+        //openShare()
+        //return
         try {
             val shareIntent = Intent(Intent.ACTION_SEND)
 //        val phototUri = Uri.parse(localAbsoluteFilePath)
