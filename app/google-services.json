@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "177833430457",
+    "project_id": "national-plastic-fsm",
+    "storage_bucket": "national-plastic-fsm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177833430457:android:f74026968e8a65e3aeba68",
+        "android_client_info": {
+          "package_name": "com.nationalplasticfsm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "177833430457-2cqe3j45t56a9isarsot4dn0mkbc2gc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_9hAFRsXVX0Y1qTYpFT05P52uQj_mPVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177833430457-2cqe3j45t56a9isarsot4dn0mkbc2gc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
