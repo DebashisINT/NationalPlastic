@@ -6525,8 +6525,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                 AppDatabase.getDBInstance()?.newOrderGenderDao()?.insertAll(list_gender)
                                                 AppDatabase.getDBInstance()?.newOrderGenderDao()?.updateGendertoUpperCase()
 
-
-
                                                 if (list_product != null && list_product.isNotEmpty()) {
                                                     AppDatabase.getDBInstance()?.newOrderProductDao()?.insertAll(list_product)
                                                     AppDatabase.getDBInstance()?.newOrderProductDao()?.updateProducttoUpperCase()
