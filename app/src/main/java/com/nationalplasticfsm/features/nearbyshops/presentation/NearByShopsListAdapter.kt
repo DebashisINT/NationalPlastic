@@ -148,8 +148,10 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                 if (shopType != null && !TextUtils.isEmpty(shopType.shoptype_name)) {
                     itemView.tv_type.text = shopType.shoptype_name
                     itemView.ll_shop_type.visibility = View.VISIBLE
-                } else
-                    itemView.ll_shop_type.visibility = View.GONE
+                } else{
+                    itemView.tv_type.text = "NA"
+                    //itemView.ll_shop_type.visibility = View.GONE
+                }
 
                 if(Pref.isCollectioninMenuShow) {
                     itemView.ll_collection.visibility = View.VISIBLE
