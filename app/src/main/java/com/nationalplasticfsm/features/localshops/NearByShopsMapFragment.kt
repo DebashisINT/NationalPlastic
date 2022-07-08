@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.localshops
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -43,6 +44,7 @@ class NearByShopsMapFragment : BaseFragment(), View.OnClickListener, OnMapReadyC
     private lateinit var progress_wheel: ProgressWheel
     private lateinit var rl_map_main: RelativeLayout
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context!!

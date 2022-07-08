@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.viewAllOrder.orderNew
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -81,6 +82,7 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
         super.onResume()
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view: View?) {
         CustomStatic.NewOrderTotalCartItem=0
         share=view!!.findViewById(R.id.add_new_order_share)
@@ -184,6 +186,8 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
                         //newOrderCartModel1!!.gender="MALE"
                         newOrderCartModel1!!.gender = Pref.new_ord_gender_male
 
+                        newOrderCartModel1!!.rate=AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!
+
                         var colorSel= AppDatabase.getDBInstance()?.newOrderColorDao()?.getNewOrderColorName(colorIDListForProduct.get(k))
                         var colorList: ColorList = ColorList(colorSel!!,colorIDListForProduct.get(k), sizeQtyListMale as ArrayList<ProductOrder>)
                         newOrderCartModel1!!.color_list.add(colorList)
@@ -196,12 +200,12 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
                         //newOrderCartModel2!!.gender="FEMALE"
                         newOrderCartModel2!!.gender = Pref.new_ord_gender_female
 
+                        newOrderCartModel2!!.rate=AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!
+
                         var colorSel= AppDatabase.getDBInstance()?.newOrderColorDao()?.getNewOrderColorName(colorIDListForProduct.get(k))
                         var colorList: ColorList = ColorList(colorSel!!,colorIDListForProduct.get(k), sizeQtyListFeMale as ArrayList<ProductOrder>)
                         newOrderCartModel2!!.color_list.add(colorList)
                     }
-                    
-
                 }
 
             }
@@ -248,6 +252,7 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
     }
 
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun onShareClickNew(){
         var heading = "ORDER SUMMARY"
         var pdfBody: String = "\n\n"

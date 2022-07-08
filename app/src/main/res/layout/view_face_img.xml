@@ -9,20 +9,21 @@
     android:background="@color/white">
 
     <FrameLayout
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_200sdp">
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_250sdp">
 
         <ImageView
             android:id="@+id/iv_face_img"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_200sdp"/>
+            android:layout_width="@dimen/_250sdp"
+            android:layout_height="@dimen/_250sdp"/>
 
-        <ImageView
-            android:id="@+id/iv_face_reg_cancel"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_custom_cancel1" />
+
+            <ImageView
+                android:id="@+id/iv_face_reg_cancel"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_cancel_red" />
 
 
     </FrameLayout>

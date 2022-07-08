@@ -43,7 +43,8 @@
             android:text="Do you want to go back ?"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_3sdp"/>
+            android:layout_marginTop="@dimen/_3sdp"
+            android:padding="@dimen/_3sdp"/>
 
         <View
             android:layout_width="match_parent"

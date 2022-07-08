@@ -1513,6 +1513,20 @@ class AppUtils {
 
         }
 
+        fun changeLocalDateFormatToAtte(dateString: String): String {
+            val dateFormat = SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH)
+            var convertedDate = Date()
+            try {
+                convertedDate = dateFormat.parse(dateString) //"20130526160000"
+            } catch (e: ParseException) {
+                // TODO Auto-generated catch block
+                e.printStackTrace()
+            }
+            val f = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
+            return f.format(convertedDate)
+
+        }
+
         fun getTimeStampFromDate(dateString: String): String {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:MM:SS", Locale.ENGLISH)
             var convertedDate = Date()

@@ -1,24 +1,11 @@
 package com.nationalplasticfsm.features.NewQuotation.api
 
-import android.content.Context
-import android.net.Uri
-import android.text.TextUtils
-import android.util.Log
-import com.nationalplasticfsm.app.FileUtils
 import com.nationalplasticfsm.base.BaseResponse
-import com.nationalplasticfsm.features.NewQuotation.model.*
-import com.nationalplasticfsm.features.addshop.model.AddShopRequestData
-import com.nationalplasticfsm.features.addshop.model.AddShopResponse
-import com.nationalplasticfsm.features.login.model.userconfig.UserConfigResponseModel
-import com.nationalplasticfsm.features.myjobs.model.WIPImageSubmit
-import com.nationalplasticfsm.features.photoReg.model.*
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.gson.Gson
+import com.nationalplasticfsm.features.NewQuotation.model.AddQuotRequestData
+import com.nationalplasticfsm.features.NewQuotation.model.EditQuotRequestData
+import com.nationalplasticfsm.features.NewQuotation.model.ViewDetailsQuotResponse
+import com.nationalplasticfsm.features.NewQuotation.model.ViewQuotResponse
 import io.reactivex.Observable
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
 
 class GetQuotListRegRepository(val apiService : GetQutoListApi) {
 

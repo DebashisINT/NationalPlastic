@@ -181,6 +181,8 @@ class ActivityDetailsListFragment : BaseFragment(), DatePickerDialog.OnDateSetLi
         initAdapter()
     }
 
+
+
     private fun getActivityList() {
         if (!AppUtils.isOnline(mContext)) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))

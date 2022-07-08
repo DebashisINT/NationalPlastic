@@ -5,6 +5,7 @@ class NewOrderCartModel {
     var product_name: String = ""
     var gender: String = ""
     var color_list: ArrayList<ColorList> = ArrayList()
+    var rate:String = "0"
     //var color_name:String= ""
     //var order_list:ArrayList<ProductOrder> = ArrayList()
 }

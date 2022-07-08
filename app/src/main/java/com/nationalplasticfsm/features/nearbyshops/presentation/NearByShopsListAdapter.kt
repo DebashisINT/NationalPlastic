@@ -788,6 +788,19 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     listener.onHistoryClick(list[adapterPosition])
                 }
 
+                if (Pref.IsAllowBreakageTracking) {
+                    itemView.shop_damage_ll.visibility = View.VISIBLE
+                    itemView.shop_damage_view.visibility = View.VISIBLE
+                }
+                else {
+                    itemView.shop_damage_ll.visibility = View.GONE
+                    itemView.shop_damage_view.visibility = View.GONE
+                }
+
+                itemView.shop_damage_ll.setOnClickListener{
+                    listener.onDamageClick(list[adapterPosition].shop_id)
+                }
+
                 //Hardcoded for EuroBond
                 //itemView.ll_last_visit_age.visibility=View.GONE
                 //itemView.ll_average_visit_time.visibility=View.GONE

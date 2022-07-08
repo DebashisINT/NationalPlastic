@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.inflate_member_shop_list.view.*
 
 class MemberShopListAdapter(private val context: Context, private val teamShopList: ArrayList<TeamShopListDataModel>, private val isVisitShop: Boolean,
                             private val listener: (TeamShopListDataModel) -> Unit, private val onOrderClick: (TeamShopListDataModel) -> Unit,
-                            private val getListSize: (Int) -> Unit, private val onQuotClick: (TeamShopListDataModel) -> Unit,
+                            private val getListSize: (Int) -> Unit, private val onDamageClick: (TeamShopListDataModel) -> Unit,private val onQuotClick: (TeamShopListDataModel) -> Unit,
                             private val onHistoryClick: (AddShopDBModelEntity) -> Unit) : RecyclerView.Adapter<MemberShopListAdapter.MyViewHolder>(),
         Filterable {
 
@@ -53,7 +53,7 @@ class MemberShopListAdapter(private val context: Context, private val teamShopLi
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindItems(context, shopList!!, listener, isVisitShop, onOrderClick, onQuotClick,onHistoryClick)
+        holder.bindItems(context, shopList!!, listener, isVisitShop, onOrderClick,onDamageClick,onQuotClick,onHistoryClick)
     }
 
     override fun getItemCount(): Int {
@@ -62,7 +62,8 @@ class MemberShopListAdapter(private val context: Context, private val teamShopLi
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bindItems(context: Context, teamShopList: ArrayList<TeamShopListDataModel>, listener: (TeamShopListDataModel) -> Unit, visitShop: Boolean, onOrderClick: (TeamShopListDataModel) -> Unit, onQuotClick: (TeamShopListDataModel) -> Unit,
+        fun bindItems(context: Context, teamShopList: ArrayList<TeamShopListDataModel>, listener: (TeamShopListDataModel) -> Unit, visitShop: Boolean, onOrderClick: (TeamShopListDataModel) -> Unit,
+                      onDamageClick: (TeamShopListDataModel) -> Unit,onQuotClick: (TeamShopListDataModel) -> Unit,
                       onHistoryClick: (AddShopDBModelEntity) -> Unit) {
             itemView.apply {
                 myshop_name_TV.text = teamShopList[adapterPosition].shop_name
@@ -215,7 +216,6 @@ class MemberShopListAdapter(private val context: Context, private val teamShopLi
                     onOrderClick(teamShopList[adapterPosition])
                 }
 
-
                 if(Pref.IsFeedbackHistoryActivated){
                     iconWrapper_rl.visibility = View.VISIBLE
                     add_order_ll.visibility = View.GONE
@@ -245,6 +245,20 @@ class MemberShopListAdapter(private val context: Context, private val teamShopLi
                         entity_code = teamShopList[adapterPosition].entity_code
                     }
                     onHistoryClick(obj)
+                }
+
+                if (Pref.IsAllowBreakageTrackingunderTeam) {
+                    itemView.shop_damage_ll.visibility = View.VISIBLE
+                    itemView.shop_damage_view.visibility = View.VISIBLE
+                    itemView.iconWrapper_rl.visibility = View.VISIBLE
+                }
+                else {
+                    itemView.shop_damage_ll.visibility = View.GONE
+                    itemView.shop_damage_view.visibility = View.GONE
+                    itemView.iconWrapper_rl.visibility = View.GONE
+                }
+                itemView.shop_damage_ll.setOnClickListener{
+                    onDamageClick(teamShopList[adapterPosition])
                 }
 
             }

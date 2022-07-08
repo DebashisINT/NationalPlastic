@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.viewAllOrder.orderNew
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -100,6 +101,7 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
         //fab_frag_new_order_share.setOnClickListener(this)
     }
 
+    @SuppressLint("UseRequireInsteadOfGet", "RestrictedApi")
     private fun initView(view: View?) {
         share=view!!.findViewById(R.id.fab_frag_new_order_share)
         share.setCustomClickListener {
@@ -158,16 +160,19 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
         val dialogHeader = simpleDialog.findViewById(R.id.dialog_new_order_confirmed_header_TV) as AppCustomTextView
         val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_new_order_confirmed_headerTV) as AppCustomTextView
         dialog_yes_no_headerTV.text = "Order Confirmation"
-        dialogHeader.text = "Do you want to recheck the order?"
+        //dialogHeader.text = "Do you want to recheck the order?"
+        dialogHeader.text = "Would you like to confirm the order?"
         val dialogYes = simpleDialog.findViewById(R.id.tv_message_yes) as AppCustomTextView
         val dialogNo = simpleDialog.findViewById(R.id.tv_message_no) as AppCustomTextView
         dialogYes.setOnClickListener({ view ->
             simpleDialog.cancel()
+            if (cartOrder!!.size > 0)
+                saveToDB()
         })
         dialogNo.setOnClickListener({ view ->
             simpleDialog.cancel()
-            if (cartOrder!!.size > 0)
-                saveToDB()
+            //if (cartOrder!!.size > 0)
+                //saveToDB()
         })
         simpleDialog.show()
 //        CommonDialog.getInstance(header, title, getString(R.string.no), getString(R.string.yes), false, object : CommonDialogClickListener {
@@ -228,7 +233,8 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
             for(j in 0..cartOrder!!.get(i).color_list.size-1){
                 for(k in 0..cartOrder!!.get(i).color_list.get(j).order_list.size-1){
                     var newOrderRoomData=NewOrderRoomData(ordID,cartOrder!!.get(i).product_id.toString(),cartOrder!!.get(i).product_name.toString(),cartOrder!!.get(i).gender.toString(),
-                            cartOrder!!.get(i).color_list.get(j).color_id,cartOrder!!.get(i).color_list.get(j).color_name,cartOrder!!.get(i).color_list.get(j).order_list.get(k).size, cartOrder!!.get(i).color_list.get(j).order_list.get(k).qty)
+                            cartOrder!!.get(i).color_list.get(j).color_id,cartOrder!!.get(i).color_list.get(j).color_name,cartOrder!!.get(i).color_list.get(j).order_list.get(k).size, cartOrder!!.get(i).color_list.get(j).order_list.get(k).qty,
+                        cartOrder!!.get(i).rate.toString())
 
                     newOrderRoomDataList.add(newOrderRoomData)
 
@@ -244,6 +250,7 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
                     obj.color_id=newOrderRoomData.color_id
                     obj.color_name=newOrderRoomData.color_name
                     obj.isUploaded=false
+                    obj.rate= cartOrder!!.get(i).rate.toString()
                     AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.insert(obj)
 
                     XLog.d("NeworderScrCartFragment ITEM : "  + AppUtils.getCurrentDateTime().toString()+"\n"+
@@ -264,7 +271,7 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
 
     }
 
-    data class NewOrderRoomData(var order_id:String,var product_id:String,var product_name:String,var gender:String,var color_id:String,var color_name:String ,var size:String,var qty:String)
+    data class NewOrderRoomData(var order_id:String,var product_id:String,var product_name:String,var gender:String,var color_id:String,var color_name:String ,var size:String,var qty:String,var rate:String)
 
 
     private fun sendToApi(ordID: String) {
@@ -294,7 +301,7 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
         addOrder.patient_address = ""
         addOrder.patient_no = ""
         addOrder.remarks = ""
-        addOrder.scheme_amount = ""
+        addOrder.scheme_amount = "0"
 
         if (!TextUtils.isEmpty(Pref.latitude) && !TextUtils.isEmpty(Pref.longitude))
             addOrder.address = LocationWizard.getLocationName(mContext, Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
@@ -411,6 +418,7 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
     }
 
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun sharePdf(){
         var heading = "ORDER DETAILS"
         var pdfBody: String = "\n\n"

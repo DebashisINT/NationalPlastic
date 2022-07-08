@@ -18,6 +18,20 @@
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_11sdp" />
 
+    <ImageView
+        android:id="@+id/iv_team_map_view"
+        android:layout_width="@dimen/_22sdp"
+        android:layout_height="@dimen/_22sdp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_toRightOf="@+id/tv_share_pdf"
+        android:src="@drawable/your_location"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_11sdp"
+        android:visibility="gone"/>
+
+
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/pick_a_date_TV"
         android:layout_width="wrap_content"
@@ -34,14 +48,14 @@
         android:id="@+id/tv_sync_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/sync_all"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/_11sdp"
         android:layout_alignBaseline="@+id/pick_a_date_TV"
         android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/_10sdp"
         android:padding="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_10sdp"/>
+        android:text="@string/sync_all"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_11sdp" />
 
     <RelativeLayout
         android:id="@+id/rl_share"
@@ -70,11 +84,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_5sdp"
                 android:text="0.0 Km(s)"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_11sdp"
-                android:layout_marginLeft="@dimen/_5sdp"/>
+                android:textSize="@dimen/_11sdp" />
+
+
         </LinearLayout>
+
         
         <LinearLayout
             android:layout_width="match_parent"
@@ -107,13 +124,13 @@
             android:id="@+id/tv_share_logs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_visit_distance"
+            android:layout_alignParentRight="true"
             android:layout_gravity="center"
+            android:paddingRight="@dimen/_10sdp"
             android:text="@string/travel_log"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_11sdp"
-            android:layout_alignParentRight="true"
-            android:paddingRight="@dimen/_10sdp"
-            android:layout_below="@+id/ll_visit_distance"/>
+            android:textSize="@dimen/_11sdp" />
 
     </RelativeLayout>
 

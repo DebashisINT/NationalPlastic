@@ -11,5 +11,6 @@ interface AverageShopListClickListener {
     fun onSyncClick(position: Int)
     fun onQuestionnarieClick(shopId:String)
     fun onReturnClick(position: Int)
+    fun onDamageClick(shop_id: String)
 
 }

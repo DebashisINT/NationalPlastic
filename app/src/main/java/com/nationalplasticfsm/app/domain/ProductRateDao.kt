@@ -27,4 +27,7 @@ interface ProductRateDao {
     abstract fun insertAll(kist: List<ProductRateEntity>)
 
 
+    @Query("SELECT * FROM " + AppConstant.PRODUCT_RATE_TABLE + " where product_id=:product_id")
+    fun getProductRateByProductID(product_id:String): ProductRateEntity
+
 }

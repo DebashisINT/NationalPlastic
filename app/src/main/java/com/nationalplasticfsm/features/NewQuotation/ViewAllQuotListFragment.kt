@@ -315,6 +315,10 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
         }
 
         try{
+            //var pdfWriter :PdfWriter = PdfWriter.getInstance(document, FileOutputStream(path + fileName + ".pdf"))
+
+            //val event = HeaderFooterPageEvent()
+            //pdfWriter.setPageEvent(event)
             PdfWriter.getInstance(document, FileOutputStream(path + fileName + ".pdf"))
             document.open()
 

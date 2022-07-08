@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.orderList
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -395,6 +396,7 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun initAdapter() {
         OrderListAdapter = OrderListAdapter(mContext, orderList, object : AverageShopListClickListener {
             override fun onSyncClick(position: Int) {
@@ -415,6 +417,10 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
 
             override fun onReturnClick(position: Int) {
 
+            }
+
+            override fun onDamageClick(shop_id: String) {
+                TODO("Not yet implemented")
             }
         })
         layoutManager = LinearLayoutManager(mContext, LinearLayout.VERTICAL, false)

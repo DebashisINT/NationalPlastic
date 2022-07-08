@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.inflate_nearby_shops.view.add_order_ll
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.add_quot_ll
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.call_ll
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.direction_ll
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.direction_view
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.last_visited_date_TV
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.ll_shop_code
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.myshop_address_TV
@@ -34,12 +35,15 @@ import kotlinx.android.synthetic.main.inflate_nearby_shops.view.order_RL
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.order_amt_p_TV
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.order_view
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.shop_IV
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.shop_damage_ll
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.shop_damage_view
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.shop_image_IV
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.shop_list_LL
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.total_v_TV
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.total_visited_value_TV
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.tv_shop_code
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.tv_shop_contact_no
+import kotlinx.android.synthetic.main.inflate_registered_shops.view.*
 
 /**
  * Created by riddhi on 2/1/18.
@@ -267,6 +271,18 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
             }
 
 
+            if (Pref.IsAllowBreakageTracking) {
+                itemView.shop_damage_ll.visibility = View.VISIBLE
+                itemView.shop_damage_view.visibility = View.VISIBLE
+            }
+            else {
+                itemView.shop_damage_ll.visibility = View.GONE
+                itemView.shop_damage_view.visibility = View.GONE
+            }
+
+            itemView.shop_damage_ll.setOnClickListener{
+                listener.onDamageClick(list[adapterPosition].shop_id)
+            }
             /*21-12-2021*/
             if(Pref.IsReturnEnableforParty) {
                 if(Pref.IsReturnActivatedforPP){

@@ -95,6 +95,9 @@ interface NewOrderScrOrderDao {
     @Query("Select DISTINCT order_id,shop_id,order_date from "+ AppConstant.NEW_ORDER_ENTRY +" where isUploaded=0 ")
     fun getUnSyncOrderAllUniqOrderID(): List<LogoutSyncFragment.NewOrderRoomDataLogoutPurpose>
 
+    @Query("SELECT rate FROM " + AppConstant.NEW_ORDER_ENTRY + " where product_id=:product_id and order_id=:order_id")
+    fun getNewOrderProductRateByOrdID(product_id:String,order_id:String): String
+
 /*    @Query("Select gender from "+ AppConstant.NEW_ORDER_ENTRY +" where order_id=:order_id")
     fun getUniqGenderForOrderID(order_id:String): List<ProductOrder>*/
 }

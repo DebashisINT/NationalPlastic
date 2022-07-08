@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.text.InputFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ import com.nationalplasticfsm.app.domain.NewOrderSizeEntity
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.presentation.BaseFragment
+import com.nationalplasticfsm.features.DecimalDigitsInputFilter
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.viewAllOrder.interf.SizeListNewOrderOnClick
 import com.nationalplasticfsm.features.viewAllOrder.model.ColorList
@@ -72,6 +74,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
     private var final_order_list: ArrayList<NewOrderCartModel> = ArrayList()
 
     private lateinit var ll_size_icon: LinearLayout
+
+    private lateinit var ll_rate_ll: LinearLayout
+    private lateinit var et_rate_new_ord: EditText
 
     private lateinit var sizeText: TextView
 
@@ -130,6 +135,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
         rv_size = view!!.findViewById(R.id.rv_order_list_size)
 
         ll_size_icon = view!!.findViewById(R.id.ll_order_list_list_icon)
+        ll_rate_ll = view!!.findViewById(R.id.ll_item_new_ord_rate_root)
+        et_rate_new_ord = view!!.findViewById(R.id.et_rate_new_ord)
 
 
         var horizontalLayout = LinearLayoutManager(
@@ -137,7 +144,11 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 LinearLayoutManager.HORIZONTAL,
                 false)
         rv_size.setLayoutManager(horizontalLayout)
-
+        try {
+            et_rate_new_ord.setFilters(arrayOf<InputFilter>(DecimalDigitsInputFilter(9, 2)))
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
         ll_gender.setOnClickListener(this)
         ll_product.setOnClickListener(this)
         ll_color.setOnClickListener(this)
@@ -164,6 +175,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
         sizeText.setTextColor(ContextCompat.getColor(mContext, R.color.dark_gray))
 
         ll_size_icon.visibility=View.GONE
+        ll_rate_ll.visibility=View.GONE
         var gender_list = AppDatabase.getDBInstance()?.newOrderGenderDao()?.getGenderList() as List<NewOrderGenderEntity>
         if (gender_list != null && gender_list.isNotEmpty()) {
             GenderListDialog.newInstance(gender_list as ArrayList<NewOrderGenderEntity>) {
@@ -174,7 +186,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 product_list = AppDatabase.getDBInstance()?.newOrderProductDao()?.getProductListGenderWise(it.gender.toString()) as List<NewOrderProductEntity>
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
-            Toaster.msgShort(mContext, "No Gender Found")
+            //Toaster.msgShort(mContext, "No Gender Found")
+            Toaster.msgShort(mContext, "No Product Type Found")
         }
     }
 
@@ -188,6 +201,21 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 productSpinner.text = it.product_name
                 color_list = emptyList()
                 color_list = AppDatabase.getDBInstance()?.newOrderColorDao()?.getColorListProductWise(it.product_id!!) as List<NewOrderColorEntity>
+
+                try{
+                    if(Pref.isRateOnline){
+                    et_rate_new_ord.setText(AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.rate1.toString())
+                    }
+                }catch (ex:Exception){
+
+                }
+                if (Pref.isRateNotEditable) {
+                    et_rate_new_ord.isEnabled=false
+                }else{
+                    et_rate_new_ord.isEnabled=true
+                }
+
+
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
             Toaster.msgShort(mContext, "No Product Found")
@@ -222,6 +250,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 //        sizeText.setTextColor(R.color.default_text_color)
 
         ll_size_icon.visibility = View.VISIBLE
+        ll_rate_ll.visibility = View.VISIBLE
+
         if (size_list != null && size_list.isNotEmpty()) {
 
 
@@ -297,6 +327,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                     color_IV.setImageDrawable(getResources(). getDrawable(R.drawable.ic_colour_new_order_gray))
                     ColorTv.setTextColor(ContextCompat.getColor(mContext, R.color.dark_gray))
                     ll_size_icon.visibility = View.GONE
+                    ll_rate_ll.visibility = View.GONE
                     var isSame: Boolean = false
                     if (isGenderSel) {
                         if (isProductSel) {
@@ -400,11 +431,14 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                                                           }
                           */
                                                 final_order_list.get(i).color_list.get(p).order_list = ob1
+                                                final_order_list.get(i).rate = et_rate_new_ord.text.toString()
                                             }
                                         }
 
-                                        if (isSameColorObj == false)
+                                        if (isSameColorObj == false){
                                             final_order_list.get(i).color_list.add(colorList)
+                                            final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                        }
                                         isSame = true
                                     }
                                 }
@@ -430,9 +464,14 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                 var colorList: ColorList = ColorList(colorSpinner.text.toString(), colorId.toString(), order_list)
                                 cartData.color_list.add(colorList)
 
+                                cartData.rate = et_rate_new_ord.text.toString()
+
                                 final_order_list.add(cartData)
                             }
 
+
+                            et_rate_new_ord.setText("")
+                            et_rate_new_ord.setHint("Rate  ( \u20B9 )")
 
                             isSame = false
                             genderSpinner.text=genderSpinner.text.toString()
@@ -472,7 +511,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                             Toaster.msgShort(mContext, "Please Select a Product")
                         }
                     } else {
-                        Toaster.msgShort(mContext, "Please Select Gender First")
+                        //Toaster.msgShort(mContext, "Please Select Gender First")
+                        Toaster.msgShort(mContext, "Please Select Product Type First")
                     }
 
                 }
@@ -494,7 +534,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                         ll_root.removeAllViews()
                         loadProduct()
                     } else {
-                        Toaster.msgShort(mContext, "Please Select Gender First")
+                        //Toaster.msgShort(mContext, "Please Select Gender First")
+                        Toaster.msgShort(mContext, "Please Select Product Type First")
                     }
                 }
                 R.id.ll_new_order_scr_color -> {
@@ -508,11 +549,10 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                             Toaster.msgShort(mContext, "Please Select a Product")
                         }
                     } else {
-                        Toaster.msgShort(mContext, "Please Select Gender First")
+                        //Toaster.msgShort(mContext, "Please Select Gender First")
+                        Toaster.msgShort(mContext, "Please Select Product Type First")
                     }
                 }
-
-
 //                R.id.btn_nextttt ->{
 //                    (mContext as DashboardActivity).loadFragment(FragType.NeworderScrCartFragment, true, final_order_list)
 //                }
@@ -523,8 +563,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
     fun clickToCart() {
         CustomStatic.IsFromViewNewOdrScr = false
-        if ((mContext as DashboardActivity).tv_cart_count.text != "0")
+        if ((mContext as DashboardActivity).tv_cart_count.text != "0"){
             (mContext as DashboardActivity).loadFragment(FragType.NeworderScrCartFragment, true, final_order_list)
+        }
         else
             (mContext as DashboardActivity).showSnackMessage("No item is available in cart")
     }

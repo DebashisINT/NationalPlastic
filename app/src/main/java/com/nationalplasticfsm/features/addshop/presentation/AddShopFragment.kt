@@ -326,6 +326,8 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     private lateinit var alternate_number_EDT: AppCustomEditText
     private lateinit var whatsapp_number_EDT: AppCustomEditText
 
+    private lateinit var ll_feedback: LinearLayout
+
 
 
 
@@ -712,6 +714,8 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         whatsapp_Rl  = view.findViewById(R.id.whatsapp_Rl)
         alternate_number_EDT = view.findViewById(R.id.alternate_number_EDT)
         whatsapp_number_EDT =  view.findViewById(R.id.whatsapp_number_EDT)
+
+        ll_feedback =  view.findViewById(R.id.ll_feedback)
 
 
 
@@ -1426,6 +1430,13 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             else{
                 tv_assign_to_dd.text = ""
                 tv_dd_asterisk_mark.visibility = View.GONE
+            }
+            /*IsFeedbackAvailableInShop Feature*/
+            if(Pref.IsFeedbackAvailableInShop){
+                ll_feedback.visibility = View.VISIBLE
+            }
+            else{
+                ll_feedback.visibility = View.GONE
             }
 
         }
@@ -6626,6 +6637,14 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 assignedToShopId = ""
                 assign_to_shop_tv.text = ""
                 (mContext as DashboardActivity). setTopBarTitle("Add " + Pref.shopText)
+            }
+
+            /*IsFeedbackAvailableInShop Feature*/
+            if(Pref.IsFeedbackAvailableInShop){
+                ll_feedback.visibility = View.VISIBLE
+            }
+            else{
+                ll_feedback.visibility = View.GONE
             }
 
             if (Pref.isAreaVisible)

@@ -25,4 +25,5 @@ interface NearByShopsListClickListener {
     fun onReturnClick(position: Int)
 
     fun onHistoryClick(shop: Any)
+    fun onDamageClick(shop_id: String)
 }

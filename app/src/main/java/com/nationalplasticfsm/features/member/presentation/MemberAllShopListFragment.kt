@@ -263,6 +263,17 @@ class MemberAllShopListFragment : BaseFragment() {
             } else
                 tv_shop_count.text = "Total " + Pref.shopText + "(s): " + size
         },
+            { teamShop: TeamShopListDataModel ->
+                if (!Pref.isAddAttendence)
+                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                else if(Pref.IsAllowBreakageTrackingunderTeam) {
+                    //CustomStatic.IsBreakageViewFromTeam = true
+                    //(mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, teamShop.shop_id+"~"+userId)
+                    teamShop.user_id = userId
+                    (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, teamShop)
+                }
+
+            },
         { teamShop: TeamShopListDataModel ->
             if (!Pref.isAddAttendence)
                 (mContext as DashboardActivity).checkToShowAddAttendanceAlert()

@@ -16,14 +16,36 @@ import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.*
 import kotlinx.android.synthetic.main.inflate_member_shop_list.view.*
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.add_order_ll
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.add_quot_ll
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.iconWrapper_rl
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.last_visited_date_TV
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.ll_dd_name
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.ll_shop_code
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.ll_shop_type
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.myshop_address_TV
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.myshop_name_TV
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.order_view
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.shop_IV
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.shop_damage_ll
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.shop_damage_view
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.total_visited_value_TV
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_dd_name
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_funnel_stage
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_funnel_stage_header
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_shop_code
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_shop_contact_no
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_stage
+import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_stage_header
 
 /**
  * Created by Saikat on 28-02-2020.
  */
 class MemberAllShopListAdapter(private val context: Context, private val teamShopList: ArrayList<TeamShopListDataModel>,
                                private val listener: (TeamShopListDataModel) -> Unit, private val onUpdateLocClick: (TeamShopListDataModel) -> Unit,
-                               private val getListSize: (Int) -> Unit,private val onQuotClick: (TeamShopListDataModel) -> Unit,private val onHistoryClick: (AddShopDBModelEntity) -> Unit
+                               private val getListSize: (Int) -> Unit,private val onDamageClick: (TeamShopListDataModel) -> Unit,private val onQuotClick: (TeamShopListDataModel) -> Unit,private val onHistoryClick: (AddShopDBModelEntity) -> Unit
 ) : RecyclerView.Adapter<MemberAllShopListAdapter.MyViewHolder>(),
         Filterable {
 
@@ -50,7 +72,7 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindItems(context, shopList!!, listener, onUpdateLocClick,onQuotClick,onHistoryClick)
+        holder.bindItems(context, shopList!!, listener, onUpdateLocClick,onDamageClick,onQuotClick,onHistoryClick)
     }
 
     override fun getItemCount(): Int {
@@ -60,7 +82,7 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(context: Context, teamShopList: ArrayList<TeamShopListDataModel>, listener: (TeamShopListDataModel) -> Unit,
-                      onUpdateLocClick: (TeamShopListDataModel) -> Unit,onQuotClick: (TeamShopListDataModel) -> Unit,
+                      onUpdateLocClick: (TeamShopListDataModel) -> Unit,onDamageClick: (TeamShopListDataModel) -> Unit,onQuotClick: (TeamShopListDataModel) -> Unit,
                       onHistoryClick: (AddShopDBModelEntity) -> Unit) {
             itemView.apply {
                 myshop_name_TV.text = teamShopList[adapterPosition].shop_name
@@ -231,6 +253,18 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
                         entity_code = teamShopList[adapterPosition].entity_code
                     }
                     onHistoryClick(obj)
+                }
+
+                if (Pref.IsAllowBreakageTrackingunderTeam) {
+                    itemView.shop_damage_ll.visibility = View.VISIBLE
+                    itemView.shop_damage_view.visibility = View.VISIBLE
+                }
+                else {
+                    itemView.shop_damage_ll.visibility = View.GONE
+                    itemView.shop_damage_view.visibility = View.GONE
+                }
+                itemView.shop_damage_ll.setOnClickListener{
+                    onDamageClick(teamShopList[adapterPosition])
                 }
 
                 if(Pref.IsNewQuotationfeatureOn || Pref.IsFeedbackHistoryActivated){

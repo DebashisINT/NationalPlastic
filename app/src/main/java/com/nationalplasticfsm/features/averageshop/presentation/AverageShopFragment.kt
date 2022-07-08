@@ -1190,6 +1190,10 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 (mContext as DashboardActivity).loadFragment(FragType.ViewAllReturnListFragment, true, ShopActivityEntityList[position])
             }
 
+            override fun onDamageClick(shop_id: String) {
+                (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
+            }
+
 
             override fun OnItemClick(position: Int) {
                 try {

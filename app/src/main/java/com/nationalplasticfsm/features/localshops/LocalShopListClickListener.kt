@@ -19,5 +19,7 @@ interface LocalShopListClickListener {
 
     fun onHistoryClick(shop: Any)
 
+    fun onDamageClick(shop_id: String)
+
 
 }

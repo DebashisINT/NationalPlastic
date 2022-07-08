@@ -659,6 +659,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         tv_shop_count.text = "Total " + Pref.shopText + "(s): " + list.size
 
         mNearByShopsListAdapter = NearByShopsListAdapter(this.mContext!!, list, object : NearByShopsListClickListener {
+
+            override fun onDamageClick(shop_id: String) {
+                (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
+            }
+
             override fun onUpdateStageClick(position: Int) {
                 if (list[position].isUploaded) {
                     val stageList = AppDatabase.getDBInstance()?.stageDao()?.getAll() as ArrayList<StageEntity>

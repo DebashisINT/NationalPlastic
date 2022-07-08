@@ -266,6 +266,17 @@ public class FTStorageUtils {
             return " ";
         }
     }
+    public static String formatMm(String month) {
+
+        try {
+            SimpleDateFormat monthParse = new SimpleDateFormat("MM");
+            SimpleDateFormat monthDisplay = new SimpleDateFormat("MM");
+            return monthDisplay.format(monthParse.parse(month));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return " ";
+        }
+    }
 
     // Only for yyyy-MM-ddTHH:mm:ss format input
     public static Date getStringToDate(String dateString) {

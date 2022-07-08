@@ -106,7 +106,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginBottom="@dimen/_3sdp"
-                        android:layout_toLeftOf="@+id/view_all_tv"
                         android:singleLine="true"
                         android:text="@string/order_amount_text"
                         android:textColor="@color/light_gray"

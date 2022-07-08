@@ -114,6 +114,8 @@ import com.nationalplasticfsm.features.commondialogsinglebtn.TermsAndConditionsS
 import com.nationalplasticfsm.features.dailyPlan.prsentation.AllShopListFragment
 import com.nationalplasticfsm.features.dailyPlan.prsentation.DailyPlanListFragment
 import com.nationalplasticfsm.features.dailyPlan.prsentation.PlanDetailsFragment
+import com.nationalplasticfsm.features.damageProduct.ShopDamageProductListFrag
+import com.nationalplasticfsm.features.damageProduct.ShopDamageProductSubmitFrag
 import com.nationalplasticfsm.features.dashboard.presentation.api.ShopVisitImageUploadRepoProvider
 import com.nationalplasticfsm.features.dashboard.presentation.api.dashboardApi.DashboardRepoProvider
 import com.nationalplasticfsm.features.dashboard.presentation.api.otpsentapi.OtpSentRepoProvider
@@ -151,6 +153,7 @@ import com.nationalplasticfsm.features.logout.presentation.api.LogoutRepositoryP
 import com.nationalplasticfsm.features.logoutsync.presentation.LogoutSyncFragment
 import com.nationalplasticfsm.features.marketing.presentation.MarketingPagerFragment
 import com.nationalplasticfsm.features.meetinglist.prsentation.MeetingListFragment
+import com.nationalplasticfsm.features.member.MapViewForTeamFrag
 import com.nationalplasticfsm.features.member.model.TeamLocDataModel
 import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
 import com.nationalplasticfsm.features.member.presentation.*
@@ -3063,10 +3066,10 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                     getCurrentFragType() == FragType.OfflineAllShopListFragment -> (getFragment() as OfflineAllShopListFragment).refreshList()
                     getCurrentFragType() == FragType.OfflineShopListFragment -> (getFragment() as OfflineShopListFragment).refreshList()
                     getCurrentFragType() == FragType.TimeSheetListFragment -> (getFragment() as TimeSheetListFragment).refreshList()
-                    getCurrentFragType() == FragType.DashboardFragment ->
-                        (getFragment() as DashboardFragment).refresh()
+                    getCurrentFragType() == FragType.DashboardFragment -> (getFragment() as DashboardFragment).refresh()
 
                     getCurrentFragType() == FragType.NewReturnListFragment -> (getFragment() as NewReturnListFragment).refreshOrderList()
+                    getCurrentFragType() == FragType.MapViewForTeamFrag -> (getFragment() as MapViewForTeamFrag).refreshMap()
                 }
             }
             R.id.iv_delete_icon -> {
@@ -4077,6 +4080,20 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                     mFragment = ShopFeedbackHisFrag.newInstance(initializeObject)
                 }
                 setTopBarTitle("History Details")
+                setTopBarVisibility(TopBarConfig.BACK)
+            }
+            FragType.ShopDamageProductListFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = ShopDamageProductListFrag.getInstance(initializeObject)
+                }
+                setTopBarTitle("Damage Product")
+                setTopBarVisibility(TopBarConfig.BACK)
+            }
+            FragType.ShopDamageProductSubmitFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = ShopDamageProductSubmitFrag.getInstance(initializeObject)
+                }
+                setTopBarTitle("Add Breakage")
                 setTopBarVisibility(TopBarConfig.BACK)
             }
             FragType.NearByShopsMapFragment -> {
@@ -5206,6 +5223,14 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 setTopBarTitle(getString(R.string.orders))
                 // setTopBarVisibility(TopBarConfig.ORDERLIST)
                 setTopBarVisibility(TopBarConfig.HOME)
+            }
+
+              FragType.MapViewForTeamFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = MapViewForTeamFrag.newInstance(initializeObject)
+                }
+                setTopBarTitle(getString(R.string.map_view))
+                setTopBarVisibility(TopBarConfig.TEAMMAP)
             }
 
             FragType.LeaveHome -> {
@@ -6662,7 +6687,33 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_header_back_arrow)
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
+            TopBarConfig.TEAMMAP -> {
+                iv_home_icon.visibility = View.GONE
+                mDrawerToggle.isDrawerIndicatorEnabled = false
+                iv_search_icon.visibility = View.GONE
+                iv_sync_icon.visibility = View.VISIBLE
+                rl_cart.visibility = View.GONE
+                iv_filter_icon.visibility = View.GONE
+                rl_confirm_btn.visibility = View.GONE
+                logo.visibility = View.GONE
+                logo.clearAnimation()
+                logo.animate().cancel()
+                iv_list_party.visibility = View.GONE
+                iv_map.visibility = View.GONE
+                iv_settings.visibility = View.GONE
+                ic_calendar.visibility = View.GONE
+                ic_chat_bot.visibility = View.GONE
+                iv_cancel_chat.visibility = View.GONE
+                iv_people.visibility = View.GONE
+                iv_scan.visibility = View.GONE
+                iv_view_text.visibility = View.GONE
+                fl_net_status.visibility = View.GONE
 
+                // Show back button
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_header_back_arrow)
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
             TopBarConfig.NEWORDERSCRCART -> {
                 /*  if(CustomStatic.IsFromViewNewOdrScr==false){
                     rl_confirm_btn.visibility = View.VISIBLE
@@ -6957,7 +7008,14 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 if (getFragment() is DashboardFragment)
                     (getFragment() as DashboardFragment).updateItem()
             }
-        } else if (getFragment() != null && (getFragment() is MemberAllShopListFragment || getFragment() is MemberShopListFragment || getFragment() is AreaListFragment)) {
+        }
+        else if (getFragment() != null && getFragment() is ShopDamageProductSubmitFrag) {
+            super.onBackPressed()
+            if (getFragment() != null && getFragment() is ShopDamageProductListFrag)
+                (getFragment() as ShopDamageProductListFrag).updatePage()
+        }
+
+        else if (getFragment() != null && (getFragment() is MemberAllShopListFragment || getFragment() is MemberShopListFragment || getFragment() is AreaListFragment)) {
 
             if (getFragment() is MemberAllShopListFragment) {
                 if ((getFragment() as MemberAllShopListFragment).shopIdList.isNotEmpty()) {
@@ -7312,6 +7370,10 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 (getFragment() as CollectionNotiViewPagerFrag).updateView()
             if (getFragment() != null && getFragment() is CollectionNotiViewPagerFrag2)
                 (getFragment() as CollectionNotiViewPagerFrag2).updateView()
+        }else if(getFragment() != null && getFragment() is MapViewForTeamFrag){
+            if (getFragment() != null && getFragment() is MapViewForTeamFrag)
+                MapViewForTeamFrag.timer!!.cancel()
+            super.onBackPressed()
         }
         else {
             super.onBackPressed()
@@ -8270,6 +8332,39 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                             XLog.e("Error: " + e.localizedMessage)
                         }
                     }
+                } else if (getCurrentFragType() == FragType.ShopDamageProductSubmitFrag) {
+
+                    getCameraImage(data)
+                    val fileSize = AppUtils.getCompressImage(filePath)
+                    val fileSizeInKB = fileSize / 1024
+                    val file = File(filePath)
+                    (getFragment() as ShopDamageProductSubmitFrag).setImage(file)
+
+
+
+
+                    /*getCameraImage(data)
+                    if (!TextUtils.isEmpty(filePath)) {
+                        XLog.e("===========Update Review Image (DashboardActivity)===========")
+                        XLog.e("DashboardActivity :  ,  Camera Image FilePath : $filePath")
+
+                        val contentURI = FTStorageUtils.getImageContentUri(this@DashboardActivity, File(Uri.parse(filePath).path).absolutePath)
+
+                        XLog.e("DashboardActivity :  ,  contentURI FilePath : $contentURI")
+
+                        try {
+                            CropImage.activity(contentURI)
+                                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                .setMinCropWindowSize(500, 500)
+                                .setAspectRatio(1, 1)
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .setOutputCompressQuality(100)
+                                .start(this)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            XLog.e("Error: " + e.localizedMessage)
+                        }
+                    }*/
                 }
                 else if(getCurrentFragType() == FragType.RegisTerFaceFragment){
                     getCameraImage(data)
@@ -8362,7 +8457,10 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                                 //(getFragment() as RegisTerFaceFragment).setImageData(result!!)
                                 getAddFacePic(fileSize, resultUri)
                             }
-
+                            getCurrentFragType() == FragType.ShopDamageProductSubmitFrag -> {
+                                val fileSize = AppUtils.getCompressOldImage(resultUri.toString(), this)
+                                getDamagedPic(fileSize, resultUri)
+                            }
 
                             getCurrentFragType() == FragType.AddShopFragment -> {
                                 var fileSize = AppUtils.getCompressOldImage(resultUri.toString(), this)
@@ -10043,6 +10141,16 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         Log.e("Dashboard", "image file size after compression-----------------> $fileSizeInKB KB")
         //if (fileSizeInKB <= 200)
         (getFragment() as RegisTerFaceFragment).setImage(resultUri, fileSizeInKB)
+        /*else {
+            getAddShopPic(AppUtils.getCompressOldImage(resultUri.toString(), this), resultUri)
+        }*/
+    }
+
+    private fun getDamagedPic(fileSize: Long, resultUri: Uri) {
+        val fileSizeInKB = fileSize / 1024
+        Log.e("Dashboard", "image file size after compression-----------------> $fileSizeInKB KB")
+        //if (fileSizeInKB <= 200)
+        (getFragment() as ShopDamageProductSubmitFrag).setImage(resultUri, fileSizeInKB)
         /*else {
             getAddShopPic(AppUtils.getCompressOldImage(resultUri.toString(), this), resultUri)
         }*/

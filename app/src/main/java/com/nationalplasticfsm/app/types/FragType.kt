@@ -39,5 +39,5 @@ enum class FragType {
     LeaveHome,ApprovalPendFrag,LeaveStatusFrag,OpenFileWebViewFragment,ViewAllQuotListFragment,AddQuotFormFragment,ViewDetailsQuotFragment,
     LeadFrag,LeadPendingFrag,LeadInProcessFrag,ViewLeadFrag,ShopFeedbackHisFrag,CollectionNotiViewPagerFrag,CollectionPendingFrag,CollectionNotiViewPagerFrag1
     ,ZeroCollectionPendingFrag,CollectionPendingDtlsFrag,CollectionPendingTeamFrag,CollectionPendingTeamDtlsFrag,CollectionNotiViewPagerFrag2,RepeatOrderFrag,
-    TeamRepeatOrderFrag
+    TeamRepeatOrderFrag,MapViewForTeamFrag,ShopDamageProductListFrag,ShopDamageProductSubmitFrag
 }

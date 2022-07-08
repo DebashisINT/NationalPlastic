@@ -12,7 +12,6 @@
 
     <!--Map Key-->
     <!--<string name="MAP_ProjectAPIKey">AIzaSyBRrqsLZFqThqM8uxw_k94pZMbv3-3h0dM</string>-->
-<!--    <string name="MAP_ProjectAPIKey" translatable="false">AIzaSyCbYMZjnt8T6yivYfIa4_R9oy-L3SIYyrQ</string>-->
     <string name="MAP_ProjectAPIKey" translatable="false">AIzaSyDNb0jv-MYqa2-J9aamZEB8_C2sdsA7PK0</string>
 
     <!--Login-->
@@ -1564,7 +1563,7 @@
     <string name="camera_back" translatable="false">Back Camera :\u0020 </string>
     <string name="camera_front" translatable="false">Front Camera :\u0020 </string>
     <string name="historys" translatable="false">Historys</string>
-<!--    <string name="firebase_key" translatable="false">key=AAAAIoWfCpc:APA91bEMOPyfjsyziPC1WYJiPHjzdmTQJmAOKP0fM24iXI9BgrmyhH4uLY6Jd-6Lpjp8mvSdpSp-zm20ApTOYQ3Ean4m6LicJ5CoECS_v5u2PUAwA8E6FLsu2ZC6_WxuSYnTTLzlUi4E</string>-->
     <string name="firebase_key" translatable="false">key=AAAAKWeyzbk:APA91bHXeppADXuHshJrOyWdHK0qMGrayPK_ndmHwbZ31_W8Zz5bolhWXt2JffceKWeEHUuS3hKfyVyVP4qkkTe_XsSgB0eoTwQmNINDg9GQSZ318nSHYvsXQ_iE0G4XXtXUjBb1vKvD</string>
+
 
 </resources>

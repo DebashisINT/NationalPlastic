@@ -45,4 +45,7 @@ class NewOrderScrOrderEntity {
     @ColumnInfo(name = "isUploaded")
     var isUploaded: Boolean = false
 
+    @ColumnInfo(name = "rate")
+    var rate: String = "0"
+
 }

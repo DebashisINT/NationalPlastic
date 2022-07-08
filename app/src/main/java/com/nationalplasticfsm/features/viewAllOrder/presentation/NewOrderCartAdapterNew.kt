@@ -59,6 +59,12 @@ class NewOrderCartAdapterNew(var context: Context,var cartOrderList:List<NewOrde
     override fun onBindViewHolder(holder: NewOrderCartViewHolderNew, position: Int) {
         holder.productName.text=cartOrderList.get(position).product_name.toString()
         holder.gender.text=cartOrderList.get(position).gender.toString()
+        holder.rate.text=cartOrderList.get(position).rate.toString()
+        if(cartOrderList.get(position).rate.toString().equals("0")){
+            holder.ll_frag_new_ord_rate_dtls_root.visibility = View.GONE
+        }else{
+            holder.ll_frag_new_ord_rate_dtls_root.visibility = View.VISIBLE
+        }
 
 /*        adapterColorListNewOrder=AdapterColorListNewOrder(context,cartOrderList.get(position).color_list,object: ColorListOnCLick{
             override fun colorListOnCLick(size_qty_list: ArrayList<ProductOrder>, adpPosition: Int) {
@@ -105,7 +111,9 @@ class NewOrderCartAdapterNew(var context: Context,var cartOrderList:List<NewOrde
     inner class NewOrderCartViewHolderNew(itemView: View):RecyclerView.ViewHolder(itemView){
         val productName=itemView.tv_row_new_order_product_name_new
         val gender=itemView.tv_row_new_order_gender_new
+        val rate=itemView.tv_row_new_order_rate_new
         val rv_color_list=itemView.rv_color_details_new
+        val ll_frag_new_ord_rate_dtls_root=itemView.ll_frag_new_ord_rate_dtls_root
 
     }
 }

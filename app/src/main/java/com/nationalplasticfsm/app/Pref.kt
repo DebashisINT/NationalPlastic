@@ -433,4 +433,12 @@ object Pref : PreferenceHolder() {
 
     var IsShowNearByTeam: Boolean by bindToPreferenceField(false, "IsShowNearByTeam")
 
+    var IsFeedbackAvailableInShop: Boolean by bindToPreferenceField(true, "IsFeedbackAvailableInShop")
+
+    var IsAllowBreakageTracking: Boolean by bindToPreferenceField(false, "IsAllowBreakageTracking")
+    var IsAllowBreakageTrackingunderTeam: Boolean by bindToPreferenceField(false, "IsFeedbackAvailableInShop")
+
+    var IsRateEnabledforNewOrderScreenwithSize: Boolean by bindToPreferenceField(false, "IsRateEnabledforNewOrderScreenwithSize")
+
+    
 }

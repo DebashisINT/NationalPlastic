@@ -292,6 +292,10 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                     override fun onHistoryClick(shop: Any) {
                         (mContext as DashboardActivity).loadFragment(FragType.ShopFeedbackHisFrag, true, shop)
                     }
+
+                    override fun onDamageClick(shop_id: String) {
+                        (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
+                    }
                 }, {
                     it
                 })

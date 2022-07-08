@@ -241,6 +241,7 @@ class MemberListFragment : BaseFragment() {
             }
 
             override fun onShopClick(team: TeamListDataModel) {
+                CustomStatic.BreakageViewFromTeam_Name = team.user_name
                 //(mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, member_list[adapterPosition].user_id)
                 CommonDialog.getInstance(AppUtils.hiFirstNameText()+"!", "What you like to do?", getString(R.string.total_shops), getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
                     override fun onLeftClick() {

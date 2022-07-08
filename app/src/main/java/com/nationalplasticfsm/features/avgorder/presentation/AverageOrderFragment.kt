@@ -176,6 +176,10 @@ class AverageOrderFragment : BaseFragment(), DatePickerListener {
 
             }
 
+            override fun onDamageClick(shop_id: String) {
+                TODO("Not yet implemented")
+            }
+
             override fun OnItemClick(position: Int) {
                 (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, list[position])
             }

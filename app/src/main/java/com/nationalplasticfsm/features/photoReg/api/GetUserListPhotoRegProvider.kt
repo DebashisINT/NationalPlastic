@@ -17,4 +17,8 @@ object GetUserListPhotoRegProvider {
         return GetUserListPhotoRegRepository(GetUserListPhotoRegApi.createMultiPart())
     }
 
+    fun providePhotoSubmitReg(): GetUserListPhotoRegRepository {
+        return GetUserListPhotoRegRepository(GetUserListPhotoRegApi.submitPic())
+    }
+
 }

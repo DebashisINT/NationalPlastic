@@ -39,7 +39,7 @@
             android:textSize="@dimen/_10sdp" />
 
         <Space
-            android:layout_width="@dimen/_3sdp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
 

@@ -1,28 +1,28 @@
 package com.nationalplasticfsm.features.averageshop.presentation
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.Pref
-import com.nationalplasticfsm.app.domain.AddShopDao
 import com.nationalplasticfsm.app.domain.OrderDetailsListEntity
 import com.nationalplasticfsm.app.domain.ShopActivityEntity
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.uiaction.IntentActionable
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.Toaster
-import com.nationalplasticfsm.features.commondialogsinglebtn.AddFeedbackSingleBtnDialog
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.*
-import kotlinx.android.synthetic.main.inflate_nearby_shops.view.*
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.activity_view
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.shop_damage_ll
+import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.shop_damage_view
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.*
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.add_order_ll
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.add_quot_ll
@@ -49,7 +49,6 @@ import kotlinx.android.synthetic.main.inflate_registered_shops.view.tv_shop_code
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.tv_shop_contact_no
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.update_address_TV
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.update_stage_TV
-import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.activity_view
 import java.util.*
 
 /**
@@ -380,6 +379,18 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                         Toaster.msgShort(context,"No Minimum Order Avalible to return.")
                     }
 
+                }
+
+                if (Pref.IsAllowBreakageTracking) {
+                    itemView.shop_damage_ll.visibility = View.VISIBLE
+                    itemView.shop_damage_view.visibility = View.VISIBLE
+                }
+                else {
+                    itemView.shop_damage_ll.visibility = View.GONE
+                    itemView.shop_damage_view.visibility = View.GONE
+                }
+                itemView.shop_damage_ll.setOnClickListener{
+                    listener.onDamageClick(userLocationDataEntity[adapterPosition].shopid!!)
                 }
 
 

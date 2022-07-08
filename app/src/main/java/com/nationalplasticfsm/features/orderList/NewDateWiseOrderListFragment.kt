@@ -860,6 +860,10 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             override fun onReturnClick(position: Int) {
 
             }
+
+            override fun onDamageClick(shop_id: String) {
+                TODO("Not yet implemented")
+            }
         }, { shopId: String, orderId: String ->
             val shopType = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopType(shopId)
             senOrderEmail(shopId, orderId, shopType)

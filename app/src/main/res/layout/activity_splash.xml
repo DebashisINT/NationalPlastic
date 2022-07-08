@@ -10,9 +10,9 @@
         android:id="@+id/logo_new"
         android:layout_width="@dimen/_145sdp"
         android:layout_height="@dimen/_65sdp"
-        android:layout_centerHorizontal="true"
+        android:src="@drawable/breezelogo"
         android:layout_marginTop="@dimen/_170sdp"
-        android:src="@drawable/breezelogo" />
+        android:layout_centerHorizontal="true" />
 
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/Logo_name_TV"
@@ -24,9 +24,9 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:gravity="center|center_horizontal"
         android:text="@string/name_filed_managenent_system"
+        android:visibility="gone"
         android:textColor="#287fb2"
         android:textSize="@dimen/_12sdp"
-        android:visibility="gone"
         android:textStyle="bold" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -65,8 +65,8 @@
                     android:gravity="center|center_horizontal"
                     android:text="@string/name_filed_managenent_system"
                     android:textColor="#287fb2"
-                    android:textSize="@dimen/_12sdp"
                     android:visibility="gone"
+                    android:textSize="@dimen/_12sdp"
                     android:textStyle="bold" />
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView

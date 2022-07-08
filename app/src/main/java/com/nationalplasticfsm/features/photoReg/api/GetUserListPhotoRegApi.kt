@@ -30,6 +30,11 @@ interface GetUserListPhotoRegApi {
     @POST("FaceImageDetection/FaceImage")
     fun getAddUserFaceImage(@Query("data") face: String, @Part attachments: MultipartBody.Part?): Observable<FaceRegResponse>
 
+
+    @Multipart
+    @POST("BreakageMaterialsDetectionInfo/BreakageMaterialsSave")
+    fun subAddImage(@Query("data") face: String, @Part attachments: MultipartBody.Part?): Observable<ImageResponse>
+
     @FormUrlEncoded
     @POST("FaceRegistration/FaceMatch")
     fun getUserFacePic(@Field("user_id") user_id: String,@Field("session_token") session_token: String ): Observable<UserFacePicUrlResponse>
@@ -69,6 +74,17 @@ interface GetUserListPhotoRegApi {
                     .addConverterFactory(GsonConverterFactory.create())
                     .baseUrl(NetworkConstant.ADD_SHOP_BASE_URL)
                     .build()
+
+            return retrofit.create(GetUserListPhotoRegApi::class.java)
+        }
+
+        fun submitPic(): GetUserListPhotoRegApi {
+            val retrofit = Retrofit.Builder()
+                .client(NetworkConstant.setTimeOut())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(NetworkConstant.ADD_SHOP_BASE_URL)
+                .build()
 
             return retrofit.create(GetUserListPhotoRegApi::class.java)
         }

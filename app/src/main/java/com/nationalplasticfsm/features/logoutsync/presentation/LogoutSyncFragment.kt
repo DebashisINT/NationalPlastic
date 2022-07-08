@@ -530,7 +530,7 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                             unsyncListttt!!.get(l).product_name!!, unsyncList!!.get(l).gender!!,
                             unsyncListttt!!.get(l).color_id!!, unsyncList!!.get(l).color_name!!,
                             unsyncListttt!!.get(l).size!!,
-                            unsyncListttt!!.get(l).qty!!)
+                            unsyncListttt!!.get(l).qty!!,unsyncListttt!!.get(l).rate!!)
                     newOrderRoomDataListttt.add(newOrderRoomDataa)
                 }
                 newOrderSaveApiModel.product_list=newOrderRoomDataListttt

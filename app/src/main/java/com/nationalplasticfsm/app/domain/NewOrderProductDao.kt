@@ -30,4 +30,5 @@ interface NewOrderProductDao {
     @Query("SELECT * FROM " + AppConstant.NEW_ORDER_PRODUCT )
     fun getAllProduct(): List<NewOrderProductEntity>
 
+
 }

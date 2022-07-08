@@ -59,7 +59,7 @@ import com.nationalplasticfsm.features.login.*
         ,ReturnProductListEntity::class,UserWiseLeaveListEntity::class,ShopFeedbackEntity::class,ShopFeedbackTempEntity::class,LeadActivityEntity::class,
         ShopDtlsTeamEntity::class,CollDtlsTeamEntity::class,BillDtlsTeamEntity::class,OrderDtlsTeamEntity::class,
             TeamAllShopDBModelEntity::class),
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun addShopEntryDao(): AddShopDao
@@ -196,11 +196,8 @@ abstract class AppDatabase : RoomDatabase() {
         fun initAppDatabase(context: Context) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DBNAME)
-                        // allow queries on the main thread.
-                        // Don't do this on a real app! See PersistenceBasicSample for an example.
                         .allowMainThreadQueries()
-                        .addMigrations()
-//                        .fallbackToDestructiveMigration()
+                        .addMigrations(MIGRATION_1_2)
                         .build()
             }
         }
@@ -215,12 +212,11 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
 
-
-
-
-
-
-
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("alter table new_order_entry ADD COLUMN rate TEXT NOT NULL DEFAULT '0' ")
+            }
+        }
 
     }
 

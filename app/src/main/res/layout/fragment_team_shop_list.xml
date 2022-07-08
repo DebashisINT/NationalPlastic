@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_shop_count"
-        android:layout_marginTop="@dimen/_5sdp"/>
+        android:layout_marginTop="@dimen/_5sdp" />
 
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_no_data_available"
