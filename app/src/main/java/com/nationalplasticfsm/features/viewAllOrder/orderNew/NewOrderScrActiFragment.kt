@@ -76,7 +76,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
     private lateinit var ll_size_icon: LinearLayout
 
     private lateinit var ll_rate_ll: LinearLayout
+    private lateinit var ll_stock_ll: LinearLayout
     private lateinit var et_rate_new_ord: EditText
+    private lateinit var tv_stock_new_ord: TextView
 
     private lateinit var sizeText: TextView
 
@@ -136,7 +138,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
         ll_size_icon = view!!.findViewById(R.id.ll_order_list_list_icon)
         ll_rate_ll = view!!.findViewById(R.id.ll_item_new_ord_rate_root)
+        ll_stock_ll = view!!.findViewById(R.id.ll_item_new_ord_stock_root)
         et_rate_new_ord = view!!.findViewById(R.id.et_rate_new_ord)
+        tv_stock_new_ord = view!!.findViewById(R.id.tv_stock_new_ord)
 
 
         var horizontalLayout = LinearLayoutManager(
@@ -176,6 +180,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
         ll_size_icon.visibility=View.GONE
         ll_rate_ll.visibility=View.GONE
+        ll_stock_ll.visibility=View.GONE
         var gender_list = AppDatabase.getDBInstance()?.newOrderGenderDao()?.getGenderList() as List<NewOrderGenderEntity>
         if (gender_list != null && gender_list.isNotEmpty()) {
             GenderListDialog.newInstance(gender_list as ArrayList<NewOrderGenderEntity>) {
@@ -215,6 +220,13 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                     et_rate_new_ord.isEnabled=true
                 }
 
+                try{
+                    tv_stock_new_ord.text = AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.stock_amount.toString()
+                }catch (ex:Exception){
+
+                }
+
+
 
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
@@ -251,6 +263,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
         ll_size_icon.visibility = View.VISIBLE
         ll_rate_ll.visibility = View.VISIBLE
+        ll_stock_ll.visibility = View.VISIBLE
 
         if (size_list != null && size_list.isNotEmpty()) {
 
@@ -328,6 +341,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                     ColorTv.setTextColor(ContextCompat.getColor(mContext, R.color.dark_gray))
                     ll_size_icon.visibility = View.GONE
                     ll_rate_ll.visibility = View.GONE
+                    ll_stock_ll.visibility = View.GONE
                     var isSame: Boolean = false
                     if (isGenderSel) {
                         if (isProductSel) {

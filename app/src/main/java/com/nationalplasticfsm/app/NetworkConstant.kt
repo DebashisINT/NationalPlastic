@@ -28,11 +28,11 @@ class NetworkConstant {
         //var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:8094/"
 
 
-        //var BASE_URL = "http://3.7.30.86:82/API/"
-        //var ADD_SHOP_BASE_URL = "http://3.7.30.86:82/"
+        var BASE_URL = "http://3.7.30.86:82/API/"
+        var ADD_SHOP_BASE_URL = "http://3.7.30.86:82/"
 
-        var BASE_URL = "http://fts.indusnettechnologies.com:7030/API/"
-        var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:7030/"
+        //var BASE_URL = "http://fts.indusnettechnologies.com:7030/API/"
+        //var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:7030/"
 
 
 
