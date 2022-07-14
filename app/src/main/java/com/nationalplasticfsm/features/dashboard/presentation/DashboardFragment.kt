@@ -422,6 +422,16 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         //checkToCallMemberList()
         writeDataToFile()
         println("on Resume " +AppUtils.getCurrentDateTime());
+
+        if(Pref.IsActivateNewOrderScreenwithSize){
+            var rateListToday= AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getRateListByDate(AppUtils.getCurrentDateyymmdd()) as List<String>
+            var sum = 0.0
+            for(i in 0..rateListToday.size-1){
+                sum+=rateListToday.get(i).toDouble()
+            }
+            avgOrder.text= getString(R.string.rupee_symbol) + sum.toString()
+        }
+
     }
 
 
@@ -3469,6 +3479,12 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     Pref.IsRateEnabledforNewOrderScreenwithSize = response.getconfigure!![i].Value == "1"
                                                 }
                                             }
+                                            else if (response.getconfigure!![i].Key.equals("IgnoreNumberCheckwhileShopCreation", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IgnoreNumberCheckwhileShopCreation = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+
 
                                         }
                                     }

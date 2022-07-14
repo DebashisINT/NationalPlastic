@@ -126,6 +126,7 @@ import com.nationalplasticfsm.features.dashboard.presentation.model.ContentListR
 import com.nationalplasticfsm.features.dashboard.presentation.model.ShopVisitImageUploadInputModel
 import com.nationalplasticfsm.features.dashboard.presentation.model.UnreadNotificationResponseModel
 import com.nationalplasticfsm.features.device_info.presentation.DeviceInfoListFragment
+import com.nationalplasticfsm.features.distributorwiseorder.DistributorwiseorderlistFragment
 import com.nationalplasticfsm.features.document.DocumentRepoFeatureNewFragment
 import com.nationalplasticfsm.features.document.presentation.DocumentListFragment
 import com.nationalplasticfsm.features.document.presentation.DocumentTypeListFragment
@@ -508,6 +509,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
     private lateinit var weather_TV: AppCustomTextView
     private lateinit var doc_TV: AppCustomTextView
     private lateinit var chat_bot_TV: AppCustomTextView
+    private lateinit var distributor_wise_order_list_TV: AppCustomTextView
     private lateinit var ic_calendar: AppCompatImageView
     private lateinit var ic_chat_bot: AppCompatImageView
     private lateinit var iv_cancel_chat: AppCompatImageView
@@ -1999,6 +2001,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         weather_TV = findViewById(R.id.weather_TV)
         doc_TV = findViewById(R.id.doc_TV)
         chat_bot_TV = findViewById(R.id.chat_bot_TV)
+        distributor_wise_order_list_TV = findViewById(R.id.distributor_wise_order_list_TV)
         alert_snack_bar = findViewById(R.id.alert_snack_bar)
         ic_calendar = findViewById(R.id.ic_calendar)
         ic_chat_bot = findViewById(R.id.ic_chat_bot)
@@ -2083,6 +2086,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         weather_TV.setOnClickListener(this)
         doc_TV.setOnClickListener(this)
         chat_bot_TV.setOnClickListener(this)
+        distributor_wise_order_list_TV.setOnClickListener(this)
         ic_calendar.setOnClickListener(this)
         ic_chat_bot.setOnClickListener(this)
         iv_cancel_chat.setOnClickListener(this)
@@ -2392,6 +2396,13 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             chat_bot_TV.visibility = View.VISIBLE
         else
             chat_bot_TV.visibility = View.GONE
+        Pref.showdistributorwisepartyorderreport = true
+        if (Pref.showdistributorwisepartyorderreport)
+            distributor_wise_order_list_TV.visibility = View.VISIBLE
+        else
+            distributor_wise_order_list_TV.visibility = View.GONE
+
+
 
         if (Pref.isShowTimeline)
             orderHistoryTV.visibility = View.VISIBLE
@@ -3306,6 +3317,9 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             R.id.chat_bot_TV -> {
                 showLanguageAlert(true)
             }
+            R.id.distributor_wise_order_list_TV ->{
+                loadFragment(FragType.DistributorwiseorderlistFragment, false, "")
+            }
 
             R.id.photo_registration -> {
                 if (AppUtils.isOnline(mContext)) {
@@ -4095,6 +4109,13 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 }
                 setTopBarTitle("Add Breakage")
                 setTopBarVisibility(TopBarConfig.BACK)
+            }
+            FragType.DistributorwiseorderlistFragment -> {
+                if (enableFragGeneration) {
+                    mFragment = DistributorwiseorderlistFragment()
+                }
+                setTopBarTitle("DISTRIBUTOR WISE ORDER LIST")
+                setTopBarVisibility(TopBarConfig.TEAMMAP)
             }
             FragType.NearByShopsMapFragment -> {
                 if (enableFragGeneration) {
@@ -9407,6 +9428,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             if(Pref.ShopScreenAftVisitRevisit && Pref.ShopScreenAftVisitRevisitGlobal){
             loadFragment(FragType.ShopDetailFragment, true, mShopId)
             }else{
+                AppUtils.isRevisit = false
                 loadFragment(FragType.DashboardFragment, false, "")
             }
         } else
@@ -9452,6 +9474,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             if (Pref.ShopScreenAftVisitRevisit && Pref.ShopScreenAftVisitRevisitGlobal) {
                 (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, mShopId)
             } else {
+                AppUtils.isRevisit = false
                 (mContext as DashboardActivity).loadFragment(FragType.DashboardFragment, true, "")
             }
         }
@@ -9480,6 +9503,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                     if (Pref.ShopScreenAftVisitRevisit && Pref.ShopScreenAftVisitRevisitGlobal) {
                         (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, mShopId)
                     } else {
+                        AppUtils.isRevisit = false
                         (mContext as DashboardActivity).loadFragment(FragType.DashboardFragment, true, "")
                     }
 //                    loadFragment(FragType.ShopDetailFragment, true, mShopId)

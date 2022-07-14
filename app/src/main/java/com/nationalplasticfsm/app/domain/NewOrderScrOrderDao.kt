@@ -98,6 +98,15 @@ interface NewOrderScrOrderDao {
     @Query("SELECT rate FROM " + AppConstant.NEW_ORDER_ENTRY + " where product_id=:product_id and order_id=:order_id")
     fun getNewOrderProductRateByOrdID(product_id:String,order_id:String): String
 
+    @Query("SELECT qty FROM " + AppConstant.NEW_ORDER_ENTRY + " where product_id=:product_id and order_id=:order_id")
+    fun getNewOrderProductQtyByOrdID(product_id:String,order_id:String):  String
+
 /*    @Query("Select gender from "+ AppConstant.NEW_ORDER_ENTRY +" where order_id=:order_id")
     fun getUniqGenderForOrderID(order_id:String): List<ProductOrder>*/
+
+
+
+    @Query("Select rate  from "+ AppConstant.NEW_ORDER_ENTRY+ " where order_date=:order_date " )
+    fun getRateListByDate(order_date:String):List<String>
+
 }

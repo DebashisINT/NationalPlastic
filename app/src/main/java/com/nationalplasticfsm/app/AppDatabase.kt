@@ -196,8 +196,12 @@ abstract class AppDatabase : RoomDatabase() {
         fun initAppDatabase(context: Context) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DBNAME)
+                        // allow queries on the main thread.
+                        // Don't do this on a real app! See PersistenceBasicSample for an example.
                         .allowMainThreadQueries()
-                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_1_2
+                        )
+//                        .fallbackToDestructiveMigration()
                         .build()
             }
         }
@@ -210,7 +214,6 @@ abstract class AppDatabase : RoomDatabase() {
         fun destroyInstance() {
             INSTANCE = null
         }
-
 
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {

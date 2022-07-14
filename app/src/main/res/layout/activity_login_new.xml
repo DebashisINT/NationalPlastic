@@ -46,7 +46,7 @@
 
                 <ImageView
                     android:id="@+id/logo_new"
-                    android:layout_width="@dimen/_145sdp"
+                    android:layout_width="@dimen/_135sdp"
                     android:layout_height="@dimen/_68sdp"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
@@ -65,9 +65,9 @@
                     android:gravity="center|center_horizontal"
                     android:text="@string/name_filed_managenent_system"
                     android:textColor="#287fb2"
-                    android:visibility="gone"
                     android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/app_title_TV"

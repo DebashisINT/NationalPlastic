@@ -53,9 +53,10 @@
 
 
                     <TextView
+                        android:id="@+id/tv_rownew_ord_cart_dtls_gender_or_productType"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Product Type : "
+                        android:text="Gender : "
                         android:gravity="top|start"
                         android:textColor="@color/default_text_color"
                         android:textStyle="bold"
@@ -65,7 +66,7 @@
                         android:id="@+id/tv_row_new_order_gender_new"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:hint="Product Type"
+                        android:hint="Gender"
                         android:gravity="top|end"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_12sdp"/>
@@ -98,6 +99,24 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="Rate"
+                    android:gravity="center|start"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Total Rate  ( ₹ ) :  "
+                    android:gravity="center"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    android:textColor="@color/default_text_color"/>
+
+                <TextView
+                    android:id="@+id/tv_row_new_order_total_rate_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="TotalRate"
                     android:gravity="center|start"
                     android:textSize="@dimen/_12sdp"
                     android:textColor="@color/black"/>

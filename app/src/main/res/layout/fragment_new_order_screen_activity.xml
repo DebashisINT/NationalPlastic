@@ -52,7 +52,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/_5sdp"
-                            android:text="Product Type"
+                            android:text="Gender"
                             android:textColor="@color/default_text_color"
                             android:textSize="@dimen/_14sdp" />
 
@@ -79,7 +79,7 @@
                             android:layout_marginLeft="@dimen/_30sdp"
                             android:layout_weight="1"
                             android:padding="@dimen/_5sdp"
-                            android:text="Select Product Type"
+                            android:text="Select Gender"
                             android:textColor="@color/login_txt_color"
                             android:textColorHint="@color/login_txt_color"
                             android:textSize="@dimen/_12sdp" />
@@ -518,6 +518,8 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+
 
 
         </LinearLayout>

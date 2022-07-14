@@ -88,6 +88,8 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var color_IV: ImageView
 
+    private lateinit var genderTv: TextView
+
 
 
     override fun onAttach(context: Context) {
@@ -142,6 +144,14 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
         et_rate_new_ord = view!!.findViewById(R.id.et_rate_new_ord)
         tv_stock_new_ord = view!!.findViewById(R.id.tv_stock_new_ord)
 
+        genderTv = view!!.findViewById(R.id.genderTv)
+
+        //gender vs product type new order
+        //genderTv.text=getString(R.string.GenderTextNewOrd)
+        //genderSpinner.text="Select "+getString(R.string.GenderTextNewOrd)
+        genderTv.text=getString(R.string.ProductTextNewOrd)
+        genderSpinner.text="Select "+getString(R.string.ProductTextNewOrd)
+
 
         var horizontalLayout = LinearLayoutManager(
                 mContext,
@@ -192,7 +202,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
             //Toaster.msgShort(mContext, "No Gender Found")
-            Toaster.msgShort(mContext, "No Product Type Found")
+            //gender vs product type new order
+            //Toaster.msgShort(mContext, "No "+ getString(R.string.GenderTextNewOrd) +"Found")
+            Toaster.msgShort(mContext, "No "+ getString(R.string.ProductTextNewOrd) +"Found")
         }
     }
 
@@ -445,13 +457,21 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                                                           }
                           */
                                                 final_order_list.get(i).color_list.get(p).order_list = ob1
-                                                final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                                if(et_rate_new_ord.text.toString().equals("")){
+                                                    final_order_list.get(i).rate = "0"
+                                                }else{
+                                                    final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                                }
                                             }
                                         }
 
                                         if (isSameColorObj == false){
                                             final_order_list.get(i).color_list.add(colorList)
+                                            if(et_rate_new_ord.text.toString().equals("")){
+                                                final_order_list.get(i).rate = "0"
+                                            }else{
                                             final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                            }
                                         }
                                         isSame = true
                                     }
@@ -478,7 +498,11 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                 var colorList: ColorList = ColorList(colorSpinner.text.toString(), colorId.toString(), order_list)
                                 cartData.color_list.add(colorList)
 
+                                if(et_rate_new_ord.text.toString().equals("")){
+                                    cartData.rate = "0"
+                                }else{
                                 cartData.rate = et_rate_new_ord.text.toString()
+                                }
 
                                 final_order_list.add(cartData)
                             }
@@ -526,7 +550,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                         }
                     } else {
                         //Toaster.msgShort(mContext, "Please Select Gender First")
-                        Toaster.msgShort(mContext, "Please Select Product Type First")
+                        //gender vs product type new order
+                        //Toaster.msgShort(mContext, "Please Select "+ getString(R.string.GenderTextNewOrd) +" First")
+                        Toaster.msgShort(mContext, "Please Select "+ getString(R.string.ProductTextNewOrd) +" First")
                     }
 
                 }
@@ -549,7 +575,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                         loadProduct()
                     } else {
                         //Toaster.msgShort(mContext, "Please Select Gender First")
-                        Toaster.msgShort(mContext, "Please Select Product Type First")
+                        //gender vs product type new order
+                        //Toaster.msgShort(mContext, "Please Select "+ getString(R.string.GenderTextNewOrd) +"First")
+                        Toaster.msgShort(mContext, "Please Select "+ getString(R.string.ProductTextNewOrd) +"First")
                     }
                 }
                 R.id.ll_new_order_scr_color -> {
@@ -564,7 +592,9 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                         }
                     } else {
                         //Toaster.msgShort(mContext, "Please Select Gender First")
-                        Toaster.msgShort(mContext, "Please Select Product Type First")
+                        //gender vs product type new order
+                        //Toaster.msgShort(mContext, "Please Select "+ getString(R.string.GenderTextNewOrd) +"First")
+                        Toaster.msgShort(mContext, "Please Select "+ getString(R.string.ProductTextNewOrd) +"First")
                     }
                 }
 //                R.id.btn_nextttt ->{

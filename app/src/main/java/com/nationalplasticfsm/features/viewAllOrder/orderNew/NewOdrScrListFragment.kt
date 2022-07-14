@@ -234,6 +234,15 @@ class NewOdrScrListFragment: BaseFragment(), DatePickerListener {
                         //newOrderCartModel1!!.gender="MALE"
                         newOrderCartModel1!!.gender = Pref.new_ord_gender_male
 
+                        try{
+                            var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                        }catch (ex:Exception){
+                            newOrderCartModel1!!.rate="0.0"
+                        }
+                        //newOrderCartModel1!!.rate=AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!
+
                         var colorSel= AppDatabase.getDBInstance()?.newOrderColorDao()?.getNewOrderColorName(colorIDListForProduct.get(k))
                         var colorList: ColorList = ColorList(colorSel!!,colorIDListForProduct.get(k), sizeQtyListMale as ArrayList<ProductOrder>)
                         newOrderCartModel1!!.color_list.add(colorList)
@@ -245,6 +254,15 @@ class NewOdrScrListFragment: BaseFragment(), DatePickerListener {
 
                         //newOrderCartModel2!!.gender="FEMALE"
                         newOrderCartModel2!!.gender = Pref.new_ord_gender_female
+
+                        try{
+                            var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
+                            newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                        }catch (ex:Exception){
+                            newOrderCartModel1!!.rate="0.0"
+                        }
+                        //newOrderCartModel2!!.rate=AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!
 
                         var colorSel= AppDatabase.getDBInstance()?.newOrderColorDao()?.getNewOrderColorName(colorIDListForProduct.get(k))
                         var colorList: ColorList = ColorList(colorSel!!,colorIDListForProduct.get(k), sizeQtyListFeMale as ArrayList<ProductOrder>)

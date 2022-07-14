@@ -1565,5 +1565,7 @@
     <string name="historys" translatable="false">Historys</string>
     <string name="firebase_key" translatable="false">key=AAAAKWeyzbk:APA91bHXeppADXuHshJrOyWdHK0qMGrayPK_ndmHwbZ31_W8Zz5bolhWXt2JffceKWeEHUuS3hKfyVyVP4qkkTe_XsSgB0eoTwQmNINDg9GQSZ318nSHYvsXQ_iE0G4XXtXUjBb1vKvD</string>
 
+    <string name="GenderTextNewOrd" translatable="false">Gender</string>
+    <string name="ProductTextNewOrd" translatable="false">Product Type</string>
 
 </resources>

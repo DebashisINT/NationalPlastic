@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.viewAllOrder.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -65,7 +66,10 @@ class GenderListDialog: DialogFragment() {
         rv_gender=v.findViewById(R.id.rv_dialog_gender_list)
         rv_gender.layoutManager = LinearLayoutManager(mContext)
 
-        header.text="Select Gender"
+        //gender vs product type new order
+        //var str = mContext.getString(R.string.GenderTextNewOrd)
+        var str = mContext.getString(R.string.ProductTextNewOrd)
+        header.text="Select "+ str
 
        /* adapter = GenderListAdapter(mContext, GenderListDialog.mGenderList) { gender: NewOrderGenderEntity ->
             dismiss()

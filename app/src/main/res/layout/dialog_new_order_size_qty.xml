@@ -26,6 +26,7 @@
             android:paddingBottom="@dimen/_5sdp">
 
             <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_dialog_new_ord_size_qty_gender_productType"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -34,6 +35,10 @@
                 android:text="Gender : "
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/_12sdp" />
+
+            <Space
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="match_parent"/>
 
             <com.nationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/dialog_order_details_headerGenderTV"

@@ -32,6 +32,9 @@ public interface AddShopDao {
     @Query("select distinct shop_detail.* from shop_detail inner join order_details_list on shop_detail.shop_id = order_details_list.shop_id ")
     List<AddShopDBModelEntity> getShopIdHasOrder();
 
+    @Query("select distinct shop_detail.* from shop_detail inner join order_details_list on shop_detail.shop_id = order_details_list.shop_id and assigned_to_dd_id=:assigned_to_dd_id")
+    List<AddShopDBModelEntity> getShopIdHasOrderDDWise(String assigned_to_dd_id);
+
 
     @Query("select  * from shop_detail where shopid < 10")
     List<AddShopDBModelEntity> getTop10();

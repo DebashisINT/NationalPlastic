@@ -440,5 +440,6 @@ object Pref : PreferenceHolder() {
 
     var IsRateEnabledforNewOrderScreenwithSize: Boolean by bindToPreferenceField(false, "IsRateEnabledforNewOrderScreenwithSize")
 
-    
+    var IgnoreNumberCheckwhileShopCreation:Boolean by bindToPreferenceField(false, "IgnoreNumberCheckwhileShopCreation")
+    var showdistributorwisepartyorderreport:Boolean by bindToPreferenceField(false, "showdistributorwisepartyorderreport")
 }

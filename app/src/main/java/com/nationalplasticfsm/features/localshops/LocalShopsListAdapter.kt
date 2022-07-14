@@ -10,6 +10,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.nationalplasticfsm.R
@@ -167,7 +168,15 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
 
             if (list[adapterPosition].visited) {
                 itemView.visit_icon.visibility = View.VISIBLE
-                itemView.visit_TV.text = "Revisited Today"
+                if(Pref.isMultipleVisitEnable){
+                    itemView.visit_TV.text = "Revisit Again"
+                    itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.color_custom_red))
+                    itemView.visit_icon.setColorFilter(ContextCompat.getColor(context,R.color.color_custom_red),android.graphics.PorterDuff.Mode.SRC_IN)
+                }else {
+                    itemView.visit_TV.text = "Revisited Today"
+                    itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.maroon))
+                    itemView.visit_icon.setColorFilter(ContextCompat.getColor(context,R.color.maroon),android.graphics.PorterDuff.Mode.SRC_IN)
+                }
             } else {
                 itemView.visit_icon.visibility = View.GONE
 
@@ -177,6 +186,7 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
                     itemView.visit_TV.text = "VISIT THIS SHOP"*/
 
                 itemView.visit_TV.text = "Revisit Now"
+                itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.color_custom_green))
             }
 
             itemView.shop_list_LL.setOnClickListener(View.OnClickListener {

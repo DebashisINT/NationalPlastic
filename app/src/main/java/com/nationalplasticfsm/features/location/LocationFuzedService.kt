@@ -16,21 +16,22 @@ import android.location.GpsStatus
 import android.location.Location
 import android.location.LocationManager
 import android.os.*
-import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import android.text.TextUtils
+import android.util.Log
+import com.nationalplasticfsm.CustomStatic
+import com.nationalplasticfsm.MonitorBroadcast
 import com.elvishew.xlog.XLog
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.nationalplasticfsm.MonitorBroadcast
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.*
 import com.nationalplasticfsm.app.Pref.tempDistance
@@ -56,11 +57,14 @@ import com.nationalplasticfsm.features.location.LocationWizard.Companion.NEARBY_
 import com.nationalplasticfsm.features.location.api.LocationRepoProvider
 import com.nationalplasticfsm.features.location.ideallocapi.IdealLocationRepoProvider
 import com.nationalplasticfsm.features.location.model.*
+import com.nationalplasticfsm.features.location.shopRevisitStatus.ShopRevisitStatusRepository
 import com.nationalplasticfsm.features.location.shopRevisitStatus.ShopRevisitStatusRepositoryProvider
 import com.nationalplasticfsm.features.location.shopdurationapi.ShopDurationRepositoryProvider
 import com.nationalplasticfsm.features.orderhistory.api.LocationUpdateRepositoryProviders
 import com.nationalplasticfsm.features.orderhistory.model.LocationData
 import com.nationalplasticfsm.features.orderhistory.model.LocationUpdateRequest
+import com.nationalplasticfsm.mappackage.SendBrod.Companion.monitorNotiID
+import com.google.android.gms.maps.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -72,6 +76,7 @@ import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 
 /**
@@ -246,8 +251,7 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
                 val notificationChannel = NotificationChannel(channelId, channelName, importance)
                 notificationChannel.enableLights(true)
                 notificationChannel.lightColor = applicationContext.getColor(R.color.colorPrimary)
-                notificationChannel.enableVibration(false)
-                notificationChannel.setSound(null, null)
+                notificationChannel.enableVibration(true)
                 notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 notificationManager.createNotificationChannel(notificationChannel)
 
@@ -261,7 +265,6 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
                         .setContentIntent(pendingIntent)
                         .setOngoing(true)
                         .setChannelId(channelId)
-                    .setVibrate(longArrayOf(0))
                         .build()
 
                 //notificationManager.notify(randInt, notificationBuilder.build());
@@ -1221,6 +1224,7 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showNotification() {
+
 
         if (!Pref.isShowCurrentLocNotifiaction)
             return

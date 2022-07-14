@@ -5562,11 +5562,14 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         else
             shopDataModel.booking_amount = booking_amount_EDT.text.toString().trim()
 
-        if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(ownerNumber.text.toString().trim()).size > 0) {
-            (mContext as DashboardActivity).showSnackMessage(getString(R.string.contact_number_exist))
-            BaseActivity.isApiInitiated = false
-            return
+        if(!Pref.IgnoreNumberCheckwhileShopCreation){
+            if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(ownerNumber.text.toString().trim()).size > 0) {
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.contact_number_exist))
+                BaseActivity.isApiInitiated = false
+                return
+            }
         }
+
 
 
         val allShopList= AppDatabase.getDBInstance()?.addShopEntryDao()?.all
