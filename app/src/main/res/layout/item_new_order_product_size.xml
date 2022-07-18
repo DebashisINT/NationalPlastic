@@ -34,7 +34,7 @@
             android:inputType="number"
             android:gravity="center"
             android:hint="Qty"
-            android:maxLength="3"
+            android:maxLength="5"
             android:textColor="@color/login_txt_color"
             android:textSize="@dimen/_10sdp"
             android:background="@drawable/blue_line_custom"/>
