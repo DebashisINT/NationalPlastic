@@ -449,6 +449,11 @@ class SurveyFrag: BaseFragment(), View.OnClickListener {
                             (mContext as DashboardActivity).showSnackMessage("$toastFormat  '${finalSaveList.get(i).question_desc!!}'")
                             return
                         }
+                        var imageObj = qaImgList.filter { it.question_id.equals(finalSaveList.get(i).question_id) }
+                        if(imageObj.size==0 && finalSaveList.get(i).question_desc!!.contains("*")){
+                            (mContext as DashboardActivity).showSnackMessage("Please provide picture.")
+                            return
+                        }
                     }
                     obj.answer=ansCapture
                     saveQAModel.answer_list!!.add(obj)
