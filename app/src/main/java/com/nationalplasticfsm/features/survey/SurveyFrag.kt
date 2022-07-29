@@ -451,7 +451,7 @@ class SurveyFrag: BaseFragment(), View.OnClickListener {
                         }
                         var imageObj = qaImgList.filter { it.question_id.equals(finalSaveList.get(i).question_id) }
                         if(imageObj.size==0 && finalSaveList.get(i).question_desc!!.contains("*")){
-                            (mContext as DashboardActivity).showSnackMessage("Please provide picture.")
+                            (mContext as DashboardActivity).showSnackMessage("Please attach the picture.")
                             return
                         }
                     }
