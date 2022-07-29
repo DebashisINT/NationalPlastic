@@ -224,7 +224,7 @@
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
-                    android:text="Distributor wise order list"
+                    android:text="Distributor Wise Order List"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -327,6 +327,20 @@
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/assigned_survey_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_surveys_audit"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Survey"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/assigned_lead_TV"

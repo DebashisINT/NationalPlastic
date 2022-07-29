@@ -4968,7 +4968,6 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             (mContext as DashboardActivity).startActivityForResult(intent, PermissionHelper.REQUEST_CODE_STORAGE)
 
         }
-
     }
     /*9-12-2021*/
     fun showPictureDialogImage() {
@@ -5035,7 +5034,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).showSnackMessage("Please select any GPTPL/Distributor")
                 BaseActivity.isApiInitiated = false
                 return
-            } else if (TextUtils.isEmpty(assignedToDDId)) {
+            } else if (TextUtils.isEmpty(assignedToDDId) && Pref.AutoDDSelect==true) {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ddText)
                 BaseActivity.isApiInitiated = false
                 return
@@ -5070,7 +5069,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ppText)
                 BaseActivity.isApiInitiated = false
                 return
-            } else if (TextUtils.isEmpty(assignedToDDId)) {
+            } else if (TextUtils.isEmpty(assignedToDDId) && Pref.AutoDDSelect==true) {
                 (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ddText)
                 BaseActivity.isApiInitiated = false
                 return
@@ -5093,7 +5092,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             assignedToShopId = ""
 
             if (Pref.isDDMandatoryForMeeting) {
-                if (TextUtils.isEmpty(assignedToDDId)) {
+                if (TextUtils.isEmpty(assignedToDDId) && Pref.AutoDDSelect==true) {
                     (mContext as DashboardActivity).showSnackMessage("Please select assigned to " + Pref.ddText)
                     BaseActivity.isApiInitiated = false
                     return

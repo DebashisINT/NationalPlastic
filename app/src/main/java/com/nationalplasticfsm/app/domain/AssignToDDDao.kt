@@ -14,6 +14,9 @@ interface AssignToDDDao {
     @Query("SELECT * FROM " + AppConstant.ASSIGNED_TO_DD_TABLE)
     fun getAll(): List<AssignToDDEntity>
 
+    @Query("SELECT * FROM " + AppConstant.ASSIGNED_TO_DD_TABLE+ " where pp_id=:pp_id")
+    fun getAllDDFilterPP(pp_id: String): List<AssignToDDEntity>
+
     @Query("SELECT * FROM " + AppConstant.ASSIGNED_TO_DD_TABLE + " where dd_id=:dd_id")
     fun getSingleValue(dd_id: String): AssignToDDEntity
 

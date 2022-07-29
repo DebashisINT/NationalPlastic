@@ -1273,6 +1273,7 @@ class AppUtils {
             return networkType
         }
 
+        @SuppressLint("MissingPermission")
         fun mobNetType(context: Context): String {
             val netType = getNetworkType(context)
             if (TextUtils.isEmpty(netType) || netType.equals("WiFi", ignoreCase = true))
@@ -1960,6 +1961,7 @@ class AppUtils {
 
             return BitmapFactory.decodeStream(c.contentResolver.openInputStream(uri), null, o2)!!
         }
+
 
         fun getCompressImage(filePath: String): Long {
             val file = File(filePath)

@@ -59,4 +59,7 @@ interface UserLocationDataDao {
     fun deleteAll()
 
 
+    @Query("Select * from location_db ORDER BY locationId DESC LIMIT 1")
+    fun getLastRecord(): UserLocationDataEntity
+
 }

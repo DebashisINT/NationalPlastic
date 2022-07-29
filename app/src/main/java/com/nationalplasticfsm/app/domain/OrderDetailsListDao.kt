@@ -20,6 +20,10 @@ interface OrderDetailsListDao {
     @Query("SELECT * FROM " + AppConstant.ORDER_DETAILS_LIST_TABLE + " where SUBSTR(order_details_list.date , 1,10)>=:date_start and SUBSTR(order_details_list.date , 1,10)<=:date_end and shop_id=:shop_id order by id desc")
     fun getListAccordingTodateonOrderDD(date_start:String,date_end:String,shop_id: String): List<OrderDetailsListEntity>
 
+    @Query("SELECT DISTINCT(shop_detail.assigned_to_pp_id) FROM " + AppConstant.ORDER_DETAILS_LIST_TABLE +
+            " inner join shop_detail on shop_detail.shop_id = order_details_list.shop_id  where SUBSTR(order_details_list.date , 1,10)>=:date_start and SUBSTR(order_details_list.date , 1,10)<=:date_end ")
+    fun getListAccordingTodateonOrderPP(date_start:String,date_end:String): List<String>
+
     @Query("SELECT * FROM " + AppConstant.ORDER_DETAILS_LIST_TABLE + " where isUploaded=:isUploaded and order_id=:order_id")
     fun getUnsyncListAccordingToOrderId(order_id: String, isUploaded: Boolean): List<OrderDetailsListEntity>
 

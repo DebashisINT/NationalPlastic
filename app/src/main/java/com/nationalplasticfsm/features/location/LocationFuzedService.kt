@@ -751,6 +751,8 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
         else
             800f
 
+        //accuracy=1f
+
         /*Discard Data if Inaccurate*/
         if (location.accuracy > accuracy /*&& shouldLocationUpdate()*/) {
         //if (location.accuracy > 2 /*&& shouldLocationUpdate()*/) {
@@ -3550,13 +3552,23 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
 
     private fun saveData(userlocation: UserLocationDataEntity, distance: Double) {
         resetData()
-        val finalDistance = (tempDistance.toDouble() + distance).toString()
+        var finalDistance = (tempDistance.toDouble() + distance).toString()
 
         XLog.e("===Distance (LocationFuzedService)===")
         XLog.e("Temp Distance====> $tempDistance")
         XLog.e("Normal Distance====> $distance")
         XLog.e("Total Distance====> $finalDistance")
         XLog.e("=====================================")
+
+        var fDist=finalDistance.toDouble().toInt()
+        if(fDist>499){ // if current lat-long and prev lat-long dist is >499km then reject it & replace it with previous valid distance
+            try{
+                var obj = AppDatabase.getDBInstance()!!.userLocationDataDao().getLastRecord()
+                finalDistance=obj.distance
+            }catch (ex:Exception){
+                finalDistance="0.0"
+            }
+        }
 
         userlocation.distance = finalDistance  //LocationWizard.getDistance(mLastLocation.latitude, mLastLocation.longitude, userlocation.latitude.toDouble(), userlocation.longitude.toDouble()).toString()
         tempDistance = "0.0"

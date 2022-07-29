@@ -182,7 +182,6 @@ class RegisTerFaceFragment: BaseFragment(), View.OnClickListener {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             (mContext as DashboardActivity).startActivityForResult(intent, PermissionHelper.REQUEST_CODE_STORAGE)
         }
-
     }
 
 

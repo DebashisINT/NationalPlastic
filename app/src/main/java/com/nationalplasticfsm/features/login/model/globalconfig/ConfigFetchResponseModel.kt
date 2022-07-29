@@ -89,6 +89,9 @@ class ConfigFetchResponseModel : BaseResponse() {
     var dobText: String = ""
     var dateOfAnniversaryText: String = ""
     var ShopScreenAftVisitRevisit:Boolean? = null
+    var IsSurveyRequiredforNewParty:Boolean? = null
+    var IsSurveyRequiredforDealer:Boolean? = null
+    var IsShowHomeLocationMap:Boolean? = null
 
 
 

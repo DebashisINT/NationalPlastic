@@ -716,433 +716,479 @@
                 </RelativeLayout>
             </RelativeLayout>
 
-
-            <RelativeLayout
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/_10sdp">
+                android:fillViewport="true"
+                android:visibility="visible"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_marginRight="@dimen/_3sdp"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="@dimen/_2sdp"
+                android:scrollbarThumbHorizontal="@color/color_blue_light_dark">
 
-                <LinearLayout
-                    android:id="@+id/iconWrapper_rl"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/_7sdp"
-                    android:paddingTop="@dimen/_5sdp">
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <LinearLayout
+                        android:id="@+id/iconWrapper_rl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/_7sdp"
+                        android:paddingTop="@dimen/_5sdp">
+
+                        <ImageView
+                            android:id="@+id/tag_iv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_tag_icon"
+                            android:padding="@dimen/_5sdp"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/shop_survey_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/_21sdp"
+                                android:layout_height="@dimen/_23sdp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_surveys_audit"
+                                android:backgroundTint="@color/dark_gray"/>
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="Survey"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/shop_survey_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+                        <LinearLayout
+                            android:id="@+id/shop_damage_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_damage" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="Damage"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/shop_damage_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+
+
+
+                        <View
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color"
+                            android:visibility="gone" />
+
+
+                        <LinearLayout
+                            android:id="@+id/shop_history_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/shop_history_iv"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:backgroundTint="@color/black"
+                                android:background="@drawable/ic_add_order_report_icon" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/shop_history_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="History"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/shop_history_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+
+                        <!--16-12-2021-->
+                        <LinearLayout
+                            android:id="@+id/lead_return_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/lead_return_iv"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_return_ruby_customized" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/lead_return_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/returns"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/lead_return_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+
+                        <!--10-12-2021-->
+                        <LinearLayout
+                            android:id="@+id/lead_new_question_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/lead_new_question_iv"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_question_answer_new_lead" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/lead_new_question_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/questionnaire"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+                        <View
+                            android:id="@+id/lead_new_question_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_collection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_collection"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_collection_new" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_collection"
+                                gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/collection"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/collection_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+
+                        <LinearLayout
+                            android:id="@+id/ll_activity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/iv_activity"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_activity_gray" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_activity"
+                                gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/activities"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/activity_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+
+                        <LinearLayout
+                            android:id="@+id/ll_stock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/iv_stock"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_stock_deselect" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_stock"
+                                gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/new_stock"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/stock_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+                        <LinearLayout
+                            android:id="@+id/call_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/call_iv"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_registered_shop_call_deselect" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/call_tv"
+                                gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:text="@string/not_verified"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/call_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+                        <LinearLayout
+                            android:id="@+id/direction_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/direction_iv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_registered_shop_direction_deselect" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/direction_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/address"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp" />
+                        </LinearLayout>
+
+
+
+
+
+                        <View
+                            android:id="@+id/direction_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+                        <LinearLayout
+                            android:id="@+id/add_order_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/order_iv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_registered_shop_add_order_deselect" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/order_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/order"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+
+
+                        <View
+                            android:id="@+id/order_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
+
+                        <LinearLayout
+                            android:id="@+id/add_quot_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/quot_iv"
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_quotation" />
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/quot_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/quot"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/tag_iv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_tag_icon"
-                        android:padding="@dimen/_5sdp"
+                        android:id="@+id/shop_IV_flased"
+                        android:layout_width="@dimen/_43sdp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@null"
                         android:visibility="gone" />
 
-                    <LinearLayout
-                        android:id="@+id/shop_damage_ll"
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:id="@+id/marketing_detail_TV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_damage" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="Damage"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp"  />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/shop_damage_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-
-
-
-                    <View
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color"
+                        android:layout_below="@id/shop_IV_flased"
+                        android:paddingBottom="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:singleLine="true"
+                        android:text="@string/marketing_details"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_11sdp"
                         android:visibility="gone" />
+                </RelativeLayout>
+
+            </HorizontalScrollView>
 
 
-                    <LinearLayout
-                        android:id="@+id/shop_history_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/shop_history_iv"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:backgroundTint="@color/black"
-                            android:background="@drawable/ic_add_order_report_icon" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/shop_history_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="History"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp"  />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/shop_history_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-
-                    <!--16-12-2021-->
-                    <LinearLayout
-                        android:id="@+id/lead_return_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/lead_return_iv"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_return_ruby_customized" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/lead_return_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/returns"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp"  />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/lead_return_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-
-                    <!--10-12-2021-->
-                    <LinearLayout
-                        android:id="@+id/lead_new_question_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/lead_new_question_iv"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_question_answer_new_lead" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/lead_new_question_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/questionnaire"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp"  />
-                    </LinearLayout>
-                    <View
-                        android:id="@+id/lead_new_question_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_collection"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_collection"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/ic_collection_new" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/tv_collection"
-                            gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:text="@string/collection"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp" />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/collection_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-
-                    <LinearLayout
-                        android:id="@+id/ll_activity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_activity"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/ic_activity_gray" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/tv_activity"
-                            gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:text="@string/activities"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp" />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/activity_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-
-                    <LinearLayout
-                        android:id="@+id/ll_stock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/iv_stock"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_stock_deselect" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/tv_stock"
-                            gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:text="@string/new_stock"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp" />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/stock_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-                    <LinearLayout
-                        android:id="@+id/call_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/call_iv"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_registered_shop_call_deselect" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/call_tv"
-                            gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:text="@string/not_verified"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp" />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/call_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-                    <LinearLayout
-                        android:id="@+id/direction_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/direction_iv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_registered_shop_direction_deselect" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/direction_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/address"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp" />
-                    </LinearLayout>
-
-
-
-
-
-                    <View
-                        android:id="@+id/direction_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-                    <LinearLayout
-                        android:id="@+id/add_order_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/order_iv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_registered_shop_add_order_deselect" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/order_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/order"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp"  />
-                    </LinearLayout>
-
-
-
-                    <View
-                        android:id="@+id/order_view"
-                        android:layout_width="@dimen/_1sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:background="@color/popup_window_bar_color" />
-
-                    <LinearLayout
-                        android:id="@+id/add_quot_ll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/quot_iv"
-                            android:layout_width="@dimen/_25sdp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_quotation" />
-
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
-                            android:id="@+id/quot_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/quot"
-                            android:textColor="@color/login_txt_color"
-                            android:textSize="@dimen/_8sdp"  />
-                    </LinearLayout>
-
-
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/shop_IV_flased"
-                    android:layout_width="@dimen/_43sdp"
-                    android:layout_height="0dp"
-                    android:contentDescription="@null"
-                    android:visibility="gone" />
-
-                <com.nationalplasticfsm.widgets.AppCustomTextView
-                    android:id="@+id/marketing_detail_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/shop_IV_flased"
-                    android:paddingBottom="@dimen/_5sdp"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:singleLine="true"
-                    android:text="@string/marketing_details"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_11sdp"
-                    android:visibility="gone" />
-            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/menu_IV"

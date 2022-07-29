@@ -136,7 +136,8 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                         })
                     } else
                         itemView.sync_icon.setImageResource(R.drawable.ic_registered_shop_sync)
-                } else {
+                }
+                else {
                     itemView.sync_icon.setImageResource(R.drawable.ic_registered_shop_not_sync)
                     itemView.sync_icon.setOnClickListener(View.OnClickListener {
                         listener.syncClick(adapterPosition)
@@ -235,6 +236,21 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     itemView.lead_return_ll.visibility = View.GONE
                     itemView.lead_return_view.visibility = View.GONE
                 }
+
+                /*Survey Icon*/
+                if(Pref.IsSurveyRequiredforDealer && list[adapterPosition].type!!.equals("1")) {
+                        itemView.shop_survey_ll.visibility = View.VISIBLE
+                        itemView.shop_survey_view.visibility = View.VISIBLE
+                }
+                else if(Pref.IsSurveyRequiredforNewParty && list[adapterPosition].type!!.equals("3")){
+                        itemView.shop_survey_ll.visibility = View.VISIBLE
+                        itemView.shop_survey_view.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.shop_survey_ll.visibility = View.GONE
+                    itemView.shop_survey_view.visibility = View.GONE
+                }
+
                 /*20-12-2021*/
                 val OrderavalibleByShopId = AppDatabase.getDBInstance()?.orderDetailsListDao()?.getListAccordingToShopId(list[adapterPosition].shop_id) as ArrayList<OrderDetailsListEntity>
                 if(OrderavalibleByShopId.size>0){
@@ -799,6 +815,9 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
 
                 itemView.shop_damage_ll.setOnClickListener{
                     listener.onDamageClick(list[adapterPosition].shop_id)
+                }
+                itemView.shop_survey_ll.setOnClickListener{
+                    listener.onSurveyClick(list[adapterPosition].shop_id)
                 }
 
                 //Hardcoded for EuroBond

@@ -441,5 +441,13 @@ object Pref : PreferenceHolder() {
     var IsRateEnabledforNewOrderScreenwithSize: Boolean by bindToPreferenceField(false, "IsRateEnabledforNewOrderScreenwithSize")
 
     var IgnoreNumberCheckwhileShopCreation:Boolean by bindToPreferenceField(false, "IgnoreNumberCheckwhileShopCreation")
-    var showdistributorwisepartyorderreport:Boolean by bindToPreferenceField(false, "showdistributorwisepartyorderreport")
+    var Showdistributorwisepartyorderreport:Boolean by bindToPreferenceField(false, "Showdistributorwisepartyorderreport")
+
+    var IsMenuSurveyEnabled:Boolean by bindToPreferenceField(false, "IsMenuSurveyEnabled")
+
+    var IsSurveyRequiredforNewParty: Boolean by bindToPreferenceField(false, "IsSurveyRequiredforNewParty")
+    var IsSurveyRequiredforDealer: Boolean by bindToPreferenceField(false, "IsSurveyRequiredforDealer")
+
+    var IsShowHomeLocationMap: Boolean by bindToPreferenceField(true, "IsShowHomeLocationMap")
+    var IsShowHomeLocationMapGlobal: Boolean by bindToPreferenceField(true, "IsShowHomeLocationMap")
 }

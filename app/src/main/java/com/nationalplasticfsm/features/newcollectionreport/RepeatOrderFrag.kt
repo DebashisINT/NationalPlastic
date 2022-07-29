@@ -77,12 +77,12 @@ class RepeatOrderFrag : BaseFragment(),View.OnClickListener{
 
         if(Pref.ZeroOrderInterval.toInt() !=0){
             seekBar.setProgress(Pref.ZeroOrderInterval.toInt())
-            tvDays.text = Pref.ZeroOrderInterval.toString()
+            tvDays.text = Pref.ZeroOrderInterval.toString()+" Days back"
         }
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                tvDays.text = progress.toString()
+                tvDays.text = progress.toString()+" Days back"
                 Pref.ZeroOrderInterval=progress.toString()
                 seekBar.getProgressDrawable().setColorFilter(mContext.getColor(R.color.maroon), PorterDuff.Mode.MULTIPLY)
             }

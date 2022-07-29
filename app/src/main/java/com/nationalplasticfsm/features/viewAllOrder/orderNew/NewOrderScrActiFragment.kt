@@ -460,7 +460,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                                                 if(et_rate_new_ord.text.toString().equals("")){
                                                     final_order_list.get(i).rate = "0"
                                                 }else{
-                                                    final_order_list.get(i).rate = et_rate_new_ord.text.toString()
+                                                final_order_list.get(i).rate = et_rate_new_ord.text.toString()
                                                 }
                                             }
                                         }
@@ -656,7 +656,6 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 qtyLst.setBackgroundResource(R.drawable.blue_line_custom)
             }
         })
-
 
         var x:Int
         var y:Int

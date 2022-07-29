@@ -32,10 +32,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_55sdp"
             android:orientation="horizontal"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginLeft="@dimen/_3sdp"
             android:layout_marginRight="@dimen/_3sdp">
 
@@ -46,7 +46,7 @@
                 android:textSize="@dimen/_12sdp"
                 android:layout_weight="0.4"
                 android:textColor="@color/attendance_report_header_blue"
-                android:text="Number of Days for 0 orders :"/>
+                android:text="Number of Days for 0 orders (from today):"/>
 
             <com.nationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_frag_repeat_order_datedrop"

@@ -53,4 +53,5 @@ public class CustomStatic {
     public static Boolean IsCollectionViewFromTeam = false;
     public static Boolean IsBreakageViewFromTeam = false;
     public static String BreakageViewFromTeam_Name = "";
+
 }

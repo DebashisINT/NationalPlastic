@@ -141,5 +141,7 @@ public interface AppConstant {
     String COLL_DTLS_TEAM = "coll_dtls_team";
     String BILL_DTLS_TEAM = "bill_dtls_team";
 
+    String TBL_DIST_WISE_ORD_REPORT = "tbl_dist_wise_ord_report";
+
 
 }

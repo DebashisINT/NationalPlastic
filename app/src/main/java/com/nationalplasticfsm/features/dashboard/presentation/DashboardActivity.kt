@@ -214,6 +214,9 @@ import com.nationalplasticfsm.features.stockAddCurrentStock.ViewStockDetailsFrag
 import com.nationalplasticfsm.features.stockCompetetorStock.AddCompetetorStockFragment
 import com.nationalplasticfsm.features.stockCompetetorStock.CompetetorStockFragment
 import com.nationalplasticfsm.features.stockCompetetorStock.ViewComStockProductDetails
+import com.nationalplasticfsm.features.survey.SurveyFrag
+import com.nationalplasticfsm.features.survey.SurveyViewDtlsFrag
+import com.nationalplasticfsm.features.survey.SurveyViewFrag
 import com.nationalplasticfsm.features.task.presentation.AddTaskFragment
 import com.nationalplasticfsm.features.task.presentation.CalenderTaskFragment
 import com.nationalplasticfsm.features.task.presentation.EditTaskFragment
@@ -458,6 +461,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
     private lateinit var iv_home_icon: ImageView
     private lateinit var nearbyShops: AppCustomTextView
     private lateinit var assignedLead: AppCustomTextView
+    private lateinit var surveyMenu: AppCustomTextView
     private lateinit var shareLogs: AppCustomTextView
     private lateinit var reimbursement_tv: AppCustomTextView
     private lateinit var achievement_tv: AppCustomTextView
@@ -1002,7 +1006,9 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
 
     fun checkToShowHomeLocationAlert() {
         if (!Pref.isHomeLocAvailable) {
-            showHomeLocationAlert()
+            if(Pref.IsShowHomeLocationMapGlobal && Pref.IsShowHomeLocationMap){
+                showHomeLocationAlert()
+            }
         } else{
             if(Pref.IsOnLeaveForTodayApproved==false && !Pref.OnLeaveForTodayStatus.equals("PENDING"))
                 checkToShowAddAttendanceAlert()
@@ -1971,6 +1977,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         my_orders_TV = findViewById<AppCustomTextView>(R.id.my_orders_TV)
         nearbyShops = findViewById<AppCustomTextView>(R.id.nearby_shop_TV)
         assignedLead = findViewById<AppCustomTextView>(R.id.assigned_lead_TV)
+        surveyMenu = findViewById<AppCustomTextView>(R.id.assigned_survey_TV)
 
         textArrayList.add(home_TV)
         textArrayList.add(add_shop_TV)
@@ -2040,6 +2047,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         logo.setOnClickListener(this)
         nearbyShops.setOnClickListener(this)
         assignedLead.setOnClickListener(this)
+        surveyMenu.setOnClickListener(this)
         shareLogs.setOnClickListener(this)
         reimbursement_tv.setOnClickListener(this)
         achievement_tv.setOnClickListener(this)
@@ -2108,6 +2116,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         photo_registration.setOnClickListener(this)
         photo_team_attendance.setOnClickListener(this)
         assignedLead.setOnClickListener(this)
+        surveyMenu.setOnClickListener(this)
 
         drawerLL=findViewById(R.id.activity_dashboard_lnr_lyt_slide_view)
         drawerLL.setOnClickListener(this)
@@ -2396,8 +2405,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             chat_bot_TV.visibility = View.VISIBLE
         else
             chat_bot_TV.visibility = View.GONE
-        Pref.showdistributorwisepartyorderreport = true
-        if (Pref.showdistributorwisepartyorderreport)
+
+        if (Pref.Showdistributorwisepartyorderreport)
             distributor_wise_order_list_TV.visibility = View.VISIBLE
         else
             distributor_wise_order_list_TV.visibility = View.GONE
@@ -2553,7 +2562,11 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
         }else{
             assignedLead.visibility=View.GONE
         }
-
+        if(Pref.IsMenuSurveyEnabled){
+            surveyMenu.visibility=View.VISIBLE
+        }else{
+            surveyMenu.visibility=View.GONE
+        }
 
         //val frag: DashboardFragment? = supportFragmentManager.findFragmentByTag("DashboardFragment") as DashboardFragment?
 
@@ -3038,6 +3051,13 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 else
                     loadFragment(FragType.LeadFrag, false, "")
             }
+            R.id.assigned_survey_TV -> {
+
+                if (!Pref.isAddAttendence)
+                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                else
+                    loadFragment(FragType.SurveyFrag, false, "")
+            }
 //            R.id.nearby_shop_TV -> {
 //                isChatBotLocalShop = false
 //                loadFragment(FragType.LocalShopListFragment, false, "")
@@ -3318,7 +3338,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 showLanguageAlert(true)
             }
             R.id.distributor_wise_order_list_TV ->{
-                loadFragment(FragType.DistributorwiseorderlistFragment, false, "")
+                loadFragment(FragType.DistributorwiseorderlistFragment, true, "")
             }
 
             R.id.photo_registration -> {
@@ -4089,6 +4109,27 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 setTopBarTitle("Activity Details")
                 setTopBarVisibility(TopBarConfig.BACK)
             }
+            FragType.SurveyFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = SurveyFrag.getInstance(initializeObject)
+                }
+                setTopBarTitle("Survey")
+                setTopBarVisibility(TopBarConfig.HOME)
+            }
+            FragType.SurveyViewFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = SurveyViewFrag.getInstance(initializeObject)
+                }
+                setTopBarTitle("Survey Details")
+                setTopBarVisibility(TopBarConfig.BACK)
+            }
+            FragType.SurveyViewDtlsFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = SurveyViewDtlsFrag.getInstance(initializeObject)
+                }
+                setTopBarTitle("Survey Details")
+                setTopBarVisibility(TopBarConfig.BACK)
+            }
             FragType.ShopFeedbackHisFrag -> {
                 if (enableFragGeneration) {
                     mFragment = ShopFeedbackHisFrag.newInstance(initializeObject)
@@ -4115,7 +4156,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                     mFragment = DistributorwiseorderlistFragment()
                 }
                 setTopBarTitle("DISTRIBUTOR WISE ORDER LIST")
-                setTopBarVisibility(TopBarConfig.TEAMMAP)
+                setTopBarVisibility(TopBarConfig.DISTWISEORDER)
             }
             FragType.NearByShopsMapFragment -> {
                 if (enableFragGeneration) {
@@ -6735,6 +6776,33 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                 mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_header_back_arrow)
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
+            TopBarConfig.DISTWISEORDER -> {
+                iv_home_icon.visibility = View.GONE
+                mDrawerToggle.isDrawerIndicatorEnabled = false
+                iv_search_icon.visibility = View.GONE
+                iv_sync_icon.visibility = View.GONE
+                rl_cart.visibility = View.GONE
+                iv_filter_icon.visibility = View.GONE
+                rl_confirm_btn.visibility = View.GONE
+                logo.visibility = View.GONE
+                logo.clearAnimation()
+                logo.animate().cancel()
+                iv_list_party.visibility = View.GONE
+                iv_map.visibility = View.GONE
+                iv_settings.visibility = View.GONE
+                ic_calendar.visibility = View.GONE
+                ic_chat_bot.visibility = View.GONE
+                iv_cancel_chat.visibility = View.GONE
+                iv_people.visibility = View.GONE
+                iv_scan.visibility = View.GONE
+                iv_view_text.visibility = View.GONE
+                fl_net_status.visibility = View.GONE
+
+                // Show back button
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                mDrawerToggle.setHomeAsUpIndicator(R.drawable.ic_header_back_arrow)
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
             TopBarConfig.NEWORDERSCRCART -> {
                 /*  if(CustomStatic.IsFromViewNewOdrScr==false){
                     rl_confirm_btn.visibility = View.VISIBLE
@@ -7034,6 +7102,11 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             super.onBackPressed()
             if (getFragment() != null && getFragment() is ShopDamageProductListFrag)
                 (getFragment() as ShopDamageProductListFrag).updatePage()
+        }
+        else if (getFragment() != null && getFragment() is SurveyFrag) {
+            super.onBackPressed()
+            if (getFragment() != null && getFragment() is SurveyViewFrag)
+                (getFragment() as SurveyViewFrag).updatePage()
         }
 
         else if (getFragment() != null && (getFragment() is MemberAllShopListFragment || getFragment() is MemberShopListFragment || getFragment() is AreaListFragment)) {
@@ -8386,6 +8459,12 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                             XLog.e("Error: " + e.localizedMessage)
                         }
                     }*/
+                }else if(getCurrentFragType() == FragType.SurveyFrag){
+                    getCameraImage(data)
+                    val fileSize = AppUtils.getCompressImage(filePath)
+                    val fileSizeInKB = fileSize / 1024
+                    val file = File(filePath)
+                    (getFragment() as SurveyFrag).setImage(file)
                 }
                 else if(getCurrentFragType() == FragType.RegisTerFaceFragment){
                     getCameraImage(data)
@@ -8780,6 +8859,9 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
                         (getFragment() as ProtoRegistrationFragment).setImage(filePath)
 
                     }
+                }else if (getCurrentFragType() == FragType.SurveyFrag) {
+                    getGalleryImage(this, data)
+                    (getFragment() as SurveyFrag).setImageFromPath(filePath)
                 }
                 else {
                     XLog.d("DashboardActivity : " + " , " + " Gallery Image FilePath :" + data!!.data)
@@ -9429,7 +9511,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             loadFragment(FragType.ShopDetailFragment, true, mShopId)
             }else{
                 AppUtils.isRevisit = false
-                loadFragment(FragType.DashboardFragment, false, "")
+                loadFragment(FragType.DashboardFragment, true, "")
             }
         } else
             showOrderCollectionDialog()
