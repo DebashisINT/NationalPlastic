@@ -367,6 +367,10 @@ class NewReturnListFragment : BaseFragment() {
             override fun onDamageClick(shop_id: String) {
                 TODO("Not yet implemented")
             }
+
+            override fun onSurveyClick(shop_id: String) {
+                TODO("Not yet implemented")
+            }
         }, {
 
             val heading = "ORDERS RETURN"

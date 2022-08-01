@@ -480,6 +480,38 @@
                         android:visibility="gone" />
 
                     <LinearLayout
+                        android:id="@+id/shop_totalv_survey_ll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/_21sdp"
+                            android:layout_height="@dimen/_23sdp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_surveys_audit"
+                            android:backgroundTint="@color/dark_gray"/>
+
+                        <com.nationalplasticfsm.widgets.AppCustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="Survey"
+                            android:textColor="@color/login_txt_color"
+                            android:textSize="@dimen/_8sdp"  />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/shop_totalv_survey_view"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:background="@color/popup_window_bar_color" />
+
+                    <LinearLayout
                         android:id="@+id/shop_damage_ll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

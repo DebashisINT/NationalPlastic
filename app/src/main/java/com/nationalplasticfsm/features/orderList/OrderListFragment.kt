@@ -422,6 +422,10 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
             override fun onDamageClick(shop_id: String) {
                 TODO("Not yet implemented")
             }
+
+            override fun onSurveyClick(shop_id: String) {
+
+            }
         })
         layoutManager = LinearLayoutManager(mContext, LinearLayout.VERTICAL, false)
         shopList.layoutManager = layoutManager

@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.averageshop.presentation
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -1163,6 +1164,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
     }
 
 
+    @SuppressLint("WrongConstant")
     private fun initAdapter() {
         averageShopListAdapter = AverageShopListAdapter(mContext, ShopActivityEntityList, object : AverageShopListClickListener {
             override fun onSyncClick(position: Int) {
@@ -1192,6 +1194,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
 
             override fun onDamageClick(shop_id: String) {
                 (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
+            }
+
+            override fun onSurveyClick(shop_id: String) {
+                if(Pref.isAddAttendence){
+                    (mContext as DashboardActivity).loadFragment(FragType.SurveyViewFrag, true, shop_id)
+                }else{
+                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                }
             }
 
 

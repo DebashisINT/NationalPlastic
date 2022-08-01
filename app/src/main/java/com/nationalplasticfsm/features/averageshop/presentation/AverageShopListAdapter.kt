@@ -467,6 +467,23 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
                     itemView.activity_view.visibility = View.GONE
                 }
 
+                if(Pref.IsSurveyRequiredforDealer && shop!!.type!!.equals("1")) {
+                    itemView.shop_totalv_survey_ll.visibility = View.VISIBLE
+                    itemView.shop_totalv_survey_view.visibility = View.VISIBLE
+                }
+                else if(Pref.IsSurveyRequiredforNewParty && shop!!.type!!.equals("3")){
+                    itemView.shop_totalv_survey_ll.visibility = View.VISIBLE
+                    itemView.shop_totalv_survey_view.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.shop_totalv_survey_ll.visibility = View.GONE
+                    itemView.shop_totalv_survey_view.visibility = View.GONE
+                }
+
+                itemView.shop_totalv_survey_ll.setOnClickListener{
+                    listener.onSurveyClick(shop!!.shop_id!!)
+                }
+
 
             } catch (e: Exception) {
                 e.printStackTrace()

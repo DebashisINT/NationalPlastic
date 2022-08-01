@@ -296,6 +296,14 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                     override fun onDamageClick(shop_id: String) {
                         (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
                     }
+
+                    override fun onSurveyClick(shop_id: String) {
+                        if(Pref.isAddAttendence){
+                            (mContext as DashboardActivity).loadFragment(FragType.SurveyViewFrag, true, shop_id)
+                        }else{
+                            (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                        }
+                    }
                 }, {
                     it
                 })
