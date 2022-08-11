@@ -7468,8 +7468,12 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation, 
             if (getFragment() != null && getFragment() is MapViewForTeamFrag)
                 MapViewForTeamFrag.timer!!.cancel()
             super.onBackPressed()
-        }
-        else {
+        }else if(getFragment() != null && getFragment() is NewOdrScrListFragment){
+            super.onBackPressed()
+            if (getFragment() != null && getFragment() is DashboardFragment){
+                (getFragment() as DashboardFragment).updateOrdAmtForNewOrd()
+            }
+        } else {
             super.onBackPressed()
 
             when {

@@ -423,15 +423,18 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         writeDataToFile()
         println("on Resume " +AppUtils.getCurrentDateTime());
 
+        updateOrdAmtForNewOrd()
+    }
+
+    fun updateOrdAmtForNewOrd(){
         if(Pref.IsActivateNewOrderScreenwithSize){
-            var rateListToday= AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getRateListByDate(AppUtils.getCurrentDateyymmdd()) as List<String>
+            var rateListToday= AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getRateListByDate(AppUtils.getCurrentDateyymmdd()) as List<NewOrderScrOrderEntity>
             var sum = 0.0
             for(i in 0..rateListToday.size-1){
-                sum+=rateListToday.get(i).toDouble()
+                sum+=rateListToday.get(i).qty!!.toDouble() * rateListToday.get(i).rate!!.toDouble()
             }
-            avgOrder.text= getString(R.string.rupee_symbol) + sum.toString()
+            avgOrder.text= getString(R.string.rupee_symbol) + String.format("%.02f",sum)
         }
-
     }
 
 

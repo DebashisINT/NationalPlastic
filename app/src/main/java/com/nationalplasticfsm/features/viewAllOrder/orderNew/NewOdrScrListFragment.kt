@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.viewAllOrder.orderNew
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -86,6 +87,7 @@ class NewOdrScrListFragment: BaseFragment(), DatePickerListener {
         return view
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view:View){
 
         share=view!!.findViewById(R.id.fab_frag_view_new_ord_scr_list_share)
@@ -237,7 +239,8 @@ class NewOdrScrListFragment: BaseFragment(), DatePickerListener {
                         try{
                             var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
                             var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
-                            newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            //newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            newOrderCartModel1!!.rate=totalRate.toString()
                         }catch (ex:Exception){
                             newOrderCartModel1!!.rate="0.0"
                         }
@@ -258,7 +261,8 @@ class NewOdrScrListFragment: BaseFragment(), DatePickerListener {
                         try{
                             var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
                             var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
-                            newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            //newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            newOrderCartModel1!!.rate=totalRate.toString()
                         }catch (ex:Exception){
                             newOrderCartModel1!!.rate="0.0"
                         }

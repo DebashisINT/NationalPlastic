@@ -235,7 +235,8 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
                 for(k in 0..cartOrder!!.get(i).color_list.get(j).order_list.size-1){
                     var newOrderRoomData=NewOrderRoomData(ordID,cartOrder!!.get(i).product_id.toString(),cartOrder!!.get(i).product_name.toString(),cartOrder!!.get(i).gender.toString(),
                             cartOrder!!.get(i).color_list.get(j).color_id,cartOrder!!.get(i).color_list.get(j).color_name,cartOrder!!.get(i).color_list.get(j).order_list.get(k).size, cartOrder!!.get(i).color_list.get(j).order_list.get(k).qty,
-                        (cartOrder!!.get(i).rate.toDouble()*cartOrder!!.get(i).color_list.get(j).order_list.get(k).qty.toInt()).toString())
+                        //(cartOrder!!.get(i).rate.toDouble()*cartOrder!!.get(i).color_list.get(j).order_list.get(k).qty.toInt()).toString())
+                        (cartOrder!!.get(i).rate.toDouble()).toString())
 
                     newOrderRoomDataList.add(newOrderRoomData)
 
@@ -251,7 +252,8 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
                     obj.color_id=newOrderRoomData.color_id
                     obj.color_name=newOrderRoomData.color_name
                     obj.isUploaded=false
-                    obj.rate= (cartOrder!!.get(i).rate.toDouble()*newOrderRoomData.qty.toInt()).toString()
+                    //obj.rate= (cartOrder!!.get(i).rate.toDouble()*newOrderRoomData.qty.toInt()).toString()
+                    obj.rate= (cartOrder!!.get(i).rate.toDouble()).toString()
                     AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.insert(obj)
 
                     XLog.d("NeworderScrCartFragment ITEM : "  + AppUtils.getCurrentDateTime().toString()+"\n"+

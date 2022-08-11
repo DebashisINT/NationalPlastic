@@ -106,7 +106,7 @@ interface NewOrderScrOrderDao {
 
 
 
-    @Query("Select rate  from "+ AppConstant.NEW_ORDER_ENTRY+ " where order_date=:order_date " )
-    fun getRateListByDate(order_date:String):List<String>
+    @Query("Select *  from "+ AppConstant.NEW_ORDER_ENTRY+ " where order_date=:order_date " )
+    fun getRateListByDate(order_date:String):List<NewOrderScrOrderEntity>
 
 }

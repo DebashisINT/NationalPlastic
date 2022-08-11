@@ -188,7 +188,8 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
                         try{
                             var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
                             var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
-                            newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            //newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            newOrderCartModel1!!.rate=totalRate.toString()
                         }catch (ex:Exception){
                             newOrderCartModel1!!.rate="0.0"
                         }
@@ -212,7 +213,8 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
                         try{
                             var totalRate = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductRateByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
                             var qt = AppDatabase.getDBInstance()?.newOrderScrOrderDao()?.getNewOrderProductQtyByOrdID(productIDList!!.get(j),orderIdList.get(i))!!.toDouble()
-                            newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            //newOrderCartModel1!!.rate=(totalRate/qt).toString()
+                            newOrderCartModel1!!.rate=totalRate.toString()
                         }catch (ex:Exception){
                             newOrderCartModel1!!.rate="0.0"
                         }
