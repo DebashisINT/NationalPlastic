@@ -257,6 +257,25 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 colorId = it.color_id!!
                 size_list = emptyList()
                 size_list = AppDatabase.getDBInstance()?.newOrderSizeDao()?.getSizeListProductWise(it.product_id!!) as List<NewOrderSizeEntity>
+
+                try{
+                    if(Pref.isRateOnline){
+                        et_rate_new_ord.setText(AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.rate1.toString())
+                    }
+                }catch (ex:Exception){
+
+                }
+                if (Pref.isRateNotEditable) {
+                    et_rate_new_ord.isEnabled=false
+                }else{
+                    et_rate_new_ord.isEnabled=true
+                }
+                try{
+                    tv_stock_new_ord.text = AppDatabase.getDBInstance()?.productRateDao()?.getProductRateByProductID(it.product_id!!.toString())?.stock_amount.toString()
+                }catch (ex:Exception){
+
+                }
+
                 loadSize()
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
