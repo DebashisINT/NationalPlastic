@@ -160,6 +160,7 @@
             fab:menu_colorRipple="#1A8BA6"
             fab:menu_labels_hideAnimation="@anim/jump_to_down"
             fab:menu_labels_margin="0dp"
+            android:visibility="gone"
             fab:menu_labels_showAnimation="@anim/jump_from_down"
             fab:menu_labels_style="@style/MenuLabelsStyle"
             fab:menu_shadowColor="#444"/>

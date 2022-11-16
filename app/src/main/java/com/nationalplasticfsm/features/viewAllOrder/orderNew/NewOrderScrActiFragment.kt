@@ -249,8 +249,6 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
 
 
     private fun loadColor() {
-
-
         if (color_list != null && color_list.isNotEmpty()) {
             ColorListDialog.newInstance(color_list as ArrayList<NewOrderColorEntity>) {
                 colorSpinner.text = it.color_name
@@ -277,6 +275,7 @@ class NewOrderScrActiFragment : BaseFragment(), View.OnClickListener {
                 }
 
                 loadSize()
+
             }.show((mContext as DashboardActivity).supportFragmentManager, "")
         } else {
             Toaster.msgShort(mContext, "No Color Found")

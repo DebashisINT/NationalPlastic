@@ -18,8 +18,11 @@ import retrofit2.http.POST
 interface GetQutoListApi {
 
 
-    @POST("SalesQuotation/SalesQuotationSave")
+    //@POST("SalesQuotation/SalesQuotationSave")
+    @POST("SalesQuotation/SalesDocumentNoQuotationSave")
     fun getAddQuot(@Body addShop: AddQuotRequestData?): Observable<BaseResponse>
+
+
 
     @FormUrlEncoded
     @POST("SalesQuotation/ShopWiseSalesQuotationList")
@@ -28,6 +31,10 @@ interface GetQutoListApi {
     @FormUrlEncoded
     @POST("SalesQuotation/SalesQuotationList")
     fun getQuotDetailsList(@Field("quotation_number") quotation_number: String):Observable<ViewDetailsQuotResponse>
+
+    @FormUrlEncoded
+    @POST("SalesQuotation/SalesDocumentNoQuotationList")
+    fun getDocDetailsList(@Field("document_number") quotation_number: String):Observable<ViewDetailsQuotResponse>
 
     @FormUrlEncoded
     @POST("SalesQuotation/SalesQuotationDelete")

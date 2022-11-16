@@ -51,7 +51,6 @@ class PjpAdapter(private val context: Context, private val list: ArrayList<PjpLi
 
                 rl_pjp_status.visibility = View.VISIBLE
 
-
                 if (!TextUtils.isEmpty(list?.get(position)?.customer_name)) {
                     tv_pjp_name.text = list?.get(position)?.customer_name
 

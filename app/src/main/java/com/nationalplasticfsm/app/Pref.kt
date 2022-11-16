@@ -450,4 +450,29 @@ object Pref : PreferenceHolder() {
 
     var IsShowHomeLocationMap: Boolean by bindToPreferenceField(true, "IsShowHomeLocationMap")
     var IsShowHomeLocationMapGlobal: Boolean by bindToPreferenceField(true, "IsShowHomeLocationMap")
+
+    var IsBeatRouteAvailableinAttendance: Boolean by bindToPreferenceField(false, "IsBeatRouteAvailableinAttendance")
+    var SelectedBeatIDFromAttend: String by bindToPreferenceField("0", "SelectedBeatIDFromAttend")
+    var IsAllBeatAvailableforParty: Boolean by bindToPreferenceField(false, "IsAllBeatAvailableforParty")
+    var ShowAttednaceClearmenu: Boolean by bindToPreferenceField(false, "ShowAttednaceClearmenu")
+    var IsBeatRouteReportAvailableinTeam: Boolean by bindToPreferenceField(false, "IsBeatRouteReportAvailableinTeam")
+    var beatText: String by bindToPreferenceField("Beat", "beatText")
+    var TodaysTaskText: String by bindToPreferenceField("Today's Task", "TodaysTaskText")
+
+    var isLocationHintPermissionGranted: Boolean by bindToPreferenceField(false, "isLocationHintPermissionGranted")
+    var AutostartPermissionStatus: Boolean by bindToPreferenceField(false, "AutostartPermissionStatus")
+    var IsDistributorSelectionRequiredinAttendance: Boolean by bindToPreferenceField(false, "IsDistributorSelectionRequiredinAttendance")
+    var SelectedDDIDFromAttend: String by bindToPreferenceField("0", "SelectedDDIDFromAttend")
+
+    var PowerSaverStatus: String by bindToPreferenceField("Off", "PowerSaverStatus")
+    var GPSNetworkIntervalMins: String by bindToPreferenceField("0", "GPSNetworkIntervalMins")
+    var prevGpsNetSyncTimeStamp: Long by bindToPreferenceField(0, "prevGpsNetSyncTimeStamp")
+    var prevGpsNetSyncTimeStampService: Long by bindToPreferenceField(0, "prevGpsNetSyncTimeStampService")
+
+    var IsAllowNearbyshopWithBeat: Boolean by bindToPreferenceField(false, "IsAllowNearbyshopWithBeat")
+    var IsGSTINPANEnableInShop:Boolean by bindToPreferenceField(false, "IsGSTINPANEnableInShop")
+
+    var IsMultipleImagesRequired:Boolean by bindToPreferenceField(false, "IsMultipleImagesRequired")
+
+
 }

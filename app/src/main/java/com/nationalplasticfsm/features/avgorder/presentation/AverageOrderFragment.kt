@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.avgorder.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -161,6 +162,7 @@ class AverageOrderFragment : BaseFragment(), DatePickerListener {
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun initAdapter(list: List<AddShopDBModelEntity>) {
 //        getLocationList()
         averageShopListAdapter = AverageOrderListAdapter(mContext, list, object : AverageShopListClickListener {
@@ -180,9 +182,6 @@ class AverageOrderFragment : BaseFragment(), DatePickerListener {
                 TODO("Not yet implemented")
             }
 
-            override fun onSurveyClick(shop_id: String) {
-
-            }
 
             override fun OnItemClick(position: Int) {
                 (mContext as DashboardActivity).loadFragment(FragType.ShopDetailFragment, true, list[position])
@@ -192,6 +191,13 @@ class AverageOrderFragment : BaseFragment(), DatePickerListener {
                 initiatePopupWindow(view, position)
             }
 
+            override fun onSurveyClick(shop_id: String) {
+
+            }
+
+            override fun onMultipleImageClick(shop: Any, position: Int) {
+                TODO("Not yet implemented")
+            }
         })
         layoutManager = LinearLayoutManager(mContext, LinearLayout.VERTICAL, false)
         shopList.layoutManager = layoutManager

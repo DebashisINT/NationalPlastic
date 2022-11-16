@@ -46,7 +46,9 @@ data class TeamShopListDataModel(var shop_id: String = "",
                                  var type_id: String = "",
                                  var user_id: String = "",
                                  var assign_to_pp_id: String = "",
-                                 var assign_to_dd_id: String = "") : Serializable
+                                 var assign_to_dd_id: String = "",
+                                 var owner_name:String = "",
+                                 var total_visit_count:String="") : Serializable
 
 data class TeamLocListResponseModel(var total_distance: String = "",
                                     var total_visit_distance: String = "",

@@ -34,11 +34,11 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
     override fun onHandleIntent(intent: Intent?) {
 
         XLog.d("Geofence: GeofenceTransitionsJobIntentService : ENTRY")
-        val geofencingEvent = GeofencingEvent.fromIntent(intent)
-        if (geofencingEvent.hasError()) {
+        val geofencingEvent = GeofencingEvent.fromIntent(intent!!)
+        if (geofencingEvent!!.hasError()) {
 //            val errorMessage = GeofenceErrorMessages.getErrorString(this,
 //                    geofencingEvent.errorCode)
-            Log.e(TAG, "${geofencingEvent.errorCode}")
+            Log.e(TAG, "${geofencingEvent!!.errorCode}")
             return
         }
 
@@ -49,12 +49,12 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT || geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
-            val triggeringGeofences = geofencingEvent.triggeringGeofences
+            val triggeringGeofences = geofencingEvent!!.triggeringGeofences
 
             // Get the transition details as a String.
             val geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
-                    triggeringGeofences)
-            triggeringGeofences.forEach {
+                    triggeringGeofences!!)
+            triggeringGeofences?.forEach {
                 //                it.requestId
                 // Send notification and log the transition details.
                 XLog.d("=====================Geofence=======================")
@@ -170,6 +170,16 @@ class GeofenceTransitionsIntentService : IntentService("GeofenceTransitionsInten
         shopDurationData.isFirstShopVisited = shopActivity.isFirstShopVisited
         shopDurationData.distanceFromHomeLoc = shopActivity.distance_from_home_loc
         shopDurationData.next_visit_date = shopActivity.next_visit_date
+
+        //duration garbage fix
+        try{
+            if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+            {
+                shopDurationData.spent_duration="00:00:10"
+            }
+        }catch (ex:Exception){
+            shopDurationData.spent_duration="00:00:10"
+        }
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {

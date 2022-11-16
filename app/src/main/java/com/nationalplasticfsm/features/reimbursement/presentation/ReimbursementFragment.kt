@@ -512,12 +512,19 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
 
     @SuppressLint("SetTextI18n")
     private fun setDateData(reimbursement_past_days: String?) {
+
+        val calendarToday = Calendar.getInstance(Locale.ENGLISH)
+        calendarToday.add(Calendar.DATE, 0)
+        val currentToday = calendarToday.time
+        dateList.add(currentToday)
+
         val calendar = Calendar.getInstance(Locale.ENGLISH)
         calendar.add(Calendar.DATE, -1)
         val todayDate = calendar.time
         dateList.add(todayDate)
 
-        selectedDate = todayDate
+        //selectedDate = todayDate
+        selectedDate = currentToday
         val dateFormat = SimpleDateFormat("dd MMM")
         val formattedDate = dateFormat.format(selectedDate)
         date = getFormattedDateForApi(selectedDate!!)
@@ -836,6 +843,7 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
         }
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun selectHotelFoodLoc() {
         if (locList == null || locList?.size == 0) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
@@ -857,6 +865,7 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
         }).show(fragmentManager!!, "")
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun selectLocation(ll_loc: LinearLayout, tv_loc: AppCustomTextView) {
         if (TextUtils.isEmpty(expense_type_TV.text.toString().trim()))

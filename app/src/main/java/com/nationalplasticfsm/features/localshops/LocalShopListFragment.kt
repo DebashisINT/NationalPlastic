@@ -4,17 +4,24 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.provider.CalendarContract
+import android.text.SpannableString
+import android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE
+import android.text.TextUtils
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.RelativeSizeSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.elvishew.xlog.XLog
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
@@ -30,12 +37,11 @@ import com.nationalplasticfsm.app.utils.FTStorageUtils
 import com.nationalplasticfsm.app.utils.PermissionUtils
 import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.presentation.BaseFragment
-import com.nationalplasticfsm.features.commondialogsinglebtn.AddFeedbackSingleBtnDialog
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard.Companion.NEARBY_RADIUS
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 /**
  * Created by riddhi on 2/1/18.
@@ -180,7 +186,16 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
         }
 
-        noShopAvailable.text = "No Registered " + Pref.shopText + " Available"
+//        noShopAvailable.text = "No Registered " + Pref.shopText + "Available"+"\n\n(Suggestion: Click on the Home icon &amp; go to Shops/Customer -> Search the Customer name whom you are Nearby -> Press 'Update Address' button &amp; check again in Nearby Shops)"
+
+        var text1 = "No Registered " + Pref.shopText + "Available"
+        var text2 = "\n\n(Suggestion: Click on the Home icon & go to Shops/Customer -> Search the Customer name whom you are Nearby -> Press 'Update Address' button & check again in Nearby Shops)"
+        val span1 = SpannableString(text1)
+        span1.setSpan(AbsoluteSizeSpan(46), 0, text1.length, SPAN_INCLUSIVE_INCLUSIVE)
+        val span2 = SpannableString(text2)
+        span2.setSpan(AbsoluteSizeSpan(10), 0, text2.length, SPAN_INCLUSIVE_INCLUSIVE)
+        val finalText: CharSequence = TextUtils.concat(span1, " ", span2)
+        noShopAvailable.text =finalText.toString()
 
         if(Pref.IsnewleadtypeforRuby){
             initPermissionCheck()
@@ -435,7 +450,8 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
     fun getNearyShopList(location: Location) {
 
         list.clear()
-        val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
+        //val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
+        val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getAllOwn(true)
 
         val newList = java.util.ArrayList<AddShopDBModelEntity>()
 

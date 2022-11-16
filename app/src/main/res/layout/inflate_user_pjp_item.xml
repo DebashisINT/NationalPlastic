@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/_4sdp"
-    android:background="@drawable/dashboard_new_shape_bg">
+    android:background="@drawable/shape_cursor_one">
 
     <View
         android:id="@+id/view"
@@ -22,10 +22,10 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/rounded_right_corner_blue_bg"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/_10sdp"
         android:paddingLeft="@dimen/_5sdp"
-        android:paddingRight="@dimen/_5sdp"
         android:paddingTop="@dimen/_10sdp"
+        android:paddingRight="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_10sdp"
         android:visibility="visible">
 
         <RelativeLayout

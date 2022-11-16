@@ -22,4 +22,6 @@ interface LocalShopListClickListener {
     fun onDamageClick(shop_id: String)
 
     fun onSurveyClick(shop_id: String)
+
+
 }

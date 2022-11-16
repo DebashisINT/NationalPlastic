@@ -143,5 +143,7 @@ public interface AppConstant {
 
     String TBL_DIST_WISE_ORD_REPORT = "tbl_dist_wise_ord_report";
 
+    String NEW_GPS_STATUS = "new_gps_status";
+
 
 }

@@ -168,6 +168,17 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
             itemView.iv_zero_order.setOnClickListener{
                 listener.onZeroOrderClick(teamList[adapterPosition])
             }
+
+            if(Pref.IsBeatRouteReportAvailableinTeam){
+                itemView.iv_beat.visibility = View.VISIBLE
+            }else{
+                itemView.iv_beat.visibility = View.GONE
+            }
+
+            itemView.iv_beat.setOnClickListener{
+                listener.onBeatClick(teamList[adapterPosition])
+            }
+
         }
     }
 
@@ -187,6 +198,8 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
         fun onCollClick(team: TeamListDataModel)
 
         fun onZeroOrderClick(team: TeamListDataModel)
+
+        fun onBeatClick(team: TeamListDataModel)
 
         fun getSize(size: Int)
     }

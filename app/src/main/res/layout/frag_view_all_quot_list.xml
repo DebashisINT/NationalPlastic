@@ -194,6 +194,7 @@
             android:layout_weight="1.5"
             android:gravity="center"
             android:text="@string/view"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp"
             android:textStyle="bold" />
@@ -206,7 +207,7 @@
             android:id="@+id/tv_action"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.5"
+            android:layout_weight="1.2"
             android:gravity="center"
             android:text="Action"
             android:textColor="@color/white"

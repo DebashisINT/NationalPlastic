@@ -2,6 +2,7 @@ package com.nationalplasticfsm.features.alarm.api.visit_report_api
 
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.features.alarm.model.VisitReportResponseModel
+import com.nationalplasticfsm.features.beatCustom.BeatTeamResponseModel
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -18,6 +19,11 @@ interface VisitReportApi {
     @POST("AlarmConfig/FetchVist")
     fun visitReportResponse(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("from_date") from_date: String,
                                   @Field("to_date") to_date: String): Observable<VisitReportResponseModel>
+
+    @FormUrlEncoded
+    @POST("AlarmConfig/FetchVist")
+    fun visitReportResponseTeam(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("from_date") from_date: String,
+                            @Field("to_date") to_date: String): Observable<BeatTeamResponseModel>
 
     /**
      * Companion object to create the GithubApiService

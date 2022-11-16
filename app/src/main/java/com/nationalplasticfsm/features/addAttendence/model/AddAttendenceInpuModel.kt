@@ -32,4 +32,5 @@ class AddAttendenceInpuModel {
     var from_id = ""
     var to_id = ""
     var distance = ""
+    var beat_id = ""
 }

@@ -108,6 +108,9 @@ interface ShopActivityDao {
     @Query("update shop_activity set isDurationCalculated=:isDurationCalculated where date=:date")
     fun updateDurationCalculatedStatus(isDurationCalculated: Boolean, date: String): Int
 
+    @Query("update shop_activity set isDurationCalculated=:isDurationCalculated where date=:date and shopid=:shopid")
+    fun updateDurationCalculatedStatusByShopID(shopid:String,isDurationCalculated: Boolean, date: String): Int
+
     @Query("Select * from shop_activity where date=:date and isDurationCalculated=:isDurationCalculated")
     fun getDurationCalculatedVisitedShopForADay(date: String, isDurationCalculated: Boolean): List<ShopActivityEntity>
 
@@ -189,5 +192,11 @@ interface ShopActivityDao {
 
     @Query("update shop_activity set next_visit_date=:next_visit_date where shopid=:shopid  and shopActivityId=:shopActivityId")
     fun trash2(next_visit_date: String, shopid: String, shopActivityId: String)
+
+    @Query("Select count(*) from shop_activity where date=:date")
+    fun getVisitRevisitCountByDate(date:String): Int
+
+    @Query("Select count(*) from shop_activity where date=:date and isUploaded=:isUploaded")
+    fun getVisitRevisitCountByDateSyncedUnSynced(date:String,isUploaded: Boolean): Int
 
 }

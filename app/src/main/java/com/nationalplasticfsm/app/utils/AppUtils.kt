@@ -59,6 +59,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
@@ -1023,6 +1024,30 @@ class AppUtils {
                     + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
                     + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
                     + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(emailId).matches()
+        }
+
+        fun isValidPanCardNo(panCardNo:String) : Boolean
+        {
+            var regex :String = "[A-Z]{5}[0-9]{4}[A-Z]{1}";
+            var p : Pattern = Pattern.compile(regex);
+            if (panCardNo == null)
+            {
+                return false;
+            }
+            var m : Matcher = p.matcher(panCardNo);
+            return m.matches();
+        }
+
+        fun isValidGSTINCardNo(panCardNo:String) : Boolean
+        {
+            var regex :String = "[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z,0-9]{3}";
+            var p : Pattern = Pattern.compile(regex);
+            if (panCardNo == null)
+            {
+                return false;
+            }
+            var m : Matcher = p.matcher(panCardNo);
+            return m.matches();
         }
 
         /**
@@ -2024,7 +2049,7 @@ class AppUtils {
                 //Convert bitmap to byte array
                 val bos = ByteArrayOutputStream()
                 //bitmap.compress(Bitmap.CompressFormat.PNG, 2, bos);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, bos)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, bos)
                 val bitmapdata = bos.toByteArray()
 
                 //write the bytes in file
@@ -2739,4 +2764,5 @@ class AppUtils {
         }*/
              var isFromOrderToshowSchema = false
     }
+
 }

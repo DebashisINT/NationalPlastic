@@ -37,6 +37,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:orientation="horizontal">
 
                             <ImageView
@@ -969,7 +970,6 @@
                                         android:paddingStart="@dimen/_10sdp"
                                         android:singleLine="true"
                                         android:textSize="@dimen/_11sdp"
-                                        android:drawableEnd="@drawable/ic_down_arrow"
                                         android:paddingEnd="@dimen/_10sdp"
                                         android:textColor="@color/black"
                                         app:theme="@style/EvoEditTextTheme" />
@@ -988,6 +988,69 @@
 
 
                             </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="@dimen/_25sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginEnd="@dimen/_5sdp"
+                                android:gravity="center_vertical"
+                                android:padding="@dimen/_4sdp"
+                                android:src="@drawable/ic_remarks_icon"
+                                app:tint="@color/dark_gray" />
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:gravity="center_vertical"
+                                    android:textColorHint="@color/dark_gray"
+                                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+
+                                <com.nationalplasticfsm.widgets.AppCustomEditText
+                                    android:id="@+id/et_frag_add_quot_form_remarks"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_30sdp"
+                                    android:drawableTint="@color/black"
+                                    android:hint="Remarks"
+                                    android:maxLength="500"
+                                    android:imeOptions="actionNext"
+                                    android:gravity="center|start"
+                                    android:paddingStart="@dimen/_10sdp"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/_11sdp"
+                                    android:paddingEnd="@dimen/_10sdp"
+                                    android:textColor="@color/black"
+                                    app:theme="@style/EvoEditTextTheme" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_1sdp"
+                                    android:layout_below="@id/shop_name_TL"
+                                    android:layout_alignLeft="@+id/shop_name_TL"
+                                    android:layout_marginRight="@dimen/_2sdp"
+                                    android:background="#66000000"
+                                    android:visibility="gone"
+                                    android:layout_gravity="bottom"/>
+
+                            </FrameLayout>
+
+
 
                         </LinearLayout>
 

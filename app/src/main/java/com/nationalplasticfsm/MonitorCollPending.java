@@ -44,7 +44,10 @@ public class MonitorCollPending extends BroadcastReceiver {
         Intent mainIntent = new Intent(context, DashboardActivity.class);
         mainIntent.putExtra("TYPE", "ZERO_COLL_STATUS");
         mainIntent.putExtra("Subject",subject);
-        PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // FLAG_IMMUTABLE update
+        PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_IMMUTABLE);
+
         //PendingIntent pendingIntent = PendingIntent.getActivity(context,notiID,mainIntent,0);
 
         long[] pattern = {500,500,500,500,500,500,500,500,500,500,500,500,500};

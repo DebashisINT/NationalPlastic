@@ -27,104 +27,130 @@
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_name"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
+                    android:layout_weight="1"
                     android:layout_gravity="center"
                     android:text="Vikas Kumar Khuranna"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp" />
 
-                <RelativeLayout
-                    android:id="@+id/rl_icons"
-                    android:layout_width="0dp"
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:layout_marginLeft="@dimen/_10sdp">
+                    android:layout_weight="1"
+                    android:fillViewport="true"
+                    android:visibility="visible"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:fadeScrollbars="false"
+                    android:scrollbarSize="@dimen/_2sdp"
+                    android:scrollbarThumbHorizontal="@color/color_blue_light_dark">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_zero_order"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/iv_coll"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        app:srcCompat="@drawable/ic_order_icon"
-                        app:tint="@color/blue" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_coll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/iv_leave"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        app:srcCompat="@drawable/ic_collection_blue"
-                        app:tint="@color/violet" />
+                    <LinearLayout
+                        android:id="@+id/rl_icons"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
 
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_leave"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/iv_job"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        app:srcCompat="@drawable/ic_applyleave"
-                        app:tint="@color/default_gray" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_beat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_coll"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            app:srcCompat="@drawable/ic_assigned_dd_icon"
+                            app:tint="@color/green" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_zero_order"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_coll"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            app:srcCompat="@drawable/ic_order_icon"
+                            app:tint="@color/blue" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_coll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_leave"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            app:srcCompat="@drawable/ic_collection_blue"
+                            app:tint="@color/violet" />
 
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_job"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/iv_pjp_icon"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        app:srcCompat="@drawable/ic_activity_blue" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_leave"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_job"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            app:srcCompat="@drawable/ic_applyleave"
+                            app:tint="@color/default_gray" />
 
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_pjp_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/iv_map_icon"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        app:srcCompat="@drawable/ic_pjp" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_job"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_pjp_icon"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            app:srcCompat="@drawable/ic_activity_blue" />
 
-                    <ImageView
-                        android:id="@+id/iv_map_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/iv_call_icon"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        android:src="@drawable/ic_green_location" />
 
-                    <ImageView
-                        android:id="@+id/iv_call_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:contentDescription="@null"
-                        android:padding="@dimen/_5sdp"
-                        android:src="@drawable/ic_registered_shop_call_select" />
-                </RelativeLayout>
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_pjp_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_map_icon"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            app:srcCompat="@drawable/ic_pjp" />
+
+                        <ImageView
+                            android:id="@+id/iv_map_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/iv_call_icon"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            android:src="@drawable/ic_green_location" />
+
+                        <ImageView
+                            android:id="@+id/iv_call_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            android:src="@drawable/ic_registered_shop_call_select" />
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginRight="@dimen/_10sdp"
-                android:background="@android:color/black" />
+                android:background="@android:color/black"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

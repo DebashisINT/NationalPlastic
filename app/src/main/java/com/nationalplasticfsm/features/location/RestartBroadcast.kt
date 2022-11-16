@@ -1,10 +1,12 @@
 package com.nationalplasticfsm.features.location
 
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.elvishew.xlog.XLog
+import com.google.android.exoplayer2.offline.DownloadService.startForeground
 
 class RestartBroadcast : BroadcastReceiver() {
 

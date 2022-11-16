@@ -1376,7 +1376,15 @@ class ViewPPDDListFragment : BaseFragment(), View.OnClickListener {
 
         shopDurationData.isFirstShopVisited = shopActivity.isFirstShopVisited
         shopDurationData.distanceFromHomeLoc = shopActivity.distance_from_home_loc
-
+        //duration garbage fix
+        try{
+            if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+            {
+                shopDurationData.spent_duration="00:00:10"
+            }
+        }catch (ex:Exception){
+            shopDurationData.spent_duration="00:00:10"
+        }
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {

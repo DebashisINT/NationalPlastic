@@ -122,7 +122,7 @@ object SingleShotLocationProvider {
 
 
                 locationCallback = object : com.google.android.gms.location.LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult?) {
+                    override fun onLocationResult(locationResult: LocationResult) {
                         if (locationResult != null && locationResult.locations.isNotEmpty()) {
                             val newLocation = locationResult.locations[0]
                             callback.onNewLocationAvailable(newLocation)
@@ -130,7 +130,7 @@ object SingleShotLocationProvider {
                     }
                 }
 
-                fusedLocationClient.requestLocationUpdates(LocationRequest(), locationCallback, null)
+                fusedLocationClient.requestLocationUpdates(LocationRequest(), locationCallback!!, null)
 
             }
         }

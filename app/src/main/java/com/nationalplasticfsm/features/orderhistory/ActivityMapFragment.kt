@@ -84,7 +84,7 @@ class ActivityMapFragment : BaseFragment(), OnMapReadyCallback {
         progress_wheel.stopSpinning()
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
         mGoogleMap?.uiSettings?.isZoomControlsEnabled = false
 

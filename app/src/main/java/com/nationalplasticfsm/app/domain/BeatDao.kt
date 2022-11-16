@@ -21,4 +21,5 @@ interface BeatDao {
 
     @Query("Select * from " + AppConstant.BEAT_TABLE + " where name LIKE '%' || :name  || '%' ")
     fun getBeatBySearchData(name: String): List<BeatEntity>
+
 }

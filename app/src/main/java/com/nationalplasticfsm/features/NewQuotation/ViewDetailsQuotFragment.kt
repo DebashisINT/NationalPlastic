@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -49,7 +50,6 @@ class ViewDetailsQuotFragment : BaseFragment(), View.OnClickListener {
     var addedProdList:ArrayList<quotation_product_details_list> = ArrayList()
     var showAddedProdAdapter: ShowAddedProductAdapter? = null
     private lateinit var rv_addedProduct: RecyclerView
-    private var QuotID = ""
 
     private lateinit var floating_fab: FloatingActionMenu
     private var getFloatingVal:ArrayList<String> = ArrayList()
@@ -62,13 +62,26 @@ class ViewDetailsQuotFragment : BaseFragment(), View.OnClickListener {
     var addQuotData = EditQuotRequestData()
 
     companion object {
-        var quot_id:String = ""
+         var QuotID:String  = ""
+         var DocID : String = ""
         var obj = shop_wise_quotation_list()
-        fun getInstance(QuotID: Any?): ViewDetailsQuotFragment {
+        fun getInstance(ob: Any?): ViewDetailsQuotFragment {
             val fragment = ViewDetailsQuotFragment()
-            val bundle = Bundle()
+
+            if (!TextUtils.isEmpty(ob.toString())) {
+                QuotID = ob.toString().split(",").get(0).toString()
+                DocID = ob.toString().split(",").get(1).toString()
+                if(QuotID.equals("x"))
+                    QuotID = ""
+                if(DocID.equals("x"))
+                    DocID = ""
+            }
+
+
+            /*val bundle = Bundle()
             bundle.putString("QuotId", QuotID as String?)
-            fragment.arguments = bundle
+            bundle.putString("DocId", DocID as String?)
+            fragment.arguments = bundle*/
 
             return fragment
         }
@@ -78,7 +91,8 @@ class ViewDetailsQuotFragment : BaseFragment(), View.OnClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
-        QuotID = arguments?.getString("QuotId").toString()
+        //QuotID = arguments?.getString("QuotId").toString()
+        //DocID = arguments?.getString("DocId").toString()
 
     }
 
@@ -87,15 +101,18 @@ class ViewDetailsQuotFragment : BaseFragment(), View.OnClickListener {
         val view = inflater.inflate(R.layout.frag_view_details_quot_list, container, false)
         initView(view)
         if(AppUtils.isOnline(mContext)){
-            quotViewListCall(QuotID)
+            Handler().postDelayed(Runnable {
+                if(QuotID.equals(""))
+                    docwiseQuotViewListCall(DocID)
+                if(DocID.equals(""))
+                    quotViewListCall(QuotID)
+            }, 400)
         }
         else{
             Toaster.msgShort(mContext, "No Internet connection")
         }
         return view
     }
-
-
 
     private fun initView(view: View) {
         shopName = view.findViewById(R.id.tv_frag_view_details_quot_list_shopName)
@@ -146,6 +163,48 @@ class ViewDetailsQuotFragment : BaseFragment(), View.OnClickListener {
             val repository = GetQuotRegProvider.provideSaveButton()
             BaseActivity.compositeDisposable.add(
                     repository.viewDetailsQuot(quotId)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                val addQuotResult = result as ViewDetailsQuotResponse
+
+                                addQuotEditResult=addQuotResult
+
+                                progress_wheel.stopSpinning()
+                                if (addQuotResult!!.status == NetworkConstant.SUCCESS) {
+                                    setData(addQuotResult)
+                                    if(addQuotResult!!.quotation_product_details_list!!.size>0){
+                                        addedProdList.clear()
+                                        addedProdList.addAll(addQuotResult!!.quotation_product_details_list!!)
+                                        setAdapter()
+                                    }
+
+                                }else {
+                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                                }
+                                BaseActivity.isApiInitiated = false
+                            }, { error ->
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                                progress_wheel.stopSpinning()
+                                BaseActivity.isApiInitiated = false
+                                if (error != null) {
+                                }
+                            })
+            )
+        }catch (ex:Exception){
+            ex.printStackTrace()
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+            progress_wheel.stopSpinning()
+        }
+
+    }
+
+    private fun docwiseQuotViewListCall(docId: String) {
+        try{
+            progress_wheel.spin()
+            val repository = GetQuotRegProvider.provideSaveButton()
+            BaseActivity.compositeDisposable.add(
+                    repository.viewDetailsDoc(docId)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
@@ -240,6 +299,7 @@ class ViewDetailsQuotFragment : BaseFragment(), View.OnClickListener {
         editQuotButtoncall(addQuotData)
 
     }
+
     private fun editQuotButtoncall(addQuot: EditQuotRequestData) {
         try{
             BaseActivity.isApiInitiated = true

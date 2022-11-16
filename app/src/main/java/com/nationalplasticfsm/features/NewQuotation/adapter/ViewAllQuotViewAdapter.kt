@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.domain.ProductListEntity
 import com.nationalplasticfsm.app.utils.AppUtils
+import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.features.NewQuotation.model.shop_wise_quotation_list
 import kotlinx.android.synthetic.main.inflater_quot_history_item.view.*
 import kotlinx.android.synthetic.main.row_new_quot_added_prod.view.*
@@ -34,12 +35,45 @@ class ViewAllQuotViewAdapter(private val context: Context, private val selectedP
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(context: Context, categoryList: ArrayList<shop_wise_quotation_list>?, listener: OnClickListener) {
-            itemView.quot_date_tv.text=AppUtils.convertDateTimeToCommonFormat(categoryList!!.get(adapterPosition).save_date_time!!.subSequence(0,10).toString()).toString()
+            itemView.quot_date_tv.text=AppUtils.convertToDateLikeOrderFormat(categoryList!!.get(adapterPosition).save_date_time!!.toString()).toString()
             itemView.quot_no_tv.text=categoryList!!.get(adapterPosition).quotation_number
+//            Pending/Rejected/Approved
+            if(categoryList!!.get(adapterPosition).quotation_status.equals("Approved")){
+                itemView.tv_quot_del.visibility = View.VISIBLE
+                itemView.share_iv.visibility = View.VISIBLE
+                itemView.iv_quto_his_status_action.setImageResource(R.drawable.approve)
+                itemView.quot_date_tv.setTextColor(context.resources.getColor(R.color.color_custom_green))
+                itemView.quot_no_tv.setTextColor(context.resources.getColor(R.color.color_custom_green))
+            }
+            else{
+                itemView.tv_quot_del.visibility = View.GONE
+                itemView.share_iv.visibility = View.GONE
+                if(categoryList!!.get(adapterPosition).quotation_status.equals("Rejected")){
+                    itemView.iv_quto_his_status_action.setImageResource(R.drawable.rejected)
+                    itemView.quot_date_tv.setTextColor(context.resources.getColor(R.color.color_custom_red))
+                    itemView.quot_no_tv.setTextColor(context.resources.getColor(R.color.color_custom_red))
+                }else{
+                    itemView.iv_quto_his_status_action.setImageResource(R.drawable.pending)
+                }
+            }
 
             itemView.tv_quot_view.setOnClickListener {
-                listener.onView(adapterPosition = adapterPosition,QuotId = categoryList!!.get(adapterPosition).quotation_number!!)
+                if(categoryList!!.get(adapterPosition).quotation_status.equals("Approved")) {
+                    listener.onView(adapterPosition = adapterPosition,categoryList!!.get(adapterPosition).quotation_number!!, "" )
+                }
+                else{
+                    if(categoryList!!.get(adapterPosition).document_number != null)
+                        listener.onView(adapterPosition = adapterPosition, "",categoryList!!.get(adapterPosition).document_number!!)
+                    else if(categoryList!!.get(adapterPosition).quotation_number !=null){
+                        listener.onView(adapterPosition = adapterPosition,categoryList!!.get(adapterPosition).quotation_number!!, "" )
+                    }else
+                        listener.onShowMsg("Document Number Not Found")
+                }
             }
+
+//            itemView.tv_quot_view.setOnClickListener {
+//                listener.onView(adapterPosition = adapterPosition,QuotId = categoryList!!.get(adapterPosition).quotation_number!!)
+//            }
             itemView.share_iv.setOnClickListener {
                 listener.onShare(adapterPosition = adapterPosition)
             }
@@ -51,8 +85,9 @@ class ViewAllQuotViewAdapter(private val context: Context, private val selectedP
     }
 
     interface OnClickListener {
-        fun onView(adapterPosition: Int,QuotId:String)
+        fun onView(adapterPosition: Int,QuotId:String,DocId:String)
         fun onShare(adapterPosition: Int)
         fun onDelete(adapterPosition: Int,QuotId:String)
+        fun onShowMsg(msg:String)
     }
 }
