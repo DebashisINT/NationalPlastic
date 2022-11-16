@@ -59,7 +59,7 @@ class LocalShopListMapFragment : BaseFragment(), OnMapReadyCallback {
         return view
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
         mGoogleMap?.uiSettings?.isZoomControlsEnabled = false
 
@@ -134,7 +134,7 @@ class LocalShopListMapFragment : BaseFragment(), OnMapReadyCallback {
             title(markerName)
             snippet(shopAddress)
             icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_shop_map_pointer))
-        })
+        })!!
         mCurrLocationMarker.add(currentMarker)
     }
 

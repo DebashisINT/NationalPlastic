@@ -162,21 +162,21 @@
                 android:id="@+id/shop_tome_order_tab_LL"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_80sdp"
-                android:fillViewport="true"
-                android:visibility="visible"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_marginRight="@dimen/_3sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:background="@drawable/shape_cursor_two"
                 android:fadeScrollbars="false"
+                android:fillViewport="true"
                 android:scrollbarSize="@dimen/_2sdp"
                 android:scrollbarThumbHorizontal="@color/color_blue_light_dark"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:background="@drawable/shape_cursor_two">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/ll_dash_total_visit_newD"
@@ -343,9 +343,9 @@
                             android:id="@+id/start_shop"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:layout_marginTop="@dimen/_3sdp"
                             android:gravity="center"
-                            android:layout_gravity="center"
                             android:text="Day Start"
                             android:textColor="@color/login_txt_color"
                             android:textSize="@dimen/_10sdp"
@@ -389,8 +389,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_dist_dash_new"
-                                />
+                                android:src="@drawable/ic_dist_dash_new" />
 
                         </FrameLayout>
 
@@ -490,7 +489,7 @@
 
             </HorizontalScrollView>
 
-           <!-- <LinearLayout
+            <!-- <LinearLayout
                 android:id="@+id/shop_tome_order_tab_LL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -890,6 +889,19 @@
                             android:paddingRight="@dimen/_5sdp"
                             android:paddingBottom="@dimen/_5sdp"
                             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                        <!--Pjpwise beat name show-->
+                        <TextView
+                            android:id="@+id/tv_beatNamenew"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/beat"
+                            android:paddingLeft="@dimen/_5sdp"
+                            android:paddingRight="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            android:visibility="gone"
+                            android:textColor="@color/colorPrimary"/>
+
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
 

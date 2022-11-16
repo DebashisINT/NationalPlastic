@@ -180,6 +180,7 @@ class DeviceInfoListFragment : BaseFragment() {
                                             net_type = it.network_type
                                             mob_net_type = it.mobile_network_type
                                             isUploaded = true
+                                            Power_Saver_Status = Pref.PowerSaverStatus
                                         })
                                     }
 

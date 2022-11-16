@@ -62,4 +62,12 @@ interface UserLocationDataDao {
     @Query("Select * from location_db ORDER BY locationId DESC LIMIT 1")
     fun getLastRecord(): UserLocationDataEntity
 
+    @Query("Select * from location_db where updateDate=:date and location_name=:location_name and isUploaded=:isUploaded")
+    fun getUnknownLocation(date: String,location_name:String,isUploaded:Boolean): List<UserLocationDataEntity>
+
+    @Query("update " + AppConstant.LOCATION_TABLE+" set location_name=:location_name where locationId=:locationId")
+    fun updateUnknownLocation(locationId:String,location_name:String)
+
+    @Query("update " + AppConstant.LOCATION_TABLE+" set location_name=:location_name where updateDate=:date and isUploaded=:isUploaded")
+    fun updateUnknownLocationTest(date: String,location_name:String,isUploaded:Boolean)
 }

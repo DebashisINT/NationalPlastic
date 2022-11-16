@@ -27,7 +27,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/_5sdp">
+                    android:padding="@dimen/_5sdp"
+                    android:background="@drawable/shape_cursor_two">
 
                     <RelativeLayout
                         android:id="@+id/rl_work_type_header"
@@ -82,6 +83,52 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_beat_type_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:cardElevation="@dimen/_2sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/shape_cursor_two"
+                    android:padding="@dimen/_5sdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_5sdp">
+
+                        <com.nationalplasticfsm.widgets.AppCustomTextView
+                            android:id="@+id/tv_beat_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            android:paddingRight="@dimen/_5sdp"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@color/dark_gray"
+                            android:textSize="@dimen/_13sdp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:contentDescription="@null"
+                            android:padding="@dimen/_5sdp"
+                            android:src="@drawable/selector_dropdown" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_dd_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,7 +140,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@drawable/shape_cursor_two">
 
                     <com.nationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
@@ -200,6 +248,7 @@
                                         android:singleLine="true"
                                         android:textSize="@dimen/_13sdp"
                                         app:theme="@style/EvoEditTextTheme" />
+
                                 </com.google.android.material.textfield.TextInputLayout>
                             </LinearLayout>
                         </LinearLayout>
@@ -215,22 +264,23 @@
                 android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="@dimen/_4sdp"
                 app:cardElevation="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:paddingTop="@dimen/_5sdp">
+                    android:paddingTop="@dimen/_5sdp"
+                    android:background="@drawable/shape_cursor_two">
 
                     <com.nationalplasticfsm.widgets.AppCustomEditText
                         android:id="@+id/et_work_type_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
                         android:hint="@string/type_remarks"
                         android:inputType="textMultiLine"
                         android:maxLines="5"
@@ -250,7 +300,7 @@
                 android:layout_marginLeft="@dimen/_30sdp"
                 android:layout_marginRight="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_45sdp"
-                android:background="@drawable/selector_blue_botton_bg"
+                android:background="@drawable/shape_custom_border_blue_button"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"

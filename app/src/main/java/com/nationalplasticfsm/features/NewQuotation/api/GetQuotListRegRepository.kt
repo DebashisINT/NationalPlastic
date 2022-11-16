@@ -21,6 +21,10 @@ class GetQuotListRegRepository(val apiService : GetQutoListApi) {
         return apiService.getQuotDetailsList(quotId)
     }
 
+    fun viewDetailsDoc(docId: String): Observable<ViewDetailsQuotResponse> {
+        return apiService.getDocDetailsList(docId)
+    }
+
     fun delQuot(quotId: String): Observable<BaseResponse>{
         return apiService.QuotDel(quotId)
     }

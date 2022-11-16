@@ -98,7 +98,7 @@ class MapViewForTeamFrag : BaseFragment(), View.OnClickListener , OnMapReadyCall
 
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mapCustomer = googleMap
 
         var i: Int = 0
@@ -136,7 +136,7 @@ class MapViewForTeamFrag : BaseFragment(), View.OnClickListener , OnMapReadyCall
             .position(mark!!)
             .icon(bitmapDescriptorFromVector(mContext, R.drawable.scooter_man))
             .title("Marker"))
-        mapCustomer!!.moveCamera(CameraUpdateFactory.newLatLngZoom(marksAddr[marksAddr.size-1], 15f))
+        mapCustomer!!.moveCamera(CameraUpdateFactory.newLatLngZoom(marksAddr[marksAddr.size-1]!!, 15f))
 
         val opts = PolylineOptions().addAll(marksAddr).color(Color.BLUE).width(5f)
         mapCustomer!!.addPolyline(opts)

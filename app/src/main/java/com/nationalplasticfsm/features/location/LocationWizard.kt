@@ -94,7 +94,8 @@ open class LocationWizard {
             try {
                 val geocoder = Geocoder(mContext, Locale.ENGLISH)
                 var addresses: List<Address>? = null
-                for (i in 0..5) {
+                //for (i in 0..5) {
+                for (i in 0..3) {
                     addresses = geocoder.getFromLocation(latitude, longitude, 1)
                     if (addresses != null)
                         break

@@ -212,7 +212,11 @@ class MemberListFragment : BaseFragment() {
         adapter = MemberListAdapter(mContext, member_list, object : MemberListAdapter.OnClickListener {
 
             override fun onZeroOrderClick(team: TeamListDataModel) {
-                getOrderListFromZeroOrd(team.user_id,team)
+                getOrderListFromZeroOrd(team.user_id, team)
+            }
+
+            override fun onBeatClick(team: TeamListDataModel) {
+                (mContext as DashboardActivity).loadFragment(FragType.TeamBeatListFragment, true, team)
             }
 
             override fun getSize(size: Int) {
@@ -224,7 +228,7 @@ class MemberListFragment : BaseFragment() {
             }
 
             override fun onCollClick(team: TeamListDataModel) {
-                getShopListForTeam(team.user_id,team)
+                getShopListForTeam(team.user_id, team)
             }
 
             override fun onPjpClick(team: TeamListDataModel) {
@@ -243,14 +247,14 @@ class MemberListFragment : BaseFragment() {
             override fun onShopClick(team: TeamListDataModel) {
                 CustomStatic.BreakageViewFromTeam_Name = team.user_name
                 //(mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, member_list[adapterPosition].user_id)
-                CommonDialog.getInstance(AppUtils.hiFirstNameText()+"!", "What you like to do?", getString(R.string.total_shops), getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
+                CommonDialog.getInstance(AppUtils.hiFirstNameText() + "!", "What you like to do?", getString(R.string.total_shops), getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
                     override fun onLeftClick() {
                         checkTeamHierarchyList(team.user_name)
                         if (Pref.isShowPartyInAreaWiseTeam) {
                             (mContext as DashboardActivity).loadFragment(FragType.AreaListFragment, true, team.user_id)
                             (mContext as DashboardActivity).isAllMemberShop = true
                         } else {
-                            CustomStatic.ShopFeedBachHisUserId=team.user_id
+                            CustomStatic.ShopFeedBachHisUserId = team.user_id
                             (mContext as DashboardActivity).loadFragment(FragType.MemberAllShopListFragment, true, team.user_id)
                         }
                     }
@@ -262,13 +266,14 @@ class MemberListFragment : BaseFragment() {
                             (mContext as DashboardActivity).loadFragment(FragType.AreaListFragment, true, team.user_id)
                             (mContext as DashboardActivity).isAllMemberShop = false
                         } else {
-                            CustomStatic.ShopFeedBachHisUserId=team.user_id
+                            CustomStatic.ShopFeedBachHisUserId = team.user_id
                             (mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, team.user_id)
                         }
                     }
 
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")
             }
+
             override fun onTeamClick(team: TeamListDataModel) {
                 //(mContext as DashboardActivity).isAddBackStack = true
 
@@ -284,6 +289,7 @@ class MemberListFragment : BaseFragment() {
                     loadFragment(FragType.MemberListFragment, true, team.user_id)
                 }
             }
+
             override fun onLeaveClick(team: TeamListDataModel) {
                 (mContext as DashboardActivity).loadFragment(FragType.LeaveHome, true, team.user_id)
             }
@@ -319,45 +325,49 @@ class MemberListFragment : BaseFragment() {
         /*if (tv_team_struct.visibility == View.GONE || !(mContext as DashboardActivity).teamHierarchy.contains("->")) {
             (mContext as DashboardActivity).teamHierarchy = ""
         }*/
+        try {
+            (mContext as DashboardActivity).teamHierarchy.apply {
+                removeAt(size - 1)
+                setHierarchyData()
+            }
+        } catch (ex: Exception) {
 
-        (mContext as DashboardActivity).teamHierarchy.apply {
-            removeAt(size - 1)
-            setHierarchyData()
         }
+
     }
 
     fun updateItem() {
         getTeamList()
     }
 
-    private fun getShopListForTeam(usr_id:String,obj:TeamListDataModel){
+    private fun getShopListForTeam(usr_id: String, obj: TeamListDataModel) {
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-            repository.getShopList(Pref.session_token!!, usr_id)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    var shopList = result as ShopListResponse
-                    if (shopList.status == NetworkConstant.SUCCESS) {
-                        if (shopList.data!!.shop_list!!.isNotEmpty()) {
-                            convertToShopListSetAdapter(shopList.data!!.shop_list!!,usr_id,obj)
-                        } else {
+                repository.getShopList(Pref.session_token!!, usr_id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            var shopList = result as ShopListResponse
+                            if (shopList.status == NetworkConstant.SUCCESS) {
+                                if (shopList.data!!.shop_list!!.isNotEmpty()) {
+                                    convertToShopListSetAdapter(shopList.data!!.shop_list!!, usr_id, obj)
+                                } else {
+                                    progress_wheel.stopSpinning()
+                                    Toaster.msgShort(mContext, "No data found")
+                                }
+                            } else {
+                                progress_wheel.stopSpinning()
+                                Toaster.msgShort(mContext, "No data found")
+                            }
+                        }, { error ->
+                            error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            Toaster.msgShort(mContext,"No data found")
-                        }
-                    } else {
-                        progress_wheel.stopSpinning()
-                        Toaster.msgShort(mContext,"No data found")
-                    }
-                }, { error ->
-                    error.printStackTrace()
-                    progress_wheel.stopSpinning()
-                })
+                        })
         )
     }
 
-    private fun convertToShopListSetAdapter(shop_list: List<ShopData>,usr_id:String,obj:TeamListDataModel) {
+    private fun convertToShopListSetAdapter(shop_list: List<ShopData>, usr_id: String, obj: TeamListDataModel) {
         val list: MutableList<ShopDtlsTeamEntity> = ArrayList()
         AppDatabase.getDBInstance()!!.shopDtlsTeamDao().deleteAll()
         for (i in 0 until shop_list.size) {
@@ -369,303 +379,303 @@ class MemberListFragment : BaseFragment() {
             AppDatabase.getDBInstance()!!.shopDtlsTeamDao().insert(shopObj)
         }
         progress_wheel.stopSpinning()
-        getOrderList(usr_id,obj)
+        getOrderList(usr_id, obj)
     }
 
-    private fun getOrderList(usr_id:String,obj:TeamListDataModel) {
-            val repository = NewOrderListRepoProvider.provideOrderListRepository()
-            progress_wheel.spin()
-            BaseActivity.compositeDisposable.add(
+    private fun getOrderList(usr_id: String, obj: TeamListDataModel) {
+        val repository = NewOrderListRepoProvider.provideOrderListRepository()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
                 repository.getOrderList(Pref.session_token!!, usr_id, "")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ result ->
-                        val response = result as NewOrderListResponseModel
-                        if (response.status == NetworkConstant.SUCCESS) {
-                            val order_details_list = response.order_list
-                            if (order_details_list != null && order_details_list.isNotEmpty()) {
-                                doAsync {
-                                    AppDatabase.getDBInstance()!!.orderDtlsTeamDao().delete()
-                                    for (i in order_details_list.indices) {
-                                        val orderDetailList = OrderDtlsTeamEntity()
-                                        orderDetailList.date = order_details_list[i].order_date_time //AppUtils.convertToCommonFormat(order_details_list[i].date!!)
-                                        if (!TextUtils.isEmpty(order_details_list[i].order_date_time))
-                                            orderDetailList.only_date = AppUtils.convertDateTimeToCommonFormat(order_details_list[i].order_date_time!!)
-                                        orderDetailList.shop_id = order_details_list[i].shop_id
-                                        orderDetailList.description = ""
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as NewOrderListResponseModel
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                val order_details_list = response.order_list
+                                if (order_details_list != null && order_details_list.isNotEmpty()) {
+                                    doAsync {
+                                        AppDatabase.getDBInstance()!!.orderDtlsTeamDao().delete()
+                                        for (i in order_details_list.indices) {
+                                            val orderDetailList = OrderDtlsTeamEntity()
+                                            orderDetailList.date = order_details_list[i].order_date_time //AppUtils.convertToCommonFormat(order_details_list[i].date!!)
+                                            if (!TextUtils.isEmpty(order_details_list[i].order_date_time))
+                                                orderDetailList.only_date = AppUtils.convertDateTimeToCommonFormat(order_details_list[i].order_date_time!!)
+                                            orderDetailList.shop_id = order_details_list[i].shop_id
+                                            orderDetailList.description = ""
 
-                                        if (!TextUtils.isEmpty(order_details_list[i].order_amount)) {
-                                            val finalAmount = String.format("%.2f", order_details_list[i].order_amount?.toFloat())
-                                            orderDetailList.amount = finalAmount
+                                            if (!TextUtils.isEmpty(order_details_list[i].order_amount)) {
+                                                val finalAmount = String.format("%.2f", order_details_list[i].order_amount?.toFloat())
+                                                orderDetailList.amount = finalAmount
+                                            }
+
+                                            orderDetailList.isUploaded = true
+                                            orderDetailList.order_id = order_details_list[i].order_id
+                                            orderDetailList.collection = ""
+
+                                            if (!TextUtils.isEmpty(order_details_list[i].order_lat) && !TextUtils.isEmpty(order_details_list[i].order_long)) {
+                                                orderDetailList.order_lat = order_details_list[i].order_lat
+                                                orderDetailList.order_long = order_details_list[i].order_long
+                                            } else {
+                                                orderDetailList.order_lat = order_details_list[i].shop_lat
+                                                orderDetailList.order_long = order_details_list[i].shop_long
+                                            }
+
+                                            orderDetailList.patient_no = order_details_list[i].patient_no
+                                            orderDetailList.patient_name = order_details_list[i].patient_name
+                                            orderDetailList.patient_address = order_details_list[i].patient_address
+
+                                            orderDetailList.Hospital = order_details_list[i].Hospital
+                                            orderDetailList.Email_Address = order_details_list[i].Email_Address
+
+                                            if (!TextUtils.isEmpty(order_details_list[i].scheme_amount)) {
+                                                val finalScAmount = String.format("%.2f", order_details_list[i].scheme_amount?.toFloat())
+                                                orderDetailList.scheme_amount = finalScAmount
+                                            }
+
+                                            AppDatabase.getDBInstance()!!.orderDtlsTeamDao().insert(orderDetailList)
                                         }
 
-                                        orderDetailList.isUploaded = true
-                                        orderDetailList.order_id = order_details_list[i].order_id
-                                        orderDetailList.collection = ""
-
-                                        if (!TextUtils.isEmpty(order_details_list[i].order_lat) && !TextUtils.isEmpty(order_details_list[i].order_long)) {
-                                            orderDetailList.order_lat = order_details_list[i].order_lat
-                                            orderDetailList.order_long = order_details_list[i].order_long
-                                        } else {
-                                            orderDetailList.order_lat = order_details_list[i].shop_lat
-                                            orderDetailList.order_long = order_details_list[i].shop_long
+                                        uiThread {
+                                            progress_wheel.stopSpinning()
+                                            callCollTeam(usr_id, obj)
                                         }
-
-                                        orderDetailList.patient_no = order_details_list[i].patient_no
-                                        orderDetailList.patient_name = order_details_list[i].patient_name
-                                        orderDetailList.patient_address = order_details_list[i].patient_address
-
-                                        orderDetailList.Hospital = order_details_list[i].Hospital
-                                        orderDetailList.Email_Address = order_details_list[i].Email_Address
-
-                                        if (!TextUtils.isEmpty(order_details_list[i].scheme_amount)) {
-                                            val finalScAmount = String.format("%.2f", order_details_list[i].scheme_amount?.toFloat())
-                                            orderDetailList.scheme_amount = finalScAmount
-                                        }
-
-                                        AppDatabase.getDBInstance()!!.orderDtlsTeamDao().insert(orderDetailList)
                                     }
+                                } else {
+                                    progress_wheel.stopSpinning()
+                                }
+                            } else {
+                                progress_wheel.stopSpinning()
+                            }
 
-                                    uiThread {
-                                        progress_wheel.stopSpinning()
-                                        callCollTeam(usr_id,obj)
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                        })
+        )
+    }
+
+    private fun callCollTeam(usr_id: String, obj: TeamListDataModel) {
+        val repository = NewCollectionListRepoProvider.newCollectionListRepository()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.collectionList(Pref.session_token!!, usr_id, "")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val collection = result as NewCollectionListResponseModel
+                            if (collection.status == NetworkConstant.SUCCESS) {
+                                if (collection.collection_list == null || collection.collection_list?.size!! == 0) {
+                                    progress_wheel.stopSpinning()
+                                } else {
+                                    doAsync {
+
+                                        AppDatabase.getDBInstance()!!.collDtlsTeamDao().delete()
+
+                                        var collList: ArrayList<CollDtlsTeamEntity> = ArrayList()
+                                        for (i in 0..collection.collection_list!!.size - 1) {
+                                            var obj: CollDtlsTeamEntity = CollDtlsTeamEntity()
+                                            obj.date = collection.collection_list!!.get(i).date
+                                            obj.isUploaded = collection.collection_list!!.get(i).isUploaded
+                                            obj.collection_id = collection.collection_list!!.get(i).collection_id
+                                            obj.shop_id = collection.collection_list!!.get(i).shop_id
+                                            obj.collection = collection.collection_list!!.get(i).collection
+                                            obj.only_time = collection.collection_list!!.get(i).only_time
+                                            obj.bill_id = collection.collection_list!!.get(i).bill_id
+                                            obj.order_id = collection.collection_list!!.get(i).order_id
+                                            obj.payment_id = collection.collection_list!!.get(i).payment_id
+                                            obj.instrument_no = collection.collection_list!!.get(i).instrument_no
+                                            obj.bank = collection.collection_list!!.get(i).bank
+                                            obj.file_path = collection.collection_list!!.get(i).file_path
+                                            obj.feedback = collection.collection_list!!.get(i).feedback
+                                            obj.patient_no = collection.collection_list!!.get(i).patient_no
+                                            obj.patient_name = collection.collection_list!!.get(i).patient_name
+                                            obj.patient_address = collection.collection_list!!.get(i).patient_address
+                                            obj.Hospital = collection.collection_list!!.get(i).Hospital
+                                            obj.Email_Address = collection.collection_list!!.get(i).Email_Address
+
+                                            collList.add(obj)
+                                        }
+
+                                        AppDatabase.getDBInstance()!!.collDtlsTeamDao().insertAll(collList)
+
+                                        uiThread {
+                                            progress_wheel.stopSpinning()
+                                            getBillTeam(usr_id, obj)
+                                        }
                                     }
                                 }
                             } else {
                                 progress_wheel.stopSpinning()
                             }
-                        } else {
+                        }, { error ->
+                            error.printStackTrace()
                             progress_wheel.stopSpinning()
-                        }
-
-                    }, { error ->
-                        progress_wheel.stopSpinning()
-                    })
-            )
-    }
-
-    private fun callCollTeam(usr_id:String,obj:TeamListDataModel){
-        val repository = NewCollectionListRepoProvider.newCollectionListRepository()
-        progress_wheel.spin()
-        BaseActivity.compositeDisposable.add(
-            repository.collectionList(Pref.session_token!!, usr_id, "")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    val collection = result as NewCollectionListResponseModel
-                    if (collection.status == NetworkConstant.SUCCESS) {
-                        if (collection.collection_list == null || collection.collection_list?.size!! == 0) {
-                            progress_wheel.stopSpinning()
-                        } else{
-                            doAsync {
-
-                                AppDatabase.getDBInstance()!!.collDtlsTeamDao().delete()
-
-                                var collList:ArrayList<CollDtlsTeamEntity> = ArrayList()
-                                for(i in 0..collection.collection_list!!.size-1){
-                                    var obj : CollDtlsTeamEntity = CollDtlsTeamEntity()
-                                    obj.date= collection.collection_list!!.get(i).date
-                                    obj.isUploaded= collection.collection_list!!.get(i).isUploaded
-                                    obj.collection_id= collection.collection_list!!.get(i).collection_id
-                                    obj.shop_id= collection.collection_list!!.get(i).shop_id
-                                    obj.collection= collection.collection_list!!.get(i).collection
-                                    obj.only_time= collection.collection_list!!.get(i).only_time
-                                    obj.bill_id= collection.collection_list!!.get(i).bill_id
-                                    obj.order_id= collection.collection_list!!.get(i).order_id
-                                    obj.payment_id= collection.collection_list!!.get(i).payment_id
-                                    obj.instrument_no= collection.collection_list!!.get(i).instrument_no
-                                    obj.bank= collection.collection_list!!.get(i).bank
-                                    obj.file_path= collection.collection_list!!.get(i).file_path
-                                    obj.feedback= collection.collection_list!!.get(i).feedback
-                                    obj.patient_no= collection.collection_list!!.get(i).patient_no
-                                    obj.patient_name= collection.collection_list!!.get(i).patient_name
-                                    obj.patient_address= collection.collection_list!!.get(i).patient_address
-                                    obj.Hospital= collection.collection_list!!.get(i).Hospital
-                                    obj.Email_Address= collection.collection_list!!.get(i).Email_Address
-
-                                    collList.add(obj)
-                                }
-
-                                AppDatabase.getDBInstance()!!.collDtlsTeamDao().insertAll(collList)
-
-                                uiThread {
-                                    progress_wheel.stopSpinning()
-                                    getBillTeam(usr_id,obj)
-                                }
-                            }
-                        }
-                    } else {
-                        progress_wheel.stopSpinning()
-                    }
-                }, { error ->
-                    error.printStackTrace()
-                    progress_wheel.stopSpinning()
-                })
+                        })
         )
     }
 
-    private fun getBillTeam(usr_id:String,obj:TeamListDataModel){
+    private fun getBillTeam(usr_id: String, obj: TeamListDataModel) {
         val repository = BillingListRepoProvider.provideBillListRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-            repository.getBillList(Pref.session_token!!, usr_id, "")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    val response = result as BillingListResponseModel
-                    BaseActivity.isApiInitiated = false
-                    if (response.status == NetworkConstant.SUCCESS) {
-                        val billing_list = response.billing_list
+                repository.getBillList(Pref.session_token!!, usr_id, "")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as BillingListResponseModel
+                            BaseActivity.isApiInitiated = false
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                val billing_list = response.billing_list
 
-                        if (billing_list != null && billing_list.isNotEmpty()) {
+                                if (billing_list != null && billing_list.isNotEmpty()) {
 
-                            doAsync {
+                                    doAsync {
 
-                                AppDatabase.getDBInstance()!!.billDtlsTeamDao().deleteAll()
+                                        AppDatabase.getDBInstance()!!.billDtlsTeamDao().deleteAll()
 
-                                for (i in billing_list.indices) {
-                                    val billing = BillDtlsTeamEntity()
-                                    billing.bill_id = Pref.user_id + "_bill_" + System.currentTimeMillis()
-                                    billing.invoice_no = billing_list[i].invoice_no
-                                    billing.invoice_date = billing_list[i].invoice_date
-                                    billing.invoice_amount = billing_list[i].invoice_amount
-                                    billing.remarks = billing_list[i].remarks
-                                    billing.order_id = billing_list[i].order_id
-                                    billing.patient_no = billing_list[i].patient_no
-                                    billing.patient_name = billing_list[i].patient_name
-                                    billing.patient_address = billing_list[i].patient_address
-                                    billing.isUploaded = true
+                                        for (i in billing_list.indices) {
+                                            val billing = BillDtlsTeamEntity()
+                                            billing.bill_id = Pref.user_id + "_bill_" + System.currentTimeMillis()
+                                            billing.invoice_no = billing_list[i].invoice_no
+                                            billing.invoice_date = billing_list[i].invoice_date
+                                            billing.invoice_amount = billing_list[i].invoice_amount
+                                            billing.remarks = billing_list[i].remarks
+                                            billing.order_id = billing_list[i].order_id
+                                            billing.patient_no = billing_list[i].patient_no
+                                            billing.patient_name = billing_list[i].patient_name
+                                            billing.patient_address = billing_list[i].patient_address
+                                            billing.isUploaded = true
 
-                                    if (!TextUtils.isEmpty(billing_list[i].billing_image))
-                                        billing.attachment = billing_list[i].billing_image
+                                            if (!TextUtils.isEmpty(billing_list[i].billing_image))
+                                                billing.attachment = billing_list[i].billing_image
 
-                                    AppDatabase.getDBInstance()!!.billDtlsTeamDao().insertAll(billing)
+                                            AppDatabase.getDBInstance()!!.billDtlsTeamDao().insertAll(billing)
 
-                                }
+                                        }
 
-                                uiThread {
+                                        uiThread {
+                                            progress_wheel.stopSpinning()
+                                            (mContext as DashboardActivity).loadFragment(FragType.CollectionPendingTeamFrag, true, obj)
+                                        }
+                                    }
+                                } else {
                                     progress_wheel.stopSpinning()
-                                    (mContext as DashboardActivity).loadFragment(FragType.CollectionPendingTeamFrag, true, obj)
+
                                 }
+                            } else {
+                                progress_wheel.stopSpinning()
+
                             }
-                        } else {
+
+                        }, { error ->
+                            error.printStackTrace()
+                            BaseActivity.isApiInitiated = false
                             progress_wheel.stopSpinning()
-
-                        }
-                    } else {
-                        progress_wheel.stopSpinning()
-
-                    }
-
-                }, { error ->
-                    error.printStackTrace()
-                    BaseActivity.isApiInitiated = false
-                    progress_wheel.stopSpinning()
-                })
+                        })
         )
     }
 
 
-    private fun getOrderListFromZeroOrd(usr_id:String,obj:TeamListDataModel) {
+    private fun getOrderListFromZeroOrd(usr_id: String, obj: TeamListDataModel) {
         val repository = NewOrderListRepoProvider.provideOrderListRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-            repository.getOrderList(Pref.session_token!!, usr_id, "")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    val response = result as NewOrderListResponseModel
-                    if (response.status == NetworkConstant.SUCCESS) {
-                        val order_details_list = response.order_list
-                        if (order_details_list != null && order_details_list.isNotEmpty()) {
-                            doAsync {
-                                AppDatabase.getDBInstance()!!.orderDtlsTeamDao().delete()
-                                for (i in order_details_list.indices) {
-                                    val orderDetailList = OrderDtlsTeamEntity()
-                                    orderDetailList.date = order_details_list[i].order_date_time //AppUtils.convertToCommonFormat(order_details_list[i].date!!)
-                                    if (!TextUtils.isEmpty(order_details_list[i].order_date_time))
-                                        orderDetailList.only_date = AppUtils.convertDateTimeToCommonFormat(order_details_list[i].order_date_time!!)
-                                    orderDetailList.shop_id = order_details_list[i].shop_id
-                                    orderDetailList.description = ""
+                repository.getOrderList(Pref.session_token!!, usr_id, "")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            val response = result as NewOrderListResponseModel
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                val order_details_list = response.order_list
+                                if (order_details_list != null && order_details_list.isNotEmpty()) {
+                                    doAsync {
+                                        AppDatabase.getDBInstance()!!.orderDtlsTeamDao().delete()
+                                        for (i in order_details_list.indices) {
+                                            val orderDetailList = OrderDtlsTeamEntity()
+                                            orderDetailList.date = order_details_list[i].order_date_time //AppUtils.convertToCommonFormat(order_details_list[i].date!!)
+                                            if (!TextUtils.isEmpty(order_details_list[i].order_date_time))
+                                                orderDetailList.only_date = AppUtils.convertDateTimeToCommonFormat(order_details_list[i].order_date_time!!)
+                                            orderDetailList.shop_id = order_details_list[i].shop_id
+                                            orderDetailList.description = ""
 
-                                    if (!TextUtils.isEmpty(order_details_list[i].order_amount)) {
-                                        val finalAmount = String.format("%.2f", order_details_list[i].order_amount?.toFloat())
-                                        orderDetailList.amount = finalAmount
+                                            if (!TextUtils.isEmpty(order_details_list[i].order_amount)) {
+                                                val finalAmount = String.format("%.2f", order_details_list[i].order_amount?.toFloat())
+                                                orderDetailList.amount = finalAmount
+                                            }
+
+                                            orderDetailList.isUploaded = true
+                                            orderDetailList.order_id = order_details_list[i].order_id
+                                            orderDetailList.collection = ""
+
+                                            if (!TextUtils.isEmpty(order_details_list[i].order_lat) && !TextUtils.isEmpty(order_details_list[i].order_long)) {
+                                                orderDetailList.order_lat = order_details_list[i].order_lat
+                                                orderDetailList.order_long = order_details_list[i].order_long
+                                            } else {
+                                                orderDetailList.order_lat = order_details_list[i].shop_lat
+                                                orderDetailList.order_long = order_details_list[i].shop_long
+                                            }
+
+                                            orderDetailList.patient_no = order_details_list[i].patient_no
+                                            orderDetailList.patient_name = order_details_list[i].patient_name
+                                            orderDetailList.patient_address = order_details_list[i].patient_address
+
+                                            orderDetailList.Hospital = order_details_list[i].Hospital
+                                            orderDetailList.Email_Address = order_details_list[i].Email_Address
+
+                                            if (!TextUtils.isEmpty(order_details_list[i].scheme_amount)) {
+                                                val finalScAmount = String.format("%.2f", order_details_list[i].scheme_amount?.toFloat())
+                                                orderDetailList.scheme_amount = finalScAmount
+                                            }
+
+                                            AppDatabase.getDBInstance()!!.orderDtlsTeamDao().insert(orderDetailList)
+                                        }
+
+                                        uiThread {
+                                            progress_wheel.stopSpinning()
+                                            getShopListForZeroOrd(usr_id, obj)
+                                        }
                                     }
-
-                                    orderDetailList.isUploaded = true
-                                    orderDetailList.order_id = order_details_list[i].order_id
-                                    orderDetailList.collection = ""
-
-                                    if (!TextUtils.isEmpty(order_details_list[i].order_lat) && !TextUtils.isEmpty(order_details_list[i].order_long)) {
-                                        orderDetailList.order_lat = order_details_list[i].order_lat
-                                        orderDetailList.order_long = order_details_list[i].order_long
-                                    } else {
-                                        orderDetailList.order_lat = order_details_list[i].shop_lat
-                                        orderDetailList.order_long = order_details_list[i].shop_long
-                                    }
-
-                                    orderDetailList.patient_no = order_details_list[i].patient_no
-                                    orderDetailList.patient_name = order_details_list[i].patient_name
-                                    orderDetailList.patient_address = order_details_list[i].patient_address
-
-                                    orderDetailList.Hospital = order_details_list[i].Hospital
-                                    orderDetailList.Email_Address = order_details_list[i].Email_Address
-
-                                    if (!TextUtils.isEmpty(order_details_list[i].scheme_amount)) {
-                                        val finalScAmount = String.format("%.2f", order_details_list[i].scheme_amount?.toFloat())
-                                        orderDetailList.scheme_amount = finalScAmount
-                                    }
-
-                                    AppDatabase.getDBInstance()!!.orderDtlsTeamDao().insert(orderDetailList)
-                                }
-
-                                uiThread {
+                                } else {
                                     progress_wheel.stopSpinning()
-                                    getShopListForZeroOrd(usr_id,obj)
+                                    Toaster.msgShort(mContext, "No data found")
                                 }
+                            } else {
+                                progress_wheel.stopSpinning()
+                                Toaster.msgShort(mContext, "No data found")
                             }
-                        } else {
-                            progress_wheel.stopSpinning()
-                            Toaster.msgShort(mContext,"No data found")
-                        }
-                    } else {
-                        progress_wheel.stopSpinning()
-                        Toaster.msgShort(mContext,"No data found")
-                    }
 
-                }, { error ->
-                    progress_wheel.stopSpinning()
-                })
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                        })
         )
     }
 
-    private fun getShopListForZeroOrd(usr_id:String,obj:TeamListDataModel){
+    private fun getShopListForZeroOrd(usr_id: String, obj: TeamListDataModel) {
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
-            repository.getShopList(Pref.session_token!!, usr_id)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    var shopList = result as ShopListResponse
-                    if (shopList.status == NetworkConstant.SUCCESS) {
-                        if (shopList.data!!.shop_list!!.isNotEmpty()) {
-                            convertToAllShopList(shopList.data!!.shop_list!!,usr_id,obj)
-                        } else {
+                repository.getShopList(Pref.session_token!!, usr_id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            var shopList = result as ShopListResponse
+                            if (shopList.status == NetworkConstant.SUCCESS) {
+                                if (shopList.data!!.shop_list!!.isNotEmpty()) {
+                                    convertToAllShopList(shopList.data!!.shop_list!!, usr_id, obj)
+                                } else {
+                                    progress_wheel.stopSpinning()
+                                }
+                            } else {
+                                progress_wheel.stopSpinning()
+                            }
+                        }, { error ->
+                            error.printStackTrace()
                             progress_wheel.stopSpinning()
-                        }
-                    } else {
-                        progress_wheel.stopSpinning()
-                    }
-                }, { error ->
-                    error.printStackTrace()
-                    progress_wheel.stopSpinning()
-                })
+                        })
         )
     }
 
-    private fun convertToAllShopList(shop_list: List<ShopData>,usr_id:String,obj:TeamListDataModel) {
+    private fun convertToAllShopList(shop_list: List<ShopData>, usr_id: String, obj: TeamListDataModel) {
 
         AppDatabase.getDBInstance()!!.teamAllShopDBModelDao().deleteAll()
 
@@ -709,10 +719,10 @@ class MemberListFragment : BaseFragment() {
 
             if (shop_list[i].last_visit_date!!.contains("."))
                 shopObj.lastVisitedDate =
-                    AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!.split(".")[0])
+                        AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!.split(".")[0])
             else
                 shopObj.lastVisitedDate =
-                    AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!)
+                        AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!)
 
             if (shopObj.lastVisitedDate == AppUtils.getCurrentDateChanged())
                 shopObj.visited = true

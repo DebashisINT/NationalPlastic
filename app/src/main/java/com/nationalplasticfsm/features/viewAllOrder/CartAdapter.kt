@@ -324,6 +324,7 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                 else
                     itemView.schemeqty_et_qty.setText("")*/
 
+/*
                 itemView.et_qty.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {
                         val qty = itemView.et_qty.text.toString().trim()
@@ -382,6 +383,46 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     }
                 })
+*/
+                itemView.et_qty.addTextChangedListener(CustomSpecialTextWatcher(itemView.et_qty, 4, 3, object : CustomSpecialTextWatcher.GetCustomTextChangeListener {
+
+                    override fun customTextChange(p0: String) {
+                        //val qty = itemView.et_qty.text.toString().trim()
+                        val qty = p0
+                        if (!Pref.isShowAllProduct && AppUtils.stockStatus == 0) {
+                            (context as DashboardActivity).qtyList[adapterPosition] = qty
+                            listener.onEdit(adapterPosition)
+                        } else {
+                            if (!TextUtils.isEmpty(qty)) {
+                                try {
+                                    (context as DashboardActivity).qtyList[adapterPosition] = qty
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                                listener.onEdit(adapterPosition)
+                            } else {
+                                try {
+                                    if (!TextUtils.isEmpty((context as DashboardActivity).qtyList[adapterPosition])) {
+                                        (context as DashboardActivity).qtyList[adapterPosition] = "0"
+                                        listener.onEdit(adapterPosition)
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                    for (i in (context as DashboardActivity).qtyList.indices) {
+                                        if ((context as DashboardActivity).qtyList[i] == previousQty) {
+                                            (context as DashboardActivity).qtyList[i] = "0"
+                                            listener.onEdit(i)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    override fun beforeTextChange(p1: String) {
+                        previousQty = p1
+                    }
+                }))
 
 
                 if (adapterPosition != categoryList?.size!! - 1) {

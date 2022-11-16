@@ -1123,7 +1123,15 @@ class ChatBotFragment : BaseFragment(), View.OnClickListener {
                         shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                     else
                         shopDurationData.approximate_1st_billing_value = ""
-
+                    //duration garbage fix
+                    try{
+                        if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                        {
+                            shopDurationData.spent_duration="00:00:10"
+                        }
+                    }catch (ex:Exception){
+                        shopDurationData.spent_duration="00:00:10"
+                    }
                     shopDataList.add(shopDurationData)
 
                     XLog.d("====SYNC VISITED SHOP DATA (ChatBot)====")
@@ -1220,7 +1228,15 @@ class ChatBotFragment : BaseFragment(), View.OnClickListener {
                         shopDurationData.approximate_1st_billing_value = it.approximate_1st_billing_value!!
                     else
                         shopDurationData.approximate_1st_billing_value = ""
-
+                    //duration garbage fix
+                    try{
+                        if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                        {
+                            shopDurationData.spent_duration="00:00:10"
+                        }
+                    }catch (ex:Exception){
+                        shopDurationData.spent_duration="00:00:10"
+                    }
                     shopDataList.add(shopDurationData)
 
 
@@ -1365,6 +1381,8 @@ class ChatBotFragment : BaseFragment(), View.OnClickListener {
                                             for (i in 0 until shopDataList.size) {
                                                 AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopDataList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(shopDataList[i].visited_date!!), shopDataList[i].start_timestamp!!)
                                             }
+                                            // multivisit test
+                                            syncShopVisitImage(shopDataList)
                                         }
                                     }
                                 }

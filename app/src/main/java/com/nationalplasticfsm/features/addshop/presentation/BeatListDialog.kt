@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
 import com.nationalplasticfsm.R
+import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.domain.*
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
@@ -71,7 +72,8 @@ class BeatListDialog : DialogFragment() {
 
         rv_common_dialog_list.adapter = adapter
 
-        dialog_header_TV.text = "Beat/Group List"
+//        dialog_header_TV.text = "Beat/Group List"
+        dialog_header_TV.text = "${Pref.beatText}" + " List"
         et_search = v.findViewById(R.id.et_search)
         iv_close_icon = v.findViewById(R.id.iv_close_icon)
 

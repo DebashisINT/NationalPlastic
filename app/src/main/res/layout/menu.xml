@@ -199,6 +199,23 @@
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
 
+                <!--clear Attendance -->
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tv_clear_attendance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_attendance"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Attendance Clear"
+                    android:drawableTint="@color/white"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/chat_bot_TV"
                     android:layout_width="match_parent"

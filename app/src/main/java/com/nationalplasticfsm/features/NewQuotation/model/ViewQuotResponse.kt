@@ -12,5 +12,7 @@ data class ViewQuotResponse(var status:String?=null,
 
 )
 data class shop_wise_quotation_list(var quotation_number :String?=null,
-                                    var save_date_time :String?=null
+                                    var save_date_time :String?=null,
+                                    var quotation_status :String?=null,
+                                    var document_number :String?=null
 )

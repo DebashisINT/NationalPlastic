@@ -44,4 +44,13 @@ class BatteryNetStatusEntity {
 
     @ColumnInfo(name = "isUploaded")
     var isUploaded: Boolean = false
+
+    @ColumnInfo(name = "Available_Storage")
+    var Available_Storage: String? = null
+
+    @ColumnInfo(name = "Total_Storage")
+    var Total_Storage: String? = null
+
+    @ColumnInfo(name = "Power_Saver_Status", defaultValue = "Off")
+    var Power_Saver_Status: String = "Off"
 }

@@ -59,8 +59,9 @@ class LocationJobService : JobService() {
             e.printStackTrace()
             startForegroundService(myIntent)
         }*/
-
+        
         startForegroundService(myIntent)
+
         /*registerReceiver(eventReceiver, IntentFilter().apply {
             addAction("android.intent.action.AIRPLANE_MODE")
             addAction("android.intent.action.BOOT_COMPLETED")

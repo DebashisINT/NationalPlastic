@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.reimbursement.presentation;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -48,7 +49,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
         if (position == mSelectedPosition) {
             holder.clDateParent.setBackgroundResource(R.drawable.layerlist_date_selected);

@@ -15,6 +15,10 @@ class ShopListRepository(val apiService: ShopListApi) {
         return apiService.getShopList(sessiontoken, user_id)
     }
 
+    fun getExtraTeamShopList(sessiontoken: String, user_id: String): Observable<ShopListResponse> {
+        return apiService.getExtraTeamShopList(sessiontoken, user_id)
+    }
+
     fun getShopTypeList(): Observable<ShopTypeResponseModel> {
         return apiService.getShopTypeList(Pref.session_token!!, Pref.user_id!!)
     }

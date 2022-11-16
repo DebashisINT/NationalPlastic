@@ -1,6 +1,10 @@
 package com.nationalplasticfsm.features.addAttendence
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.cardview.widget.CardView
@@ -19,6 +23,7 @@ import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.app.Pref
+import com.nationalplasticfsm.app.domain.BeatEntity
 import com.nationalplasticfsm.app.domain.SelectedWorkTypeEntity
 import com.nationalplasticfsm.app.domain.WorkTypeEntity
 import com.nationalplasticfsm.app.utils.AppUtils
@@ -27,12 +32,17 @@ import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.features.addAttendence.api.WorkTypeListRepoProvider
 import com.nationalplasticfsm.features.addAttendence.api.addattendenceapi.AddAttendenceRepoProvider
 import com.nationalplasticfsm.features.addAttendence.model.WorkTypeResponseModel
+import com.nationalplasticfsm.features.beatCustom.BeatGetStatusModel
+import com.nationalplasticfsm.features.beatCustom.BeatUpdateModel
+import com.nationalplasticfsm.features.beatCustom.api.GetBeatRegProvider
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.elvishew.xlog.XLog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 /**
@@ -53,6 +63,9 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
     private lateinit var cv_dd_field: CardView
     private lateinit var et_dd_name: AppCustomEditText
     private lateinit var et_market_worked: AppCustomEditText
+    private lateinit var cv_beat: CardView
+    private lateinit var tv_beat_type: AppCustomTextView
+    private var mbeatId = ""
 
     private var workTypeId = ""
 
@@ -88,6 +101,24 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
         cv_dd_field = view.findViewById(R.id.cv_dd_field)
         progress_wheel = view.findViewById(R.id.progress_wheel)
         progress_wheel.stopSpinning()
+        cv_beat = view.findViewById(R.id.cv_beat_type_root)
+        tv_beat_type= view.findViewById(R.id.tv_beat_type)
+
+        tv_beat_type.hint = "Select " + "${Pref.beatText}" + " Type"
+
+        try {
+            var beatName = AppDatabase.getDBInstance()?.beatDao()?.getSingleItem(Pref.SelectedBeatIDFromAttend)!!.name
+            tv_beat_type.setText(beatName)
+        }catch (e: Exception) {
+            e.printStackTrace()
+            tv_beat_type.setText("")
+        }
+
+        if(Pref.IsBeatRouteAvailableinAttendance)
+        { cv_beat.visibility=View.VISIBLE
+        }else{
+            cv_beat.visibility=View.GONE
+        }
 
         if (Pref.isDDFieldEnabled) {
             cv_dd_field.visibility = View.VISIBLE
@@ -164,6 +195,7 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
         )
     }
 
+    @SuppressLint("WrongConstant")
     private fun initAdapter(list: ArrayList<WorkTypeEntity>) {
         list.forEach {
             if (it.isSelected) {
@@ -255,6 +287,7 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
     private fun initClickListener() {
         tv_submit.setOnClickListener(this)
         rl_work_type_header.setOnClickListener(this)
+        cv_beat.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
@@ -262,6 +295,14 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
             R.id.tv_submit -> {
                 AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
                 visibilityCheck()
+            }
+
+            R.id.cv_beat_type_root->{
+                val list = AppDatabase.getDBInstance()?.beatDao()?.getAll() as ArrayList<BeatEntity>
+                if (list != null && list.isNotEmpty())
+                    showBeatListDialog(list)
+                else
+                    (mContext as DashboardActivity).showSnackMessage("No list found")
             }
 
             R.id.rl_work_type_header -> {
@@ -318,7 +359,7 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
                                 XLog.d("Update work type Response Code========> " + response.status)
                                 XLog.d("Update work type Response Msg=========> " + response.message)
 
-                                (mContext as DashboardActivity).showSnackMessage(response.message!!)
+//                                (mContext as DashboardActivity).showSnackMessage(response.message!!)
 
                                 if (response.status == NetworkConstant.SUCCESS) {
 
@@ -353,7 +394,36 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
                                     /*else
                                         AppDatabase.getDBInstance()?.selectedWorkTypeDao()?.delete()*/
 
-                                    (mContext as DashboardActivity).onBackPressed()
+                                    //(mContext as DashboardActivity).onBackPressed()
+                                    /*Update beat type Restricted 10-08-2022 */
+                                    //var shopCreated = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopCreatedToday(AppUtils.getCurrentDate())
+                                    var shopRevit = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateyymmdd())
+                                   if(Pref.IsBeatRouteAvailableinAttendance){
+                                       //if(shopCreated!!.size>0 || shopRevit!!.size>0){
+                                       if(shopRevit!!.size>0){
+                                           val simpleDialog = Dialog(mContext)
+                                           simpleDialog.setCancelable(false)
+                                           simpleDialog.getWindow()!!.setBackgroundDrawable(
+                                               ColorDrawable(Color.TRANSPARENT)
+                                           )
+                                           simpleDialog.setContentView(R.layout.dialog_message)
+                                           val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                                           val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                                           dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()+"!"
+                                           dialogHeader.text = "Update work type unable due to shop visit/revisit."
+                                           val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                                           dialogYes.setOnClickListener({ view ->
+                                               simpleDialog.cancel()
+                                           })
+                                           simpleDialog.show()
+                                       }else{
+                                           updateBeatType()
+                                       }
+                                   }
+                                 else{
+                                       (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                                   }
+
                                 }
 
                             }, { error ->
@@ -365,4 +435,50 @@ class UpdateWorkTypeFragment : Fragment(), View.OnClickListener {
             )
         }
     }
+
+    private fun showBeatListDialog(list: ArrayList<BeatEntity>) {
+        BeatListCustomDialog.newInstance(list as ArrayList<BeatEntity>) {
+            tv_beat_type.text = it.name
+            mbeatId = it.beat_id!!
+            //Pref.SelectedBeatIDFromAttend = mbeatId
+        }.show((mContext as DashboardActivity).supportFragmentManager, "")
+
+    }
+
+    private fun updateBeatType(){
+        progress_wheel.spin()
+        try{
+            val repository = GetBeatRegProvider.provideSaveButton()
+            BaseActivity.compositeDisposable.add(
+                repository.getUpdateBeat(Pref.user_id!!,mbeatId,AppUtils.getCurrentDateyymmdd())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val viewResult = result as BeatUpdateModel
+                        if (viewResult!!.status == NetworkConstant.SUCCESS) {
+                            progress_wheel.stopSpinning()
+                            doAsync {
+                                Pref.SelectedBeatIDFromAttend = viewResult.updated_beat_id!!
+                                uiThread {
+                                    (mContext as DashboardActivity).onBackPressed()
+                                }
+                            }
+                        }
+                        else {
+                            progress_wheel.stopSpinning()
+                            (mContext as DashboardActivity).showSnackMessage(viewResult.message!!)
+                        }
+                    }, { error ->
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                    })
+            )
+        }
+        catch (ex:Exception){
+            ex.printStackTrace()
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong1))
+        }
+
+    }
+
 }

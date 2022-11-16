@@ -1,6 +1,5 @@
 package com.nationalplasticfsm.features.averageshop.presentation
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -235,7 +234,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 if (!Pref.isMultipleVisitEnable) {
                     if (ShopActivityEntityList != null && ShopActivityEntityList.isNotEmpty()) {
 
-                        val list = ArrayList<ShopActivityEntity>()
+                        var list = ArrayList<ShopActivityEntity>()
 
                         for (i in ShopActivityEntityList.indices) {
                             val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[i].shopid)
@@ -266,7 +265,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         }*/
 
 
-
+                        list = list.filter { it.isUploaded == false } as ArrayList<ShopActivityEntity>
 
                         if (list.size > 0)
                             syncAllShopActivity(list[i].shopid!!, list)
@@ -280,7 +279,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 else {
                     if (ShopActivityEntityList != null && ShopActivityEntityList.isNotEmpty()) {
 
-                        val list = ArrayList<ShopActivityEntity>()
+                        var list = ArrayList<ShopActivityEntity>()
 
                         for (i in ShopActivityEntityList.indices) {
                             val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[i].shopid)
@@ -296,6 +295,7 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                             }
                         }
 
+                        list = list.filter { it.isUploaded == false } as ArrayList<ShopActivityEntity>
 
                         if (list.size > 0)
                             syncAllShopActivityForMultiVisit(list)
@@ -398,6 +398,16 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //duration garbage fix
+            try{
+                if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                {
+                    shopDurationData.spent_duration="00:00:10"
+                }
+            }catch (ex:Exception){
+                shopDurationData.spent_duration="00:00:10"
+            }
+
             shopDataList.add(shopDurationData)
 
             XLog.d("========SYNC ALL VISITED SHOP DATA (AVERAGE SHOP)=====")
@@ -487,12 +497,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                                 progress_wheel.stopSpinning()
                                 BaseActivity.isShopActivityUpdating = false
                             } else {
+
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
                                 BaseActivity.isShopActivityUpdating = false
                                 ShopActivityEntityList = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi())
 
                                 Collections.reverse(ShopActivityEntityList)
+
                             }
 
                         }, { error ->
@@ -863,6 +875,16 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //duration garbage fix
+            try{
+                if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                {
+                    shopDurationData.spent_duration="00:00:10"
+                }
+            }catch (ex:Exception){
+                shopDurationData.spent_duration="00:00:10"
+            }
+
             shopDataList.add(shopDurationData)
 
             if (shopDataList.isEmpty()) {
@@ -1164,7 +1186,6 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
     }
 
 
-    @SuppressLint("WrongConstant")
     private fun initAdapter() {
         averageShopListAdapter = AverageShopListAdapter(mContext, ShopActivityEntityList, object : AverageShopListClickListener {
             override fun onSyncClick(position: Int) {
@@ -1204,6 +1225,25 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 }
             }
 
+            override fun onMultipleImageClick(shop: Any,position: Int) {
+                if (AppUtils.isOnline(mContext)) {
+                    var shopIsuploaded =AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[position].shopid).isUploaded
+                    if(shopIsuploaded){
+                        val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(ShopActivityEntityList[position].shopid)
+                        if(Pref.IsMultipleImagesRequired){
+                            (mContext as DashboardActivity).loadFragment(FragType.MultipleImageFragment, true, shop)
+                        }
+                    }
+                    else{
+                        (this as DashboardActivity).showSnackMessage("Please snyc shop First..")
+                    }
+
+                }
+                else{
+                    (this as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                }
+
+            }
 
             override fun OnItemClick(position: Int) {
                 try {
@@ -1635,6 +1675,16 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                 else
                     shopDurationData.approximate_1st_billing_value = ""
 
+                //duration garbage fix
+                try{
+                    if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                    {
+                        shopDurationData.spent_duration="00:00:10"
+                    }
+                }catch (ex:Exception){
+                    shopDurationData.spent_duration="00:00:10"
+                }
+
                 shopDataList.add(shopDurationData)
             }
             else {
@@ -1712,6 +1762,16 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                         shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                     else
                         shopDurationData.approximate_1st_billing_value = ""
+
+                    //duration garbage fix
+                    try{
+                        if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                        {
+                            shopDurationData.spent_duration="00:00:10"
+                        }
+                    }catch (ex:Exception){
+                        shopDurationData.spent_duration="00:00:10"
+                    }
 
                     shopDataList.add(shopDurationData)
                 }
@@ -2119,7 +2179,15 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
         else
             shopDurationData.approximate_1st_billing_value = ""
 
-
+        //duration garbage fix
+        try{
+            if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+            {
+                shopDurationData.spent_duration="00:00:10"
+            }
+        }catch (ex:Exception){
+            shopDurationData.spent_duration="00:00:10"
+        }
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {

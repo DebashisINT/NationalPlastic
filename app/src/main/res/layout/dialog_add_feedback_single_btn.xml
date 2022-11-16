@@ -32,9 +32,9 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_no"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_5sdp" />
+                android:layout_marginRight="@dimen/_5sdp"
+                app:srcCompat="@drawable/ic_no" />
         </RelativeLayout>
 
 
@@ -51,26 +51,26 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_feedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:textColorHint="@color/light_gray"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
-
-                <com.nationalplasticfsm.widgets.AppCustomEditText
-                    android:id="@+id/et_feedback"
+                    android:id="@+id/til_feedback"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:hint="@string/type_your_feedback"
-                    android:maxLength="500"
-                    android:maxLines="7"
-                    android:textSize="@dimen/_13sdp"
-                    app:theme="@style/EvoEditTextTheme" />
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:textColorHint="@color/light_gray"
+                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.nationalplasticfsm.widgets.AppCustomEditText
+                        android:id="@+id/et_feedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:hint="@string/type_your_feedback"
+                        android:maxLength="500"
+                        android:maxLines="7"
+                        android:textSize="@dimen/_13sdp"
+                        app:theme="@style/EvoEditTextTheme" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
 
 

@@ -11,74 +11,110 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minWidth="@dimen/_40sdp"
         android:gravity="center"
         android:minHeight="@dimen/_35sdp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/quot_date_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:hint="23-Feb-2022"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="@dimen/_10sdp" />
 
+        <Space
+            android:layout_width="@dimen/_5sdp"
+            android:layout_height="match_parent" />
+
 
         <TextView
             android:id="@+id/quot_no_tv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:hint="Quotation Number"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="@dimen/_10sdp" />
 
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_5sdp"
             android:layout_height="match_parent" />
 
+        <HorizontalScrollView
+            android:layout_width="@dimen/_85sdp"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="visible"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:fadeScrollbars="false"
+            android:scrollbarSize="@dimen/_2sdp"
+            android:scrollbarThumbHorizontal="@color/color_blue_light_dark">
 
-        <ImageView
-            android:id="@+id/tv_quot_del"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:src="@drawable/ic_delete"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_12sdp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center|end">
 
-        <Space
-            android:layout_width="@dimen/_3sdp"
-            android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/tv_quot_del"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@drawable/ic_delete"
+                    android:textColor="@color/black"
+                    android:scaleType="center"/>
 
-        <ImageView
-            android:id="@+id/tv_quot_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:src="@drawable/ic_view_icon"
-            android:textColor="@color/black"
-            app:tint="@color/black" />
+                <Space
+                    android:layout_width="@dimen/_3sdp"
+                    android:layout_height="match_parent" />
 
-        <Space
-            android:layout_width="@dimen/_3sdp"
-            android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/tv_quot_view"
+                    android:layout_width="@dimen/_17sdp"
+                    android:layout_height="@dimen/_17sdp"
+                    android:gravity="center"
+                    android:src="@drawable/ic_view_icon"
+                    android:textColor="@color/black"
+                    app:tint="@color/black"
+                    android:scaleType="fitCenter"/>
 
-        <ImageView
-            android:id="@+id/share_iv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:src="@drawable/ic_share"
-            android:textColor="@color/black"
-            app:tint="@color/color_custom_green" />
+                <Space
+                    android:layout_width="@dimen/_3sdp"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/share_iv"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:gravity="center"
+                    android:src="@drawable/icon_mail_custom"
+                    android:textColor="@color/black" />
+
+                <Space
+                    android:layout_width="@dimen/_3sdp"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/iv_quto_his_status_action"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:gravity="center"
+                    android:src="@drawable/pending"
+                    android:textColor="@color/black"
+                    android:scaleType="centerCrop"/>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+
+
 
     </LinearLayout>
 

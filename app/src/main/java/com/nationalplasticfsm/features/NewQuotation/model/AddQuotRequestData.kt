@@ -21,6 +21,9 @@ class AddQuotRequestData {
     var quotation_created_long:String?=null
     var quotation_created_address:String?=null
     var product_list: ArrayList<product_list>? = null
+    var Remarks:String?=null
+    var document_number:String?=null
+    var quotation_status:String?=null
 
 }
 data class product_list (var product_name:String?=null,

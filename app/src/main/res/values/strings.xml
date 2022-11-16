@@ -33,6 +33,7 @@
     <string name="add_order" translatable="false">Add Order</string>
     <string name="photo_registration" translatable="false">Photo Registration</string>
     <string name="team_attendance" translatable="false">Team Attendance</string>
+    <string name="clear_attendance" translatable="false">Attendance clear</string>
     <string name="photo_attd" translatable="false">Photo Attendance</string>
     <string name="view_order" translatable="false">View Order</string>
     <string name="add" translatable="false">Add</string>
@@ -178,6 +179,8 @@
     <string name="owner_name1" translatable="false">Contact Name</string>
     <string name="owner_contact_number" translatable="false">Owner Contact Number</string>
     <string name="owner_contact_number1" translatable="false">Contact Number</string>
+    <string name="GSTIN" translatable="false">GSTIN Number</string>
+    <string name="pan" translatable="false">PAN Number</string>
     <string name="owner_email" translatable="false">Owner Email</string>
     <string name="owner_email1" translatable="false">Email</string>
     <string name="only_email" translatable="false">Email</string>
@@ -254,6 +257,7 @@
     <string name="error_enter_chemist_name" translatable="false">Please enter chemist name</string>
     <string name="error_enter_chemist_address" translatable="false">Please enter chemist address</string>
     <string name="error_enter_chemist_pincode" translatable="false">Please enter chemist pincode</string>
+    <string name="error_enter_beat" translatable="false">Please enter beat type</string>
     <string name="contact_email" translatable="false">Contact Email</string>
     <string name="confirm_revisit" translatable="false">Confirm Revisit</string>
     <string name="entity_type" translatable="false">Entity Type</string>
@@ -575,6 +579,7 @@
     <string name="no_internet" translatable="false">Please check your internet connection.</string>
     <string name="alert_nolocation" translatable="false">Please enable your device location.</string>
     <string name="something_went_wrong" translatable="false">Something went wrong. Please try again later</string>
+    <string name="something_went_wrong_new" translatable="false">Something went wrong. Please try again later..</string>
     <string name="something_went_wrong1" translatable="false">Something went wrong. Please try again later...............</string>
     <string name="no_value" translatable="false">Please Insert Value</string>
     <string name="unable_to_sync" translatable="false">Unable to sync</string>
@@ -1497,6 +1502,7 @@
 
 
     <string name="error_message_remarks_manadatory" translatable="false">Please put the remarks</string>
+    <string name="error_message_feedback_manadatory" translatable="false">Please put the feedback</string>
 
 
     <string-array name="order_sort_gender">

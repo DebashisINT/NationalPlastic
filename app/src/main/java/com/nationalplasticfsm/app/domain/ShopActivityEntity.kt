@@ -2,13 +2,15 @@ package com.nationalplasticfsm.app.domain
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.nationalplasticfsm.app.AppConstant.SHOP_ACTIVITY
 
 /**
  * Created by Pratishruti on 07-12-2017.
  */
-@Entity(tableName = SHOP_ACTIVITY)
+//@Entity(tableName = SHOP_ACTIVITY)
+@Entity(tableName = SHOP_ACTIVITY, indices = [Index(name="ACTIVITYID",value = ["shopActivityId","shopid","visited_date"]),Index(name="ACTIVITY_ID_DATE",value = ["shopid","visited_date"])] )
 class ShopActivityEntity {
 
     @PrimaryKey(autoGenerate = true)

@@ -567,6 +567,9 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
 
         addShopData.purpose=mAddShopDBModelEntity.purpose
 
+        addShopData.GSTN_Number=mAddShopDBModelEntity.gstN_Number
+        addShopData.ShopOwner_PAN=mAddShopDBModelEntity.shopOwner_PAN
+
         callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection, currentDateForShopActi, desc, mAddShopDBModelEntity.doc_degree)
     }
 
@@ -873,7 +876,15 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
             else
                 shopDurationData.approximate_1st_billing_value = ""
-
+            //duration garbage fix
+            try{
+                if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                {
+                    shopDurationData.spent_duration="00:00:10"
+                }
+            }catch (ex:Exception){
+                shopDurationData.spent_duration="00:00:10"
+            }
             shopDataList.add(shopDurationData)
         }
         else {
@@ -957,7 +968,15 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
                     shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                 else
                     shopDurationData.approximate_1st_billing_value = ""
-
+                //duration garbage fix
+                try{
+                    if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                    {
+                        shopDurationData.spent_duration="00:00:10"
+                    }
+                }catch (ex:Exception){
+                    shopDurationData.spent_duration="00:00:10"
+                }
                 shopDataList.add(shopDurationData)
             }
         }
@@ -1186,6 +1205,9 @@ class CollectionDetailsFragment : BaseFragment(), View.OnClickListener {
         // duplicate shop api call
         addShopData.isShopDuplicate=mAddShopDBModelEntity.isShopDuplicate
         addShopData.purpose=mAddShopDBModelEntity.purpose
+
+        addShopData.GSTN_Number=mAddShopDBModelEntity.gstN_Number
+        addShopData.ShopOwner_PAN=mAddShopDBModelEntity.shopOwner_PAN
 
         callAddShopApiForSync(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, collection_id, amount, collection,
                 currentDateForShopActi, desc, mAddShopDBModelEntity.doc_degree, billId, orderId, collectionDetailsEntity)

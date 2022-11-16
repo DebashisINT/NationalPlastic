@@ -62,6 +62,7 @@ import kotlin.collections.ArrayList
 class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
     private lateinit var mContext: Context
     private lateinit var quot_no: AppCustomEditText
+    private lateinit var etRemarks: AppCustomEditText
     private lateinit var date: AppCustomTextView
     private lateinit var custName: AppCustomEditText
     private lateinit var projName: AppCustomEditText
@@ -139,6 +140,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
 
     private fun initView(view: View) {
         quot_no = view.findViewById(R.id.et_frag_add_quot_form_Quot_no)
+        etRemarks = view.findViewById(R.id.et_frag_add_quot_form_remarks)
         date = view.findViewById(R.id.tv_frag_add_quot_form_date)
         custName = view.findViewById(R.id.tv_frag_add_quot_form_customer_name)
         projName = view.findViewById(R.id.et_frag_add_quot_form_project_name)
@@ -171,7 +173,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         lltermsRoot = view.findViewById(R.id.ll_terms_frag_add_quot)
 
 
-
+        salesmsan.text = Pref.user_name
 
         if(Pref.NewQuotationShowTermsAndCondition){
             lltermsRoot.visibility=View.VISIBLE
@@ -197,6 +199,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
              Toaster.msgShort(mContext, "No Internet connection")
          }
 
+        salesmsan.text=Pref.user_name
 
         setData()
         OnclickLisener()
@@ -373,9 +376,9 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
             R.id.tv_frag_add_quot_form_freight -> {
                 loadFreight()
             }
-            R.id.tv_frag_add_quot_form_product_salemans->{
+          /*  R.id.tv_frag_add_quot_form_product_salemans->{
                 loadSaleman()
-            }
+            }*/
             R.id.fb_frag_add_quot_add_product->{
 
                 if (TextUtils.isEmpty(product.text.toString())) {
@@ -560,12 +563,13 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
     }
 
     private fun checkValidation() {
-        if (TextUtils.isEmpty(quot_no.text.toString())) {
-            (mContext as DashboardActivity).showSnackMessage("Please select Quot to ")
-            BaseActivity.isApiInitiated = false
-            return
-        }
-        else if (TextUtils.isEmpty(date.text.toString())) {
+//        if (TextUtils.isEmpty(quot_no.text.toString())) {
+//            (mContext as DashboardActivity).showSnackMessage("Please select Quot to ")
+//            BaseActivity.isApiInitiated = false
+//            return
+//        }
+
+        if (TextUtils.isEmpty(date.text.toString())) {
             (mContext as DashboardActivity).showSnackMessage("Please select date ")
             BaseActivity.isApiInitiated = false
             return
@@ -628,7 +632,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         }
 
         addQuotData.user_id = Pref.user_id
-        addQuotData.quotation_number = quot_no.text.toString()
+//        addQuotData.quotation_number = quot_no.text.toString()
         addQuotData.save_date_time = AppUtils.getCurrentDateTime()
         addQuotData.quotation_date_selection =  selectedDate
         addQuotData.project_name = projName.text.toString()
@@ -641,11 +645,14 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         addQuotData.billing = billing.text.toString()
         addQuotData.product_tolerance_of_thickness = product_tolrence.text.toString()
         addQuotData.tolerance_of_coating_thickness = product_coating_tolrence.text.toString()
-        addQuotData.salesman_user_id = salesman_userID
+//        addQuotData.salesman_user_id = salesman_userID
+        addQuotData.salesman_user_id = Pref.user_id
         addQuotData.quotation_created_lat = Pref.latitude.toString()
         addQuotData.quotation_created_long = Pref.longitude.toString()
         addQuotData.quotation_created_address = LocationWizard.getAdressFromLatlng(mContext, Pref.latitude!!.toDouble(), Pref.longitude!!.toDouble())
-
+        addQuotData.document_number = Pref.user_id + AppUtils.getCurrentDateTime().replace(" ","").replace("-","").replace(":","")
+        addQuotData.Remarks = etRemarks.text.toString()
+        addQuotData.quotation_status = "Pending"
         addQuotData.product_list= ArrayList()
 
         addQuotData.product_list=addedProdList

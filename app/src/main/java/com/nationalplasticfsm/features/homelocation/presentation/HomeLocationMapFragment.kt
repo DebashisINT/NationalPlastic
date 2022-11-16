@@ -63,7 +63,7 @@ class HomeLocationMapFragment : BaseFragment(), OnMapReadyCallback {
         rl_map_main.setOnClickListener(null)
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
         mGoogleMap?.uiSettings?.isZoomControlsEnabled = false
 
