@@ -25,7 +25,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +51,7 @@ import com.nationalplasticfsm.faceRec.FaceStartActivity
 import com.nationalplasticfsm.faceRec.FaceStartActivity.detector
 import com.nationalplasticfsm.faceRec.tflite.SimilarityClassifier.Recognition
 import com.nationalplasticfsm.faceRec.tflite.TFLiteObjectDetectionAPIModel
+import com.nationalplasticfsm.features.NewQuotation.dialog.MemberSalesmanListDialog
 import com.nationalplasticfsm.features.addAttendence.api.WorkTypeListRepoProvider
 import com.nationalplasticfsm.features.addAttendence.api.addattendenceapi.AddAttendenceRepoProvider
 import com.nationalplasticfsm.features.addAttendence.api.leavetytpeapi.LeaveTypeRepoProvider
@@ -59,8 +59,6 @@ import com.nationalplasticfsm.features.addAttendence.api.routeapi.RouteRepoProvi
 import com.nationalplasticfsm.features.addAttendence.model.*
 import com.nationalplasticfsm.features.addshop.api.typeList.TypeListRepoProvider
 import com.nationalplasticfsm.features.addshop.model.BeatListResponseModel
-import com.nationalplasticfsm.features.commondialogsinglebtn.CommonDialogSingleBtn
-import com.nationalplasticfsm.features.commondialogsinglebtn.OnDialogClickListener
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.geofence.GeofenceService
 import com.nationalplasticfsm.features.location.LocationFuzedService
@@ -68,10 +66,12 @@ import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
 import com.nationalplasticfsm.features.login.UserLoginDataEntity
 import com.nationalplasticfsm.features.login.model.LoginStateListDataModel
+import com.nationalplasticfsm.features.member.api.TeamRepoProvider
+import com.nationalplasticfsm.features.member.model.TeamListDataModel
+import com.nationalplasticfsm.features.member.model.TeamListResponseModel
 import com.nationalplasticfsm.features.newcollectionreport.PendingCollData
 import com.nationalplasticfsm.features.photoReg.api.GetUserListPhotoRegProvider
 import com.nationalplasticfsm.features.photoReg.model.UserFacePicUrlResponse
-import com.nationalplasticfsm.features.survey.SurveyFromListDialog
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.elvishew.xlog.XLog
@@ -82,7 +82,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.mlkit.vision.common.InputImage
@@ -90,12 +89,10 @@ import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.itextpdf.text.pdf.PdfName.VIEW
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.doAsyncResult
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
@@ -111,6 +108,8 @@ import kotlin.collections.ArrayList
 /**
  * Created by Saikat on 29-08-2018.
  */
+// Revision History
+// 1.0 AddAttendanceFragment AppV 4.0.6 saheli 23-01-2023 25615 mantis add Attendance nearbyDD avalible
 class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog.OnDateSetListener, OnMapReadyCallback {
 
     private lateinit var mContext: Context
@@ -166,6 +165,18 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
     private lateinit var tv_dd: AppCustomTextView
     private lateinit var cv_dd: CardView
 
+    private lateinit var card_root_joint_visit_check: CardView
+    private lateinit var card_root_joint_team_sel: CardView
+    private lateinit var cb_frag_attend_joint_visit: CheckBox
+
+    private lateinit var tv_frag_attend_team_member: AppCustomTextView
+
+    private var member_list: ArrayList<TeamListDataModel>? = null
+
+    private var str_selUserName : String = ""
+    private var str_selUserID : String = ""
+    private var isJointVisitSel : Boolean = false
+
     private var isOnLeave = false
     private var workTypeId = ""
 
@@ -192,6 +203,8 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
     private var toLong = ""
     private var assignedToDDId = ""
 
+    private var isDiswiseNearBYshopVisit : String = "No" // 1.0 AddAttendanceFragment AppV 4.0.6 25615 mantis
+
     private val addAttendenceModel: AddAttendenceInpuModel by lazy {
         AddAttendenceInpuModel()
     }
@@ -201,6 +214,9 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         val view = inflater.inflate(R.layout.fragment_add_attendence, container, false)
         initView(view)
         initClickListener()
+
+        Pref.SelectedBeatIDFromAttend = "0"
+        Pref.SelectedDDIDFromAttend = "0"
 
         /*try {
             if (AppDatabase.getDBInstance()?.workTypeDao()?.getAll()!!.isEmpty())
@@ -288,6 +304,25 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         tv_beat_type= view.findViewById(R.id.tv_beat_type)
         tv_dd = view.findViewById(R.id.tv_dd)
         cv_dd = view.findViewById(R.id.cv_dd_root)
+
+        tv_frag_attend_team_member = view.findViewById(R.id.tv_frag_attend_team_member)
+        card_root_joint_visit_check = view.findViewById(R.id.card_root_joint_visit_check)
+        card_root_joint_team_sel = view.findViewById(R.id.card_root_joint_team_sel)
+        cb_frag_attend_joint_visit = view.findViewById(R.id.cb_frag_attend_joint_visit)
+        card_root_joint_team_sel.setOnClickListener(this)
+        tv_frag_attend_team_member.setOnClickListener(this)
+        card_root_joint_team_sel.visibility = View.GONE
+        card_root_joint_visit_check.visibility = View.GONE
+
+        cb_frag_attend_joint_visit.setOnCheckedChangeListener{ buttonView, isChecked ->
+                if (isChecked){
+                    isJointVisitSel = true
+                    card_root_joint_team_sel.visibility = View.VISIBLE
+                }else{
+                    isJointVisitSel = false
+                    card_root_joint_team_sel.visibility = View.GONE
+                }
+            }
 
 
         tv_beat_type.hint = "Select " + "${Pref.beatText}" + " Type"
@@ -974,6 +1009,12 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                             else {
                                 workTypeId = workTypeList[i].ID.toString()
                                 tv_work_type.text = workTypeList[i].Descrpton
+
+                                if(Pref.IsJointVisitEnable){
+                                    card_root_joint_visit_check.visibility=View.VISIBLE
+                                }else{
+                                    card_root_joint_visit_check.visibility=View.GONE
+                                }
                             }
                         }
                     } else {
@@ -1476,6 +1517,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
     }*/
 
+    @SuppressLint("SuspiciousIndentation", "NewApi")
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.tv_attendance_submit -> {
@@ -1572,32 +1614,41 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                         getBeatListApi(false)
                 }
                 else{
-                    var beatList=AppDatabase.getDBInstance()?.addShopEntryDao()?.getDistinctBeatID(assignedToDDId) as List<String>
+                    var shopTypelist = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopsAccordingToType("1") as ArrayList<AddShopDBModelEntity>
+                    if(shopTypelist.size==0){
+                        val list = AppDatabase.getDBInstance()?.beatDao()?.getAll() as ArrayList<BeatEntity>
 
-                    if(beatList.size>0){
-                        beatList = beatList.filter { it!="" }.distinct()
-                        var listFilteredBeat : ArrayList<BeatEntity> = ArrayList()
-                        doAsync {
-                            listFilteredBeat= ArrayList()
-                            for(i in 0..beatList.size-1){
-                                var obj = AppDatabase.getDBInstance()?.beatDao()?.getSingleItem(beatList.get(i)) as BeatEntity
-                                if(obj!=null){
-                                    listFilteredBeat.add(obj)
+                        if (list != null && list.isNotEmpty())
+                            showBeatListDialog(list)
+                        else
+                            getBeatListApi(false)
+                    }else{
+                        var beatList=AppDatabase.getDBInstance()?.addShopEntryDao()?.getDistinctBeatID(assignedToDDId) as List<String>
+                        if(beatList.size>0){
+                            beatList = beatList.filter { it!="" }.distinct()
+                            var listFilteredBeat : ArrayList<BeatEntity> = ArrayList()
+                            doAsync {
+                                listFilteredBeat= ArrayList()
+                                for(i in 0..beatList.size-1){
+                                    var obj = BeatEntity()
+                                    try{
+                                        var obj = AppDatabase.getDBInstance()?.beatDao()?.getSingleItem(beatList.get(i)) as BeatEntity
+                                        listFilteredBeat.add(obj)
+                                    }catch (ex:Exception){
+                                        ex.printStackTrace()
+                                    }
                                 }
-                                else
-                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
-
-                            }
-                            uiThread {
-                                if (listFilteredBeat != null && listFilteredBeat.isNotEmpty())
-                                    showBeatListDialog(listFilteredBeat)
-                                else
-                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
+                                uiThread {
+                                    if (listFilteredBeat != null && listFilteredBeat.isNotEmpty())
+                                        showBeatListDialog(listFilteredBeat)
+                                    else
+                                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
+                                }
                             }
                         }
+                        else
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
                     }
-                    else
-                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_data_available))
 
                 }
 
@@ -1605,9 +1656,19 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             }
 
             R.id.cv_dd_root->{
-                val list = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopNameByDD("4") as ArrayList<AddShopDBModelEntity>
+                if(Pref.IsALLDDRequiredforAttendance){
+                    //based on assigned to dd
+                    val list = AppDatabase.getDBInstance()?.ddListDao()?.getAll() as ArrayList<AssignToDDEntity>
+                    if (list != null && list.isNotEmpty())
+                        showAssignDDListDialog(list)
+                }else{
+                    val list = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopNameByDD("4") as ArrayList<AddShopDBModelEntity>
                 if (list != null && list.isNotEmpty())
                     showDDListDialog(list)
+                }
+
+
+
             }
 
             R.id.rl_work_type_header -> {
@@ -1666,7 +1727,58 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                 else
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_date_found))
             }
+
+            R.id.card_root_joint_team_sel,R.id.tv_frag_attend_team_member ->{
+                getTeamList()
+            }
+
         }
+    }
+
+    private fun getTeamList() {
+        if (!AppUtils.isOnline(mContext)) {
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+            return
+        }
+        progress_wheel.spin()
+
+        val repository = TeamRepoProvider.teamRepoProvider()
+        BaseActivity.compositeDisposable.add(
+            repository.teamList(Pref.user_id!!, if(Pref.IsShowAllEmployeeforJointVisit) true else false, if(Pref.IsShowAllEmployeeforJointVisit) true else false)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val response = result as TeamListResponseModel
+                    XLog.d("GET TEAM DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                    if (response.status == NetworkConstant.SUCCESS) {
+                        progress_wheel.stopSpinning()
+                        if (response.member_list != null && response.member_list!!.size > 0) {
+                            member_list = response.member_list!!
+                            loadSaleman()
+                        } else {
+                            (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                        }
+                    } else {
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                    }
+                }, { error ->
+                    XLog.d("GET TEAM DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                })
+        )
+    }
+
+    private fun loadSaleman() {
+        MemberSalesmanListDialog.newInstance("Select Member",member_list!!){
+            tv_frag_attend_team_member.text=it.user_name
+            str_selUserName=it.user_name
+            Pref.JointVisitSelectedUserName=it.user_name.toString()
+            str_selUserID=it.user_id
+        }.show((mContext as DashboardActivity).supportFragmentManager, "")
+
     }
 
 
@@ -1683,6 +1795,15 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         DDWiseBeatListCustomDialog.newInstance(list as ArrayList<AddShopDBModelEntity>) {
             tv_dd.text = it.shopName
             assignedToDDId = it.shop_id!!
+            Pref.SelectedDDIDFromAttend = assignedToDDId
+        }.show((mContext as DashboardActivity).supportFragmentManager, "")
+
+    }
+
+    private fun showAssignDDListDialog(list: ArrayList<AssignToDDEntity>) {
+        DDAssignedWiseBeatListCustomDialog.newInstance(list as ArrayList<AssignToDDEntity>) {
+            tv_dd.text = it.dd_name
+            assignedToDDId = it.dd_id!!
             Pref.SelectedDDIDFromAttend = assignedToDDId
         }.show((mContext as DashboardActivity).supportFragmentManager, "")
 
@@ -1832,7 +1953,9 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         if (!isOnLeave) {
             if (TextUtils.isEmpty(workTypeId))
                 (mContext as DashboardActivity).showSnackMessage("Please select work type")
-            else if(TextUtils.isEmpty(mbeatId) && Pref.IsBeatRouteAvailableinAttendance)
+             if (Pref.IsJointVisitEnable && TextUtils.isEmpty(tv_frag_attend_team_member.text.toString().trim()))
+                (mContext as DashboardActivity).showSnackMessage("Please select team member")
+            else if(TextUtils.isEmpty(mbeatId) && Pref.IsBeatRouteAvailableinAttendance && false)
                 if(Pref.IsDistributorSelectionRequiredinAttendance ){
                     if(TextUtils.isEmpty(assignedToDDId)){
                         openDialogPopup("Hi! (${Pref.user_name})","Please select ${Pref.ddText}")
@@ -2226,6 +2349,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
         addAttendenceModel.beat_id="0"
 
+
         val repository = AddAttendenceRepoProvider.addAttendenceRepo()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -2609,12 +2733,55 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
             addAttendenceModel.beat_id =  if(Pref.IsBeatRouteAvailableinAttendance) Pref.SelectedBeatIDFromAttend else "0"
 
+
+//            addAttendenceModel.IsJointVisit = if(isJointVisitSel==true) "1" else "0"
+            addAttendenceModel.IsJointVisit = if(isJointVisitSel==true) isJointVisitSel.toString() else "false"
+            addAttendenceModel.JointVisitTeam_MemberName = str_selUserName
+            addAttendenceModel.JointVisitTeam_Member_User_ID =if(!str_selUserID.equals("")) str_selUserID else "0"
+            // 1.0 AddAttendanceFragment AppV 4.0.6 25615 mantis
+            checkDDwiseNearbyShopAvaliable()
+
+            addAttendenceModel.isDistributorwiseNearbyShopVisit = isDiswiseNearBYshopVisit
+
             doAttendanceViaApiOrPlanScreen()
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
+    // 1.0 AddAttendanceFragment AppV 4.0.6 25615 mantis
+    private fun checkDDwiseNearbyShopAvaliable() {
+        val currentLocation = Location("")
+        currentLocation.latitude = Pref.current_latitude.toDouble()
+        currentLocation.longitude = Pref.current_longitude.toDouble()
+        val allDDWiseShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopsAccordingToType("4")
+        val newDList = java.util.ArrayList<AddShopDBModelEntity>()
+        for (i in allDDWiseShopList.indices) {
+            newDList.add(allDDWiseShopList[i])
+        }
+        if (newDList != null && newDList.size > 0) {
+            for (i in 0 until newDList.size) {
+                val ddLat: Double = newDList[i].shopLat
+                val ddLong: Double = newDList[i].shopLong
+                if (ddLat != null && ddLong != null) {
+                    val ddLocation = Location("")
+                    ddLocation.latitude = ddLat
+                    ddLocation.longitude = ddLong
+                    //val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, LocationWizard.NEARBY_RADIUS)
+                    val isDDNearby = FTStorageUtils.checkShopPositionWithinRadious(currentLocation, ddLocation,Pref.DistributorGPSAccuracy.toInt())
+                    if (isDDNearby) {
+                        isDiswiseNearBYshopVisit = "Yes"
+                        break
+                    }
+
+                    }
+                }
+            }
+
+
+        }
+
 
     private fun doAttendanceViaApiOrPlanScreen() {
         if (!willShowUpdateDayPlan) {

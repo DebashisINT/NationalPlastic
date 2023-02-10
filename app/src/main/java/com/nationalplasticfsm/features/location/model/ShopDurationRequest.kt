@@ -9,4 +9,5 @@ class ShopDurationRequest {
     var shop_list: List<ShopDurationRequestData>? = null
     var status: String? = null
     var message: String? = null
+    var isnewShop: Int = 0
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+    <!--1.0 Notification Design  AppV 4.0.6 Saheli    30/01/2023 mantis 25642-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -36,10 +37,12 @@
         android:paddingRight="@dimen/_10sdp"
         android:paddingBottom="@dimen/_5sdp">
 
+        <!--1.0 Notification Design  AppV 4.0.6 mantis 25630-->
         <TextView
             android:id="@+id/title_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minHeight="@dimen/_125sdp"
             android:text="Header"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/_11sdp" />

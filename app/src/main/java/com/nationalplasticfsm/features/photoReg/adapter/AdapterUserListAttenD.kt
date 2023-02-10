@@ -7,17 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.appcompat.view.menu.ListMenuItemView
 import androidx.recyclerview.widget.RecyclerView
 import com.nationalplasticfsm.R
+import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.features.photoReg.model.UserListResponseModel
 import com.squareup.picasso.Cache
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.*
 import kotlinx.android.synthetic.main.row_user_list_face_attend.view.*
 import kotlinx.android.synthetic.main.row_user_list_face_regis.view.*
-import kotlinx.android.synthetic.main.row_user_list_face_regis.view.photo_reg_dd_name_tv
 import kotlinx.android.synthetic.main.row_user_list_face_regis.view.photo_reg_user_name_tv
 
 class AdapterUserListAttenD(var mContext: Context, var customerList:ArrayList<UserListResponseModel>,val listner:PhotoAttendanceListner,private val getSize: (Int) -> Unit):
@@ -58,18 +58,19 @@ class AdapterUserListAttenD(var mContext: Context, var customerList:ArrayList<Us
         fun bindItems(){
             itemView.apply {
                 photo_reg_user_name_tv.text = mList?.get(adapterPosition)?.user_name
-                photo_reg_dd_name_tv.text="Distributor : "+mList?.get(adapterPosition)?.ShowDDInFaceRegistration
+//                photo_reg_dd_name_tv.text="Distributor : "+mList?.get(adapterPosition)?.ShowDDInFaceRegistration
 
-                if(mList?.get(adapterPosition)?.RegisteredAadhaarNo!=null && mList?.get(adapterPosition)?.RegisteredAadhaarNo!!.isNotEmpty()){
+             /*   if(mList?.get(adapterPosition)?.RegisteredAadhaarNo!=null && mList?.get(adapterPosition)?.RegisteredAadhaarNo!!.isNotEmpty()){
                     photo_reg_user_adhaar_tv.text = "Aadhaar No : "+mList?.get(adapterPosition)?.RegisteredAadhaarNo
                 }
-                else{
+               else{
                     photo_reg_user_adhaar_tv.text = "Aadhaar not Registered."
-                }
+                }*/
 
 
                 if(mList?.get(adapterPosition)!!.isFaceRegistered!!){
                     tv_row_user_list_face_attend_face_not.visibility=View.GONE
+                    iv_row_face_attd_face.visibility=View.VISIBLE
                     var picasso = Picasso.Builder(mContext)
                             .memoryCache(Cache.NONE)
                             .indicatorsEnabled(true)
@@ -82,12 +83,33 @@ class AdapterUserListAttenD(var mContext: Context, var customerList:ArrayList<Us
                             .into(iv_row_face_attd_face)
                 }else{
                     tv_row_user_list_face_attend_face_not.visibility=View.VISIBLE
+                    iv_row_face_attd_face.visibility=View.GONE
                 }
 
                 click_for_photo_attd.setOnClickListener{listner?.getUserInfoOnLick(mList?.get(adapterPosition)!!)}
                 click_for_photo_attd_report.setOnClickListener{listner?.getUserInfoAttendReportOnLick(mList?.get(adapterPosition)!!)}
 
+                photo_reg_sales_reg_tv.text="Sales Rep Type : "+mList?.get(adapterPosition)?.type_name
 
+                if(Pref.IsAllowClickForVisit){
+                    if(mList?.get(adapterPosition)!!.IsAllowClickForVisitForSpecificUser!!){
+                        click_for_photo_attd.visibility=View.VISIBLE
+                    }else{
+                        click_for_photo_attd.visibility=View.GONE
+                    }
+                }else{
+                    click_for_photo_attd.visibility=View.GONE
+                }
+
+                try{
+                    if(mList?.get(adapterPosition)?.Employee_Designation!!.length>0){
+                        photo_reg_designation_tv.text =mList?.get(adapterPosition)?.Employee_Designation!!
+                    }else{
+                        photo_reg_designation_tv.text = ""
+                    }
+                }catch (ex:Exception){
+                    photo_reg_designation_tv.text = ""
+                }
 
             }
         }

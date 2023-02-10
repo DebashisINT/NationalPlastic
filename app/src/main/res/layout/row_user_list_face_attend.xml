@@ -30,21 +30,65 @@
                     android:id="@+id/photo_reg_user_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
-                    android:layout_marginLeft="@dimen/_11sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:textColor="@color/login_txt_color"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11sdp"
+                    android:hint="Name"/>
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/photo_reg_user_adhaar_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
-                    android:layout_marginLeft="@dimen/_11sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:textColor="@color/login_txt_color"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11sdp"
+                    android:visibility="gone"/>
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/photo_reg_sales_reg_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:textColor="@color/login_txt_color"
+                    android:textSize="@dimen/_10sdp"
+                    android:hint="Sales Rep Type : "/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/_30sdp"
+                    android:orientation="horizontal">
+
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:gravity="center|start"
+                        android:textColor="@color/login_txt_color"
+                        android:textSize="@dimen/_10sdp"
+                        android:text="Designation       : "/>
+
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:id="@+id/photo_reg_designation_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_30sdp"
+                        android:layout_marginLeft="@dimen/_1sdp"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:textColor="@color/login_txt_color"
+                        android:textSize="@dimen/_10sdp"
+                        android:hint="Designation"/>
+
+                </LinearLayout>
+
+
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/photo_reg_dd_name_tv"
@@ -54,7 +98,8 @@
                     android:layout_weight="1"
                     android:gravity="center|start"
                     android:textColor="@color/login_txt_color"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11sdp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -90,9 +135,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_3sdp"
-            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_3sdp"
             android:layout_marginBottom="@dimen/_3sdp"
             android:background="@color/light_gray" />
 
@@ -111,8 +156,8 @@
                 android:layout_gravity="end"
                 android:layout_weight="1"
                 android:gravity="start|center"
-                android:paddingStart="@dimen/_10sdp"
-                android:text="Click for Attendance"
+                android:paddingStart="@dimen/_5sdp"
+                android:text="Click for Visit"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/_11sdp" />
 
@@ -129,8 +174,8 @@
                 android:layout_gravity="end"
                 android:layout_weight="1"
                 android:gravity="end|center"
-                android:paddingEnd="@dimen/_10sdp"
-                android:text="View Attendance"
+                android:paddingEnd="@dimen/_5sdp"
+                android:text="View Visit"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/_11sdp" />
 

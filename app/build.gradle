@@ -25,8 +25,8 @@ android {
         applicationId "com.nationalplasticfsm"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 90
-        versionName "4.0.5"
+        versionCode 91
+        versionName "4.0.6"
         //versionName "2.3.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -241,7 +241,7 @@ dependencies {
 
     //Barcode, Qrcode Scanner
 
-    //implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
+    //implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'aa
     implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
 
@@ -256,7 +256,7 @@ dependencies {
 
 
     implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
-    implementation 'com.google.mlkit:face-detection:16.1.5'
+    implementation 'com.google.mlkit:face-detection:16.1.0'
 
     implementation 'com.google.android.gms:play-services-location:20.0.0'   //location
     implementation 'com.google.android.gms:play-services-maps:18.1.0'   //location

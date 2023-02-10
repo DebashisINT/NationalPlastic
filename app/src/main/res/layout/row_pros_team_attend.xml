@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_2sdp"
+    app:cardElevation="@dimen/_3sdp"
+    app:cardCornerRadius="@dimen/_3sdp">
+
+    <TextView
+        android:id="@+id/tv_row_pros_team_attend_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_10sdp"
+        android:background="@drawable/shape_cursor_two"/>
+
+</androidx.cardview.widget.CardView>

@@ -62,6 +62,7 @@ import java.util.*
 /**
  * Created by Saikat on 17-12-2018.
  */
+// 1.0 ViewPPDDListOutstandingFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class ViewPPDDListOutstandingFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mViewPPDDListAdapter: ViewPPDDListAdapter
@@ -1379,6 +1380,12 @@ class ViewPPDDListOutstandingFragment : BaseFragment(), View.OnClickListener {
         }catch (ex:Exception){
             shopDurationData.spent_duration="00:00:10"
         }
+        //New shop Create issue
+        shopDurationData.isnewShop = shopActivity.isnewShop
+
+        // 1.0 ViewPPDDListOutstandingFragment AppV 4.0.6  multiple contact Data added on Api called
+        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {

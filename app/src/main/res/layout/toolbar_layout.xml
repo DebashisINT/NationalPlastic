@@ -236,13 +236,13 @@
 
                 <ImageView
                     android:id="@+id/iv_delete_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
                     android:contentDescription="@null"
                     android:paddingLeft="@dimen/_5sdp"
                     android:paddingTop="@dimen/_5sdp"
                     android:paddingBottom="@dimen/_5sdp"
-                    android:src="@drawable/ic_cart_icon" />
+                    android:src="@drawable/icon_cart3" />
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_cart_count"
@@ -308,12 +308,12 @@
 
         <ImageView
             android:id="@+id/iv_sync_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
             android:padding="@dimen/_5sdp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_search_icon"
-            android:src="@drawable/ic_header_reload_icon"
+            android:src="@drawable/icon_refresh1"
             android:visibility="gone"/>
 
         <!--<RelativeLayout

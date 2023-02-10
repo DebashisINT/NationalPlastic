@@ -11,7 +11,12 @@ import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.features.addshop.model.*
 import com.nationalplasticfsm.features.addshop.model.assigntopplist.AddShopUploadImg
 import com.nationalplasticfsm.features.addshop.model.assigntopplist.AddshopImageMultiReqbody1
+import com.nationalplasticfsm.features.addshop.presentation.ShopListSubmitResponse
+import com.nationalplasticfsm.features.addshop.presentation.multiContactRequestData
+import com.nationalplasticfsm.features.beatCustom.BeatGetStatusModel
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
+import com.nationalplasticfsm.features.nearbyshops.presentation.ShopModifiedListResponse
+import com.nationalplasticfsm.features.nearbyshops.presentation.ShopModifiedUpdateList
 import com.google.gson.Gson
 import io.reactivex.Observable
 import okhttp3.MediaType
@@ -36,10 +41,30 @@ class AddShopRepository(val apiService: AddShopApi) {
         return apiService.getAddShop(shop)
     }
 
+    // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+    fun addMutiContact(multiContact: multiContactRequestData): Observable<BaseResponse> {
+        return apiService.getMutiContact(multiContact)
+    }
+    fun updateMutiContact(multiContact: multiContactRequestData): Observable<BaseResponse> {
+        return apiService.updateMutiContact(multiContact)
+    }
+
+    fun fetchMultiContactData(user_id: String,session_token: String): Observable<ShopListSubmitResponse>{
+        return apiService.fetchMultiContactData(user_id,session_token)
+    }
+
     fun fetchData(shop_id:String): Observable<imageListResponse> {
         return apiService.geimagelist(shop_id,Pref.user_id!!,Pref.session_token!!)
     }
 
+    // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+    fun checkModifiedShopList(): Observable<ShopModifiedListResponse> {
+        return apiService.getModifiedShopList(Pref.user_id!!,Pref.session_token!!)
+    }
+    // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+    fun updateModifiedShopList(obj : ShopModifiedUpdateList): Observable<BaseResponse> {
+        return apiService.getModifiedShopListApi(obj)
+    }
     fun addShopWithImage(shop: AddShopRequestData, shop_image: String, context: Context): Observable<AddShopResponse> {
         var profile_img_data: MultipartBody.Part? = null
 

@@ -6,4 +6,5 @@
         android:startColor="@color/color_silver_dark"
         android:angle="360"
         android:type="linear"/>
+    <corners android:radius="@dimen/_10sdp"/>
 </shape>

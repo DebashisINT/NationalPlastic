@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppConstant
 import com.nationalplasticfsm.app.AppDatabase
@@ -35,6 +36,8 @@ import java.util.*
 /**
  * Created by sandip on 10-11-2017.
  */
+// Revision History
+// 1.0 NotificationUtils Design  AppV 4.0.6 Saheli    30/01/2023 mantis 25630
 class NotificationUtils(headerText: String, bodyText: String, shopId: String, localShopId: String) {
 
     var headerText: String = headerText
@@ -273,7 +276,8 @@ class NotificationUtils(headerText: String, bodyText: String, shopId: String, lo
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setGroup("FTS Group")
                     .setGroupSummary(true)
-                    .setContent(remoteView)
+                    .setContentText(remoteMessage?.data?.get("body").toString()) //1.0 Notification Design  AppV 4.0.6 mantis 25630
+//                    .setContent(remoteView)  //1.0 Notification Design  AppV 4.0.6 mantis 25630 off
                     .build()
 
             notificationmanager.notify(m, notificationBuilder)
@@ -1447,6 +1451,9 @@ class NotificationUtils(headerText: String, bodyText: String, shopId: String, lo
         shopIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(applicationContext, 1, shopIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        var remoteMsg = remoteMessage?.data?.get("body").toString()
+        CustomStatic.QutoNoFromNoti = remoteMsg.substring(remoteMsg.indexOf("(")+1, remoteMsg.indexOf(")"));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channelId = AppUtils.notificationChannelId

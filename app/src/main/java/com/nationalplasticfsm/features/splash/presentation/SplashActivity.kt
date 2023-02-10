@@ -3,11 +3,14 @@ package com.nationalplasticfsm.features.splash.presentation
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
 import android.net.Uri
 import android.os.*
@@ -16,10 +19,6 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.nationalplasticfsm.BuildConfig
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.NetworkConstant
@@ -38,9 +37,8 @@ import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.login.presentation.LoginActivity
 import com.nationalplasticfsm.features.splash.presentation.api.VersionCheckingRepoProvider
 import com.nationalplasticfsm.features.splash.presentation.model.VersionCheckingReponseModel
+import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.elvishew.xlog.XLog
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -52,7 +50,7 @@ import kotlin.system.exitProcess
 /**
  * Created by Pratishruti on 26-10-2017.
  */
-
+// saheli
 class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBack {
 
     private var isLoginLoaded: Boolean = false
@@ -65,13 +63,16 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
     data class PermissionDetails(var permissionName: String, var permissionTag: Int)
 
 //test
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "WrongConstant")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+    //startActivity( Intent(Settings.ACTION_BATTERY_SAVER_SETTINGS))
+
+
         //Handler().postDelayed({ goToNextScreen() }, 2000)
-    println("splash " + Pref.user_id);
         //Code by wasim
         // this is for test purpose timing seeting
         // AlarmReceiver.setAlarm(this, 17, 45, 2017)
@@ -90,7 +91,6 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
     //email.type = "message/rfc822"
     startActivity(Intent.createChooser(email, "Send mail..."))*/
 
-
     val receiver = ComponentName(this, AlarmBootReceiver::class.java)
         packageManager.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
 
@@ -98,8 +98,7 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
         progress_wheel.stopSpinning()
 
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             if (Pref.isLocationPermissionGranted)
                 initPermissionCheck()
             else {
@@ -125,6 +124,33 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
         permissionCheck()
     }
 
+
+    fun checkBatteryOptiSettings(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val intent = Intent()
+            val packageName = packageName
+            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+
+                //Toaster.msgLong(this,"Please Don't optimize your battery for this app.")
+                CommonDialog.getInstance(getString(R.string.app_name), "You must select the option 'Don't Optimise' to use this app. " ,
+                    "Cancel", "Ok", false, object : CommonDialogClickListener {
+                        override fun onLeftClick() {
+                           finish()
+                        }
+
+                        override fun onRightClick(editableData: String) {
+                            goTONextActi()
+                        }
+
+                    }).show(supportFragmentManager, "")
+                println("battery dialog scr")
+            } else{
+                println("battery next scr")
+                goTONextActi()
+            }
+        }
+    }
 
 
     private fun locDesc(){
@@ -452,6 +478,18 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
 
 
     fun goTONextActi(){
+
+        /*val intent = Intent()
+        val packageName = packageName
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        var t=pm.isIgnoringBatteryOptimizations(packageName)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(packageName)) {
+            Handler().postDelayed(Runnable {
+                println("battery hit 175")
+                startActivityForResult( Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),175) }, 1000)
+            return
+        }*/
+
         if (TextUtils.isEmpty(Pref.user_id) || Pref.user_id.isNullOrBlank()) {
             if (!isLoginLoaded) {
                 isLoginLoaded = true
@@ -508,6 +546,12 @@ class SplashActivity : BaseActivity(), GpsStatusDetector.GpsStatusDetectorCallBa
         if(requestCode == 401){
             goTONextActi()
         }
+
+        /*if(requestCode == 175){
+            println("battery get 175")
+            checkBatteryOptiSettings()
+            return
+        }*/
 
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 100) {

@@ -95,6 +95,9 @@ import kotlin.collections.ArrayList
 /**
  * Created by Saikat on 29-11-2018.
  */
+// 1.0 NewDateWiseOrderListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
+// 2.0 NewDateWiseOrderListFragment AppV 4.0.6 saheli 20-01-2023 Pdf module updation mantis 25595
+// 3.0 NewDateWiseOrderListFragment AppV 4.0.6 saheli 20-01-2023 Pdf module Mrp & discount mantis 25601
 class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListener {
 
     lateinit var OrderListAdapter: OrderListAdapter
@@ -400,6 +403,13 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
         else
             shopDurationData.approximate_1st_billing_value = ""
+
+        //New shop Create issue
+        shopDurationData.isnewShop = shopActivity.isnewShop
+
+        // 1.0 NewDateWiseOrderListFragment AppV 4.0.6  multiple contact Data added on Api called
+        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
         shopDataList.add(shopDurationData)
 
@@ -1231,8 +1241,8 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             cell11.borderColor = BaseColor.GRAY
             tableHeaderOrder.addCell(cell11)
 
-
-            val cell222 = PdfPCell(Phrase("Invoice No     :     " + invoiceNo + "\n\n" + "Invoice Date  :     " + invoiceDate, font))
+            // 2.0 NewOrderListFragment AppV 4.0.6 Pdf module updation mantis 25595
+            val cell222 = PdfPCell(Phrase("Invoice No     :     " + invoiceNo + "\n\n" + "Invoice Date  :     " + AppUtils.getFormatedDateNew(invoiceDate,"yyyy-mm-dd", "dd-mm-yyyy"), font))
             cell222.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell222.borderColor = BaseColor.GRAY
             cell222.paddingBottom=10f
@@ -1252,8 +1262,8 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             cellBodySl1.borderColor = BaseColor.GRAY
 //            tableRows.addCell(cellBodySl1)
 
-
-            var cellBody22 = PdfPCell(Phrase(InvoicDate + invoiceNo + "Invoice Date: " + invoiceDate, font))
+            // 2.0 NewOrderListFragment AppV 4.0.6 Pdf module updation mantis 25595
+            var cellBody22 = PdfPCell(Phrase(InvoicDate + invoiceNo + "Invoice Date: " + AppUtils.getFormatedDateNew(invoiceDate,"yyyy-mm-dd", "dd-mm-yyyy"), font))
             cellBody22.setHorizontalAlignment(Element.ALIGN_LEFT)
             cellBody22.borderColor = BaseColor.GRAY
 //            tableRows.addCell(cellBody22)
@@ -1292,6 +1302,18 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             document.add(Contact)
 
 
+            // 2.0 NewOrderListFragment AppV 4.0.6 Pdf module updation mantis 25595
+            val PanNo = Paragraph("PAN                     :      " + if(shop?.shopOwner_PAN == null) "" else shop?.shopOwner_PAN!!, font1)
+            PanNo.alignment = Element.ALIGN_LEFT
+            PanNo.spacingAfter = 2f
+            document.add(PanNo)
+
+            val GSTNNo = Paragraph("GSTIN                  :      " + if(shop?.gstN_Number==null) "" else shop?.gstN_Number, font1)
+            GSTNNo.alignment = Element.ALIGN_LEFT
+            GSTNNo.spacingAfter = 2f
+            document.add(GSTNNo)
+
+
             if (Pref.isPatientDetailsShowInOrder) {
                 val PatientName = Paragraph("Patient Name        :  " + obj.patient_name, font1)
                 PatientName.alignment = Element.ALIGN_LEFT
@@ -1315,7 +1337,22 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
 
             // table header
             //val widths = floatArrayOf(0.55f, 0.05f, 0.2f, 0.2f)
-            val widths = floatArrayOf(0.06f, 0.58f, 0.07f, 0.07f, 0.07f, 0.15f)
+//            val widths = floatArrayOf(0.06f, 0.58f, 0.07f, 0.07f, 0.07f, 0.15f)
+            // mantis 25601
+            //val widths = floatArrayOf(0.06f, 0.36f, 0.07f, 0.07f, 0.07f, 0.15f,0.07f, 0.15f)
+            var widths = floatArrayOf(0.06f, 0.36f, 0.07f, 0.07f, 0.07f, 0.15f,0.07f, 0.15f)
+            if(Pref.IsViewMRPInOrder && Pref.IsDiscountInOrder){
+                widths = floatArrayOf(0.06f, 0.36f, 0.07f, 0.07f, 0.07f, 0.15f,0.07f, 0.15f)
+            }
+            else if(Pref.IsViewMRPInOrder) {
+                widths = floatArrayOf(0.06f, 0.40f, 0.11f, 0.11f, 0.07f,0.10f,0.15f)
+            }
+            else if(Pref.IsDiscountInOrder) {
+                widths = floatArrayOf(0.06f, 0.40f, 0.07f, 0.07f, 0.15f,0.10f, 0.15f)
+            }
+            else{
+                widths = floatArrayOf(0.06f, 0.40f, 0.13f, 0.13f,0.13f, 0.15f)
+            }
 
             var tableHeader: PdfPTable = PdfPTable(widths)
             tableHeader.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT)
@@ -1341,6 +1378,21 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             cell21.borderColor = BaseColor.GRAY
             tableHeader.addCell(cell21);
 
+            // AppV 4.0.6  mantis 25601
+            if(Pref.IsViewMRPInOrder) {
+                val cellMrp = PdfPCell(Phrase("MRP ", font))
+                cellMrp.setHorizontalAlignment(Element.ALIGN_LEFT);
+                cellMrp.borderColor = BaseColor.GRAY
+                tableHeader.addCell(cellMrp);
+            }
+
+            if(Pref.IsDiscountInOrder){
+                val cellDiscount = PdfPCell(Phrase("Discount ", font))
+                cellDiscount.setHorizontalAlignment(Element.ALIGN_LEFT);
+                cellDiscount.borderColor = BaseColor.GRAY
+                tableHeader.addCell(cellDiscount);
+            }
+
             val cell3 = PdfPCell(Phrase("Rate ", font))
             cell3.setHorizontalAlignment(Element.ALIGN_LEFT);
             cell3.borderColor = BaseColor.GRAY
@@ -1360,6 +1412,9 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             var unit: String = ""
             var rate: String = ""
             var amount: String = ""
+            // AppV 4.0.6  mantis 25601
+            var mrp: String = ""
+            var discount: String = ""
 
             val productList = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToOrderId(obj.order_id!!)
 
@@ -1367,9 +1422,21 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                 srNo = (i+1).toString() +" "
                 item = productList!!.get(i).product_name +  "       "
                 qty = productList!!.get(i).qty +" "
-                unit = "KG" +" "
+                //unit = "KG" +" "
+                unit = productList!!.get(i).watt.toString()+" "
                 rate =   getString(R.string.rupee_symbol_with_space)+" "+productList !!.get(i).rate +" "
                 amount = getString(R.string.rupee_symbol_with_space)+" "+productList!!.get(i).total_price +" "
+
+                // AppV 4.0.6  mantis 25601
+                try{
+                    mrp = getString(R.string.rupee_symbol_with_space)+" "+productList!!.get(i).order_mrp+" "
+                    discount = getString(R.string.rupee_symbol_with_space)+" "+productList!!.get(i).order_discount +" "
+                }catch (ex:Exception){
+                    mrp = getString(R.string.rupee_symbol_with_space)+" "
+                    discount = getString(R.string.rupee_symbol_with_space)+" "
+                }
+
+
 
 
                 val tableRows = PdfPTable(widths)
@@ -1398,6 +1465,21 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                 cellBody21.borderColor = BaseColor.GRAY
                 tableRows.addCell(cellBody21)
 
+                // AppV 4.0.6  mantis 25601
+                if(Pref.IsViewMRPInOrder){
+                val cellMrp = PdfPCell(Phrase(mrp, font1))
+                cellMrp.setHorizontalAlignment(Element.ALIGN_LEFT);
+                cellMrp.borderColor = BaseColor.GRAY
+                tableRows.addCell(cellMrp);
+                }
+
+                if(Pref.IsDiscountInOrder){
+                val cellDiscount = PdfPCell(Phrase(discount, font1))
+                cellDiscount.setHorizontalAlignment(Element.ALIGN_LEFT);
+                cellDiscount.borderColor = BaseColor.GRAY
+                tableRows.addCell(cellDiscount);
+                }
+
                 var cellBody3 = PdfPCell(Phrase(rate, font1))
                 cellBody3.setHorizontalAlignment(Element.ALIGN_LEFT)
                 cellBody3.borderColor = BaseColor.GRAY
@@ -1407,6 +1489,7 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                 cellBody4.setHorizontalAlignment(Element.ALIGN_LEFT)
                 cellBody4.borderColor = BaseColor.GRAY
                 tableRows.addCell(cellBody4)
+
 
                 document.add(tableRows)
 
@@ -1601,6 +1684,11 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             product.total_scheme_price = list[i].total_scheme_price
 
             product.MRP = list[i].MRP
+
+            //mantis 25601
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
+
             productList.add(product)
         }
 
@@ -2208,6 +2296,10 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             product.total_scheme_price = list[i].total_scheme_price
 
             product.MRP = list[i].MRP
+
+            //mantis 25601
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
             productList.add(product)
         }
 
@@ -2697,6 +2789,13 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 NewDateWiseOrderListFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -2778,6 +2877,15 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
                     shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                 else
                     shopDurationData.approximate_1st_billing_value = ""
+
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 NewDateWiseOrderListFragment AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
+
 
                 shopDataList.add(shopDurationData)
             }
@@ -3148,6 +3256,10 @@ class NewDateWiseOrderListFragment : BaseFragment(), DatePickerListener, View.On
             product.total_price = list[j].total_price
             product.product_name = list[j].product_name
             product.MRP = list[j].MRP
+
+            //mantis 25601 23-01-2023
+            product.order_mrp = list[j].order_mrp
+            product.order_discount = list[j].order_discount
             productList.add(product)
         }
 

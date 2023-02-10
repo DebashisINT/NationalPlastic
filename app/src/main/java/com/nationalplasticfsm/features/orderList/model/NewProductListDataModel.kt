@@ -19,4 +19,6 @@ class NewProductListDataModel {
     var scheme_rate: String? = null
     var total_scheme_price: String? = null
     var MRP: String? = null
+    var order_mrp: String? = null
+    var order_discount: String? = null
 }

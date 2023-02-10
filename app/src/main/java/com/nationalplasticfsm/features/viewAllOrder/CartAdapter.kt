@@ -17,6 +17,7 @@ import com.nationalplasticfsm.app.domain.ProductListEntity
 import com.nationalplasticfsm.app.domain.ProductRateEntity
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.CustomSpecialTextWatcher
+import com.nationalplasticfsm.app.utils.CustomSpecialTextWatcher2
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.cart_adapter_body_layout_newchange.view.*
 import kotlinx.android.synthetic.main.item_right_menu.view.*
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.item_right_menu.view.*
 /**
  * Created by Saikat on 09-11-2018.
  */
+// 1.0 CartAdapter AppV 4.0.6  Saheli    25/01/2023  mantis 25623
 class CartAdapter(private val context: Context, private val selectedProductList: ArrayList<ProductListEntity>?, private val listener: OnProductClickListener) :
         RecyclerView.Adapter<CartAdapter.MyViewHolder>() {
 
@@ -176,13 +178,16 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                         if (Pref.isRateNotEditable && list != null && list.size > 0) {
                             itemView.et_rate.isEnabled = false
 //                            itemView.scheme_et_rate.isEnabled = false
-                            itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
+//                            itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]))
+                            itemView.et_rate.setText(String.format("%.2f", ((context as DashboardActivity).rateList[adapterPosition].toDouble())))
+
 //                            itemView.scheme_et_rate.setText(((context as DashboardActivity).schemarateList[adapterPosition]))
                         } else {
                             itemView.et_rate.isEnabled = true
 //                            itemView.scheme_et_rate.isEnabled = true
                             if ((context as DashboardActivity).rateList[adapterPosition] > "0.00")
-                                itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
+                                itemView.et_rate.setText(String.format("%.2f", ((context as DashboardActivity).rateList[adapterPosition].toDouble())))
+//                                itemView.et_rate.setText(((context as DashboardActivity).rateList[adapterPosition]/*.toFloat().toInt()*/).toString())
                             else
                                 itemView.et_rate.setText("")
 
@@ -596,6 +601,48 @@ class CartAdapter(private val context: Context, private val selectedProductList:
                 })*/
 
                 //(context as DashboardActivity).totalPrice.add(totalPrice.toDouble())
+                // mantis 25623
+                if(Pref.IsDiscountEditableInOrder){
+                    itemView.rl_cart_adapter_discount.visibility = View.VISIBLE
+                }
+                else{
+                    itemView.rl_cart_adapter_discount.visibility = View.GONE
+                }
+                var viewDiscount = categoryList!!.get(adapterPosition).product_discount_show
+                if(viewDiscount!!.isNotEmpty()|| !viewDiscount.equals("")){
+                    itemView.et_cart_adapter_discount.setText(categoryList!!.get(adapterPosition).product_discount_show)
+                }
+                else{
+                    itemView.et_cart_adapter_discount.setText("0.00")
+                }
+
+                itemView.et_cart_adapter_discount.addTextChangedListener(
+                    CustomSpecialTextWatcher2(itemView.et_cart_adapter_discount, 2, 2, object : CustomSpecialTextWatcher2.GetCustomTextChangeListener {
+                        override fun beforeTextChange(text: String) {
+
+                        }
+
+                        override fun customTextChange(p0: String) {
+                            var strDis :String = p0!!.toString()
+                            if (strDis!!.equals("")){
+                                return
+                            }
+                            else{
+                                var mrpShow = categoryList!!.get(adapterPosition).product_mrp_show
+                                if(mrpShow!!.isNotEmpty()|| !mrpShow.equals("")|| !mrpShow.equals("0")|| !mrpShow.equals("0.0")||!mrpShow.equals("0.00")){
+                                    var newRate=(categoryList!!.get(adapterPosition).product_mrp_show)!!.toString().trim().toDouble() * (itemView.et_cart_adapter_discount.text.toString().toDouble())
+                                    var newRatewithdis = newRate/100
+                                    var oriPrice = (categoryList!!.get(adapterPosition).product_mrp_show)!!.toDouble() - newRatewithdis
+                                    itemView.et_rate.setText(oriPrice.toString())
+                                }
+                                else{
+
+                                }
+
+                            }
+                        }
+                    }))
+
 
             } catch (e: Exception) {
                 e.printStackTrace()

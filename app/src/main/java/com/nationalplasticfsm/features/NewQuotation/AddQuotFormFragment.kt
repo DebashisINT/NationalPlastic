@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -16,26 +15,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.PopupWindow
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.RelativeLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.domain.NewOrderColorEntity
 import com.nationalplasticfsm.app.domain.NewOrderProductEntity
+import com.nationalplasticfsm.app.domain.ShopExtraContactEntity
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
+import com.nationalplasticfsm.features.NewQuotation.adapter.AdapterMultiContactQuto
 import com.nationalplasticfsm.features.NewQuotation.adapter.ShowAddedProdAdapter
 import com.nationalplasticfsm.features.NewQuotation.api.GetQuotRegProvider
 import com.nationalplasticfsm.features.NewQuotation.dialog.FreightListDialog
 import com.nationalplasticfsm.features.NewQuotation.dialog.MemberSalesmanListDialog
 import com.nationalplasticfsm.features.NewQuotation.dialog.TaxListDialog
 import com.nationalplasticfsm.features.NewQuotation.model.AddQuotRequestData
+import com.nationalplasticfsm.features.NewQuotation.model.Extra_contact_list
 import com.nationalplasticfsm.features.NewQuotation.model.product_list
+import com.nationalplasticfsm.features.addshop.api.AddShopRepositoryProvider
+import com.nationalplasticfsm.features.addshop.presentation.ShopExtraContactResponse
+import com.nationalplasticfsm.features.addshop.presentation.ShopListSubmitResponse
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.member.api.TeamRepoProvider
@@ -58,12 +68,20 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
 
+//Revision History
+// 1.0 AddQuotFormFragment  AppV 4.0.6  Saheli    06/01/2023 addQuot contactmulti design functionlity add
+// 2.0 AddQuotFormFragment  AppV 4.0.6 Saheli    09/01/2023 addQuot pdf design add template
+// 3.0 AddQuotFormFragment  AppV 4.0.6 Saheli    09/01/2023 addQuot contactmulti  functionlity
 
 class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
     private lateinit var mContext: Context
     private lateinit var quot_no: AppCustomEditText
     private lateinit var etRemarks: AppCustomEditText
     private lateinit var date: AppCustomTextView
+    // 1.0 AddQuotFormFragment  AppV 4.0.6 addQuot contactmulti design
+    private lateinit var tvCustomerPerson: AppCustomTextView
+
+    // 1.0 AddQuotFormFragment  AppV 4.0.6 addQuot contactmulti design
     private lateinit var custName: AppCustomEditText
     private lateinit var projName: AppCustomEditText
     private lateinit var product: AppCustomTextView
@@ -97,17 +115,24 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
     private var color_list: List<NewOrderColorEntity> = listOf()
     private var member_list: ArrayList<TeamListDataModel>? = null
 
-    private var quotNumber: String = ""
     var addQuotData = AddQuotRequestData()
     private var salesman_userID: String =""
 
     private lateinit var progress_wheel: ProgressWheel
     private lateinit var fabAddProduct:FloatingActionButton
     private lateinit var rv_addedProduct:RecyclerView
+    private lateinit var rv_multiContact:RecyclerView
     var addedProdList:ArrayList<product_list> = ArrayList()
 
     var showAddedProdAdapter: ShowAddedProdAdapter? = null
 
+    var selectedContactL : ArrayList<ShopExtraContactEntity> = ArrayList()
+
+    // 2.0 AddQuotFormFragment addQuot pdf design add template
+    private lateinit var rbgSelectTemplate: RadioGroup
+    // 3.0 AddQuotFormFragment functionlity
+    private lateinit var ll_contact: LinearLayout
+    private var sel_teamplate : String = ""
 
     companion object {
         var shop_id:String = ""
@@ -119,6 +144,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
                 obj = shopObj as TeamShopListDataModel
                 shop_id =obj!!.shop_id
                 shop_name =obj!!.shop_name
+
             }
             return mQuotListFragment
         }
@@ -134,11 +160,14 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.frag_add_quot_form, container, false)
         initView(view)
-
         return view
     }
 
     private fun initView(view: View) {
+        // 1.0 AddQuotFormFragment  AppV 4.0.6 addQuot contactmulti design functionlity addstart
+        tvCustomerPerson = view.findViewById(R.id.tv_frag_add_quot_form_customer_p)
+
+        // 1.0 AddQuotFormFragment  AppV 4.0.6 addQuot contactmulti design functionlity addend
         quot_no = view.findViewById(R.id.et_frag_add_quot_form_Quot_no)
         etRemarks = view.findViewById(R.id.et_frag_add_quot_form_remarks)
         date = view.findViewById(R.id.tv_frag_add_quot_form_date)
@@ -166,6 +195,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         progress_wheel.stopSpinning()
         fabAddProduct=view.findViewById(R.id.fb_frag_add_quot_add_product)
         rv_addedProduct=view.findViewById(R.id.rv_frag_add_quot_added_product)
+        rv_multiContact=view.findViewById(R.id.rv_frag_add_quto_multi_cont)
 
         ll_qtyRoot=view.findViewById(R.id.ll_frag_add_quot_quantity)
         ll_amtRoot=view.findViewById(R.id.ll_frag_add_quot_amount)
@@ -174,6 +204,17 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
 
 
         salesmsan.text = Pref.user_name
+        // 2.0 AddQuotFormFragment addQuot pdf design add template
+        rbgSelectTemplate = view.findViewById(R.id.rbg_frag_add_quot_form)
+
+        ll_contact = view.findViewById(R.id.ll_contact)
+
+        // 3.0 AddQuotFormFragment functionlity
+        if(Pref.IsContactPersonRequiredinQuotation){
+            ll_contact.visibility = View.VISIBLE
+        } else {
+            ll_contact.visibility = View.GONE
+        }
 
         if(Pref.NewQuotationShowTermsAndCondition){
             lltermsRoot.visibility=View.VISIBLE
@@ -202,7 +243,16 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         salesmsan.text=Pref.user_name
 
         setData()
-        OnclickLisener()
+        OnclickLisener(view)
+
+        // change listener for our radio group.
+        rbgSelectTemplate.setOnCheckedChangeListener { group, checkedId ->
+            // on below line we are getting radio button from our group.
+            val radioButton = view.findViewById<RadioButton>(checkedId)
+            // on below line we are displaying a toast message.
+            sel_teamplate =radioButton.text.toString()
+
+        }
 
         sqFt.addTextChangedListener(object :TextWatcher{
             override fun afterTextChanged(s: Editable?) {
@@ -224,7 +274,8 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         })
 
     }
-    private fun OnclickLisener() {
+
+    private fun OnclickLisener(view: View) {
         btnSave.setOnClickListener(this)
         date.setOnClickListener(this)
         product.setOnClickListener(this)
@@ -233,6 +284,7 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
         freight.setOnClickListener(this)
         salesmsan.setOnClickListener(this)
         fabAddProduct.setOnClickListener(this)
+        tvCustomerPerson.setOnClickListener(this)
     }
 
     private fun setData() {
@@ -305,11 +357,9 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
                                         AppDatabase.getDBInstance()?.newOrderSizeDao()?.updateSizeNametoUpperCase()
                                     }
 
-
                                     uiThread {
                                         progress_wheel.stopSpinning()
                                         product_list= AppDatabase.getDBInstance()?.newOrderProductDao()?.getAllProduct()!!
-                                        //gotoHomeActivity()
                                     }
                                 }
                             }
@@ -326,29 +376,34 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
 
                                 progress_wheel.stopSpinning()
                                 product_list= AppDatabase.getDBInstance()?.newOrderProductDao()?.getAllProduct()!!
-                                //gotoHomeActivity()
                             }
                         } else {
                             progress_wheel.stopSpinning()
-                            //gotoHomeActivity()
                         }
 
                     }, { error ->
                         progress_wheel.stopSpinning()
                         error.printStackTrace()
-                        //gotoHomeActivity()
                     })
             )
         } catch (ex: java.lang.Exception) {
             ex.printStackTrace()
-            //gotoHomeActivity()
         }
     }
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
+            R.id.tv_frag_add_quot_form_customer_p->{
+                //if(CustomStatic.TeamUserSelect_user_id.equals(Pref.user_id)){
+                    //callMultiContactDialog()
+                //}else{
+                //tvCustomerPerson.isEnabled = false
+                fetchMultiContactDetails()
+                //}
+
+            }
             R.id.btn_frag_add_quot_save_TV -> {
-              checkValidation()
+              checkValidation(p0)
             }
             R.id.tv_frag_add_quot_form_date -> {
                 val datePicker = DatePickerDialog(mContext, R.style.DatePickerTheme, dates, myCalendar
@@ -555,14 +610,14 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
     }
 
     private fun loadSaleman() {
-        MemberSalesmanListDialog.newInstance(member_list!!){
+        MemberSalesmanListDialog.newInstance("Select Salesman",member_list!!){
             salesmsan.text=it.user_name
             salesman_userID=it.user_id
         }.show((mContext as DashboardActivity).supportFragmentManager, "")
 
     }
 
-    private fun checkValidation() {
+    private fun checkValidation(view:View) {
 //        if (TextUtils.isEmpty(quot_no.text.toString())) {
 //            (mContext as DashboardActivity).showSnackMessage("Please select Quot to ")
 //            BaseActivity.isApiInitiated = false
@@ -630,8 +685,43 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
             BaseActivity.isApiInitiated = false
             return
         }
+        // 3.0 AddQuotFormFragment functionlity
+        var selectedTemplateId= rbgSelectTemplate.getCheckedRadioButtonId()
+        if(selectedTemplateId == -1){
+            (mContext as DashboardActivity).showSnackMessage("Please select any template")
+            BaseActivity.isApiInitiated = false
+            return
+        }
 
         addQuotData.user_id = Pref.user_id
+
+        // 3.0 AddQuotFormFragment functionlity
+        // 2.0 AddQuotFormFragment addQuot pdf design add template
+        addQuotData.sel_quotation_pdf_template = sel_teamplate
+        if(Pref.IsContactPersonRequiredinQuotation){
+            if(selectedContactL.size==0){
+                (mContext as DashboardActivity).showSnackMessage("Please select Contact Person")
+                BaseActivity.isApiInitiated = false
+                return
+            }else{
+                var finalExtCntL : ArrayList<Extra_contact_list> = ArrayList()
+                for(i in 0..selectedContactL.size-1){
+                    var ob = Extra_contact_list()
+                    ob.apply {
+                        quotation_contact_person = selectedContactL.get(i).contact_name
+                        quotation_contact_number = selectedContactL.get(i).contact_number
+                        quotation_contact_email = selectedContactL.get(i).contact_email
+                        quotation_contact_doa = selectedContactL.get(i).contact_doa
+                        quotation_contact_dob = selectedContactL.get(i).contact_dob
+                    }
+                    finalExtCntL.add(ob)
+                }
+                addQuotData.extra_contact_list=finalExtCntL
+            }
+        }else{
+            addQuotData.extra_contact_list=ArrayList()
+        }
+
 //        addQuotData.quotation_number = quot_no.text.toString()
         addQuotData.save_date_time = AppUtils.getCurrentDateTime()
         addQuotData.quotation_date_selection =  selectedDate
@@ -719,6 +809,210 @@ class AddQuotFormFragment: BaseFragment(), View.OnClickListener {
             }, 500)
         })
         simpleDialog.show()
+    }
+
+    // 1.0 AddQuotFormFragment  AppV 4.0.6 addQuot contactmulti design functionlity add
+    /*private fun callMultiContactDialog(){
+        var extraContL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListByShopID(shop_id!!) as ArrayList<ShopExtraContactEntity>
+        var shopDtlsInfo = AppDatabase.getDBInstance()?.addShopEntryDao()!!.getShopDetail(shop_id)
+
+        var obj : ShopExtraContactEntity = ShopExtraContactEntity()
+        obj.apply {
+            shop_id = shopDtlsInfo.shop_id
+            contact_serial = ""
+            contact_name = shopDtlsInfo.ownerName
+            contact_number = shopDtlsInfo.ownerContactNumber
+            contact_email = shopDtlsInfo.ownerEmailId
+            contact_doa = shopDtlsInfo.dateOfAniversary
+            isUploaded = true
+        }
+        extraContL.add(obj)
+
+        if(extraContL!!.size>0){
+            val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+            val customView = inflater!!.inflate(R.layout.popup_multi_caontact, null)
+            visitMultiContactPopupWindow = PopupWindow(customView, resources.getDimensionPixelOffset(R.dimen._220sdp), RelativeLayout.LayoutParams.WRAP_CONTENT)
+            val rv_multi_contact_type_list = customView.findViewById(R.id.rv_multi_contact_type_list) as RecyclerView
+            rv_multi_contact_type_list.layoutManager = LinearLayoutManager(mContext)
+
+            visitMultiContactPopupWindow?.elevation = 200f
+            visitMultiContactPopupWindow?.isFocusable = true
+            visitMultiContactPopupWindow?.update()
+
+            var selectedContactL : ArrayList<ShopExtraContactEntity> = ArrayList()
+            rv_multiContact.adapter = AdapterMultiContactQuto(mContext,extraContL, object :
+                AdapterMultiContactQuto.OnClickListener {
+                override fun onTickUntickView(obj: ShopExtraContactEntity, isTick: Boolean) {
+                    if(isTick){
+                        selectedContactL.add(obj)
+                    }
+                    else{
+                        selectedContactL.remove(obj)
+                    }
+
+                }
+
+            })
+            return
+
+            rv_multi_contact_type_list.adapter = VisitMultiContactwithoutPhoneAdapter(mContext, extraContL as ArrayList<ShopExtraContactEntity>, object : VisitMultiContactwithoutPhoneAdapter.OnItemClickListener {
+                override fun onItemClick(obj: ShopExtraContactEntity) {
+
+                    sel_extraContName = obj.contact_name!!.toString()
+                    sel_extraContPh = obj.contact_number!!.toString()
+                    sel_extraContemail = obj.contact_email!!.toString()
+//                    sel_extraContDoa = obj.contact_doa!!.toString()
+                    tvCustomerPerson.text = obj.contact_name
+
+                    tvCustomerEmail.text = obj.contact_email
+                    tvCustomerDoa.text =  if(obj.contact_doa == null) "" else AppUtils.getFormatedDateNew(obj.contact_doa, "yyyy-mm-dd","dd-mm-yyyy")
+                    visitMultiContactPopupWindow?.dismiss()
+                }
+            })
+
+            if (visitMultiContactPopupWindow != null && !visitMultiContactPopupWindow?.isShowing!!) {
+                visitMultiContactPopupWindow?.showAsDropDown(tvCustomerPerson, tvCustomerPerson.width - visitMultiContactPopupWindow?.width!!, 0)
+            }
+        }
+    }*/
+
+
+    fun fetchMultiContactDetails(){
+        try{
+                val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+                BaseActivity.compositeDisposable.add(
+                    repository.fetchMultiContactData(CustomStatic.TeamUserSelect_user_id!!,Pref.session_token!!)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            var viewResult = result as ShopListSubmitResponse
+                            var extraContL:ArrayList<ShopExtraContactEntity> = ArrayList()
+//                          obj.owner_name = "Owner Jh"
+                            try{
+                                //add default data
+                                val shopExtraContactObj = ShopExtraContactEntity()
+                                shopExtraContactObj.shop_id = shop_id
+                                shopExtraContactObj.contact_serial = "100"
+                                shopExtraContactObj.contact_name = obj.owner_name
+                                shopExtraContactObj.contact_number = obj.shop_contact
+                                shopExtraContactObj.contact_email = if(obj.owner_email == null) "" else obj.owner_email
+                                shopExtraContactObj.contact_dob = ""
+                                shopExtraContactObj.contact_doa = ""
+                                shopExtraContactObj.isUploaded = true
+                                extraContL.add(shopExtraContactObj)
+                            }
+                            catch (e:Exception) {
+                                e.printStackTrace()
+                            }
+
+                            if (viewResult!!.status == NetworkConstant.SUCCESS) {
+                                if(viewResult.shop_list.size>0){
+                                    var reqShopObj = viewResult.copy()
+                                    reqShopObj.shop_list = ArrayList()
+                                    reqShopObj.shop_list = viewResult.shop_list.filter { it.shop_id.equals(shop_id) } as ArrayList<ShopExtraContactResponse>
+                                    viewResult = reqShopObj
+
+                                    for(b in 0..viewResult.shop_list.size-1){
+                                        if(viewResult.shop_list.get(b).contact_serial1.toString().equals("1") && !viewResult.shop_list.get(b).contact_name1.toString().equals("")){
+                                            val shopExtraContactEntity = ShopExtraContactEntity()
+                                            shopExtraContactEntity.shop_id = viewResult.shop_list.get(b).shop_id.toString()
+                                            shopExtraContactEntity.contact_serial = viewResult.shop_list.get(b).contact_serial1.toString()
+                                            shopExtraContactEntity.contact_name = viewResult.shop_list.get(b).contact_name1.toString()
+                                            shopExtraContactEntity.contact_number = viewResult.shop_list.get(b).contact_number1.toString()
+                                            shopExtraContactEntity.contact_email = if(viewResult.shop_list.get(b).contact_email1 == null) "" else viewResult.shop_list.get(b).contact_email1.toString()
+                                            shopExtraContactEntity.contact_doa = ""
+                                            shopExtraContactEntity.contact_dob = ""
+                                            shopExtraContactEntity.isUploaded = true
+                                            extraContL.add(shopExtraContactEntity)
+                                        }
+                                        if(viewResult.shop_list.get(b).contact_serial2.toString().equals("2") && !viewResult.shop_list.get(b).contact_name2.toString().equals("")){
+                                            val shopExtraContactEntity = ShopExtraContactEntity()
+                                            shopExtraContactEntity.shop_id = viewResult.shop_list.get(b).shop_id.toString()
+                                            shopExtraContactEntity.contact_serial = viewResult.shop_list.get(b).contact_serial2.toString()
+                                            shopExtraContactEntity.contact_name = viewResult.shop_list.get(b).contact_name2.toString()
+                                            shopExtraContactEntity.contact_number = viewResult.shop_list.get(b).contact_number2.toString()
+                                            shopExtraContactEntity.contact_email = if(viewResult.shop_list.get(b).contact_email2 == null) "" else viewResult.shop_list.get(b).contact_email2.toString()
+                                            shopExtraContactEntity.contact_doa = ""
+                                            shopExtraContactEntity.contact_dob = ""
+                                            shopExtraContactEntity.isUploaded = true
+                                            extraContL.add(shopExtraContactEntity)
+
+                                        }
+                                        if(viewResult.shop_list.get(b).contact_serial3.toString().equals("3") && !viewResult.shop_list.get(b).contact_name3.toString().equals("")){
+                                            val shopExtraContactEntity = ShopExtraContactEntity()
+                                            shopExtraContactEntity.contact_serial = viewResult.shop_list.get(b).contact_serial3.toString()
+                                            shopExtraContactEntity.contact_name = viewResult.shop_list.get(b).contact_name3.toString()
+                                            shopExtraContactEntity.contact_number = viewResult.shop_list.get(b).contact_number3.toString()
+                                            shopExtraContactEntity.contact_email = if(viewResult.shop_list.get(b).contact_email3 == null) "" else viewResult.shop_list.get(b).contact_email3.toString()
+                                            shopExtraContactEntity.contact_doa = ""
+                                            shopExtraContactEntity.contact_dob = ""
+                                            shopExtraContactEntity.isUploaded = true
+                                            extraContL.add(shopExtraContactEntity)
+                                        }
+                                        if(viewResult.shop_list.get(b).contact_serial4.toString().equals("4")&& !viewResult.shop_list.get(b).contact_name4.toString().equals("")){
+                                            val shopExtraContactEntity = ShopExtraContactEntity()
+                                            shopExtraContactEntity.contact_serial = viewResult.shop_list.get(b).contact_serial4.toString()
+                                            shopExtraContactEntity.contact_name = viewResult.shop_list.get(b).contact_name4.toString()
+                                            shopExtraContactEntity.contact_number = viewResult.shop_list.get(b).contact_number4.toString()
+                                            shopExtraContactEntity.contact_email = if(viewResult.shop_list.get(b).contact_email4 == null) "" else viewResult.shop_list.get(b).contact_email4.toString()
+                                            shopExtraContactEntity.contact_doa = ""
+                                            shopExtraContactEntity.contact_dob = ""
+                                            shopExtraContactEntity.isUploaded = true
+                                            extraContL.add(shopExtraContactEntity)
+                                        }
+                                        if(viewResult.shop_list.get(b).contact_serial5.toString().equals("5") && !viewResult.shop_list.get(b).contact_name5.toString().equals("")){
+                                            val shopExtraContactEntity = ShopExtraContactEntity()
+                                            shopExtraContactEntity.contact_serial = viewResult.shop_list.get(b).contact_serial5.toString()
+                                            shopExtraContactEntity.contact_name = viewResult.shop_list.get(b).contact_name5.toString()
+                                            shopExtraContactEntity.contact_number = viewResult.shop_list.get(b).contact_number5.toString()
+                                            shopExtraContactEntity.contact_email = if(viewResult.shop_list.get(b).contact_email5 == null) "" else viewResult.shop_list.get(b).contact_email5.toString()
+                                            shopExtraContactEntity.contact_doa = ""
+                                            shopExtraContactEntity.contact_dob = ""
+                                            shopExtraContactEntity.isUploaded = true
+                                            extraContL.add(shopExtraContactEntity)
+                                        }
+                                        if(viewResult.shop_list.get(b).contact_serial6.toString().equals("6") && !viewResult.shop_list.get(b).contact_name6.toString().equals("")){
+                                            val shopExtraContactEntity = ShopExtraContactEntity()
+                                            shopExtraContactEntity.contact_serial = viewResult.shop_list.get(b).contact_serial6.toString()
+                                            shopExtraContactEntity.contact_name = viewResult.shop_list.get(b).contact_name6.toString()
+                                            shopExtraContactEntity.contact_number = viewResult.shop_list.get(b).contact_number6.toString()
+                                            shopExtraContactEntity.contact_email = if(viewResult.shop_list.get(b).contact_email6 == null) "" else viewResult.shop_list.get(b).contact_email6.toString()
+                                            shopExtraContactEntity.contact_doa = ""
+                                            shopExtraContactEntity.contact_dob = ""
+                                            shopExtraContactEntity.isUploaded = true
+                                            extraContL.add(shopExtraContactEntity)
+                                        }
+                                    }
+                                }
+                            }
+                            rv_multiContact.layoutParams.height=220*extraContL.size
+                            rv_multiContact.adapter = AdapterMultiContactQuto(mContext,extraContL, object : AdapterMultiContactQuto.OnClickListener {
+                                override fun onTickUntickView(obj: ShopExtraContactEntity, isTick: Boolean) {
+                                    if(isTick){
+                                        selectedContactL.add(obj)
+                                    } else{
+                                        selectedContactL.remove(obj)
+                                    }
+                                    var nameSel = ""
+                                    if(selectedContactL.size>0){
+                                        for(i in 0..selectedContactL.size-1){
+                                            nameSel = nameSel+selectedContactL.get(i).contact_name+","
+                                        }
+                                        tvCustomerPerson.text = nameSel
+                                    }else{
+                                        tvCustomerPerson.text = ""
+                                    }
+                                }
+                            })
+                        }, { error ->
+                                error.printStackTrace()
+                        })
+                )
+        }
+        catch (ex:Exception){
+            ex.printStackTrace()
+
+        }
     }
 
 }

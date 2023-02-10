@@ -6,6 +6,11 @@ import com.nationalplasticfsm.features.addshop.model.AddQuestionSubmitRequestDat
 import com.nationalplasticfsm.features.addshop.model.AddShopRequestData
 import com.nationalplasticfsm.features.addshop.model.AddShopResponse
 import com.nationalplasticfsm.features.addshop.model.imageListResponse
+import com.nationalplasticfsm.features.addshop.presentation.ShopListSubmitResponse
+import com.nationalplasticfsm.features.addshop.presentation.multiContactRequestData
+import com.nationalplasticfsm.features.beatCustom.BeatGetStatusModel
+import com.nationalplasticfsm.features.nearbyshops.presentation.ShopModifiedListResponse
+import com.nationalplasticfsm.features.nearbyshops.presentation.ShopModifiedUpdateList
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -22,6 +27,15 @@ interface AddShopApi {
     @POST("RubyFoodLead/QuestionListSave")
     fun getAddQuestionSubmit(@Body addQuestion:AddQuestionSubmitRequestData?): Observable<BaseResponse>
 
+    // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+    @FormUrlEncoded
+    @POST("Shoplist/ModifiedShopLists")
+    fun getModifiedShopList(@Field("user_id") user_id: String,@Field("session_token") session_token: String): Observable<ShopModifiedListResponse>
+
+    // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+    @POST("Shoplist/EditModifiedShop")
+    fun getModifiedShopListApi(@Body addQuestion: ShopModifiedUpdateList?): Observable<BaseResponse>
+
     @POST("RubyFoodLead/QuestionListEdit")
     fun getAddQuestionUpdateSubmit(@Body addQuestion:AddQuestionSubmitRequestData?): Observable<BaseResponse>
 
@@ -33,6 +47,17 @@ interface AddShopApi {
 
     @POST("Shoplist/AddShop")
     fun getAddShop(@Body addShop: AddShopRequestData?): Observable<AddShopResponse>
+
+    // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+    @POST("ShopMultipleContactMap/AddShopMultiContact")
+    fun getMutiContact(@Body multiContact: multiContactRequestData?): Observable<BaseResponse>
+
+    @POST("ShopMultipleContactMap/EditShopMultiContact")
+    fun updateMutiContact(@Body multiContact: multiContactRequestData?): Observable<BaseResponse>
+    @FormUrlEncoded
+    @POST("ShopMultipleContactMap/FetchShopMultiContact")
+    fun fetchMultiContactData(@Field("user_id") user_id: String,@Field("session_token") session_token: String): Observable<ShopListSubmitResponse>
+
 
     @FormUrlEncoded
     @POST("Shoplist/ShopAttachmentImagesList")

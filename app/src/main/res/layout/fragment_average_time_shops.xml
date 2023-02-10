@@ -16,20 +16,21 @@
         android:gravity="center"
         android:visibility="visible">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/avg_day_RL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_40sdp"
             android:layout_below="@id/headersectionlL"
             android:background="@drawable/shape_custom_border_blue_button"
             android:gravity="center"
-            android:padding="@dimen/_10sdp">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/avg_time_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/_10sdp">
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/no_of_shop_TV"
@@ -67,23 +68,21 @@
                     android:text="@string/time_spent_on_shop"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp" />
+
             </LinearLayout>
 
             <View
                 android:id="@+id/view1"
-                android:layout_width="@dimen/_1sdp"
-                android:layout_height="@dimen/_15sdp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_5sdp"
-                android:layout_toRightOf="@id/avg_time_ll"
-                android:background="@color/avg_shop_blue" />
+                android:layout_width="@dimen/_2sdp"
+                android:layout_height="match_parent"
+                android:background="@color/color_silver" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/view1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/_10sdp">
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/total_time_spent_tv"
@@ -120,7 +119,8 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp" />
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/headersectionlL"
@@ -167,30 +167,30 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <devs.mulham.horizontalcalendar.HorizontalCalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:visibility="gone"
-            app:selectorColor="@color/transparent"
-            app:textColorSelected="@color/date_selector_color" />
+            <devs.mulham.horizontalcalendar.HorizontalCalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:visibility="gone"
+                app:selectorColor="@color/transparent"
+                app:textColorSelected="@color/date_selector_color" />
 
-        <com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
-            android:id="@+id/datePicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <com.nationalplasticfsm.widgets.AppCustomTextView
-            android:id="@+id/sync_all_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:text="@string/sync_all"
-            android:padding="@dimen/_5sdp"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_10sdp"
-            android:textStyle="normal" />
+            <com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
+                android:id="@+id/datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/sync_all_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:text="@string/sync_all"
+                android:padding="@dimen/_5sdp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="normal" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

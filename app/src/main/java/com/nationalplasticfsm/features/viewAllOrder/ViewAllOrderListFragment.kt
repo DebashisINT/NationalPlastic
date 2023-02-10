@@ -67,6 +67,7 @@ import java.util.*
 /**
  * Created by Pratishruti on 15-11-2017.
  */
+// 1.0 ViewAllOrderListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
     lateinit var ViewAllOrderListRecyclerViewAdapter: ViewAllOrderListRecyclerViewAdapter
@@ -132,6 +133,7 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_view_all_order_list, container, false)
         initView(view)
+
 
         AppUtils.stockStatus = 0
 
@@ -263,6 +265,18 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                                                         val finalTotalPrice = String.format("%.2f", order_details_list[i].product_list?.get(j)?.total_price?.toFloat())
                                                         productOrderList.total_price = finalTotalPrice
                                                     }
+                                                    // mantis 25601 23-01-2022
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.order_mrp)) {
+                                                        productOrderList.order_mrp = order_details_list[i].product_list?.get(j)?.order_mrp
+                                                    } else {
+                                                        productOrderList.order_mrp = ""
+                                                    }
+                                                    if (!TextUtils.isEmpty(order_details_list[i].product_list?.get(j)?.order_discount)) {
+                                                        productOrderList.order_discount = order_details_list[i].product_list?.get(j)?.order_discount
+                                                    } else {
+                                                        productOrderList.order_discount = ""
+                                                    }
+
                                                     productOrderList.shop_id = order_details_list[i].shop_id
 
                                                     AppDatabase.getDBInstance()!!.orderProductListDao().insert(productOrderList)
@@ -301,6 +315,7 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
 
     private fun setData() {
+//        progress_wheel.stopSpinning()
         try {
             //generateOrderListDate()
 
@@ -577,7 +592,10 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                             productOrderList.total_price = order_details_list[i].product_list?.get(j)?.total_price?.toDouble()?.toInt().toString()
                         else*/
                         productOrderList.total_price = order_details_list[i].product_list?.get(j)?.total_price
+
+
                         productOrderList.shop_id = shopId
+
 
                         AppDatabase.getDBInstance()!!.orderProductListDao().insert(productOrderList)
                     }
@@ -763,8 +781,11 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
                     if (!Pref.isAddAttendence)
                         (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
-                    else
+                    else{
+                        progress_wheel.spin()
                         (mContext as DashboardActivity).loadFragment(FragType.OrderTypeListFragment, true, shopId)
+                    }
+
 
 
                 } catch (e: Exception) {
@@ -1193,6 +1214,12 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 ViewAllOrderListFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1282,6 +1309,13 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                 }catch (ex:Exception){
                     shopDurationData.spent_duration="00:00:10"
                 }
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 ViewAllOrderListFragment AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
                 shopDataList.add(shopDurationData)
             }
         }
@@ -1682,6 +1716,10 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             product.scheme_rate = list[i].scheme_rate
             product.total_scheme_price = list[i].total_scheme_price
             product.MRP = list[i].MRP
+            //mantis 25601 23-01-2023
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
+
             productList.add(product)
         }
 
@@ -2600,6 +2638,10 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             product.total_scheme_price = list[i].total_scheme_price
 
             product.MRP = list[i].MRP
+
+            //mantis 25601 23-01-2023
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
             productList.add(product)
         }
 
@@ -2663,6 +2705,7 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
 
     fun updateList() {
+        progress_wheel.stopSpinning()
         viewAllOrderList = AppDatabase.getDBInstance()!!.orderDetailsListDao().getListAccordingToShopId(shopId) as ArrayList<OrderDetailsListEntity>
 
 

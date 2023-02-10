@@ -145,5 +145,7 @@ public interface AppConstant {
 
     String NEW_GPS_STATUS = "new_gps_status";
 
+    String SHOP_EXTRA_CONTACT = "shop_extra_contact";
+
 
 }

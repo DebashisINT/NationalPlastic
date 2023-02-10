@@ -69,6 +69,18 @@
 
         </LinearLayout>
 
+        <!--No data  Design  AppV 4.0.6 mantis 25630 -->
+        <TextView
+            android:id="@+id/tv_frag_coll_pend_list_noData"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="No Data Found"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13sdp"
+            android:layout_height="wrap_content" />
+
     </FrameLayout>
 
 </LinearLayout>

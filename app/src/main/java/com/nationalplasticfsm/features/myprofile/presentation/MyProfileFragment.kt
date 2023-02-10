@@ -65,6 +65,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by Pratishruti on 12-02-2018.
  */
+// 1.0 MyProfileFragment  AppV 4.0.6  Saheli    30/12/2022
 class MyProfileFragment : BaseFragment() {
     private lateinit var profilePicture: ImageView
 
@@ -222,7 +223,12 @@ class MyProfileFragment : BaseFragment() {
         profile_name_TV.setText(Pref.user_name)
 //        profile_name_TV.isEnabled=false
 
-        update_TV = view.findViewById(R.id.update_TV)
+        update_TV = view.findViewById(R.id.update_TV)// 1.0 MyProfileFragment  AppV 4.0.6
+        if(Pref.AllowProfileUpdate){// 1.0 MyProfileFragment  AppV 4.0.6
+            update_TV.visibility=View.VISIBLE
+        }else{
+            update_TV.visibility=View.GONE
+        }
         update_TV.setOnClickListener(View.OnClickListener {
             validateFieldAndApiCall()
         })

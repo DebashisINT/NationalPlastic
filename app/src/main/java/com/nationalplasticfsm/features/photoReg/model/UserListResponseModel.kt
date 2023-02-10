@@ -15,6 +15,19 @@ class UserListResponseModel {
     var RegisteredAadhaarNo: String? = ""
     var RegisteredAadhaarDocLink: String? = ""
     var aadhaar_remarks: String? = ""
-
+    var aadhar_image_link: String? = ""
+    var type_id: Int? = 0
+    var type_name: String? = ""
+    var Registered_with: String? = ""
+    var emp_phone_no: String? = ""
+    var IsShowManualPhotoRegnInApp: Boolean? = false
+    var IsTeamAttenWithoutPhoto: Boolean? = false
+    var IsAllowClickForVisitForSpecificUser: Boolean? = false
+    var IsActiveUser: Boolean? = true
+    var UpdateOtherID: Boolean? = true
+    var UpdateUserID: Boolean? = true
+    var OtherID: String? = ""
+    var IsShowTypeInRegistrationForSpecificUser: Boolean? = false
+    var Employee_Designation: String? = ""
 }
 

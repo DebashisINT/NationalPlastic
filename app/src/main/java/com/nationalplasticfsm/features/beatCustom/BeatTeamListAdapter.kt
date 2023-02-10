@@ -32,7 +32,7 @@ class BeatTeamListAdapter(private var context:Context, private var list:ArrayLis
 
     override fun onBindViewHolder(holder: BeatTeamListViewHolder, position: Int) {
         holder.dateTV.text = "Date: "+AppUtils.getFormatedDateNew(list.get(position).date,"yyyy-mm-dd","dd-mm-yyyy")
-        holder.beatTV.text = "Beat Name: "+list.get(position).beatName
+        holder.beatTV.text = "Beat: "+list.get(position).beatName
 
         adapter= BeatTeamListsubAdapter(context,list.get(position).beatList)
         holder.rv_sub_list.adapter=adapter

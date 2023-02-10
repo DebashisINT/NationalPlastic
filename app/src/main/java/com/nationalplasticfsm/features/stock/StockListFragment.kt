@@ -52,6 +52,7 @@ import org.jetbrains.anko.uiThread
 /**
  * Created by Saikat on 10-09-2019.
  */
+// 1.0 StockListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class StockListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -814,6 +815,13 @@ class StockListFragment : BaseFragment(), View.OnClickListener {
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 StockListFragment  AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
             shopDataList.add(shopDurationData)
         }
         else {
@@ -903,6 +911,13 @@ class StockListFragment : BaseFragment(), View.OnClickListener {
                 }catch (ex:Exception){
                     shopDurationData.spent_duration="00:00:10"
                 }
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 StockListFragment  AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
                 shopDataList.add(shopDurationData)
             }
         }

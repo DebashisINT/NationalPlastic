@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.settings.presentation
 
+import android.app.Activity
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,10 +16,17 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.PowerManager
 import android.provider.Settings
 import androidx.cardview.widget.CardView
 import android.widget.LinearLayout
+import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.AutoStartHelper
+import com.nationalplasticfsm.app.utils.Toaster
+import com.nationalplasticfsm.features.commondialog.presentation.CommonDialog
+import com.nationalplasticfsm.features.commondialog.presentation.CommonDialogClickListener
+import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.fasterxml.jackson.databind.util.ClassUtil.getPackageName
 
 /**
@@ -37,6 +45,9 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
     private lateinit var cv_audio: CardView
     private lateinit var cv_calender: CardView
     private lateinit var ll_settings_main: LinearLayout
+    private lateinit var cv_batOpti: CardView
+
+
 
 
     override fun onAttach(context: Context) {
@@ -66,6 +77,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
             cv_audio = findViewById(R.id.cv_audio)
             cv_calender = findViewById(R.id.cv_calender)
             ll_settings_main = findViewById(R.id.ll_settings_main)
+            cv_batOpti = findViewById(R.id.cv_frag_settings_batOpti)
+
         }
     }
 
@@ -79,6 +92,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
         cv_audio.setOnClickListener(this)
         cv_calender.setOnClickListener(this)
         ll_settings_main.setOnClickListener(null)
+        cv_batOpti.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -117,6 +131,72 @@ class SettingsFragment : BaseFragment(), View.OnClickListener {
             R.id.cv_calender -> {
                 openAppInfo()
             }
+            R.id.cv_frag_settings_batOpti->{
+                var dev1= AppUtils.getDeviceName()
+                val dev2 = Build.MANUFACTURER
+                var dev3 = dev1 + " " + dev2
+                if(dev3.contains("OPPO",ignoreCase = true) || dev3.contains("Vivo",ignoreCase = true)){
+                    val intent = Intent()
+                    val packageName = mContext.packageName
+                    val pm = mContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    var t=pm.isIgnoringBatteryOptimizations(packageName)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(packageName)) {
+                        Handler().postDelayed(Runnable {
+                            println("battery hit 175")
+                            startActivityForResult(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),175) }, 1000)
+                        return
+                    }else{
+                        Toaster.msgShort(mContext,"Battery already optimized.")
+                    }
+                }else{
+                    Toaster.msgShort(mContext,"Not Compatible setting for your device.")
+                }
+        }
+    }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 175){
+            println("battery get 175")
+            checkBatteryOptiSettings()
+            return
+        }
+    }
+
+    fun checkBatteryOptiSettings(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val intent = Intent()
+            val packageName = mContext.packageName
+            val pm = mContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                CommonDialog.getInstance(getString(R.string.app_name), "You must select the option 'Don't Optimise' to use this app. " ,
+                    "Cancel", "Ok", false, object : CommonDialogClickListener {
+                        override fun onLeftClick() {
+
+                        }
+                        override fun onRightClick(editableData: String) {
+                            goTONextActi()
+                        }
+                    }).show((mContext as DashboardActivity).supportFragmentManager, "")
+                println("battery dialog scr")
+            } else{
+                println("battery next scr")
+                goTONextActi()
+            }
+        }
+    }
+
+    fun goTONextActi(){
+        val intent = Intent()
+        val packageName = mContext.packageName
+        val pm = mContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        var t=pm.isIgnoringBatteryOptimizations(packageName)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !pm.isIgnoringBatteryOptimizations(packageName)) {
+            Handler().postDelayed(Runnable {
+                println("battery hit 175")
+                startActivityForResult(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),175) }, 1000)
+            return
         }
     }
 

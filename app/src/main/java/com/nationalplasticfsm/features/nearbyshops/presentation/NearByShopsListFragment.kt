@@ -1,10 +1,12 @@
 package com.nationalplasticfsm.features.nearbyshops.presentation
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -14,6 +16,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.speech.tts.TextToSpeech
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -47,6 +50,7 @@ import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
+import com.nationalplasticfsm.features.addAttendence.model.LocationListResponseModel
 import com.nationalplasticfsm.features.addshop.api.AddShopRepositoryProvider
 import com.nationalplasticfsm.features.addshop.api.assignToPPList.AssignToPPListRepoProvider
 import com.nationalplasticfsm.features.addshop.api.assignedToDDList.AssignToDDListRepoProvider
@@ -57,10 +61,7 @@ import com.nationalplasticfsm.features.addshop.model.AssignedToShopListResponseM
 import com.nationalplasticfsm.features.addshop.model.QuestionSubmit
 import com.nationalplasticfsm.features.addshop.model.assigntoddlist.AssignToDDListResponseModel
 import com.nationalplasticfsm.features.addshop.model.assigntopplist.AssignToPPListResponseModel
-import com.nationalplasticfsm.features.addshop.presentation.AccuracyIssueDialog
-import com.nationalplasticfsm.features.addshop.presentation.AdapterQuestionList
-import com.nationalplasticfsm.features.addshop.presentation.AddShopFragment
-import com.nationalplasticfsm.features.addshop.presentation.StageListDialog
+import com.nationalplasticfsm.features.addshop.presentation.*
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
@@ -98,6 +99,12 @@ import kotlin.collections.ArrayList
 /**
  * Created by Pratishruti on 30-10-2017.
  */
+//Revision History
+// 1.0 NearByShopsListFragment  AppV 4.0.6  Suman
+// 2.0 NearByShopsListFragment AppV 4.0.6  Saheli    10/01/2023  Contact Multi Api called Add & Update
+// 3.0 NearByShopsListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
+// 4.0 NearByShopsListFragment AppV 4.0.6 Suman 18-01-2023 show dob in extra contact
+// 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
 class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mNearByShopsListAdapter: NearByShopsListAdapter
@@ -129,12 +136,15 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     var quesAnsList:ArrayList<AddShopFragment.QuestionAns> = ArrayList()
     var quesAnsListTemp:ArrayList<QuestionSubmit> = ArrayList()
     private var adapterqaList: AdapterQuestionList? = null
-
+    private lateinit var simpleDialogRoot : Dialog
 //    /*Interface to update Shoplist Frag on search event*/
 //    private lateinit var searchListener:SearchListener
 //    public fun setSearchListener(searchListener:SearchListener){
 //        this.searchListener=searchListener
 //    }
+
+    var shopExtraContactList:ArrayList<ShopExtraContactEntity> = ArrayList()
+    private var shopDataModel = AddShopDBModelEntity()
 
     companion object {
         fun getInstance(beatId: Any?): NearByShopsListFragment {
@@ -509,6 +519,20 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             else
                 shopObj.assigned_to_shop_id = shop_list[i].assigned_to_shop_id
 
+            shopObj.project_name=shop_list[i].project_name
+            shopObj.landline_number=shop_list[i].landline_number
+            shopObj.agency_name=shop_list[i].agency_name
+            /*10-2-2022*/
+            shopObj.alternateNoForCustomer=shop_list[i].alternateNoForCustomer
+            shopObj.whatsappNoForCustomer=shop_list[i].whatsappNoForCustomer
+            shopObj.isShopDuplicate=shop_list[i].isShopDuplicate
+
+            shopObj.purpose=shop_list[i].purpose
+
+            /*GSTIN & PAN NUMBER*/
+            shopObj.gstN_Number=shop_list[i].GSTN_Number
+            shopObj.shopOwner_PAN=shop_list[i].ShopOwner_PAN
+
             list.add(shopObj)
             AppDatabase.getDBInstance()!!.addShopEntryDao().insert(shopObj)
         }
@@ -520,6 +544,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun initView(view: View) {
+        val simpleDialogRoot = Dialog(mContext)
+        simpleDialogRoot.setCancelable(true)
+        simpleDialogRoot.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialogRoot.setContentView(R.layout.dialog_multiple_contact_root)
+
         getFloatingVal = ArrayList<String>()
         progress_wheel = view.findViewById(R.id.progress_wheel)
         progress_wheel.stopSpinning()
@@ -604,7 +633,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         }
 
-        noShopAvailable.text = "No Registered " + Pref.shopText + "Available"
+        noShopAvailable.text = "No Registered " + Pref.shopText + " Available"
         getListFromDatabase()
 
     }
@@ -644,6 +673,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
     }
 
+    @SuppressLint("WrongConstant")
     private fun initAdapter() {
         /*noShopAvailable.visibility = View.GONE
         nearByShopsList.visibility = View.VISIBLE*/
@@ -665,6 +695,199 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         tv_shop_count.text = "Total " + Pref.shopText + "(s): " + list.size
 
         mNearByShopsListAdapter = NearByShopsListAdapter(this.mContext!!, list, object : NearByShopsListClickListener {
+
+            override fun onUpdateStatusClick(obj: AddShopDBModelEntity) {
+                UpdateShopStatusDialog.getInstance(obj.shopName!!, "Cancel", "Confirm", true,"",obj.user_id.toString()!!,
+                    object : UpdateShopStatusDialog.OnDSButtonClickListener {
+                        override fun onLeftClick() {
+
+                        }
+                        override fun onRightClick(status: String) {
+                            if(!status.equals("")){
+                                if(status.equals("Inactive")){
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateShopStatus(obj.shop_id,"0")
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(0,obj.shop_id)
+                                    if(AppUtils.isOnline(mContext))
+                                        convertToReqAndApiCallForShopStatus(AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(obj.shop_id!!))
+                                    else{
+                                        (mContext as DashboardActivity).showSnackMessage("Status updated successfully")
+                                        initAdapter()
+                                    }
+                                }
+                                if(status.equals("Active")){
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().updateShopStatus(obj.shop_id,"1")
+                                }
+                            }
+
+                        }
+                    }).show((mContext as DashboardActivity).supportFragmentManager, "")
+            }
+
+            override fun onExtraContactClick(shop_idSel: String) {
+                shopExtraContactList = ArrayList()
+                 simpleDialogRoot = Dialog(mContext)
+                simpleDialogRoot.setCancelable(true)
+                simpleDialogRoot.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogRoot.setContentView(R.layout.dialog_multiple_contact_root)
+
+                val iv_cross = simpleDialogRoot.findViewById(R.id.iv_dialog_multi_cont_root_cross) as ImageView
+
+                val cont1 = simpleDialogRoot.findViewById(R.id.tv_dialog_frag_add_shop_add_contact1) as TextView
+                val cont2 = simpleDialogRoot.findViewById(R.id.tv_dialog_frag_add_shop_add_contact2) as TextView
+                val cont3 = simpleDialogRoot.findViewById(R.id.tv_dialog_frag_add_shop_add_contact3) as TextView
+                val cont4 = simpleDialogRoot.findViewById(R.id.tv_dialog_frag_add_shop_add_contact4) as TextView
+                val cont5 = simpleDialogRoot.findViewById(R.id.tv_dialog_frag_add_shop_add_contact5) as TextView
+                val cont6 = simpleDialogRoot.findViewById(R.id.tv_dialog_frag_add_shop_add_contact6) as TextView
+
+                var extraContL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListByShopID(shop_idSel!!) as ArrayList<ShopExtraContactEntity>
+                if(extraContL!!.size>0){
+
+                    if(extraContL.size == 1){
+                        cont1.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.visibility = View.VISIBLE
+                        cont3.visibility = View.GONE
+                        cont4.visibility = View.GONE
+                        cont5.visibility = View.GONE
+                        cont6.visibility = View.GONE
+                    }else if(extraContL.size == 2){
+                        cont1.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.visibility = View.VISIBLE
+                        cont3.visibility = View.VISIBLE
+                        cont4.visibility = View.GONE
+                        cont5.visibility = View.GONE
+                        cont6.visibility = View.GONE
+                    }else if(extraContL.size == 3){
+                        cont1.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont3.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.visibility = View.VISIBLE
+                        cont3.visibility = View.VISIBLE
+                        cont4.visibility = View.VISIBLE
+                        cont5.visibility = View.GONE
+                        cont6.visibility = View.GONE
+                    }else if(extraContL.size == 4){
+                        cont1.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont3.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont4.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.visibility = View.VISIBLE
+                        cont3.visibility = View.VISIBLE
+                        cont4.visibility = View.VISIBLE
+                        cont5.visibility = View.VISIBLE
+                        cont6.visibility = View.GONE
+                    }else if(extraContL.size == 5){
+                        cont1.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont3.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont4.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont5.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.visibility = View.VISIBLE
+                        cont3.visibility = View.VISIBLE
+                        cont4.visibility = View.VISIBLE
+                        cont5.visibility = View.VISIBLE
+                        cont6.visibility = View.VISIBLE
+                    }else if(extraContL.size == 6){
+                        cont1.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont2.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont3.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont4.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont5.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                        cont6.backgroundTintList = ColorStateList.valueOf(getResources().getColor(R.color.approved_green))
+                    }
+
+                    simpleDialogRoot.show()
+
+                }else{
+                    cont1.visibility = View.VISIBLE
+                    cont2.visibility = View.GONE
+                    cont3.visibility = View.GONE
+                    cont4.visibility = View.GONE
+                    cont5.visibility = View.GONE
+                    cont6.visibility = View.GONE
+                    simpleDialogRoot.show()
+                }
+
+                iv_cross.setOnClickListener {
+                    simpleDialogRoot.dismiss()
+                }
+
+                  cont1.setOnClickListener {
+                    var ob = extraContL!!.filter { it.contact_serial.equals("1")} as ArrayList<ShopExtraContactEntity>
+                    if(ob.size == 0){
+                        addExtraContactDtls("1",shop_idSel)
+                        // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+//                        Handler().postDelayed(Runnable {
+//                            callAddMultiContactapi()
+//                        }, 500)
+                    }else{
+                        if(extraContL.get(0).contact_serial.equals("1")){
+                            showExtraContactDtls(extraContL.get(0).contact_name.toString(),extraContL.get(0).contact_number.toString(),
+                                extraContL.get(0).contact_email.toString(),extraContL.get(0).contact_doa.toString(),extraContL.get(0).contact_dob.toString())
+
+                        }
+                    }
+                }
+                cont2.setOnClickListener {
+                    var ob = extraContL!!.filter { it.contact_serial.equals("2")} as ArrayList<ShopExtraContactEntity>
+                    if(ob.size == 0){
+                        addExtraContactDtls("2",shop_idSel)
+                        // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+//                        Handler().postDelayed(Runnable {
+//                            callUpdateMultiContactapi()
+//                        }, 500)
+                    }else{
+                        if(extraContL.get(1).contact_serial.equals("2")){
+                            showExtraContactDtls(extraContL.get(1).contact_name.toString(),extraContL.get(1).contact_number.toString(),
+                                extraContL.get(1).contact_email.toString(),extraContL.get(1).contact_doa.toString(),extraContL.get(1).contact_dob.toString())
+
+                        }}
+                }
+                cont3.setOnClickListener {
+                    var ob = extraContL!!.filter { it.contact_serial.equals("3")} as ArrayList<ShopExtraContactEntity>
+                    if(ob.size == 0){
+                        addExtraContactDtls("3",shop_idSel)
+                    }else{
+                        if(extraContL.get(2).contact_serial.equals("3")){
+                            showExtraContactDtls(extraContL.get(2).contact_name.toString(),extraContL.get(2).contact_number.toString(),
+                                extraContL.get(2).contact_email.toString(),extraContL.get(2).contact_doa.toString(),extraContL.get(2).contact_dob.toString())
+                        }
+                    }
+                }
+                cont4.setOnClickListener {
+                    var ob = extraContL!!.filter { it.contact_serial.equals("4")} as ArrayList<ShopExtraContactEntity>
+                    if(ob.size == 0){
+                        addExtraContactDtls("4",shop_idSel)
+                    }else{
+                        if(extraContL.get(3).contact_serial.equals("4")){
+                            showExtraContactDtls(extraContL.get(3).contact_name.toString(),extraContL.get(3).contact_number.toString(),
+                                extraContL.get(3).contact_email.toString(),extraContL.get(3).contact_doa.toString(),extraContL.get(3).contact_dob.toString())
+                        }
+                    }
+                }
+                cont5.setOnClickListener {
+                    var ob = extraContL!!.filter { it.contact_serial.equals("5")} as ArrayList<ShopExtraContactEntity>
+                    if(ob.size == 0){
+                        addExtraContactDtls("5",shop_idSel)
+                    }else{
+                        if(extraContL.get(4).contact_serial.equals("5")){
+                            showExtraContactDtls(extraContL.get(4).contact_name.toString(),extraContL.get(4).contact_number.toString(),
+                                extraContL.get(4).contact_email.toString(),extraContL.get(4).contact_doa.toString(),extraContL.get(4).contact_dob.toString())
+                        }
+                    }
+                }
+                cont6.setOnClickListener {
+                    var ob = extraContL!!.filter { it.contact_serial.equals("6")} as ArrayList<ShopExtraContactEntity>
+                    if(ob.size == 0){
+                        addExtraContactDtls("6",shop_idSel)
+                    }else{
+                        if(extraContL.get(5).contact_serial.equals("6")){
+                            showExtraContactDtls(extraContL.get(5).contact_name.toString(),extraContL.get(5).contact_number.toString(),
+                                extraContL.get(5).contact_email.toString(),extraContL.get(5).contact_doa.toString(),extraContL.get(5).contact_dob.toString())
+                        }
+                    }
+                }
+            }
 
             override fun onDamageClick(shop_id: String) {
                 (mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, shop_id+"~"+Pref.user_id)
@@ -1280,6 +1503,161 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         nearByShopsList.adapter = mNearByShopsListAdapter
     }
 
+
+
+    @SuppressLint("RestrictedApi")
+    fun showExtraContactDtls(name:String, phno:String, email:String, doa:String,dob:String){
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(true)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_multiple_contact)
+
+        val tv_header = simpleDialog.findViewById(R.id.tv_header_dialog_multi_contact) as TextView
+        val ic_cross = simpleDialog.findViewById(R.id.iv_dialog_multi_cont_cross) as ImageView
+
+        val tv_captionName = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_name_caption) as TextView
+        val tv_captionNumber = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_number_caption) as TextView
+        val tv_captionEmail = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_email_caption) as TextView
+        val tv_captionDOA = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_anniv_caption) as TextView
+        val tv_captionDOB = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_dob_caption) as TextView
+
+        tv_captionName.visibility = View.VISIBLE
+        tv_captionNumber.visibility = View.VISIBLE
+        tv_captionEmail.visibility = View.VISIBLE
+        tv_captionDOA.visibility = View.VISIBLE
+        tv_captionDOB.visibility = View.VISIBLE
+
+        val et_contactName = simpleDialog.findViewById(R.id.et_dialog_multi_contact_name) as EditText
+        val et_contactPhno = simpleDialog.findViewById(R.id.et_dialog_multi_contact_phno) as EditText
+        val et_contact_email = simpleDialog.findViewById(R.id.et_dialog_multi_contact_email) as EditText
+        val et_anniv = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_anniv) as TextView
+        val et_dob = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_dob) as TextView
+        val fab_add = simpleDialog.findViewById(R.id.fab_dialog_multi_contact_plus) as com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        et_contactName.setText(name)
+        et_contactPhno.setText(phno)
+        et_contact_email.setText(if(email.toString().length>0) email.toString() else "NA")
+        et_anniv.setText(if(doa.toString().length>0) AppUtils.getFormatedDateNew(doa,"yyyy-mm-dd","dd-mm-yyyy") else "NA")
+        et_dob.setText(if(dob.toString().length>0) AppUtils.getFormatedDateNew(dob,"yyyy-mm-dd","dd-mm-yyyy") else "NA")
+
+        tv_header.text = "View Contact"
+
+        et_contactName.isEnabled = false
+        et_contactPhno.isEnabled = false
+        et_contact_email.isEnabled = false
+        et_anniv.isEnabled = false
+        et_dob.isEnabled = false
+        fab_add.isEnabled = false
+        fab_add.visibility = View.GONE
+
+        ic_cross.setOnClickListener {
+            simpleDialog.dismiss()
+        }
+
+        simpleDialog.show()
+    }
+
+    fun addExtraContactDtls(serial:String,shop_idSel:String){
+        var myCalendar = Calendar.getInstance(Locale.ENGLISH)
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(true)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_multiple_contact)
+
+        val date = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, monthOfYear)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        }
+        val ic_cross = simpleDialog.findViewById(R.id.iv_dialog_multi_cont_cross) as ImageView
+        val et_contactName = simpleDialog.findViewById(R.id.et_dialog_multi_contact_name) as EditText
+        val et_contactPhno = simpleDialog.findViewById(R.id.et_dialog_multi_contact_phno) as EditText
+        val et_contact_email = simpleDialog.findViewById(R.id.et_dialog_multi_contact_email) as EditText
+        val et_dob = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_dob) as TextView
+        val et_anniv = simpleDialog.findViewById(R.id.tv_dialog_multi_contact_anniv) as TextView
+        val fab_add = simpleDialog.findViewById(R.id.fab_dialog_multi_contact_plus) as com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        val dateOtherAnniv = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, monthOfYear)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            //et_anniv.setText(AppUtils.changeAttendanceDateFormat(AppUtils.getDobFormattedDate(myCalendar.time)))
+            //et_anniv.setText(AppUtils.getFormattedDateForApi(myCalendar.time))
+            et_anniv.setText(AppUtils.getFormattedDateForApi1(myCalendar.time))
+        }
+        val dateOtherDOB = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, monthOfYear)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            //et_anniv.setText(AppUtils.changeAttendanceDateFormat(AppUtils.getDobFormattedDate(myCalendar.time)))
+            //et_anniv.setText(AppUtils.getFormattedDateForApi(myCalendar.time))
+            et_dob.setText(AppUtils.getFormattedDateForApi1(myCalendar.time))
+        }
+        et_anniv.setOnClickListener({ view ->
+            AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+            var aniDatePicker = DatePickerDialog(mContext, R.style.DatePickerTheme, dateOtherAnniv, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH))
+            aniDatePicker.datePicker.maxDate = Calendar.getInstance(Locale.ENGLISH).timeInMillis
+            aniDatePicker.show()
+        })
+        et_dob.setOnClickListener({ view ->
+            AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+            var aniDatePicker = DatePickerDialog(mContext, R.style.DatePickerTheme, dateOtherDOB, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH))
+            aniDatePicker.datePicker.maxDate = Calendar.getInstance(Locale.ENGLISH).timeInMillis
+            aniDatePicker.show()
+        })
+
+        fab_add.isEnabled = true
+
+        fab_add.setOnClickListener {
+            if(et_contactName.text.toString().length == 0){
+                Toaster.msgShort(mContext,"Please enter Contact Name")
+                return@setOnClickListener
+            }
+            if(et_contactPhno.text.toString().length == 0 || et_contactPhno.text.toString().length !=10){
+                Toaster.msgShort(mContext,"Please enter valid Contact Phone Number")
+                return@setOnClickListener
+            }
+            var obj : ShopExtraContactEntity = ShopExtraContactEntity()
+            obj.apply {
+                shop_id = shop_idSel
+                contact_serial = serial
+                contact_name = et_contactName.text.toString()
+                contact_number = et_contactPhno.text.toString()
+                contact_email = et_contact_email.text.toString()
+                contact_dob = if(et_dob.text.toString().length>0) AppUtils.getFormatedDateNew(et_dob.text.toString(),"dd-mm-yyyy","yyyy-mm-dd") else ""
+                contact_doa = if(et_anniv.text.toString().length>0) AppUtils.getFormatedDateNew(et_anniv.text.toString(),"dd-mm-yyyy","yyyy-mm-dd") else ""
+                isUploaded = false
+            }
+//            AppDatabase.getDBInstance()?.shopExtraContactDao()?.insert(obj)
+
+            // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+            shopExtraContactList.add(obj)
+            if(serial.equals("1")){
+                callAddMultiContactapi(shop_idSel)
+            } else{
+                callUpdateMultiContactapi(shop_idSel)
+            }
+            // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+
+            Toaster.msgShort(mContext,"Contact added")
+            simpleDialog.dismiss()
+            simpleDialogRoot.dismiss()
+        }
+
+        ic_cross.setOnClickListener {
+            simpleDialog.dismiss()
+        }
+
+        simpleDialog.show()
+
+    }
+
     private fun updatePartyStatus(selectedTypeId: String, editableData: String, addShopDBModelEntity: AddShopDBModelEntity) {
         /*if (!AppUtils.isOnline(mContext)) {
             (mContext as DashboardActivity).showSnackMessage("Your network connection is offine. Make it online to proceed with update.")
@@ -1751,6 +2129,13 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+            // 3.0 NearByShopsListFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1841,6 +2226,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                 }catch (ex:Exception){
                     shopDurationData.spent_duration="00:00:10"
                 }
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop!!
+                // 3.0 NearByShopsListFragment AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
                 shopDataList.add(shopDurationData)
             }
         }
@@ -3334,7 +3725,6 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-
         val shopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getUnSyncedShops(false)
 
         if (shopList != null && shopList.isNotEmpty()) {
@@ -3345,6 +3735,89 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             getAssignedPPListApi("", false)
             //getShopListApi(false)
         }
+    }
+
+    // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+    fun checkModifiedShop(){
+        if(!AppUtils.isOnline(mContext)){
+            Toaster.msgShort(mContext,"No Internet connection")
+            return
+        }
+        val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.checkModifiedShopList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val response = result as ShopModifiedListResponse
+                    if (response.status==NetworkConstant.SUCCESS){
+                        if(response.modified_shop_list.size>0){
+                            updateModifiedShop(response.modified_shop_list)
+                        }else{
+                            refreshShopList()
+                        }
+                    }else{
+                        refreshShopList()
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                    refreshShopList()
+
+                })
+        )
+    }
+
+    // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+    fun updateModifiedShop(shop_list:ArrayList<ShopData>){
+        doAsync {
+            try{
+                for(i in 0..shop_list.size-1){
+                    var obj =shop_list.get(i)
+
+                    AppDatabase.getDBInstance()?.addShopEntryDao()?.updateShopDtlsAll(obj.shop_id,obj.shop_name,obj.address,obj.pin_code,obj.owner_name,obj.owner_contact_no,
+                        obj.owner_email,obj.shop_lat,obj.shop_long,obj.dob,obj.date_aniversary,obj.last_visit_date,obj.total_visit_count,obj.type,obj.type_id,
+                        obj.assigned_to_pp_id,obj.assigned_to_dd_id,obj.amount,obj.entity_code,obj.area_id,obj.model_id,obj.lead_id,obj.funnel_stage_id,obj.stage_id,
+                        obj.party_status_id,obj.retailer_id,obj.beat_id,obj.assigned_to_shop_id,obj.agency_name,obj.GSTN_Number,obj.ShopOwner_PAN,
+                        obj.project_name,obj.dealer_id,obj.account_holder,obj.account_no,obj.bank_name,obj.ifsc_code,obj.upi)
+                }
+            }catch (ex:Exception){
+                ex.printStackTrace()
+            }
+            uiThread {
+                sendModifiedShopList(shop_list)
+            }
+        }
+    }
+
+    fun sendModifiedShopList(shop_list:ArrayList<ShopData>){
+        var shopIdL : ArrayList<ShopIdModified> = ArrayList()
+        for(i in 0..shop_list.size-1){
+            shopIdL.add(ShopIdModified(shop_list.get(i).shop_id!!))
+        }
+
+        var obj = ShopModifiedUpdateList()
+        obj.user_id = Pref.user_id!!
+        obj.shop_modified_list = shopIdL!!
+
+        val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.updateModifiedShopList(obj)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val response = result as BaseResponse
+                    if (response.status==NetworkConstant.SUCCESS){
+                        refreshShopList()
+                    }else{
+                        refreshShopList()
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                    refreshShopList()
+                })
+        )
     }
 
     private fun syncShop(addShopDBModelEntity: AddShopDBModelEntity, shopList: MutableList<AddShopDBModelEntity>) {
@@ -3526,6 +3999,444 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             val speechStatus = (mContext as DashboardActivity).textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null)
             if (speechStatus == TextToSpeech.ERROR)
                 Log.e("Add Day Start", "TTS error in converting Text to Speech!");
+        }
+    }
+
+    // 2.0 NearByShopsListFragment AppV 4.0.6   Contact Multi Api called Add & Update
+    private fun callAddMultiContactapi(shop_idSel:String) {
+        var shopListSubmitReq : multiContactRequestData = multiContactRequestData()
+        if(shopExtraContactList.size>0){
+            for(o in 0..shopExtraContactList.size-1){
+                shopExtraContactList.get(o).shop_id = shop_idSel
+                AppDatabase.getDBInstance()?.shopExtraContactDao()?.insert(shopExtraContactList.get(o))
+            }
+            // new code for multi contact response
+            var extraContL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListByShopID(shop_idSel) as ArrayList<ShopExtraContactEntity>
+            var extraContResponseObj : ShopExtraContactReq = ShopExtraContactReq()
+            extraContResponseObj.shop_id = shop_idSel
+
+            for(a in 0..extraContL.size-1){
+                if(a==0){
+                    extraContResponseObj.apply {
+                        contact_name1 = extraContL.get(a).contact_name.toString()
+                        contact_number1 = extraContL.get(a).contact_number.toString()
+                        contact_email1 = extraContL.get(a).contact_email.toString()
+                        contact_doa1 = extraContL.get(a).contact_doa.toString()
+                        contact_dob1 = extraContL.get(a).contact_doa.toString()
+                    }
+                }
+               if(a==1){
+                    extraContResponseObj.apply {
+                        contact_name2 = extraContL.get(a).contact_name.toString()
+                        contact_number2 = extraContL.get(a).contact_number.toString()
+                        contact_email2 = extraContL.get(a).contact_email.toString()
+                        contact_doa2 = extraContL.get(a).contact_doa.toString()
+                        contact_dob2 = extraContL.get(a).contact_doa.toString()
+                    }
+                }
+                if(a==2){
+                    extraContResponseObj.apply {
+                        contact_name3 = extraContL.get(a).contact_name.toString()
+                        contact_number3 = extraContL.get(a).contact_number.toString()
+                        contact_email3 = extraContL.get(a).contact_email.toString()
+                        contact_doa3 = extraContL.get(a).contact_doa.toString()
+                        contact_dob3 = extraContL.get(a).contact_doa.toString()
+                    }
+                }
+                if(a==3){
+                    extraContResponseObj.apply {
+                        contact_name4 = extraContL.get(a).contact_name.toString()
+                        contact_number4 = extraContL.get(a).contact_number.toString()
+                        contact_email4 = extraContL.get(a).contact_email.toString()
+                        contact_doa4 = extraContL.get(a).contact_doa.toString()
+                        contact_dob4 = extraContL.get(a).contact_doa.toString()
+                    }
+                }
+                if(a==4){
+                    extraContResponseObj.apply {
+                        contact_name5 = extraContL.get(a).contact_name.toString()
+                        contact_number5 = extraContL.get(a).contact_number.toString()
+                        contact_email5 = extraContL.get(a).contact_email.toString()
+                        contact_doa5 = extraContL.get(a).contact_doa.toString()
+                        contact_dob5 = extraContL.get(a).contact_doa.toString()
+                    }
+                }
+                if(a==5){
+                    extraContResponseObj.apply {
+                        contact_name6 = extraContL.get(a).contact_name.toString()
+                        contact_number6 = extraContL.get(a).contact_number.toString()
+                        contact_email6 = extraContL.get(a).contact_email.toString()
+                        contact_doa6 = extraContL.get(a).contact_doa.toString()
+                        contact_dob6 = extraContL.get(a).contact_doa.toString()
+                    }
+                }
+            }
+
+
+            shopListSubmitReq.user_id = Pref.user_id!!
+            shopListSubmitReq.session_token = Pref.session_token!!
+            shopListSubmitReq.shop_list.add(extraContResponseObj)
+
+        }
+
+        if(!AppUtils.isOnline(mContext)){
+            Toaster.msgShort(mContext,"Update successfully")
+            return
+        }
+
+        val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.addMutiContact(shopListSubmitReq)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                        val addmutliContactResult = result as BaseResponse
+                        if (addmutliContactResult.status==NetworkConstant.SUCCESS){
+                            val obj = shopListSubmitReq.shop_list.get(0)
+                            if(obj.contact_serial1.equals("1") && !obj.contact_name1.equals("")){
+                                AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial1)
+                            }
+                            if(obj.contact_serial2.equals("2") && !obj.contact_name2.equals("")){
+                                AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial2)
+                            }
+                            if(obj.contact_serial3.equals("3") && !obj.contact_name3.equals("")){
+                                AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial3)
+                            }
+                            if(obj.contact_serial4.equals("4") && !obj.contact_name4.equals("")){
+                                AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial4)
+                            }
+                            if(obj.contact_serial5.equals("5") && !obj.contact_name5.equals("")){
+                                AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial5)
+                            }
+                            if(obj.contact_serial6.equals("6") && !obj.contact_name6.equals("")){
+                                AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial6)
+                            }
+                            progress_wheel.stopSpinning()
+                            (mContext as DashboardActivity).showSnackMessage(addmutliContactResult.message!!)
+                        }
+                    }, { error ->
+                        error.printStackTrace()
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage("Error added contact")
+
+                    })
+                )
+}
+
+    private fun callUpdateMultiContactapi(shop_idSel:String) {
+        var shopListSubmitReq : multiContactRequestData = multiContactRequestData()
+        if(shopExtraContactList.size>0){
+            for(o in 0..shopExtraContactList.size-1){
+                shopExtraContactList.get(o).shop_id = shop_idSel
+                var chkL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListByShopIDContactSl(shop_idSel,shopExtraContactList.get(o).contact_serial!!) as ArrayList<ShopExtraContactEntity>
+                if(chkL.size==0){
+                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.insert(shopExtraContactList.get(o))
+                }
+            }
+            // new code for multi contact response
+            var extraContL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListByShopID(shop_idSel) as ArrayList<ShopExtraContactEntity>
+            var extraContResponseObj : ShopExtraContactReq = ShopExtraContactReq()
+            extraContResponseObj.shop_id = shop_idSel
+
+            for(a in 0..extraContL.size-1){
+                if(a==0){
+                    extraContResponseObj.apply {
+                        contact_name1 = extraContL.get(a).contact_name.toString()
+                        contact_number1 = extraContL.get(a).contact_number.toString()
+                        contact_email1 = extraContL.get(a).contact_email.toString()
+                        contact_doa1 = extraContL.get(a).contact_doa.toString()
+                        contact_dob1 = extraContL.get(a).contact_dob.toString()
+                    }
+                }
+                if(a==1){
+                    extraContResponseObj.apply {
+                        contact_name2 = extraContL.get(a).contact_name.toString()
+                        contact_number2 = extraContL.get(a).contact_number.toString()
+                        contact_email2 = extraContL.get(a).contact_email.toString()
+                        contact_doa2 = extraContL.get(a).contact_doa.toString()
+                        contact_dob2 = extraContL.get(a).contact_dob.toString()
+                    }
+                }
+                if(a==2){
+                    extraContResponseObj.apply {
+                        contact_name3 = extraContL.get(a).contact_name.toString()
+                        contact_number3 = extraContL.get(a).contact_number.toString()
+                        contact_email3 = extraContL.get(a).contact_email.toString()
+                        contact_doa3 = extraContL.get(a).contact_doa.toString()
+                        contact_dob3 = extraContL.get(a).contact_dob.toString()
+                    }
+                }
+                if(a==3){
+                    extraContResponseObj.apply {
+                        contact_name4 = extraContL.get(a).contact_name.toString()
+                        contact_number4 = extraContL.get(a).contact_number.toString()
+                        contact_email4 = extraContL.get(a).contact_email.toString()
+                        contact_doa4 = extraContL.get(a).contact_doa.toString()
+                        contact_dob4 = extraContL.get(a).contact_dob.toString()
+                    }
+                }
+                if(a==4){
+                    extraContResponseObj.apply {
+                        contact_name5 = extraContL.get(a).contact_name.toString()
+                        contact_number5 = extraContL.get(a).contact_number.toString()
+                        contact_email5 = extraContL.get(a).contact_email.toString()
+                        contact_doa5 = extraContL.get(a).contact_doa.toString()
+                        contact_dob5 = extraContL.get(a).contact_dob.toString()
+                    }
+                }
+                if(a==5){
+                    extraContResponseObj.apply {
+                        contact_name6 = extraContL.get(a).contact_name.toString()
+                        contact_number6 = extraContL.get(a).contact_number.toString()
+                        contact_email6 = extraContL.get(a).contact_email.toString()
+                        contact_doa6 = extraContL.get(a).contact_doa.toString()
+                        contact_dob6 = extraContL.get(a).contact_dob.toString()
+                    }
+                }
+            }
+            shopListSubmitReq.user_id = Pref.user_id!!
+            shopListSubmitReq.session_token = Pref.session_token!!
+            shopListSubmitReq.shop_list.add(extraContResponseObj)
+
+        }
+
+        if(!AppUtils.isOnline(mContext)){
+            Toaster.msgShort(mContext,"Update successfully")
+            return
+        }
+
+        val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.updateMutiContact(shopListSubmitReq)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val addmutliContactResult = result as BaseResponse
+                    if (addmutliContactResult.status == NetworkConstant.SUCCESS){
+
+                        val obj = shopListSubmitReq.shop_list.get(0)
+                        if(obj.contact_serial1.equals("1") && !obj.contact_name1.equals("")){
+                            AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial1)
+                        }
+                        if(obj.contact_serial2.equals("2") && !obj.contact_name2.equals("")){
+                            AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial2)
+                        }
+                        if(obj.contact_serial3.equals("3") && !obj.contact_name3.equals("")){
+                            AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial3)
+                        }
+                        if(obj.contact_serial4.equals("4") && !obj.contact_name4.equals("")){
+                            AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial4)
+                        }
+                        if(obj.contact_serial5.equals("5") && !obj.contact_name5.equals("")){
+                            AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial5)
+                        }
+                        if(obj.contact_serial6.equals("6") && !obj.contact_name6.equals("")){
+                            AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial6)
+                        }
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage(addmutliContactResult.message!!)
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                    (mContext as DashboardActivity).showSnackMessage("Error update contact")
+
+                })
+        )
+    }
+
+    private fun convertToReqAndApiCallForShopStatus(addShopData: AddShopDBModelEntity) {
+        if (Pref.user_id == null || Pref.user_id == "" || Pref.user_id == " ") {
+            (mContext as DashboardActivity).showSnackMessage("Please login again")
+            BaseActivity.isApiInitiated = false
+            return
+        }
+
+        val addShopReqData = AddShopRequestData()
+        addShopReqData.session_token = Pref.session_token
+        addShopReqData.address = addShopData.address
+        addShopReqData.actual_address = addShopData.address
+        addShopReqData.owner_contact_no = addShopData.ownerContactNumber
+        addShopReqData.owner_email = addShopData.ownerEmailId
+        addShopReqData.owner_name = addShopData.ownerName
+        addShopReqData.pin_code = addShopData.pinCode
+        addShopReqData.shop_lat = addShopData.shopLat.toString()
+        addShopReqData.shop_long = addShopData.shopLong.toString()
+        addShopReqData.shop_name = addShopData.shopName.toString()
+        addShopReqData.shop_id = addShopData.shop_id
+        addShopReqData.added_date = ""
+        addShopReqData.user_id = Pref.user_id
+        addShopReqData.type = addShopData.type
+        addShopReqData.assigned_to_pp_id = addShopData.assigned_to_pp_id
+        addShopReqData.assigned_to_dd_id = addShopData.assigned_to_dd_id
+        /*addShopReqData.dob = addShopData.dateOfBirth
+        addShopReqData.date_aniversary = addShopData.dateOfAniversary*/
+        addShopReqData.amount = addShopData.amount
+        addShopReqData.area_id = addShopData.area_id
+        /*val addShop = AddShopRequest()
+        addShop.data = addShopReqData*/
+
+        addShopReqData.model_id = addShopData.model_id
+        addShopReqData.primary_app_id = addShopData.primary_app_id
+        addShopReqData.secondary_app_id = addShopData.secondary_app_id
+        addShopReqData.lead_id = addShopData.lead_id
+        addShopReqData.stage_id = addShopData.stage_id
+        addShopReqData.funnel_stage_id = addShopData.funnel_stage_id
+        addShopReqData.booking_amount = addShopData.booking_amount
+        addShopReqData.type_id = addShopData.type_id
+
+        if (!TextUtils.isEmpty(addShopData.dateOfBirth))
+            addShopReqData.dob = changeAttendanceDateFormatToCurrent(addShopData.dateOfBirth)
+
+        if (!TextUtils.isEmpty(addShopData.dateOfAniversary))
+            addShopReqData.date_aniversary = changeAttendanceDateFormatToCurrent(addShopData.dateOfAniversary)
+
+        addShopReqData.director_name = addShopData.director_name
+        addShopReqData.key_person_name = addShopData.person_name
+        addShopReqData.phone_no = addShopData.person_no
+
+        if (!TextUtils.isEmpty(addShopData.family_member_dob))
+            addShopReqData.family_member_dob = changeAttendanceDateFormatToCurrent(addShopData.family_member_dob)
+
+        if (!TextUtils.isEmpty(addShopData.add_dob))
+            addShopReqData.addtional_dob = changeAttendanceDateFormatToCurrent(addShopData.add_dob)
+
+        if (!TextUtils.isEmpty(addShopData.add_doa))
+            addShopReqData.addtional_doa = changeAttendanceDateFormatToCurrent(addShopData.add_doa)
+
+        addShopReqData.specialization = addShopData.specialization
+        addShopReqData.category = addShopData.category
+        addShopReqData.doc_address = addShopData.doc_address
+        addShopReqData.doc_pincode = addShopData.doc_pincode
+        addShopReqData.is_chamber_same_headquarter = addShopData.chamber_status.toString()
+        addShopReqData.is_chamber_same_headquarter_remarks = addShopData.remarks
+        addShopReqData.chemist_name = addShopData.chemist_name
+        addShopReqData.chemist_address = addShopData.chemist_address
+        addShopReqData.chemist_pincode = addShopData.chemist_pincode
+        addShopReqData.assistant_contact_no = addShopData.assistant_no
+        addShopReqData.average_patient_per_day = addShopData.patient_count
+        addShopReqData.assistant_name = addShopData.assistant_name
+
+        if (!TextUtils.isEmpty(addShopData.doc_family_dob))
+            addShopReqData.doc_family_member_dob = changeAttendanceDateFormatToCurrent(addShopData.doc_family_dob)
+
+        if (!TextUtils.isEmpty(addShopData.assistant_dob))
+            addShopReqData.assistant_dob = changeAttendanceDateFormatToCurrent(addShopData.assistant_dob)
+
+        if (!TextUtils.isEmpty(addShopData.assistant_doa))
+            addShopReqData.assistant_doa = changeAttendanceDateFormatToCurrent(addShopData.assistant_doa)
+
+        if (!TextUtils.isEmpty(addShopData.assistant_family_dob))
+            addShopReqData.assistant_family_dob = changeAttendanceDateFormatToCurrent(addShopData.assistant_family_dob)
+
+        addShopReqData.entity_id = addShopData.entity_id
+        addShopReqData.party_status_id = addShopData.party_status_id
+        addShopReqData.retailer_id = addShopData.retailer_id
+        addShopReqData.dealer_id = addShopData.dealer_id
+        addShopReqData.beat_id = addShopData.beat_id
+        addShopReqData.assigned_to_shop_id = addShopData.assigned_to_shop_id
+        //addShopReqData.actual_address = addShopData.actual_address
+
+
+        if(addShopData.shopStatusUpdate.equals("0"))
+            addShopReqData.shopStatusUpdate = addShopData.shopStatusUpdate
+        else
+            addShopReqData.shopStatusUpdate = "1"
+
+        callEditShopApiForShopStatus(addShopReqData)
+    }
+
+    private fun callEditShopApiForShopStatus(addShopReqData: AddShopRequestData) {
+        if (BaseActivity.isApiInitiated)
+            return
+
+        BaseActivity.isApiInitiated = true
+
+        XLog.d("=====Sync EditShop Input Params (Shop List)======")
+        XLog.d("shop id====> " + addShopReqData.shop_id)
+        val index = addShopReqData.shop_id!!.indexOf("_")
+        XLog.d("decoded shop id====> " + addShopReqData.user_id + "_" + AppUtils.getDate(addShopReqData.shop_id!!.substring(index + 1, addShopReqData.shop_id!!.length).toLong()))
+        XLog.d("shop added date====> " + addShopReqData.added_date)
+        XLog.d("shop address====> " + addShopReqData.address)
+        XLog.d("assigned to dd id====> " + addShopReqData.assigned_to_dd_id)
+        XLog.d("assigned to pp id=====> " + addShopReqData.assigned_to_pp_id)
+        XLog.d("date aniversery=====> " + addShopReqData.date_aniversary)
+        XLog.d("dob====> " + addShopReqData.dob)
+        XLog.d("shop owner phn no===> " + addShopReqData.owner_contact_no)
+        XLog.d("shop owner email====> " + addShopReqData.owner_email)
+        XLog.d("shop owner name====> " + addShopReqData.owner_name)
+        XLog.d("shop pincode====> " + addShopReqData.pin_code)
+        XLog.d("session token====> " + addShopReqData.session_token)
+        XLog.d("shop lat====> " + addShopReqData.shop_lat)
+        XLog.d("shop long===> " + addShopReqData.shop_long)
+        XLog.d("shop name====> " + addShopReqData.shop_name)
+        XLog.d("shop type===> " + addShopReqData.type)
+        XLog.d("user id====> " + addShopReqData.user_id)
+        XLog.d("amount=======> " + addShopReqData.amount)
+        XLog.d("area id=======> " + addShopReqData.area_id)
+        XLog.d("model id=======> " + addShopReqData.model_id)
+        XLog.d("primary app id=======> " + addShopReqData.primary_app_id)
+        XLog.d("secondary app id=======> " + addShopReqData.secondary_app_id)
+        XLog.d("lead id=======> " + addShopReqData.lead_id)
+        XLog.d("stage id=======> " + addShopReqData.stage_id)
+        XLog.d("funnel stage id=======> " + addShopReqData.funnel_stage_id)
+        XLog.d("booking amount=======> " + addShopReqData.booking_amount)
+        XLog.d("type id=======> " + addShopReqData.type_id)
+
+        XLog.d("family member dob=======> " + addShopReqData.family_member_dob)
+        XLog.d("director name=======> " + addShopReqData.director_name)
+        XLog.d("key person's name=======> " + addShopReqData.key_person_name)
+        XLog.d("phone no=======> " + addShopReqData.phone_no)
+        XLog.d("additional dob=======> " + addShopReqData.addtional_dob)
+        XLog.d("additional doa=======> " + addShopReqData.addtional_doa)
+        XLog.d("doctor family member dob=======> " + addShopReqData.doc_family_member_dob)
+        XLog.d("specialization=======> " + addShopReqData.specialization)
+        XLog.d("average patient count per day=======> " + addShopReqData.average_patient_per_day)
+        XLog.d("category=======> " + addShopReqData.category)
+        XLog.d("doctor address=======> " + addShopReqData.doc_address)
+        XLog.d("doctor pincode=======> " + addShopReqData.doc_pincode)
+        XLog.d("chambers or hospital under same headquarter=======> " + addShopReqData.is_chamber_same_headquarter)
+        XLog.d("chamber related remarks=======> " + addShopReqData.is_chamber_same_headquarter_remarks)
+        XLog.d("chemist name=======> " + addShopReqData.chemist_name)
+        XLog.d("chemist name=======> " + addShopReqData.chemist_address)
+        XLog.d("chemist pincode=======> " + addShopReqData.chemist_pincode)
+        XLog.d("assistant name=======> " + addShopReqData.assistant_name)
+        XLog.d("assistant contact no=======> " + addShopReqData.assistant_contact_no)
+        XLog.d("assistant dob=======> " + addShopReqData.assistant_dob)
+        XLog.d("assistant date of anniversary=======> " + addShopReqData.assistant_doa)
+        XLog.d("assistant family dob=======> " + addShopReqData.assistant_family_dob)
+        XLog.d("entity id=======> " + addShopReqData.entity_id)
+        XLog.d("party status id=======> " + addShopReqData.party_status_id)
+        XLog.d("retailer id=======> " + addShopReqData.retailer_id)
+        XLog.d("dealer id=======> " + addShopReqData.dealer_id)
+        XLog.d("beat id=======> " + addShopReqData.beat_id)
+        XLog.d("actual_address=======> " + addShopReqData.actual_address)
+
+        progress_wheel.spin()
+
+        if (true) {
+            val repository = EditShopRepoProvider.provideEditShopWithoutImageRepository()
+            BaseActivity.compositeDisposable.add(
+                repository.editShop(addShopReqData)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val addShopResult = result as AddShopResponse
+                        XLog.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
+                        if (addShopResult.status == NetworkConstant.SUCCESS) {
+                            AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(1, addShopReqData.shop_id)
+                            progress_wheel.stopSpinning()
+                            (mContext as DashboardActivity).showSnackMessage("Status updated successfully")
+                            initAdapter()
+
+                        }
+                        BaseActivity.isApiInitiated = false
+                    }, { error ->
+                        error.printStackTrace()
+                        BaseActivity.isApiInitiated = false
+                        progress_wheel.stopSpinning()
+                    })
+            )
         }
     }
 }

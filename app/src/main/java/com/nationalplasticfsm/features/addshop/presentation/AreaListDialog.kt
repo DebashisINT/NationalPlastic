@@ -67,7 +67,7 @@ class AreaListDialog : DialogFragment() {
         dialog_header_TV = v.findViewById(R.id.dialog_header_TV)
         rv_common_dialog_list = v.findViewById(R.id.rv_common_dialog_list)
         rv_common_dialog_list.layoutManager = LinearLayoutManager(mContext)
-        rv_common_dialog_list.visibility = View.GONE
+        //rv_common_dialog_list.visibility = View.GONE
         adapter = AreaListAdapter(mContext, mAreaList, { area: AreaListEntity ->
             dismiss()
             //AppUtils.hideSoftKeyboardFromDialog((mContext as DashboardActivity))

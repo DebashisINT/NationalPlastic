@@ -36,6 +36,7 @@ import kotlinx.android.synthetic.main.fragment_cart_new.*
 /**
  * Created by Saikat on 09-11-2018.
  */
+// 1.0  AppV 4.0.6  CartFragment  Saheli    25/01/2023 0025623 discount is editable work
 class CartFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -61,11 +62,15 @@ class CartFragment : BaseFragment(), View.OnClickListener {
     private lateinit var rl_lab: RelativeLayout
     private lateinit var rl_emailaddress: RelativeLayout
 
+
+
     private lateinit var et_lab: AppCustomEditText
     private lateinit var et_emailaddress: AppCustomEditText
 
     private var remarks = ""
     private var imagePath = ""
+
+    private lateinit var tv_discount: AppCustomTextView  //1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work
 
     companion object {
         private var selectedProductList: ArrayList<ProductListEntity>? = null
@@ -119,6 +124,9 @@ class CartFragment : BaseFragment(), View.OnClickListener {
         rl_emailaddress =  view.findViewById(R.id.rl_emailaddress)
         et_lab = view.findViewById(R.id.et_lab)
         et_emailaddress = view.findViewById(R.id.et_emailaddress)
+
+        tv_discount = view.findViewById(R.id.tv_frag_new_cart_discount)//1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work
+
 
 
 
@@ -176,6 +184,14 @@ class CartFragment : BaseFragment(), View.OnClickListener {
         }
         else{
             tv_mrp.visibility = View.GONE
+        }
+
+        //1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work
+        if(Pref.IsDiscountEditableInOrder){
+            tv_discount.visibility = View.VISIBLE
+        }
+        else{
+            tv_discount.visibility = View.GONE
         }
 
         if(AppUtils.stockStatus != 0){
@@ -565,7 +581,9 @@ class CartFragment : BaseFragment(), View.OnClickListener {
                 if (rateList[i].endsWith(".")) {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.enter_valid_rate))
                     return
-                } else if (rateList[i].toDouble() == 0.00) {
+                }
+
+                else if (rateList[i].toDouble() == 0.00) {
                     if (AppUtils.stockStatus == 0)
                         tempRateList.remove(rateList[i])
                 }
@@ -663,10 +681,9 @@ class CartFragment : BaseFragment(), View.OnClickListener {
                 } else
                     saveData()
             }
-
+            
             override fun onRightClick(editableData: String) {
             }
-
         }).show((mContext as DashboardActivity).supportFragmentManager, "")
     }
 
@@ -674,7 +691,6 @@ class CartFragment : BaseFragment(), View.OnClickListener {
         AddRemarksSignDialog.getInstance(remarks, imagePath, { remark, imgPath ->
             remarks = remark
             imagePath = imgPath
-
             saveData()
         }, {
             saveData()

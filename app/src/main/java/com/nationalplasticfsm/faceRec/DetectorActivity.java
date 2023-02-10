@@ -165,8 +165,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             new FaceDetectorOptions.Builder()
                     .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
                     //.setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                    .setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-                    //.setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
+                    //.setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                    .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
                     .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
                     .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
                     .build();
@@ -652,7 +652,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 //          if (conf>0.78f && conf < 1.0f) {
           XLog.d("DetectorActivity face _conf CustomStatic.FaceDetectionAccuracyLower : "+CustomStatic.FaceDetectionAccuracyLower.toString());
           XLog.d("DetectorActivity face _conf lowerLi: "+lowerLi.toString() + " upperLi : "+upperLi.toString()+" conf: "+String.valueOf(conf));
-          if (conf>lowerLi && conf < 0.99f) {
+          if (conf>lowerLi && conf < 1.0f) {
             //if (conf>lowerLi && conf < upperLi) {
           //if (conf >0.6f && conf < 1.0f) {  //  it will toughen the matching process which will create problem in real life
             confidence = conf;

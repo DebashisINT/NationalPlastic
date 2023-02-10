@@ -2,6 +2,7 @@ package com.nationalplasticfsm.features.attendance.api
 
 import com.nationalplasticfsm.features.attendance.model.AttendanceRequest
 import com.nationalplasticfsm.features.attendance.model.AttendanceResponse
+import com.nationalplasticfsm.features.attendance.model.DayStartEndListResponse
 import io.reactivex.Observable
 
 /**
@@ -10,5 +11,9 @@ import io.reactivex.Observable
 class AttendanceListRepository(val apiService: AttendanceListApi) {
     fun getAttendanceList(attendanceRequest: AttendanceRequest?): Observable<AttendanceResponse> {
         return apiService.getAttendanceList(attendanceRequest)
+    }
+
+    fun getDayStartEndList(attendanceRequest: AttendanceRequest?): Observable<DayStartEndListResponse> {
+        return apiService.getDayStartEndListAPI(attendanceRequest)
     }
 }

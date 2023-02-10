@@ -1,16 +1,31 @@
 package com.nationalplasticfsm.features.photoReg.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.Pref
+import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
+import com.nationalplasticfsm.features.chat.model.ChatListDataModel
+import com.nationalplasticfsm.features.myjobs.model.CustomerDataModel
+import com.nationalplasticfsm.features.nearbyshops.model.NewOrderModel
+import com.nationalplasticfsm.features.nearbyshops.presentation.NearByShopsListAdapter
+import com.nationalplasticfsm.features.nearbyshops.presentation.NearByShopsListClickListener
 import com.nationalplasticfsm.features.photoReg.model.UserListResponseModel
+import com.squareup.picasso.Cache
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.row_user_list_face_attend.view.*
 import kotlinx.android.synthetic.main.row_user_list_face_regis.view.*
+import kotlinx.android.synthetic.main.row_user_list_face_regis.view.photo_reg_user_name_tv
 
 class AdapterUserList (var mContext: Context,var customerList:ArrayList<UserListResponseModel>,val listner:PhotoRegUserListner,private val getSize: (Int) -> Unit):
         RecyclerView.Adapter<AdapterUserList.MyViewHolder>(), Filterable {
@@ -49,19 +64,37 @@ class AdapterUserList (var mContext: Context,var customerList:ArrayList<UserList
     inner class MyViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
         fun bindItems(){
             itemView.apply {
-                photo_reg_user_name_tv.text = mList?.get(adapterPosition)?.user_name
-                photo_reg_user_ph_tv.text = " "+mList?.get(adapterPosition)?.user_login_id
-                photo_reg_dd_name_tv.text="Distributor : "+mList?.get(adapterPosition)?.ShowDDInFaceRegistration
+                //photo_reg_user_name_tv.text = mList?.get(adapterPosition)?.user_name + "   (  "+ mList?.get(adapterPosition)?.user_login_id+"  )"
+                photo_reg_user_name_tv.text = mList?.get(adapterPosition)?.user_name + " ( "+ mList?.get(adapterPosition)?.OtherID+" )"
+                photo_reg_user_ph_tv.text = " "+mList?.get(adapterPosition)?.emp_phone_no
+//                photo_reg_dd_name_tv.text="Distributor : "+mList?.get(adapterPosition)?.ShowDDInFaceRegistration
 //                photo_reg_dd_name_tv.text="Distributor Surise Manali Himachal Limited "
                 click_for_photo_reg_tv.setOnClickListener{listner?.getUserInfoOnLick(mList?.get(adapterPosition)!!)}
                 click_for_update_type_tv.setOnClickListener{listner?.updateTypeOnClick(mList?.get(adapterPosition)!!)}
-                sync_whatsapp_iv.setOnClickListener{listner?.getWhatsappOnLick(mList?.get(adapterPosition)?.user_login_id.toString())}
-                photo_reg_user_ph_tv.setOnClickListener{listner?.getPhoneOnLick(mList?.get(adapterPosition)?.user_login_id.toString())}
+                sync_whatsapp_iv.setOnClickListener{listner?.getWhatsappOnLick(mList?.get(adapterPosition)?.emp_phone_no.toString())}
+                photo_reg_user_ph_tv.setOnClickListener{listner?.getPhoneOnLick(mList?.get(adapterPosition)?.emp_phone_no.toString())}
                 //sync_delete_iv.setOnClickListener{listner?.deletePicOnLick(mList?.get(adapterPosition)!!)}
                 sync_delete_iv_red.setOnClickListener{listner?.deletePicOnLick(mList?.get(adapterPosition)!!)}
 
-                iv_aadhaar_ion.setOnClickListener{listner?.getAadhaarOnLick(mList?.get(adapterPosition)!!)}
-                if(mList?.get(adapterPosition)?.IsAadhaarRegistered!!){
+                photo_reg_user_ph_update_name.setOnClickListener{listner?.updateUserNameOnClick(mList?.get(adapterPosition)!!)}
+
+                if(mList?.get(adapterPosition)?.emp_phone_no!!.length>0){
+                    photo_reg_user_ph_update_tv.text="Update Contact No"
+                }else{
+                    photo_reg_user_ph_update_tv.text="Add Contact No"
+                }
+                photo_reg_user_ph_update_tv.setOnClickListener{
+                    if(mList?.get(adapterPosition)?.emp_phone_no!!.length>0){
+                        listner?.updateContactOnClick(mList?.get(adapterPosition)!!)
+                    }else{
+                        listner?.addContactOnClick(mList?.get(adapterPosition)!!)
+                    }
+                }
+
+                //iv_aadhaar_ion.setOnClickListener{listner?.getAadhaarOnLick(mList?.get(adapterPosition)!!)}
+
+                //if(mList?.get(adapterPosition)?.IsAadhaarRegistered!!){
+                if(mList?.get(adapterPosition)?.aadhar_image_link!!.contains("CommonFolder")){
                     iv_aadhaar_ion.setImageResource(R.drawable.ic_aadhaar_icon_done)
                 }else{
                     iv_aadhaar_ion.setImageResource(R.drawable.ic_aadhaar_icon)
@@ -113,6 +146,75 @@ class AdapterUserList (var mContext: Context,var customerList:ArrayList<UserList
                     ll_row_user_list_face_regis_tagline.visibility=View.GONE
                 }
 
+                if(Pref.IsShowTypeInRegistration){
+                    if(mList?.get(adapterPosition)?.IsShowTypeInRegistrationForSpecificUser!!){
+                        click_for_update_type_tv.visibility=View.VISIBLE
+                    }else{
+                        click_for_update_type_tv.visibility=View.GONE
+                    }
+                }else{
+                    click_for_update_type_tv.visibility=View.GONE
+                }
+
+                if(!mList?.get(adapterPosition)?.type_name.equals(""))
+                    photo_reg_user_type_name_tv.text= "Sales Rep Type : "+ mList?.get(adapterPosition)?.type_name!!
+
+                if(!mList?.get(adapterPosition)?.aadhar_image_link!!.contains("CommonFolder") && mList?.get(adapterPosition)?.isFaceRegistered!!){
+                    photo_reg_user_old_reg_tv.visibility=View.VISIBLE
+                }else{
+                    //photo_reg_user_old_reg_tv.visibility=View.GONE
+                    if(mList?.get(adapterPosition)?.Registered_with!!.length>0){
+                        photo_reg_user_old_reg_tv.visibility=View.VISIBLE
+                        photo_reg_user_old_reg_tv.setTextColor(resources.getColor(R.color.color_custom_green))
+                        photo_reg_user_old_reg_tv.text= "Registered with\n"+mList?.get(adapterPosition)?.Registered_with!!+"     "
+                    }else{
+                        photo_reg_user_old_reg_tv.visibility=View.GONE
+                    }
+
+                }
+
+                if(mList?.get(adapterPosition)?.isFaceRegistered!!){
+
+                }else{
+                    sync_image_view.setColorFilter(ContextCompat.getColor(getContext(), R.color.black_50))
+                }
+
+                if(Pref.UpdateUserName){
+                    photo_reg_user_ph_update_name.visibility=View.VISIBLE
+                }else{
+                    photo_reg_user_ph_update_name.visibility=View.GONE
+                }
+
+                if(Pref.IsAllowClickForPhotoRegister){
+                    click_for_photo_reg_tv.visibility=View.VISIBLE
+                }else{
+                    click_for_photo_reg_tv.visibility=View.GONE
+                }
+
+                if(mList?.get(adapterPosition)?.UpdateOtherID!!){
+                    photo_reg_user_other_id_update_tv.visibility=View.VISIBLE
+                }else{
+                    photo_reg_user_other_id_update_tv.visibility=View.GONE
+                }
+                if(mList?.get(adapterPosition)?.UpdateUserID!!){
+                    photo_reg_user_login_id_update_tv.visibility=View.VISIBLE
+                }else{
+                    photo_reg_user_login_id_update_tv.visibility=View.GONE
+                }
+                photo_reg_user_other_id_update_tv.setOnClickListener{listner?.updateOtherIDOnClick(mList?.get(adapterPosition)!!)}
+                photo_reg_user_login_id_update_tv.setOnClickListener{listner?.updateLoginIDOnClick(mList?.get(adapterPosition)!!)}
+
+                iv_aadhaar_ion.visibility=View.GONE
+
+                try{
+                    if(mList?.get(adapterPosition)?.Employee_Designation!!.length>0){
+                        photo_reg_user_designation_name_tv.text = mList?.get(adapterPosition)?.Employee_Designation!!
+                    }else{
+                        photo_reg_user_designation_name_tv.text = ""
+                    }
+                }catch (ex:Exception){
+                    photo_reg_user_designation_name_tv.text = ""
+                }
 
 
             }
@@ -176,4 +278,7 @@ class AdapterUserList (var mContext: Context,var customerList:ArrayList<UserList
 
         notifyDataSetChanged()
     }
+
+
+
 }

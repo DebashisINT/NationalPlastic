@@ -77,7 +77,7 @@ class MemberSalesmanListAdapter(private var context:Context, private var msalesm
 
 
     override fun onBindViewHolder(holder: GenderListViewHolder, position: Int) {
-        holder.tv_tax.text=arrayList_product!!.get(position).user_name!!
+        holder.tv_tax.text=arrayList_product!!.get(position).user_name!! +" ("+arrayList_product!!.get(position).Employee_Code+")"
         holder.cv_tax.setOnClickListener { listner?.OnClick(arrayList_product!!.get(holder.adapterPosition)) }
     }
 

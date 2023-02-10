@@ -338,6 +338,20 @@
         android:paddingLeft="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_5sdp" />
 
+    <com.nationalplasticfsm.widgets.AppCustomTextView
+        android:id="@+id/tv_update_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_5sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:singleLine="true"
+        android:text="Update Status"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_8sdp"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/_7sdp"
+        android:layout_marginTop="@dimen/_5sdp" />
+
     <LinearLayout
         android:id="@+id/iconWrapper_rl"
         android:layout_width="wrap_content"

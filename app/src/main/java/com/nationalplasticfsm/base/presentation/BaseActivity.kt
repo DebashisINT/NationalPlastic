@@ -83,6 +83,8 @@ import java.util.*
 /**
  * Created by Pratishruti on 26-10-2017.
  */
+//Revision History
+// 1.0 BaseActivity AppV 4.0.6  Saheli    12/01/2023  multiple contact Data added on Api called
 
 open class BaseActivity : AppCompatActivity(), GpsStatusDetector.GpsStatusDetectorCallBack {
 
@@ -1433,6 +1435,13 @@ val revisitStatusList : MutableList<ShopRevisitStatusRequestData> = ArrayList()
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+            //New shop Create issue
+            shopDurationData.isnewShop=shopActivity.isnewShop
+
+            // 1.0 BaseActivity AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
 
             shopDataList.add(shopDurationData)
 
@@ -1652,6 +1661,12 @@ val revisitStatusList : MutableList<ShopRevisitStatusRequestData> = ArrayList()
         }catch (ex:Exception){
             shopDurationData.spent_duration="00:00:10"
         }
+        //New shop Create issue
+        shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+        // 1.0 BaseActivity AppV 4.0.6  multiple contact Data added on Api called
+        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
         shopDataList.add(shopDurationData)
 

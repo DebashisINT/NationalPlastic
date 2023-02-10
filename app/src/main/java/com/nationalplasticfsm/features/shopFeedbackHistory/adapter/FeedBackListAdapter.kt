@@ -38,11 +38,13 @@ class FeedBackListAdapter(var mContext:Context, var list:ArrayList<ShopFeedbackE
         var ddate=list.get(position).date_time!!.substring(0,10)
         holder.dateShow.text=  AppUtils.getFormatedDateNew(ddate,"yyyy-mm-dd","dd-mm-yyyy")
         holder.feedbackShow.text=list.get(position).feedback
+        holder.nameShow.text=list.get(position).multi_contact_name
     }
 
     inner class CustomerLeadViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         var dateShow = itemView.date_tv
         var feedbackShow = itemView.feedback_tv
+        var nameShow = itemView.tv_feedback_name
     }
 
 }

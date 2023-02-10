@@ -28,18 +28,28 @@
             android:textSize="@dimen/_11sdp"
             android:gravity="center"/>
 
-
-
         <com.nationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/feedback_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:gravity="center"
             android:textColor="@color/black"
             android:text="@string/dummy_text"
             android:textSize="@dimen/_11sdp" />
 
+
+        <com.nationalplasticfsm.widgets.AppCustomTextView
+            android:id="@+id/tv_feedback_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.9"
+            android:minWidth="@dimen/_30sdp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="Name"
+            android:textSize="@dimen/_11sdp"
+            android:layout_marginLeft="@dimen/_3sdp"/>
 
     </LinearLayout>
 

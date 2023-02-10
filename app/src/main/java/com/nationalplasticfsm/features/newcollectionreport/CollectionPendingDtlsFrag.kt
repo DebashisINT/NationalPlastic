@@ -342,6 +342,10 @@ class CollectionPendingDtlsFrag : BaseFragment(), View.OnClickListener {
             product.scheme_rate = list[i].scheme_rate
             product.total_scheme_price = list[i].total_scheme_price
             product.MRP = list[i].MRP
+
+            //mantis 25601
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
             productList.add(product)
         }
 

@@ -30,14 +30,17 @@ class MemberSalesmanListDialog: DialogFragment() {
     private lateinit var mContext: Context
     private lateinit  var et_search: AppCustomEditText
 
+
     companion object{
         private lateinit var onSelectItem: (TeamListDataModel) -> Unit
         private var msalesmanList: ArrayList<TeamListDataModel>? = null
+        private var headerStr = ""
 
-        fun newInstance(gList: ArrayList<TeamListDataModel>, function: (TeamListDataModel) -> Unit): MemberSalesmanListDialog {
+        fun newInstance(header:String,gList: ArrayList<TeamListDataModel>, function: (TeamListDataModel) -> Unit): MemberSalesmanListDialog {
             val dialogFragment = MemberSalesmanListDialog()
             msalesmanList = gList
             onSelectItem = function
+            headerStr = header
             return dialogFragment
         }
     }
@@ -69,7 +72,8 @@ class MemberSalesmanListDialog: DialogFragment() {
         rv_gender.layoutManager = LinearLayoutManager(mContext)
         et_search=v!!.findViewById(R.id.et_dialog_product_search)
 
-        header.text="Select Salesman"
+        //header.text="Select Salesman"
+        header.text=headerStr
 
         adapter=MemberSalesmanListAdapter(mContext, msalesmanList!!,object: SalesmanOnClick {
             override fun OnClick(obj: TeamListDataModel) {

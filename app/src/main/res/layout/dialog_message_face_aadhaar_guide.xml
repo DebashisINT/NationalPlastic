@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/_250sdp"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/dialog_message_headerTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/app_name"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/dialog_adhaar_reg_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:background="@color/light_gray"
+            android:layout_marginLeft="@dimen/_7sdp"
+            android:layout_marginRight="@dimen/_7sdp"/>
+
+        <TextView
+            android:id="@+id/dialog_message_header_TV"
+            android:layout_width="match_parent"
+            android:minHeight="@dimen/_40sdp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Do you want to go back ?"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/_12sdp"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/iv_dialog_msg_face_aadhaar_g"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
+            android:layout_gravity="center" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"
+            android:background="@drawable/gradient_bottom"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:visibility="visible" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:orientation="horizontal">
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_message_ok"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/selector_order_history_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="Capture photo"
+                android:textColor="@drawable/selector_text_clor_blue_white"
+                android:textSize="@dimen/_13sdp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

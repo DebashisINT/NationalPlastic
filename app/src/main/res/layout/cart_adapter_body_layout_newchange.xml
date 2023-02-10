@@ -9,6 +9,46 @@
         android:layout_height="wrap_content"
         android:background="@color/color_silver">
 
+
+        <!--//1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work-->
+         <RelativeLayout
+            android:id="@+id/rl_cart_adapter_discount"
+            android:layout_width="@dimen/_56sdp"
+            android:layout_height="@dimen/_54sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            android:background="@color/report_blue"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:layout_toLeftOf="@+id/time_RL"
+            android:layout_marginLeft="@dimen/_1sdp">
+
+            <com.nationalplasticfsm.widgets.AppCustomEditText
+                android:id="@+id/et_cart_adapter_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:hint="0.00"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:padding="@dimen/_5sdp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/avg_shop_blue"
+                android:textCursorDrawable="@drawable/white_cursor_drawable"
+                android:textSize="@dimen/_11sdp" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="Mins"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_9sdp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
         <!--MRP-->
         <RelativeLayout
             android:id="@+id/rl_mrp"

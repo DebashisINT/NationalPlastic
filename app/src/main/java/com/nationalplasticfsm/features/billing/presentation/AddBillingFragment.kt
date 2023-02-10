@@ -72,6 +72,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by Saikat on 19-02-2019.
  */
+// 1.0 AddBillingFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class AddBillingFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -945,6 +946,12 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
                 }catch (ex:Exception){
                     shopDurationData.spent_duration="00:00:10"
                 }
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+                // 1.0 AddBillingFragment AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
                 shopDataList.add(shopDurationData)
             }
         }
@@ -1279,6 +1286,10 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
             product.total_scheme_price = list[i].total_scheme_price
 
             product.MRP = list[i].MRP
+
+            //mantis 25601
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
 
             productList.add(product)
         }

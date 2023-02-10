@@ -33,13 +33,16 @@ data class ViewDetailsQuotResponse(var status: String? = null,
                                    var Remarks: String? = null,
                                    var document_number: String? = null,
                                    var shop_address_pincode: String? = null,
-                                   var quotation_product_details_list: ArrayList<quotation_product_details_list>? = null
+                                   var sel_quotation_pdf_template: String? = null,
+                                   var quotation_product_details_list: ArrayList<quotation_product_details_list>? = null,
+                                   var extra_contact_list: ArrayList<Extra_contact_list>? = null
 
 )
 
 data class quotation_product_details_list(
         var product_id: Int? = null,
         var product_name: String? = null,
+        var product_des: String? = null,
         var color_id: String? = null,
         var color_name: String? = null,
         var rate_sqft: String? = null,

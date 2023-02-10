@@ -4,10 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.speech.tts.TextToSpeech
-import androidx.core.widget.NestedScrollView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -18,8 +14,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import com.elvishew.xlog.XLog
-import com.pnikosis.materialishprogress.ProgressWheel
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.cardview.widget.CardView
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.NetworkConstant
@@ -44,7 +45,6 @@ import com.nationalplasticfsm.features.location.model.ShopDurationRequestData
 import com.nationalplasticfsm.features.location.shopdurationapi.ShopDurationRepositoryProvider
 import com.nationalplasticfsm.features.login.api.productlistapi.ProductListRepoProvider
 import com.nationalplasticfsm.features.login.model.productlistmodel.*
-import com.nationalplasticfsm.features.shopdetail.presentation.ShopDetailFragment
 import com.nationalplasticfsm.features.stock.api.StockRepositoryProvider
 import com.nationalplasticfsm.features.stock.model.AddStockInputParamsModel
 import com.nationalplasticfsm.features.viewAllOrder.api.addorder.AddOrderRepoProvider
@@ -52,17 +52,24 @@ import com.nationalplasticfsm.features.viewAllOrder.model.AddOrderInputParamsMod
 import com.nationalplasticfsm.features.viewAllOrder.model.AddOrderInputProductList
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
+import com.elvishew.xlog.XLog
+import com.google.android.material.appbar.AppBarLayout
+import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.lang.Runnable
+import java.text.DecimalFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
+import kotlin.system.measureTimeMillis
 
 /**
  * Created by Saikat on 08-11-2018.
  */
+// 1.0 OrderTypeListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
+// 2.0 OrderTypeListFragment AppV 4.0.6 saheli 20-01-2023 mrp & discount added order time mantis 25601
 class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -91,6 +98,10 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     private lateinit var et_watt_search: AppCustomEditText
     private lateinit var tv_select_all: AppCompatTextView
 
+    private lateinit var iv_filter: ImageView
+
+    private lateinit var app_bar: AppBarLayout
+
     private var productEntity: ProductListEntity? = null
     private var selectedProductList = ArrayList<ProductListEntity>()
     private var shopId = ""
@@ -105,6 +116,12 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     private var productRateListDb: ArrayList<ProductRateEntity>? = null
     private var productAdapter: ProductListAdapter? = null
     private var isForDb = false
+
+    private lateinit var tv_search_frag_order_type_list: AppCustomEditText
+
+    private lateinit var cv_search: CardView
+    private lateinit var iv_search_frag_order_type_list: ImageView
+
 
     companion object {
 
@@ -129,7 +146,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
         //productRateList = AppUtils.loadSharedPreferencesProductRateList(mContext)
 
-        val list = AppDatabase.getDBInstance()?.productRateDao()?.getAll() as ArrayList<ProductRateEntity>?
+        var list : ArrayList<ProductRateEntity> =  ArrayList()
+        val time = measureTimeMillis {
+            list = (AppDatabase.getDBInstance()?.productRateDao()?.getAll() as ArrayList<ProductRateEntity>?)!!
+        }
+        println("time_cal rate_list_f : $time")
         if (list == null || list.isEmpty()) {
             //isForDb = true
             getProductRateListOfflineApi(true)
@@ -156,9 +177,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                             if (!isFromOnAttach)
                                 AppDatabase.getDBInstance()?.productRateDao()?.deleteAll()
-
                             doAsync {
-
                                 AppDatabase.getDBInstance()?.productRateDao()?.insertAll(productRateList)
 
                                 /*productRateList.forEach {
@@ -178,24 +197,35 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 }*/
 
                                 uiThread {
-                                    productRateListDb = AppDatabase.getDBInstance()?.productRateDao()?.getAll() as ArrayList<ProductRateEntity>?
+                                    productRateListDb =
+                                        AppDatabase.getDBInstance()?.productRateDao()
+                                            ?.getAll() as ArrayList<ProductRateEntity>?
                                     progress_wheel.stopSpinning()
 
                                     if (!isFromOnAttach)
-                                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.success_msg), 1000)
+                                        (mContext as DashboardActivity).showSnackMessage(
+                                            getString(R.string.success_msg),
+                                            1000
+                                        )
                                 }
                             }
                         } else {
                             progress_wheel.stopSpinning()
 
                             if (!isFromOnAttach)
-                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_msg), 1000)
+                                (mContext as DashboardActivity).showSnackMessage(
+                                    getString(R.string.error_msg),
+                                    1000
+                                )
                         }
                     } else {
                         progress_wheel.stopSpinning()
 
                         if (!isFromOnAttach)
-                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_msg), 1000)
+                            (mContext as DashboardActivity).showSnackMessage(
+                                getString(R.string.error_msg),
+                                1000
+                            )
                     }
 
                 }, { error ->
@@ -204,12 +234,19 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     progress_wheel.stopSpinning()
 
                     if (!isFromOnAttach)
-                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_msg), 1000)
+                        (mContext as DashboardActivity).showSnackMessage(
+                            getString(R.string.error_msg),
+                            1000
+                        )
                 })
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_order_type_list_new, container, false)
         initView(view)
@@ -223,17 +260,34 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
         (mContext as DashboardActivity).setSearchListener(object : SearchListener {
             override fun onSearchQueryListener(query: String) {
-                if (query.isBlank()) {
-                    if (productList != null && productList!!.size > 0) {
-                        productAdapter?.updateList(productList!!)
+                if(Pref.IsShowNewOrderCart){
+                    CustomStatic.productQtyEdi = HashMap()
+                    CustomStatic.productRateEdi = HashMap()
+                    CustomStatic.productAddedID = ArrayList()
+                    if (query.isBlank()) {
+                        if (productList != null && productList!!.size > 0) {
+                            productAdapter?.updateList(productList!!)
+                        }
+                    } else {
+                        if (productList != null && productList!!.size > 0)
+                            productAdapter?.filter?.filter(query)
+
                     }
-                } else {
-                    if (productList != null && productList!!.size > 0)
-                        productAdapter?.filter?.filter(query)
                 }
+                else{
+                    if (query.isBlank()) {
+                        if (productList != null && productList!!.size > 0) {
+                            productAdapter?.updateList(productList!!)
+                        }
+                    } else {
+                        if (productList != null && productList!!.size > 0)
+                            productAdapter?.filter?.filter(query)
+
+                    }
+                }
+
             }
         })
-
 
         return view
     }
@@ -243,16 +297,19 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
         if (!AppUtils.isOnline(mContext)) {
             if (Pref.isRateOnline)
-                (mContext as DashboardActivity).showSnackMessage("Internet not connected. Product Rates will show as ZERO(0). You may put manually.", 10000)
+                (mContext as DashboardActivity).showSnackMessage(
+                    "Internet not connected. Product Rates will show as ZERO(0). You may put manually.",
+                    10000
+                )
             return
         }
 
         BaseActivity.isApiInitiated = true
         val repository = ProductListRepoProvider.productListProvider()
-        if(Pref.isShowAllProduct){
-        progress_wheel.spin()
-        }else{
-
+        if (Pref.isShowAllProduct) {
+            progress_wheel.spin()
+        } else {
+            progress_wheel.spin()
         }
         BaseActivity.compositeDisposable.add(
             repository.getProductRateList(shopId)
@@ -265,47 +322,62 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                         if (response.product_rate_list != null && response.product_rate_list!!.size > 0) {
                             if (!isForDb) {
-                                progress_wheel.stopSpinning()
+
                                 productRateList = response.product_rate_list
-                                AppUtils.saveSharedPreferencesProductRateList(mContext, productRateList!!)
+                                val time = measureTimeMillis {
+                                    AppUtils.saveSharedPreferencesProductRateList(mContext, productRateList!!)
+                                }
+                                println("time_cal save_sf : $time")
+                                progress_wheel.stopSpinning()
+
 
                                 if (Pref.isShowAllProduct) {
                                     productList = AppDatabase.getDBInstance()?.productListDao()?.getAll() as ArrayList<ProductListEntity>?
                                     setProductAdapter(productList!!)
-                                }
+                                    iv_filter.isEnabled = true
 
+                                }
+                                else{
+                                    iv_filter.isEnabled = true
+                                    //cv_search.visibility = View.VISIBLE
+                                }
                             } else {
                                 doAsync {
 
                                     response.product_rate_list!!.forEach {
                                         val productRate = ProductRateEntity()
-                                        AppDatabase.getDBInstance()?.productRateDao()?.insert(productRate.apply {
-                                            product_id = it.product_id
-                                            //rate = it.rate
-                                            stock_amount = it.stock_amount
-                                            stock_unit = it.stock_unit
-                                            isStockShow = it.isStockShow
-                                            isRateShow = it.isRateShow
-                                        })
+                                        AppDatabase.getDBInstance()?.productRateDao()
+                                            ?.insert(productRate.apply {
+                                                product_id = it.product_id
+                                                //rate = it.rate
+                                                stock_amount = it.stock_amount
+                                                stock_unit = it.stock_unit
+                                                isStockShow = it.isStockShow
+                                                isRateShow = it.isRateShow
+                                            })
                                     }
-
                                     uiThread {
                                         productRateListDb = AppDatabase.getDBInstance()?.productRateDao()?.getAll() as ArrayList<ProductRateEntity>?
                                         progress_wheel.stopSpinning()
                                         isForDb = false
                                     }
                                 }
+                                iv_filter.isEnabled = true
+
                             }
                         } else {
                             progress_wheel.stopSpinning()
 
                             if (!isForDb && Pref.isShowAllProduct) {
-                                productList = AppDatabase.getDBInstance()?.productListDao()?.getAll() as ArrayList<ProductListEntity>?
+                                productList = AppDatabase.getDBInstance()?.productListDao()
+                                    ?.getAll() as ArrayList<ProductListEntity>?
                                 setProductAdapter(productList!!)
                             }
 
                             if (isForDb)
                                 isForDb = false
+                            iv_filter.isEnabled = true
+
                         }
                     } else {
                         progress_wheel.stopSpinning()
@@ -317,6 +389,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                         if (isForDb)
                             isForDb = false
+                        iv_filter.isEnabled = true
                     }
 
 
@@ -326,12 +399,15 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     progress_wheel.stopSpinning()
 
                     if (/*!isForDb &&*/ Pref.isShowAllProduct) {
-                        productList = AppDatabase.getDBInstance()?.productListDao()?.getAll() as ArrayList<ProductListEntity>?
+                        productList = AppDatabase.getDBInstance()?.productListDao()
+                            ?.getAll() as ArrayList<ProductListEntity>?
                         setProductAdapter(productList!!)
                     }
 
                     if (isForDb)
                         isForDb = false
+                    iv_filter.isEnabled = true
+
                 })
         )
     }
@@ -350,14 +426,22 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     if (response.status == NetworkConstant.SUCCESS) {
                         if (response.product_rate_list != null && response.product_rate_list!!.size > 0) {
                             progress_wheel.stopSpinning()
-                                productRateList = response.product_rate_list
-                                AppUtils.saveSharedPreferencesProductRateList(mContext, productRateList!!)
+                            productRateList = response.product_rate_list
+                            val time = measureTimeMillis {
+                                AppUtils.saveSharedPreferencesProductRateList(
+                                    mContext,
+                                    productRateList!!
+                                )
+                            }
+                            println("time_cal save : $time")
+
                         } else {
                             progress_wheel.stopSpinning()
                         }
-                    }else{
+                    } else {
                         progress_wheel.stopSpinning()
-                    } }, { error ->
+                    }
+                }, { error ->
                     error.printStackTrace()
                     BaseActivity.isApiInitiated = false
                     progress_wheel.stopSpinning()
@@ -366,6 +450,9 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun initView(view: View) {
+        iv_search_frag_order_type_list = view.findViewById(R.id.iv_search_frag_order_type_list)
+        //cv_search =  view.findViewById(R.id.cv_search)
+        tv_search_frag_order_type_list = view.findViewById(R.id.tv_search_frag_order_type_list)
         rl_category_type_header = view.findViewById(R.id.rl_category_type_header)
         tv_category_type = view.findViewById(R.id.tv_category_type)
         iv_category_type_dropdown = view.findViewById(R.id.iv_category_type_dropdown)
@@ -392,6 +479,26 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         et_watt_search = view.findViewById(R.id.et_watt_search)
         scroll = view.findViewById(R.id.scroll)
         tv_select_all = view.findViewById(R.id.tv_select_all)
+        tv_select_all.visibility = View.GONE
+
+        iv_filter = view.findViewById(R.id.iv_frag_ord_type_list_new_filter)
+
+        app_bar = view.findViewById(R.id.app_bar)
+        iv_filter.setOnClickListener(this)
+        app_bar.visibility = View.GONE
+        iv_filter.isEnabled = false
+        iv_search_frag_order_type_list.setOnClickListener(this)
+
+        val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+        scope.launch {
+            try {
+                productList = AppDatabase.getDBInstance()?.productListDao()?.getAll() as ArrayList<ProductListEntity>?
+                setProductAdapter(productList!!)
+            } catch (e: Exception) {
+                // handler error
+            }
+        }
+
 
         val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
         if (addShop != null && !TextUtils.isEmpty(addShop.shopName))
@@ -421,7 +528,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         list.clear()
         list.addAll(hashSet)
 
-        if(Pref.isRateOnline && AppUtils.isOnline(mContext)){
+        if (Pref.isRateOnline && AppUtils.isOnline(mContext)) {
             getProductRateListApiOnline()
         }
 
@@ -438,18 +545,23 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         }, 1500)
 
 
-
-
         //}
     }
 
     private fun checkToShowAllProducts() {
 
-        val list = AppUtils.loadSharedPreferencesProductRateList(mContext)
+
+        var list: java.util.ArrayList<ProductRateDataModel> = ArrayList()
+        val time = measureTimeMillis {
+            list = AppUtils.loadSharedPreferencesProductRateList(mContext)
+        }
+        println("time_cal fetch : $time")
+
 
         //AppUtils.isShowAllProduct = true
         if (Pref.isShowAllProduct) {
-            tv_select_all.visibility = View.VISIBLE
+            tv_select_all.visibility = View.GONE
+//            tv_select_all.visibility = View.GONE
 
             /*if (Pref.isRateNotEditable && (list == null || list.size == 0))
                 getProductRateListApi()
@@ -477,8 +589,9 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
 
         } else {
+            tv_select_all.visibility = View.VISIBLE
             tv_select_all.visibility = View.GONE
-
+            iv_filter.isEnabled = true
             /*if (Pref.isRateNotEditable && (list == null || list.size == 0))
                 getProductRateListApi()*/
 
@@ -500,7 +613,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
             //repository.getProductList(Pref.session_token!!, Pref.user_id!!, date!!)
-            repository.getProductList(Pref.session_token!!, Pref.user_id!!,"")
+            repository.getProductList(Pref.session_token!!, Pref.user_id!!, "")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
@@ -556,7 +669,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 uiThread {
                                     progress_wheel.stopSpinning()
                                     //val list_ = AppDatabase.getDBInstance()?.productListDao()?.getBrandList() as ArrayList<String>
-                                    val list_ = AppDatabase.getDBInstance()?.productListDao()?.getUniqueBrandList() as ArrayList<ProductListEntity>
+                                    val list_ = AppDatabase.getDBInstance()?.productListDao()
+                                        ?.getUniqueBrandList() as ArrayList<ProductListEntity>
 
                                     val hashSet = HashSet<ProductListEntity>()
                                     hashSet.addAll(list_)
@@ -597,7 +711,10 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         if (isFromInitView)
                             (mContext as DashboardActivity).showSnackMessage(response.message!!)
                         else
-                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_msg), 1000)
+                            (mContext as DashboardActivity).showSnackMessage(
+                                getString(R.string.error_msg),
+                                1000
+                            )
                     }
 
                 }, { error ->
@@ -607,7 +724,10 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     if (isFromInitView)
                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                     else
-                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_msg), 1000)
+                        (mContext as DashboardActivity).showSnackMessage(
+                            getString(R.string.error_msg),
+                            1000
+                        )
                 })
         )
     }
@@ -664,6 +784,31 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
 
         when (p0?.id) {
+
+            R.id.iv_search_frag_order_type_list-> {
+                CustomStatic.productQtyEdi = HashMap()
+                CustomStatic.productRateEdi = HashMap()
+                CustomStatic.productAddedID = ArrayList()
+                progress_wheel.spin()
+                if (TextUtils.isEmpty(tv_search_frag_order_type_list.text.toString().trim())) {
+                    if (productList != null && productList!!.size > 0) {
+                        progress_wheel.stopSpinning()
+                        productAdapter?.updateList(productList!!)
+                    }
+                } else {
+                    if (productList != null && productList!!.size > 0)
+                        progress_wheel.stopSpinning()
+                    productAdapter?.filter?.filter(tv_search_frag_order_type_list.text.toString().trim())
+                }
+            }
+
+            R.id.iv_frag_ord_type_list_new_filter -> {
+                if (app_bar.visibility == View.VISIBLE) {
+                    app_bar.visibility = View.GONE
+                } else {
+                    app_bar.visibility = View.VISIBLE
+                }
+            }
 
             R.id.rl_category_type_header -> {
                 if (!TextUtils.isEmpty(tv_brand_type.text.toString().trim())) {
@@ -734,44 +879,64 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     }*/
 
                     selectedProductList.add(productList?.get(j)!!)
+
+
                     (mContext as DashboardActivity).qtyList.add("0")
+
 
                     (mContext as DashboardActivity).schemaqtyList.add("0")
                     (mContext as DashboardActivity).mrpList.add("0.00")
 
-                    if (!Pref.isRateNotEditable && false) {
-                        (mContext as DashboardActivity).rateList.add("0.00")
-                        (mContext as DashboardActivity).schemarateList.add("0.00")
-                    }
-                    else {
-                        if (Pref.isRateOnline) {
-                            if (productRateList != null && productRateList!!.size > 0)
-                                (mContext as DashboardActivity).rateList.add(productRateList?.get(j)?.rate!!)
-                            else
-                                (mContext as DashboardActivity).rateList.add("0.00")
+
+                        if (!Pref.isRateNotEditable && false) {
+                            (mContext as DashboardActivity).rateList.add("0.00")
+                            (mContext as DashboardActivity).schemarateList.add("0.00")
                         } else {
-                            val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
-                            if (productRateListDb != null && productRateListDb?.size!! > 0) {
-                                when (shop.type) {
-                                    "1" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(j)?.rate1!!)
-                                    "2" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(j)?.rate2!!)
-                                    "3" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(j)?.rate3!!)
-                                    "4" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(j)?.rate4!!)
-                                    "5" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(j)?.rate5!!)
-                                    else -> {
-                                        (mContext as DashboardActivity).rateList.add("0.00")
+                            if (Pref.isRateOnline) {
+                                if (productRateList != null && productRateList!!.size > 0)
+                                    (mContext as DashboardActivity).rateList.add(productRateList?.get(j)?.rate!!)
+                                else
+                                    (mContext as DashboardActivity).rateList.add("0.00")
+                            } else {
+                                val shop =
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
+                                if (productRateListDb != null && productRateListDb?.size!! > 0) {
+                                    when (shop.type) {
+                                        "1" -> (mContext as DashboardActivity).rateList.add(
+                                            productRateListDb?.get(j)?.rate1!!
+                                        )
+                                        "2" -> (mContext as DashboardActivity).rateList.add(
+                                            productRateListDb?.get(j)?.rate2!!
+                                        )
+                                        "3" -> (mContext as DashboardActivity).rateList.add(
+                                            productRateListDb?.get(j)?.rate3!!
+                                        )
+                                        "4" -> (mContext as DashboardActivity).rateList.add(
+                                            productRateListDb?.get(j)?.rate4!!
+                                        )
+                                        "5" -> (mContext as DashboardActivity).rateList.add(
+                                            productRateListDb?.get(j)?.rate5!!
+                                        )
+                                        else -> {
+                                            (mContext as DashboardActivity).rateList.add("0.00")
+                                        }
                                     }
-                                }
-                            } else
-                                (mContext as DashboardActivity).rateList.add("0.00")
+                                } else
+                                    (mContext as DashboardActivity).rateList.add("0.00")
+                            }
+                            (mContext as DashboardActivity).schemarateList.add("0.00")
                         }
-                        (mContext as DashboardActivity).schemarateList.add("0.00")
-                    }
+
+
+
 
                     //(mContext as DashboardActivity).loadFragment(FragType.CartFragment, true, selectedProductList)
 
                     //val totalPrice = String.format("%.2f", (amount.toFloat() * desc.toInt()).toFloat())
-                    (mContext as DashboardActivity).totalPrice.add(0.00)
+
+                        (mContext as DashboardActivity).totalPrice.add(0.00)
+
+
                     (mContext as DashboardActivity).totalScPrice.add(0.00)
 
                     (mContext as DashboardActivity).tv_cart_count.text = selectedProductList.size.toString()
@@ -783,6 +948,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 if (!isAllSelect)
                     isAllSelect = true
             }
+
         }
     }
 
@@ -838,6 +1004,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 AppDatabase.getDBInstance()?.productListDao()?.insert(productList[i])
             }
 
+
             uiThread {
                 //setCategoryAdapter((AppDatabase.getDBInstance()?.productListDao()?.getCategoryList() as ArrayList<String>?)!!)
                 //setBrandAdapter((AppDatabase.getDBInstance()?.productListDao()?.getBrandList() as ArrayList<String>?)!!)
@@ -850,6 +1017,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private var productName = ""
     private fun setProductAdapter(mProductList: ArrayList<ProductListEntity>) {
+        progress_wheel.stopSpinning()
+        progress_wheel.spin()
 
         (mContext as DashboardActivity).searchView.closeSearch()
 
@@ -869,8 +1038,9 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
         rv_product_type_list.visibility = View.VISIBLE
         rv_product_type_list.layoutManager = LinearLayoutManager(mContext)
-        productAdapter = ProductListAdapter(mContext, mProductList, productRateList, productRateListDb, shopId, object : ProductListAdapter.OnProductClickListener {
-            override fun onProductClick(product: ProductListEntity?, adapterPosition: Int) {
+        val time = measureTimeMillis {
+            productAdapter = ProductListAdapter(mContext, mProductList, productRateList, productRateListDb, shopId, object : ProductListAdapter.OnProductClickListener {
+                    override fun onProductClick(product: ProductListEntity?, adapterPosition: Int) {
 //                AddProductRateDialog.getInstance(product, true, product?.product_name!!, false, 0, object : AddProductRateDialog.AddOrderClickLisneter {
 //                    override fun onUpdateClick(amount: String, desc: String, collection: String) {
 //                        selectedProductList.add(product)
@@ -891,212 +1061,325 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 //                    }
 //                }).show((mContext as DashboardActivity).supportFragmentManager, "AddProductRateDialog")
 
-                AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+                        AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
 
-                for (i in selectedProductList.indices) {
-                    if (selectedProductList[i].id == product?.id) {
-                        (mContext as DashboardActivity).showSnackMessage("This product has already added to cart")
-                        return
-                    }
-                }
-
-                selectedProductList.add(product!!)
-                (mContext as DashboardActivity).qtyList.add("0")
-                (mContext as DashboardActivity).schemaqtyList.add("0")
-
-                (mContext as DashboardActivity).mrpList.add("0.00")
-
-                if (!Pref.isRateNotEditable && false){
-                    (mContext as DashboardActivity).rateList.add("0.00")
-                    (mContext as DashboardActivity).schemarateList.add("0.00")
-                }
-                else {
-                    if (Pref.isRateOnline) {
-                        if (productRateList != null && productRateList!!.size > 0) {
-                            for (i in productRateList!!.indices) {
-                                Log.e("Select Product", "Product Rate id========> " + productRateList!![i].product_id)
-                                Log.e("Select Product", "Product id========> " + product.id)
-                                if (productRateList!![i].product_id.toInt() == product.id) {
-                                    (mContext as DashboardActivity).rateList.add(productRateList?.get(i)?.rate!!)
-                                    break
-                                }
+                        for (i in selectedProductList.indices) {
+                            if (selectedProductList[i].id == product?.id) {
+                                (mContext as DashboardActivity).showSnackMessage("This product has already added to cart")
+                                return
                             }
-                        } else
-                            (mContext as DashboardActivity).rateList.add("0.00")
-                    }
-                    else {
-                        if (productRateListDb != null && productRateListDb!!.size > 0) {
-                            val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
-                            for (i in productRateListDb!!.indices) {
-                                Log.e("Select Product", "Product Rate id Offline========> " + productRateListDb!![i].product_id)
-                                Log.e("Select Product", "Product id Offline========> " + product.id)
-                                if (productRateListDb!![i].product_id?.toInt() == product.id) {
-                                    if (productRateListDb != null && productRateListDb?.size!! > 0) {
-                                        when (shop.type) {
-                                            "1" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(i)?.rate1!!)
-                                            "2" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(i)?.rate2!!)
-                                            "3" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(i)?.rate3!!)
-                                            "4" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(i)?.rate4!!)
-                                            "5" -> (mContext as DashboardActivity).rateList.add(productRateListDb?.get(i)?.rate5!!)
-                                            else -> {
-                                                (mContext as DashboardActivity).rateList.add("0.00")
+                        }
+
+                        selectedProductList.add(product!!)
+                        if (!Pref.IsShowNewOrderCart) {
+                            (mContext as DashboardActivity).qtyList.add("0")
+                        }
+                        (mContext as DashboardActivity).schemaqtyList.add("0")
+
+                        (mContext as DashboardActivity).mrpList.add("0.00")
+
+                        //new qty-rate work
+
+
+                        if (!Pref.IsShowNewOrderCart) {
+                            if (!Pref.isRateNotEditable && false) {
+                                (mContext as DashboardActivity).rateList.add("0.00")
+                                (mContext as DashboardActivity).schemarateList.add("0.00")
+                            } else {
+                                if (Pref.isRateOnline) {
+                                    if (productRateList != null && productRateList!!.size > 0) {
+                                        for (i in productRateList!!.indices) {
+                                            Log.e(
+                                                "Select Product",
+                                                "Product Rate id========> " + productRateList!![i].product_id
+                                            )
+                                            Log.e(
+                                                "Select Product",
+                                                "Product id========> " + product.id
+                                            )
+                                            if (productRateList!![i].product_id.toInt() == product.id) {
+                                                (mContext as DashboardActivity).rateList.add(productRateList?.get(i)?.rate!!)
+                                                break
                                             }
                                         }
                                     } else
                                         (mContext as DashboardActivity).rateList.add("0.00")
-                                    break
+                                } else {
+                                    if (productRateListDb != null && productRateListDb!!.size > 0) {
+                                        val shop = AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                            .getShopByIdN(shopId)
+                                        for (i in productRateListDb!!.indices) {
+                                            Log.e(
+                                                "Select Product",
+                                                "Product Rate id Offline========> " + productRateListDb!![i].product_id
+                                            )
+                                            Log.e(
+                                                "Select Product",
+                                                "Product id Offline========> " + product.id
+                                            )
+                                            if (productRateListDb!![i].product_id?.toInt() == product.id) {
+                                                if (productRateListDb != null && productRateListDb?.size!! > 0) {
+                                                    when (shop.type) {
+                                                        "1" -> (mContext as DashboardActivity).rateList.add(
+                                                            productRateListDb?.get(i)?.rate1!!
+                                                        )
+                                                        "2" -> (mContext as DashboardActivity).rateList.add(
+                                                            productRateListDb?.get(i)?.rate2!!
+                                                        )
+                                                        "3" -> (mContext as DashboardActivity).rateList.add(
+                                                            productRateListDb?.get(i)?.rate3!!
+                                                        )
+                                                        "4" -> (mContext as DashboardActivity).rateList.add(
+                                                            productRateListDb?.get(i)?.rate4!!
+                                                        )
+                                                        "5" -> (mContext as DashboardActivity).rateList.add(
+                                                            productRateListDb?.get(i)?.rate5!!
+                                                        )
+                                                        else -> {
+                                                            (mContext as DashboardActivity).rateList.add(
+                                                                "0.00"
+                                                            )
+                                                        }
+                                                    }
+                                                } else
+                                                    (mContext as DashboardActivity).rateList.add("0.00")
+                                                break
+                                            }
+                                        }
+                                    } else
+                                        (mContext as DashboardActivity).rateList.add("0.00")
                                 }
+                                (mContext as DashboardActivity).schemarateList.add("0.00")
                             }
-                        } else
-                            (mContext as DashboardActivity).rateList.add("0.00")
+                        } else {
+                            (mContext as DashboardActivity).schemarateList.add("0.00")
+                        }
+                        //(mContext as DashboardActivity).loadFragment(FragType.CartFragment, true, selectedProductList)
+
+                        //val totalPrice = String.format("%.2f", (amount.toFloat() * desc.toInt()).toFloat())
+                        if (!Pref.IsShowNewOrderCart) {
+                            (mContext as DashboardActivity).totalPrice.add(0.00)
+                        } else {
+                            try {
+                                var totalPr = (mContext as DashboardActivity).qtyList.get((mContext as DashboardActivity).qtyList.size-1).toDouble() * (mContext as DashboardActivity).rateList.get((mContext as DashboardActivity).rateList.size-1).toDouble()
+                                var decfor: DecimalFormat = DecimalFormat("0.00")
+                                (mContext as DashboardActivity).totalPrice.add(
+                                    decfor.format(totalPr).toDouble()
+                                )
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                                (mContext as DashboardActivity).totalPrice.add(0.00)
+                            }
+                        }
+                        (mContext as DashboardActivity).totalScPrice.add(0.00)
+
+                        (mContext as DashboardActivity).tv_cart_count.text =
+                            selectedProductList.size.toString()
+                        (mContext as DashboardActivity).tv_cart_count.visibility = View.VISIBLE
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.add_product_cart))
+                        productAdapter?.refresh()
+
                     }
-                    (mContext as DashboardActivity).schemarateList.add("0.00")
-                }
-                //(mContext as DashboardActivity).loadFragment(FragType.CartFragment, true, selectedProductList)
+                },
+                object : ProductListAdapter.OnProductDelClickListener {
+                    override fun onProductDelClick(obj: ProductListEntity) {
+                        for (position in 0..selectedProductList.size - 1) {
+                            if (obj.id.toInt() == selectedProductList.get(position).id.toInt()) {
+                                CustomStatic.productAddedID.remove(selectedProductList.get(position).id.toInt())
+                                selectedProductList?.removeAt(position)
+                                (mContext as DashboardActivity).tv_cart_count.text = selectedProductList?.size.toString()
+                                (mContext as DashboardActivity).qtyList.removeAt(position)
+                                (mContext as DashboardActivity).rateList.removeAt(position)
+                                (mContext as DashboardActivity).totalPrice.removeAt(position)
 
-                //val totalPrice = String.format("%.2f", (amount.toFloat() * desc.toInt()).toFloat())
-                (mContext as DashboardActivity).totalPrice.add(0.00)
-                (mContext as DashboardActivity).totalScPrice.add(0.00)
+                                (mContext as DashboardActivity).schemarateList.removeAt(position)
+                                (mContext as DashboardActivity).schemaqtyList.removeAt(position)
+                                break
+                            }
+                        }
+                        for(i in 0..(mContext as DashboardActivity).rateList.size-1){
+                            println("tag_list_show_op qty-rate hash delete op : ${(mContext as DashboardActivity).qtyList.get(i)} ${(mContext as DashboardActivity).rateList.get(i)}")
+                        }
+                    }
+                })
+        }
+        println("time_cal adapter : $time")
 
-                (mContext as DashboardActivity).tv_cart_count.text = selectedProductList.size.toString()
-                (mContext as DashboardActivity).tv_cart_count.visibility = View.VISIBLE
-                (mContext as DashboardActivity).showSnackMessage(getString(R.string.add_product_cart))
-
-            }
-        })
 
         rv_product_type_list.adapter = productAdapter
+
+        Handler().postDelayed(Runnable {
+            //rv_product_type_list.adapter = productAdapter
+            progress_wheel.stopSpinning()
+        }, 4000)
+
     }
 
     private fun setCategoryAdapter(categoryList: ArrayList<ProductListEntity>?) {
         rv_category_type_list.layoutManager = LinearLayoutManager(mContext)
-        categoryAdapter = CategoryListAdapter(mContext, categoryList, object : CategoryListAdapter.OnCategoryClickListener {
-            override fun onCategoryClick(category: ProductListEntity?, adapterPosition: Int) {
-                tv_category_type.text = category?.category
-                ll_category_type_list.visibility = View.GONE
-                iv_category_type_dropdown.isSelected = false
+        categoryAdapter = CategoryListAdapter(
+            mContext,
+            categoryList,
+            object : CategoryListAdapter.OnCategoryClickListener {
+                override fun onCategoryClick(category: ProductListEntity?, adapterPosition: Int) {
+                    tv_category_type.text = category?.category
+                    ll_category_type_list.visibility = View.GONE
+                    iv_category_type_dropdown.isSelected = false
 
-                tv_watt_type.text = ""
-                et_watt_search.setText("")
+                    tv_watt_type.text = ""
+                    et_watt_search.setText("")
 
-                /*tv_brand_type.text = ""
-                tv_no_data.visibility = View.VISIBLE*/
+                    /*tv_brand_type.text = ""
+                    tv_no_data.visibility = View.VISIBLE*/
 
-                val list = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategory(tv_category_type.text.toString().trim())
-                        as ArrayList<ProductListEntity>?)!!
+                    val list = (AppDatabase.getDBInstance()?.productListDao()
+                        ?.getAllValueAccordingToCategory(tv_category_type.text.toString().trim())
+                            as ArrayList<ProductListEntity>?)!!
 
-                var finalList = null
+                    var finalList = null
 
-                //setProductAdapter(list)
-                //setBrandAdapter((AppDatabase.getDBInstance()?.productListDao()?.getBrandListAccordingToCategory(category!!) as ArrayList<String>?)!!)
+                    //setProductAdapter(list)
+                    //setBrandAdapter((AppDatabase.getDBInstance()?.productListDao()?.getBrandListAccordingToCategory(category!!) as ArrayList<String>?)!!)
 
-                //setWattAdapter(true, (AppDatabase.getDBInstance()?.productListDao()?.getWattListBrandCategoryWise(tv_brand_type.text.toString().trim(), tv_category_type.text.toString().trim()) as ArrayList<String>?)!!)
+                    //setWattAdapter(true, (AppDatabase.getDBInstance()?.productListDao()?.getWattListBrandCategoryWise(tv_brand_type.text.toString().trim(), tv_category_type.text.toString().trim()) as ArrayList<String>?)!!)
 
-                val wattList = AppDatabase.getDBInstance()?.productListDao()?.getWattListBrandCategoryIdWise(category?.brand_id!!, category.category_id!!) as ArrayList<ProductListEntity>?
+                    val wattList = AppDatabase.getDBInstance()?.productListDao()
+                        ?.getWattListBrandCategoryIdWise(
+                            category?.brand_id!!,
+                            category.category_id!!
+                        ) as ArrayList<ProductListEntity>?
 
-                if (wattList != null) {
-                    val hashSet = HashSet<ProductListEntity>()
-                    hashSet.addAll(wattList)
-                    wattList.clear()
-                    wattList.addAll(hashSet)
+                    if (wattList != null) {
+                        val hashSet = HashSet<ProductListEntity>()
+                        hashSet.addAll(wattList)
+                        wattList.clear()
+                        wattList.addAll(hashSet)
 
-                    setWattAdapter(true, wattList)
+                        setWattAdapter(true, wattList)
+                    }
+
+                    /*productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategoryBrand(tv_brand_type.text.toString().trim(),
+                            tv_category_type.text.toString().trim()) as ArrayList<ProductListEntity>?)!!*/
+
+                    productList = (AppDatabase.getDBInstance()?.productListDao()
+                        ?.getAllValueAccordingToCategoryBrandId(
+                            category?.brand_id!!,
+                            category.category_id!!
+                        ) as ArrayList<ProductListEntity>?)!!
+
+                    setProductAdapter(productList!!)
                 }
-
-                /*productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategoryBrand(tv_brand_type.text.toString().trim(),
-                        tv_category_type.text.toString().trim()) as ArrayList<ProductListEntity>?)!!*/
-
-                productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategoryBrandId(category?.brand_id!!,
-                    category.category_id!!) as ArrayList<ProductListEntity>?)!!
-
-                setProductAdapter(productList!!)
-            }
-        })
+            })
         rv_category_type_list.adapter = categoryAdapter
     }
 
     private fun setBrandAdapter(brandList: ArrayList<ProductListEntity>) {
         rv_brand_type_list.layoutManager = LinearLayoutManager(mContext)
 
-        brandAdapter = BrandListAdapter(mContext, brandList, object : BrandListAdapter.OnBrandClickListener {
-            override fun onBrandClick(brand: ProductListEntity?, adapterPosition: Int) {
-                tv_brand_type.text = brand?.brand
-                ll_brand_type_list.visibility = View.GONE
-                iv_brand_type_dropdown.isSelected = false
+        brandAdapter =
+            BrandListAdapter(mContext, brandList, object : BrandListAdapter.OnBrandClickListener {
+                override fun onBrandClick(brand: ProductListEntity?, adapterPosition: Int) {
+                    tv_brand_type.text = brand?.brand
+                    ll_brand_type_list.visibility = View.GONE
+                    iv_brand_type_dropdown.isSelected = false
 
-                tv_category_type.text = ""
-                tv_watt_type.text = ""
-                et_category_search.setText("")
-                et_watt_search.setText("")
+                    tv_category_type.text = ""
+                    tv_watt_type.text = ""
+                    et_category_search.setText("")
+                    et_watt_search.setText("")
 
-                //setWattAdapter(false, (AppDatabase.getDBInstance()?.productListDao()?.getWattListBrandWise(tv_brand_type.text.toString().trim()) as ArrayList<String>?)!!)
+                    //setWattAdapter(false, (AppDatabase.getDBInstance()?.productListDao()?.getWattListBrandWise(tv_brand_type.text.toString().trim()) as ArrayList<String>?)!!)
 
-                val wattList = AppDatabase.getDBInstance()?.productListDao()?.getWattListBrandIdWise(brand?.brand_id!!) as ArrayList<ProductListEntity>?
+                    val wattList = AppDatabase.getDBInstance()?.productListDao()
+                        ?.getWattListBrandIdWise(brand?.brand_id!!) as ArrayList<ProductListEntity>?
 
-                if (wattList != null) {
-                    val hashSet = HashSet<ProductListEntity>()
-                    hashSet.addAll(wattList)
-                    wattList.clear()
-                    wattList.addAll(hashSet)
+                    if (wattList != null) {
+                        val hashSet = HashSet<ProductListEntity>()
+                        hashSet.addAll(wattList)
+                        wattList.clear()
+                        wattList.addAll(hashSet)
 
-                    setWattAdapter(false, wattList)
+                        setWattAdapter(false, wattList)
+                    }
+
+
+                    //setCategoryAdapter((AppDatabase.getDBInstance()?.productListDao()?.getCategoryListAccordingToBrand(tv_brand_type.text.toString().trim()) as ArrayList<String>?)!!)
+
+
+                    val categoryList = AppDatabase.getDBInstance()?.productListDao()
+                        ?.getCategoryListAccordingToBrandId(brand?.brand_id!!) as ArrayList<ProductListEntity>?
+
+                    if (categoryList != null) {
+                        val hashSet = HashSet<ProductListEntity>()
+                        hashSet.addAll(categoryList)
+                        categoryList.clear()
+                        categoryList.addAll(hashSet)
+
+                        setCategoryAdapter(categoryList)
+                    }
+
+                    //productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToBrand(tv_brand_type.text.toString().trim()) as ArrayList<ProductListEntity>)
+                    productList = (AppDatabase.getDBInstance()?.productListDao()
+                        ?.getAllValueAccordingToBrandId(brand?.brand_id!!) as ArrayList<ProductListEntity>)
+                    setProductAdapter(productList!!)
                 }
-
-
-                //setCategoryAdapter((AppDatabase.getDBInstance()?.productListDao()?.getCategoryListAccordingToBrand(tv_brand_type.text.toString().trim()) as ArrayList<String>?)!!)
-
-
-                val categoryList = AppDatabase.getDBInstance()?.productListDao()?.getCategoryListAccordingToBrandId(brand?.brand_id!!) as ArrayList<ProductListEntity>?
-
-                if (categoryList != null) {
-                    val hashSet = HashSet<ProductListEntity>()
-                    hashSet.addAll(categoryList)
-                    categoryList.clear()
-                    categoryList.addAll(hashSet)
-
-                    setCategoryAdapter(categoryList)
-                }
-
-                //productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToBrand(tv_brand_type.text.toString().trim()) as ArrayList<ProductListEntity>)
-                productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToBrandId(brand?.brand_id!!) as ArrayList<ProductListEntity>)
-                setProductAdapter(productList!!)
-            }
-        })
+            })
         rv_brand_type_list.adapter = brandAdapter
     }
 
-    private fun setWattAdapter(isCategorySelected: Boolean, arrayList: ArrayList<ProductListEntity>?) {
+    private fun setWattAdapter(
+        isCategorySelected: Boolean,
+        arrayList: ArrayList<ProductListEntity>?
+    ) {
         rv_watt_type_list.layoutManager = LinearLayoutManager(mContext)
-        wattAdapter = WattListAdapter(mContext, arrayList, object : WattListAdapter.OnCategoryClickListener {
-            override fun onCategoryClick(category: ProductListEntity?, adapterPosition: Int) {
-                tv_watt_type.text = category?.watt
-                ll_watt_type_list.visibility = View.GONE
-                iv_watt_type_dropdown.isSelected = false
+        wattAdapter =
+            WattListAdapter(mContext, arrayList, object : WattListAdapter.OnCategoryClickListener {
+                override fun onCategoryClick(category: ProductListEntity?, adapterPosition: Int) {
+                    tv_watt_type.text = category?.watt
+                    ll_watt_type_list.visibility = View.GONE
+                    iv_watt_type_dropdown.isSelected = false
 
 
-                productList = if (isCategorySelected) {
-                    /*productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategoryBrandFilteredByWatt(tv_brand_type.text.toString().trim(),
-                                    tv_category_type.text.toString().trim(), tv_watt_type.text.toString().trim()) as ArrayList<ProductListEntity>?)!!*/
+                    productList = if (isCategorySelected) {
+                        /*productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategoryBrandFilteredByWatt(tv_brand_type.text.toString().trim(),
+                                        tv_category_type.text.toString().trim(), tv_watt_type.text.toString().trim()) as ArrayList<ProductListEntity>?)!!*/
 
-                    (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToCategoryBrandFilteredByWattId(category?.brand_id!!,
-                        category.category_id!!, category.watt_id!!) as ArrayList<ProductListEntity>?)!!
-                } else {
-                    /*productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToBrandWattWise(tv_brand_type.text.toString().trim(),
-                                    tv_watt_type.text.toString().trim()) as ArrayList<ProductListEntity>?)!!*/
+                        (AppDatabase.getDBInstance()?.productListDao()
+                            ?.getAllValueAccordingToCategoryBrandFilteredByWattId(
+                                category?.brand_id!!,
+                                category.category_id!!, category.watt_id!!
+                            ) as ArrayList<ProductListEntity>?)!!
+                    } else {
+                        /*productList = (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToBrandWattWise(tv_brand_type.text.toString().trim(),
+                                        tv_watt_type.text.toString().trim()) as ArrayList<ProductListEntity>?)!!*/
 
-                    (AppDatabase.getDBInstance()?.productListDao()?.getAllValueAccordingToBrandWattIdWise(category?.brand_id!!,
-                        category.watt_id!!) as ArrayList<ProductListEntity>?)!!
+                        (AppDatabase.getDBInstance()?.productListDao()
+                            ?.getAllValueAccordingToBrandWattIdWise(
+                                category?.brand_id!!,
+                                category.watt_id!!
+                            ) as ArrayList<ProductListEntity>?)!!
+                    }
+
+                    setProductAdapter(productList!!)
                 }
-
-                setProductAdapter(productList!!)
-            }
-        })
+            })
         rv_watt_type_list.adapter = wattAdapter
     }
 
-    fun saveOrder(totalOrderValue: String, selectedProductList: ArrayList<ProductListEntity>?, totalPrice: java.util.ArrayList<Double>,
-                  remarks: String, imagePath: String, patient_name: String, patient_address: String, patient_no: String,totalScValue: String,totalScPrice: java.util.ArrayList<Double>,
-                  hospital: String,emailAddress:String) {
+    fun saveOrder(
+        totalOrderValue: String,
+        selectedProductList: ArrayList<ProductListEntity>?,
+        totalPrice: java.util.ArrayList<Double>,
+        remarks: String,
+        imagePath: String,
+        patient_name: String,
+        patient_address: String,
+        patient_no: String,
+        totalScValue: String,
+        totalScPrice: java.util.ArrayList<Double>,
+        hospital: String,
+        emailAddress: String
+    ) {
 
         try {
             val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
@@ -1142,7 +1425,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                     if (shopActivity != null) {
                         if (shopActivity.isVisited && !shopActivity.isDurationCalculated && shopActivity.date == AppUtils.getCurrentDateForShopActi()) {
-                            val shopDetail = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
+                            val shopDetail =
+                                AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
                             orderListDetails.order_lat = shopDetail.shopLat.toString()
                             orderListDetails.order_long = shopDetail.shopLong.toString()
                         } else {
@@ -1158,26 +1442,52 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                     if (selectedProductList != null) {
                         for (i in (mContext as DashboardActivity).qtyList.indices) {
-                            if (/*(mContext as DashboardActivity).rateList[i].toDouble() != 0.00 &&*/ (mContext as DashboardActivity).qtyList[i].toDouble().toInt() != 0) {
+                            if (/*(mContext as DashboardActivity).rateList[i].toDouble() != 0.00 &&*/ (mContext as DashboardActivity).qtyList[i].toDouble()
+                                    .toInt() != 0
+                            ) {
 
                                 if (Pref.isRateNotEditable) {
                                     if (Pref.isRateOnline) {
                                         if (productRateList != null && productRateList!!.size > 0)
-                                            insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
+                                            insertOrderProductList(
+                                                selectedProductList[i],
+                                                orderListDetails,
+                                                i,
+                                                totalPrice[i],
+                                                totalScPrice[i]
+                                            )
                                         else {
                                             if ((mContext as DashboardActivity).rateList[i].toDouble() != 0.00)
-                                                insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
+                                                insertOrderProductList(
+                                                    selectedProductList[i],
+                                                    orderListDetails,
+                                                    i,
+                                                    totalPrice[i],
+                                                    totalScPrice[i]
+                                                )
                                         }
                                     } else {
                                         if (productRateListDb != null && productRateListDb!!.size > 0)
-                                            insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
+                                            insertOrderProductList(
+                                                selectedProductList[i],
+                                                orderListDetails,
+                                                i,
+                                                totalPrice[i],
+                                                totalScPrice[i]
+                                            )
                                         else {
                                             if ((mContext as DashboardActivity).rateList[i].toDouble() != 0.00)
-                                                insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
+                                                insertOrderProductList(
+                                                    selectedProductList[i],
+                                                    orderListDetails,
+                                                    i,
+                                                    totalPrice[i],
+                                                    totalScPrice[i]
+                                                )
                                         }
                                     }
                                 } else {
-                                    insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i],totalScPrice[i])
+                                    insertOrderProductList(selectedProductList[i], orderListDetails, i, totalPrice[i], totalScPrice[i])
                                 }
 
                                 /*val productOrderList = OrderProductListEntity()
@@ -1200,7 +1510,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         }
                     }
 
-                    val orderList = AppDatabase.getDBInstance()!!.orderListDao().getListAccordingToShopID(shopId)
+                    val orderList = AppDatabase.getDBInstance()!!.orderListDao()
+                        .getListAccordingToShopID(shopId)
                     if (orderList == null || orderList.isEmpty()) {
 
                         val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
@@ -1220,34 +1531,42 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                             orderListEntity.shop_long = shop.shopLong.toString()
                             orderListEntity.shop_name = shop.shopName
                             orderListEntity.date = AppUtils.getCurrentDateForShopActi()
-                            orderListEntity.date_long = AppUtils.convertDateStringToLong(AppUtils.getCurrentDateForShopActi())
+                            orderListEntity.date_long =
+                                AppUtils.convertDateStringToLong(AppUtils.getCurrentDateForShopActi())
 
                             AppDatabase.getDBInstance()!!.orderListDao().insert(orderListEntity)
                         }
                     } else {
-                        AppDatabase.getDBInstance()!!.orderListDao().updateDate(AppUtils.getCurrentDateForShopActi(), shopId)
-                        AppDatabase.getDBInstance()!!.orderListDao().updateDateLong(AppUtils.convertDateStringToLong(
-                            AppUtils.getCurrentDateForShopActi()), shopId)
+                        AppDatabase.getDBInstance()!!.orderListDao()
+                            .updateDate(AppUtils.getCurrentDateForShopActi(), shopId)
+                        AppDatabase.getDBInstance()!!.orderListDao().updateDateLong(
+                            AppUtils.convertDateStringToLong(
+                                AppUtils.getCurrentDateForShopActi()
+                            ), shopId
+                        )
                     }
 
-                    if(true){
-                        val obj=OrderStatusRemarksModelEntity()
-                        obj.shop_id= shopId
-                        obj.user_id=Pref.user_id
-                        obj.order_status="Success"
-                        obj.order_remarks="Successful Order"
-                        obj.visited_date_time=AppUtils.getCurrentDateTime()
-                        obj.visited_date=AppUtils.getCurrentDateForShopActi()
-                        obj.isUploaded=false
+                    if (true) {
+                        val obj = OrderStatusRemarksModelEntity()
+                        obj.shop_id = shopId
+                        obj.user_id = Pref.user_id
+                        obj.order_status = "Success"
+                        obj.order_remarks = "Successful Order"
+                        obj.visited_date_time = AppUtils.getCurrentDateTime()
+                        obj.visited_date = AppUtils.getCurrentDateForShopActi()
+                        obj.isUploaded = false
 
-                        var shopAll=AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
-                        if(shopAll.size == 1){
-                            obj.shop_revisit_uniqKey=shopAll.get(0).shop_revisit_uniqKey
-                        }else if(shopAll.size!=0){
-                            obj.shop_revisit_uniqKey=shopAll.get(shopAll.size-1).shop_revisit_uniqKey
+                        var shopAll =
+                            AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
+                        if (shopAll.size == 1) {
+                            obj.shop_revisit_uniqKey = shopAll.get(0).shop_revisit_uniqKey
+                        } else if (shopAll.size != 0) {
+                            obj.shop_revisit_uniqKey =
+                                shopAll.get(shopAll.size - 1).shop_revisit_uniqKey
                         }
-                        if(shopAll.size!=0)
-                            AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.insert(obj)
+                        if (shopAll.size != 0)
+                            AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!
+                                .insert(obj)
                     }
 
 
@@ -1268,17 +1587,42 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 orderListDetails.order_long!!
 
                             if (addShop.isUploaded) {
-                                addOrderApi(orderListDetails.shop_id, orderListDetails.order_id, totalOrderValue,
-                                    "", "", orderListDetails.date, lat, long, orderListDetails.remarks,
-                                    orderListDetails.signature, orderListDetails)
+                                addOrderApi(
+                                    orderListDetails.shop_id,
+                                    orderListDetails.order_id,
+                                    totalOrderValue,
+                                    "",
+                                    "",
+                                    orderListDetails.date,
+                                    lat,
+                                    long,
+                                    orderListDetails.remarks,
+                                    orderListDetails.signature,
+                                    orderListDetails
+                                )
                             } else {
-                                syncShop(addShop, orderListDetails.shop_id, orderListDetails.order_id, totalOrderValue,
-                                    "", "", orderListDetails.date!!, lat, long, "", orderListDetails.remarks,
-                                    orderListDetails.signature, orderListDetails)
+                                syncShop(
+                                    addShop,
+                                    orderListDetails.shop_id,
+                                    orderListDetails.order_id,
+                                    totalOrderValue,
+                                    "",
+                                    "",
+                                    orderListDetails.date!!,
+                                    lat,
+                                    long,
+                                    "",
+                                    orderListDetails.remarks,
+                                    orderListDetails.signature,
+                                    orderListDetails
+                                )
                             }
                         } else {
                             (mContext as DashboardActivity).showSnackMessage("Order added successfully")
-                            showCongratsAlert(orderListDetails.shop_id!!, orderListDetails.order_id!!)
+                            showCongratsAlert(
+                                orderListDetails.shop_id!!,
+                                orderListDetails.order_id!!
+                            )
                             voiceOrderMsg()
                         }
 
@@ -1293,14 +1637,18 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     private fun voiceOrderMsg() {
         if (Pref.isVoiceEnabledForOrderSaved) {
             val msg = "Hi, Order saved successfully."
-            val speechStatus = (mContext as DashboardActivity).textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null)
+            val speechStatus = (mContext as DashboardActivity).textToSpeech.speak(
+                msg,
+                TextToSpeech.QUEUE_FLUSH,
+                null
+            )
             if (speechStatus == TextToSpeech.ERROR)
                 Log.e("Add Order", "TTS error in converting Text to Speech!")
 
         }
     }
 
-    private fun insertOrderProductList(productListEntity: ProductListEntity, orderListDetails: OrderDetailsListEntity, i: Int, totalPrice: Double,totalScPrice:Double) {
+    private fun insertOrderProductList(productListEntity: ProductListEntity, orderListDetails: OrderDetailsListEntity, i: Int, totalPrice: Double, totalScPrice: Double) {
         val productOrderList = OrderProductListEntity()
         productOrderList.brand = productListEntity.brand
         productOrderList.brand_id = productListEntity.brand_id
@@ -1316,23 +1664,50 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         productOrderList.total_price = totalPrice.toString()
         productOrderList.shop_id = shopId
         productOrderList.scheme_qty = (mContext as DashboardActivity).schemaqtyList[i]
-        productOrderList.scheme_rate = (mContext as DashboardActivity).schemarateList[i].toDouble().toString()
+        productOrderList.scheme_rate =
+            (mContext as DashboardActivity).schemarateList[i].toDouble().toString()
         productOrderList.total_scheme_price = totalScPrice.toString()
 
-        try{
+
+        try {
             productOrderList.MRP = (mContext as DashboardActivity).mrpList[i]
-        }
-        catch (ex:Exception){
+        } catch (ex: Exception) {
             productOrderList.MRP = ""
         }
+        //mantis 25601
+        try {
+            val ProductWiseMrpdiscount = AppDatabase.getDBInstance()!!.productListDao().getSingleProduct(productListEntity.id!!.toInt()!!)
+            productOrderList.order_mrp = ProductWiseMrpdiscount.product_mrp_show
+            var mrp = ProductWiseMrpdiscount.product_mrp_show
+            var rate = (mContext as DashboardActivity).rateList[i].toDouble().toString()
+            if(!mrp.equals("0")&& !mrp.equals("0.0")&&!mrp.equals("0.00")){  //25601 update code
+                var discountmid = 100*((ProductWiseMrpdiscount.product_mrp_show!!.toDouble() - rate.toDouble())/ProductWiseMrpdiscount.product_mrp_show!!.toDouble())
+                productOrderList.order_discount = String.format("%.2f",discountmid.toString().toDouble())
+            }
+            else{
+                productOrderList.order_discount = "0"
+            }
 
+        }catch (ex: Exception) {
 
+        }
 
         AppDatabase.getDBInstance()!!.orderProductListDao().insert(productOrderList)
     }
 
-    private fun addOrderApi(shop_id: String?, order_id: String?, amount: String, desc: String, collection: String, date: String?, order_lat: String?,
-                            order_long: String?, remarks: String?, signature: String?, orderListDetails: OrderDetailsListEntity?) {
+    private fun addOrderApi(
+        shop_id: String?,
+        order_id: String?,
+        amount: String,
+        desc: String,
+        collection: String,
+        date: String?,
+        order_lat: String?,
+        order_long: String?,
+        remarks: String?,
+        signature: String?,
+        orderListDetails: OrderDetailsListEntity?
+    ) {
 
         val addOrder = AddOrderInputParamsModel()
         addOrder.collection = ""
@@ -1382,13 +1757,21 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     addOrder.address = ""
             } else {
                 if (!TextUtils.isEmpty(order_lat) && !TextUtils.isEmpty(order_long))
-                    addOrder.address = LocationWizard.getLocationName(mContext, order_lat!!.toDouble(), order_long!!.toDouble())
+                    addOrder.address = LocationWizard.getLocationName(
+                        mContext,
+                        order_lat!!.toDouble(),
+                        order_long!!.toDouble()
+                    )
                 else
                     addOrder.address = ""
             }
         } else {
             if (!TextUtils.isEmpty(order_lat) && !TextUtils.isEmpty(order_long))
-                addOrder.address = LocationWizard.getLocationName(mContext, order_lat!!.toDouble(), order_long!!.toDouble())
+                addOrder.address = LocationWizard.getLocationName(
+                    mContext,
+                    order_lat!!.toDouble(),
+                    order_long!!.toDouble()
+                )
             else
                 addOrder.address = ""
         }
@@ -1404,7 +1787,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         else
             addOrder.Email_Address = ""
 
-        val list = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
+        val list = AppDatabase.getDBInstance()!!.orderProductListDao()
+            .getDataAccordingToShopAndOrderId(order_id!!, shop_id!!)
         val productList = ArrayList<AddOrderInputProductList>()
 
         for (i in list.indices) {
@@ -1419,6 +1803,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
             product.total_scheme_price = list[i].total_scheme_price
 
             product.MRP = list[i].MRP
+
+
+            //mantis 25601
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
             productList.add(product)
         }
 
@@ -1436,7 +1825,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         val orderList = result as BaseResponse
                         progress_wheel.stopSpinning()
                         if (orderList.status == NetworkConstant.SUCCESS) {
-                            AppDatabase.getDBInstance()!!.orderDetailsListDao().updateIsUploaded(true, order_id)
+                            AppDatabase.getDBInstance()!!.orderDetailsListDao()
+                                .updateIsUploaded(true, order_id)
                         }
 
                         (mContext as DashboardActivity).showSnackMessage("Order added successfully")
@@ -1463,7 +1853,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         val orderList = result as BaseResponse
                         progress_wheel.stopSpinning()
                         if (orderList.status == NetworkConstant.SUCCESS) {
-                            AppDatabase.getDBInstance()!!.orderDetailsListDao().updateIsUploaded(true, order_id)
+                            AppDatabase.getDBInstance()!!.orderDetailsListDao()
+                                .updateIsUploaded(true, order_id)
                         }
 
                         (mContext as DashboardActivity).showSnackMessage("Order added successfully")
@@ -1483,7 +1874,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private fun showCongratsAlert(shopId: String, orderId: String) {
         val shop = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopByIdN(shopId)
-        val body = "${AppUtils.hiFirstNameText()}!. Your order for " + shop?.shopName + " has been placed successfully. Order No. is $orderId"
+        val body =
+            "${AppUtils.hiFirstNameText()}!. Your order for " + shop?.shopName + " has been placed successfully. Order No. is $orderId"
         CommonDialogSingleBtn.getInstance("Congrats!", body, "OK", object : OnDialogClickListener {
             override fun onOkClick() {
                 (mContext as DashboardActivity).onBackPressed()
@@ -1492,7 +1884,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     }
 
 
-    fun saveStock(totalOrderValue: String, selectedProductList: ArrayList<ProductListEntity>?, totalPrice: java.util.ArrayList<Double>) {
+    fun saveStock(
+        totalOrderValue: String,
+        selectedProductList: ArrayList<ProductListEntity>?,
+        totalPrice: java.util.ArrayList<Double>
+    ) {
 
         try {
             val addShop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
@@ -1509,9 +1905,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     val m = random.nextInt(9999 - 1000) + 1000
 
                     //orderListDetails.order_id = Pref.user_id + "_" + m + "_" + System.currentTimeMillis().toString()
-                    val list = AppDatabase.getDBInstance()!!.stockDetailsListDao().getListAccordingDate(AppUtils.getCurrentDate())
+                    val list = AppDatabase.getDBInstance()!!.stockDetailsListDao()
+                        .getListAccordingDate(AppUtils.getCurrentDate())
                     if (list == null || list.isEmpty()) {
-                        stockListDetails.stock_id = Pref.user_id + AppUtils.getCurrentStockDateMonth() + "0001"
+                        stockListDetails.stock_id =
+                            Pref.user_id + AppUtils.getCurrentStockDateMonth() + "0001"
                     } else {
                         val lastId = list[/*list.size - 1*/0].stock_id?.toLong()
                         val finalId = lastId!! + 1
@@ -1521,11 +1919,13 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     stockListDetails.date = AppUtils.getCurrentISODateTime()
                     stockListDetails.only_date = AppUtils.getCurrentDate()
 
-                    val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityForId(shopId)
+                    val shopActivity =
+                        AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityForId(shopId)
 
                     if (shopActivity != null) {
                         if (shopActivity.isVisited && !shopActivity.isDurationCalculated && shopActivity.date == AppUtils.getCurrentDateForShopActi()) {
-                            val shopDetail = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
+                            val shopDetail =
+                                AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
                             stockListDetails.stock_lat = shopDetail.shopLat.toString()
                             stockListDetails.stock_long = shopDetail.shopLong.toString()
                         } else {
@@ -1553,13 +1953,16 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 productStockList.stock_id = stockListDetails.stock_id
                                 productStockList.product_name = selectedProductList[i].product_name
                                 productStockList.qty = (mContext as DashboardActivity).qtyList[i]
-                                productStockList.rate = (mContext as DashboardActivity).rateList[i].toDouble().toString()
+                                productStockList.rate =
+                                    (mContext as DashboardActivity).rateList[i].toDouble()
+                                        .toString()
                                 productStockList.total_price = totalPrice[i].toString()
                                 productStockList.shop_id = shopId
 
                                 totalQty += productStockList.qty?.toInt()!!
 
-                                AppDatabase.getDBInstance()!!.stockProductDao().insert(productStockList)
+                                AppDatabase.getDBInstance()!!.stockProductDao()
+                                    .insert(productStockList)
                             }
                         }
                     }
@@ -1615,10 +2018,30 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 stockListDetails.stock_long!!
 
                             if (addShop.isUploaded) {
-                                addStockApi(addShop.type, stockListDetails.stock_id, totalOrderValue, stockListDetails.date, lat, long)
+                                addStockApi(
+                                    addShop.type,
+                                    stockListDetails.stock_id,
+                                    totalOrderValue,
+                                    stockListDetails.date,
+                                    lat,
+                                    long
+                                )
                             } else {
-                                syncShop(addShop, stockListDetails.shop_id, "", totalOrderValue, "", "", stockListDetails.date!!, lat,
-                                    long, stockListDetails.stock_id, "", "", null)
+                                syncShop(
+                                    addShop,
+                                    stockListDetails.shop_id,
+                                    "",
+                                    totalOrderValue,
+                                    "",
+                                    "",
+                                    stockListDetails.date!!,
+                                    lat,
+                                    long,
+                                    stockListDetails.stock_id,
+                                    "",
+                                    "",
+                                    null
+                                )
                             }
                         } else {
                             (mContext as DashboardActivity).showSnackMessage("Stock added successfully")
@@ -1635,7 +2058,14 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    private fun addStockApi(shopType: String, stock_id: String?, amount: String, date: String?, stock_lat: String?, stock_long: String?) {
+    private fun addStockApi(
+        shopType: String,
+        stock_id: String?,
+        amount: String,
+        date: String?,
+        stock_lat: String?,
+        stock_long: String?
+    ) {
 
         val addStock = AddStockInputParamsModel()
         addStock.stock_amount = amount
@@ -1648,11 +2078,13 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         addStock.longitude = stock_long
         addStock.shop_type = shopType
 
-        val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityForId(shopId)
+        val shopActivity =
+            AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityForId(shopId)
 
         if (shopActivity != null) {
             if (shopActivity.isVisited && !shopActivity.isDurationCalculated && shopActivity.date == AppUtils.getCurrentDateForShopActi()) {
-                val shopDetail = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
+                val shopDetail =
+                    AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopId)
 
                 if (!TextUtils.isEmpty(shopDetail.address))
                     addStock.address = shopDetail.address
@@ -1660,18 +2092,27 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     addStock.address = ""
             } else {
                 if (!TextUtils.isEmpty(stock_lat) && !TextUtils.isEmpty(stock_long))
-                    addStock.address = LocationWizard.getLocationName(mContext, stock_lat!!.toDouble(), stock_long!!.toDouble())
+                    addStock.address = LocationWizard.getLocationName(
+                        mContext,
+                        stock_lat!!.toDouble(),
+                        stock_long!!.toDouble()
+                    )
                 else
                     addStock.address = ""
             }
         } else {
             if (!TextUtils.isEmpty(stock_lat) && !TextUtils.isEmpty(stock_long))
-                addStock.address = LocationWizard.getLocationName(mContext, stock_lat!!.toDouble(), stock_long!!.toDouble())
+                addStock.address = LocationWizard.getLocationName(
+                    mContext,
+                    stock_lat!!.toDouble(),
+                    stock_long!!.toDouble()
+                )
             else
                 addStock.address = ""
         }
 
-        val list = AppDatabase.getDBInstance()!!.stockProductDao().getDataAccordingToShopAndStockId(stock_id!!, shopId)
+        val list = AppDatabase.getDBInstance()!!.stockProductDao()
+            .getDataAccordingToShopAndStockId(stock_id!!, shopId)
         val productList = ArrayList<AddOrderInputProductList>()
 
         for (i in list.indices) {
@@ -1696,7 +2137,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     val orderList = result as BaseResponse
                     progress_wheel.stopSpinning()
                     if (orderList.status == NetworkConstant.SUCCESS) {
-                        AppDatabase.getDBInstance()!!.stockDetailsListDao().updateIsUploaded(true, stock_id)
+                        AppDatabase.getDBInstance()!!.stockDetailsListDao()
+                            .updateIsUploaded(true, stock_id)
                     }
 
                     (mContext as DashboardActivity).showSnackMessage("Stock added successfully")
@@ -1713,9 +2155,21 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         )
     }
 
-    private fun syncShop(addShop: AddShopDBModelEntity, shop_id: String?, order_id: String?, amount: String, desc: String, collection: String,
-                         currentDateForShopActi: String, order_lat: String?, order_long: String?, stock_id: String?,
-                         remarks: String?, signature: String?, orderListDetails: OrderDetailsListEntity?) {
+    private fun syncShop(
+        addShop: AddShopDBModelEntity,
+        shop_id: String?,
+        order_id: String?,
+        amount: String,
+        desc: String,
+        collection: String,
+        currentDateForShopActi: String,
+        order_lat: String?,
+        order_long: String?,
+        stock_id: String?,
+        remarks: String?,
+        signature: String?,
+        orderListDetails: OrderDetailsListEntity?
+    ) {
         val addShopData = AddShopRequestData()
         val mAddShopDBModelEntity = addShop
         addShopData.session_token = Pref.session_token
@@ -1749,13 +2203,16 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         addShopData.phone_no = mAddShopDBModelEntity.person_no
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.family_member_dob))
-            addShopData.family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.family_member_dob)
+            addShopData.family_member_dob =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.family_member_dob)
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_dob))
-            addShopData.addtional_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_dob)
+            addShopData.addtional_dob =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_dob)
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_doa))
-            addShopData.addtional_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_doa)
+            addShopData.addtional_doa =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_doa)
 
         addShopData.specialization = mAddShopDBModelEntity.specialization
         addShopData.category = mAddShopDBModelEntity.category
@@ -1771,16 +2228,20 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         addShopData.assistant_name = mAddShopDBModelEntity.assistant_name
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.doc_family_dob))
-            addShopData.doc_family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.doc_family_dob)
+            addShopData.doc_family_member_dob =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.doc_family_dob)
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_dob))
-            addShopData.assistant_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_dob)
+            addShopData.assistant_dob =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_dob)
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_doa))
-            addShopData.assistant_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_doa)
+            addShopData.assistant_doa =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_doa)
 
         if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_family_dob))
-            addShopData.assistant_family_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_family_dob)
+            addShopData.assistant_family_dob =
+                AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_family_dob)
 
         addShopData.entity_id = mAddShopDBModelEntity.entity_id
         addShopData.party_status_id = mAddShopDBModelEntity.party_status_id
@@ -1790,8 +2251,9 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
         addShopData.actual_address = mAddShopDBModelEntity.actual_address
 
-        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
-        addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+        var uniqKeyObj = AppDatabase.getDBInstance()!!.shopActivityDao()
+            .getNewShopActivityKey(mAddShopDBModelEntity.shop_id, false)
+        addShopData.shop_revisit_uniqKey = uniqKeyObj?.shop_revisit_uniqKey!!
 
 
         addShopData.project_name = mAddShopDBModelEntity.project_name
@@ -1802,22 +2264,50 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         addShopData.whatsappNoForCustomer = mAddShopDBModelEntity.whatsappNoForCustomer
 
         // duplicate shop api call
-        addShopData.isShopDuplicate=mAddShopDBModelEntity.isShopDuplicate
+        addShopData.isShopDuplicate = mAddShopDBModelEntity.isShopDuplicate
 
-        addShopData.purpose=mAddShopDBModelEntity.purpose
+        addShopData.purpose = mAddShopDBModelEntity.purpose
 
-        addShopData.GSTN_Number=mAddShopDBModelEntity.gstN_Number
-        addShopData.ShopOwner_PAN=mAddShopDBModelEntity.shopOwner_PAN
+        addShopData.GSTN_Number = mAddShopDBModelEntity.gstN_Number
+        addShopData.ShopOwner_PAN = mAddShopDBModelEntity.shopOwner_PAN
 
-        callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shop_id, order_id, amount, collection, currentDateForShopActi, desc, order_lat,
-            order_long, stock_id, mAddShopDBModelEntity.doc_degree, remarks, signature, orderListDetails)
+        callAddShopApi(
+            addShopData,
+            mAddShopDBModelEntity.shopImageLocalPath,
+            shop_id,
+            order_id,
+            amount,
+            collection,
+            currentDateForShopActi,
+            desc,
+            order_lat,
+            order_long,
+            stock_id,
+            mAddShopDBModelEntity.doc_degree,
+            remarks,
+            signature,
+            orderListDetails
+        )
         //callAddShopApi(addShopData, "")
     }
 
-    private fun callAddShopApi(addShop: AddShopRequestData, shop_imgPath: String?, shop_id: String?, order_id: String?, amount: String, collection: String,
-                               currentDateForShopActi: String, desc: String, order_lat: String?, order_long: String?,
-                               stock_id: String?, degree_imgPath: String?, remarks: String?, signature: String?,
-                               orderListDetails: OrderDetailsListEntity?) {
+    private fun callAddShopApi(
+        addShop: AddShopRequestData,
+        shop_imgPath: String?,
+        shop_id: String?,
+        order_id: String?,
+        amount: String,
+        collection: String,
+        currentDateForShopActi: String,
+        desc: String,
+        order_lat: String?,
+        order_long: String?,
+        stock_id: String?,
+        degree_imgPath: String?,
+        remarks: String?,
+        signature: String?,
+        orderListDetails: OrderDetailsListEntity?
+    ) {
         if (!AppUtils.isOnline(mContext)) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
             return
@@ -1832,7 +2322,14 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         XLog.d("=================SyncShop Input Params (Order)=====================")
         XLog.d("shop id=======> " + addShop.shop_id)
         val index = addShop.shop_id!!.indexOf("_")
-        XLog.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
+        XLog.d(
+            "decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(
+                addShop.shop_id!!.substring(
+                    index + 1,
+                    addShop.shop_id!!.length
+                ).toLong()
+            )
+        )
         XLog.d("shop added date=======> " + addShop.added_date)
         XLog.d("shop address=======> " + addShop.address)
         XLog.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
@@ -1908,17 +2405,36 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                         when (addShopResult.status) {
                             NetworkConstant.SUCCESS -> {
-                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+                                AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                    .updateIsUploaded(true, addShop.shop_id)
                                 //(mContext as DashboardActivity).showSnackMessage("Synced successfully")
                                 doAsync {
                                     val resultAs = runLongTask(addShop.shop_id)
                                     uiThread {
                                         if (resultAs == true) {
                                             if (AppUtils.stockStatus == 0)
-                                                addOrderApi(shop_id, order_id, amount, desc, collection, currentDateForShopActi,
-                                                    order_lat, order_long, remarks, signature, orderListDetails)
+                                                addOrderApi(
+                                                    shop_id,
+                                                    order_id,
+                                                    amount,
+                                                    desc,
+                                                    collection,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long,
+                                                    remarks,
+                                                    signature,
+                                                    orderListDetails
+                                                )
                                             else if (AppUtils.stockStatus == 1)
-                                                addStockApi(addShop.type!!, stock_id, amount, currentDateForShopActi, order_lat, order_long)
+                                                addStockApi(
+                                                    addShop.type!!,
+                                                    stock_id,
+                                                    amount,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long
+                                                )
                                         }
                                     }
                                 }
@@ -1928,22 +2444,48 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                             }
                             NetworkConstant.DUPLICATE_SHOP_ID -> {
                                 XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
-                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+                                AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                    .updateIsUploaded(true, addShop.shop_id)
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(addShopResult.message!!)
-                                if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
-                                    AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
-                                    AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
+                                if (AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                        .getDuplicateShopData(addShop.owner_contact_no).size > 0
+                                ) {
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                        .deleteShopById(addShop.shop_id)
+                                    AppDatabase.getDBInstance()!!.shopActivityDao()
+                                        .deleteShopByIdAndDate(
+                                            addShop.shop_id!!,
+                                            AppUtils.getCurrentDateForShopActi()
+                                        )
                                 }
                                 doAsync {
                                     val resultAs = runLongTask(addShop.shop_id)
                                     uiThread {
                                         if (resultAs == true) {
                                             if (AppUtils.stockStatus == 0)
-                                                addOrderApi(shop_id, order_id, amount, desc, collection, currentDateForShopActi,
-                                                    order_lat, order_long, remarks, signature, orderListDetails)
+                                                addOrderApi(
+                                                    shop_id,
+                                                    order_id,
+                                                    amount,
+                                                    desc,
+                                                    collection,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long,
+                                                    remarks,
+                                                    signature,
+                                                    orderListDetails
+                                                )
                                             else if (AppUtils.stockStatus == 1)
-                                                addStockApi(addShop.type!!, stock_id, amount, currentDateForShopActi, order_lat, order_long)
+                                                addStockApi(
+                                                    addShop.type!!,
+                                                    stock_id,
+                                                    amount,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long
+                                                )
                                         }
                                     }
                                 }
@@ -1967,8 +2509,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                             XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                     })
             )
-        }
-        else {
+        } else {
             val repository = AddShopRepositoryProvider.provideAddShopRepository()
             BaseActivity.compositeDisposable.add(
                 repository.addShopWithImage(addShop, shop_imgPath, degree_imgPath, mContext)
@@ -1979,17 +2520,36 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                         when (addShopResult.status) {
                             NetworkConstant.SUCCESS -> {
-                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+                                AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                    .updateIsUploaded(true, addShop.shop_id)
                                 //(mContext as DashboardActivity).showSnackMessage("Synced successfully")
                                 doAsync {
                                     val resultAs = runLongTask(addShop.shop_id)
                                     uiThread {
                                         if (resultAs == true) {
                                             if (AppUtils.stockStatus == 0)
-                                                addOrderApi(shop_id, order_id, amount, desc, collection, currentDateForShopActi,
-                                                    order_lat, order_long, remarks, signature, orderListDetails)
+                                                addOrderApi(
+                                                    shop_id,
+                                                    order_id,
+                                                    amount,
+                                                    desc,
+                                                    collection,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long,
+                                                    remarks,
+                                                    signature,
+                                                    orderListDetails
+                                                )
                                             else if (AppUtils.stockStatus == 1)
-                                                addStockApi(addShop.type!!, stock_id, amount, currentDateForShopActi, order_lat, order_long)
+                                                addStockApi(
+                                                    addShop.type!!,
+                                                    stock_id,
+                                                    amount,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long
+                                                )
                                         }
                                     }
                                 }
@@ -1999,22 +2559,48 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                             }
                             NetworkConstant.DUPLICATE_SHOP_ID -> {
                                 XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
-                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+                                AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                    .updateIsUploaded(true, addShop.shop_id)
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(addShopResult.message!!)
-                                if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
-                                    AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
-                                    AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
+                                if (AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                        .getDuplicateShopData(addShop.owner_contact_no).size > 0
+                                ) {
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                        .deleteShopById(addShop.shop_id)
+                                    AppDatabase.getDBInstance()!!.shopActivityDao()
+                                        .deleteShopByIdAndDate(
+                                            addShop.shop_id!!,
+                                            AppUtils.getCurrentDateForShopActi()
+                                        )
                                 }
                                 doAsync {
                                     val resultAs = runLongTask(addShop.shop_id)
                                     uiThread {
                                         if (resultAs == true) {
                                             if (AppUtils.stockStatus == 0)
-                                                addOrderApi(shop_id, order_id, amount, desc, collection, currentDateForShopActi,
-                                                    order_lat, order_long, remarks, signature, orderListDetails)
+                                                addOrderApi(
+                                                    shop_id,
+                                                    order_id,
+                                                    amount,
+                                                    desc,
+                                                    collection,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long,
+                                                    remarks,
+                                                    signature,
+                                                    orderListDetails
+                                                )
                                             else if (AppUtils.stockStatus == 1)
-                                                addStockApi(addShop.type!!, stock_id, amount, currentDateForShopActi, order_lat, order_long)
+                                                addStockApi(
+                                                    addShop.type!!,
+                                                    stock_id,
+                                                    amount,
+                                                    currentDateForShopActi,
+                                                    order_lat,
+                                                    order_long
+                                                )
                                         }
                                     }
                                 }
@@ -2043,14 +2629,16 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun runLongTask(shop_id: String?): Any {
-        val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().durationAvailableForShop(shop_id!!, true, false)
+        val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao()
+            .durationAvailableForShop(shop_id!!, true, false)
         if (shopActivity != null)
             callShopActivitySubmit(shop_id)
         return true
     }
 
     private fun callShopActivitySubmit(shopId: String) {
-        var list = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(shopId, AppUtils.getCurrentDateForShopActi())
+        var list = AppDatabase.getDBInstance()!!.shopActivityDao()
+            .getShopForDay(shopId, AppUtils.getCurrentDateForShopActi())
         if (list.isEmpty())
             return
 
@@ -2065,11 +2653,25 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
             var shopDurationData = ShopDurationRequestData()
             shopDurationData.shop_id = shopActivity.shopid
             if (shopActivity.startTimeStamp != "0" && !shopActivity.isDurationCalculated) {
-                val totalMinute = AppUtils.getMinuteFromTimeStamp(shopActivity.startTimeStamp, System.currentTimeMillis().toString())
-                val duration = AppUtils.getTimeFromTimeSpan(shopActivity.startTimeStamp, System.currentTimeMillis().toString())
+                val totalMinute = AppUtils.getMinuteFromTimeStamp(
+                    shopActivity.startTimeStamp,
+                    System.currentTimeMillis().toString()
+                )
+                val duration = AppUtils.getTimeFromTimeSpan(
+                    shopActivity.startTimeStamp,
+                    System.currentTimeMillis().toString()
+                )
 
-                AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(shopActivity.shopid!!, totalMinute, AppUtils.getCurrentDateForShopActi())
-                AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(shopActivity.shopid!!, duration, AppUtils.getCurrentDateForShopActi())
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(
+                    shopActivity.shopid!!,
+                    totalMinute,
+                    AppUtils.getCurrentDateForShopActi()
+                )
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(
+                    shopActivity.shopid!!,
+                    duration,
+                    AppUtils.getCurrentDateForShopActi()
+                )
 
                 shopDurationData.spent_duration = duration
             } else {
@@ -2080,7 +2682,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
             if (TextUtils.isEmpty(shopActivity.distance_travelled))
                 shopActivity.distance_travelled = "0.0"
             shopDurationData.distance_travelled = shopActivity.distance_travelled
-            var sList = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdList(shopDurationData.shop_id)
+            var sList = AppDatabase.getDBInstance()!!.addShopEntryDao()
+                .getShopByIdList(shopDurationData.shop_id)
             if (sList != null && sList.isNotEmpty())
                 shopDurationData.total_visit_count = sList[0].totalVisitCount
 
@@ -2115,7 +2718,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
             shopDurationData.updated_by = Pref.user_id
             try {
                 shopDurationData.updated_on = shopActivity.updated_on!!
-            }catch (ex:Exception){
+            } catch (ex: Exception) {
                 shopDurationData.updated_on = ""
             }
 
@@ -2125,29 +2728,52 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.pros_id = ""
 
             if (!TextUtils.isEmpty(shopActivity.agency_name!!))
-                shopDurationData.agency_name =shopActivity.agency_name!!
+                shopDurationData.agency_name = shopActivity.agency_name!!
             else
                 shopDurationData.agency_name = ""
 
             if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
-                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                shopDurationData.approximate_1st_billing_value =
+                    shopActivity.approximate_1st_billing_value!!
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 OrderTypeListFragment  AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
-        }
-        else {
+        } else {
             for (i in list.indices) {
                 var shopActivity = list[i]
 
                 var shopDurationData = ShopDurationRequestData()
                 shopDurationData.shop_id = shopActivity.shopid
                 if (shopActivity.startTimeStamp != "0" && !shopActivity.isDurationCalculated) {
-                    val totalMinute = AppUtils.getMinuteFromTimeStamp(shopActivity.startTimeStamp, System.currentTimeMillis().toString())
-                    val duration = AppUtils.getTimeFromTimeSpan(shopActivity.startTimeStamp, System.currentTimeMillis().toString())
+                    val totalMinute = AppUtils.getMinuteFromTimeStamp(
+                        shopActivity.startTimeStamp,
+                        System.currentTimeMillis().toString()
+                    )
+                    val duration = AppUtils.getTimeFromTimeSpan(
+                        shopActivity.startTimeStamp,
+                        System.currentTimeMillis().toString()
+                    )
 
-                    AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(shopActivity.shopid!!, totalMinute, AppUtils.getCurrentDateForShopActi(), shopActivity.startTimeStamp)
-                    AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(shopActivity.shopid!!, duration, AppUtils.getCurrentDateForShopActi(), shopActivity.startTimeStamp)
+                    AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(
+                        shopActivity.shopid!!,
+                        totalMinute,
+                        AppUtils.getCurrentDateForShopActi(),
+                        shopActivity.startTimeStamp
+                    )
+                    AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(
+                        shopActivity.shopid!!,
+                        duration,
+                        AppUtils.getCurrentDateForShopActi(),
+                        shopActivity.startTimeStamp
+                    )
 
                     shopDurationData.spent_duration = duration
                 } else {
@@ -2161,7 +2787,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                 shopDurationData.distance_travelled = shopActivity.distance_travelled
 
-                var sList = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdList(shopDurationData.shop_id)
+                var sList = AppDatabase.getDBInstance()!!.addShopEntryDao()
+                    .getShopByIdList(shopDurationData.shop_id)
                 if (sList != null && sList.isNotEmpty())
                     shopDurationData.total_visit_count = sList[0].totalVisitCount
 
@@ -2196,8 +2823,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.updated_by = Pref.user_id
                 try {
                     shopDurationData.updated_on = shopActivity.updated_on!!
-                }
-                catch(ex:Exception){
+                } catch (ex: Exception) {
                     shopDurationData.updated_on = ""
                 }
 
@@ -2207,15 +2833,22 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     shopDurationData.pros_id = ""
 
                 if (!TextUtils.isEmpty(shopActivity.agency_name!!))
-                    shopDurationData.agency_name =shopActivity.agency_name!!
+                    shopDurationData.agency_name = shopActivity.agency_name!!
                 else
                     shopDurationData.agency_name = ""
 
                 if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
-                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
+                    shopDurationData.approximate_1st_billing_value =
+                        shopActivity.approximate_1st_billing_value!!
                 else
                     shopDurationData.approximate_1st_billing_value = ""
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
 
+
+                // 1.0 OrderTypeListFragment  AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
                 shopDataList.add(shopDurationData)
             }
         }
@@ -2249,7 +2882,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     fun goToNextScreen() {
         if ((mContext as DashboardActivity).tv_cart_count.text != "0")
-            (mContext as DashboardActivity).loadFragment(FragType.CartFragment, true, selectedProductList)
+            (mContext as DashboardActivity).loadFragment(
+                FragType.CartFragment,
+                true,
+                selectedProductList
+            )
         else
             (mContext as DashboardActivity).showSnackMessage("No item is available in cart")
     }

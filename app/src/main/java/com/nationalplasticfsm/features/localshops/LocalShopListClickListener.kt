@@ -23,5 +23,7 @@ interface LocalShopListClickListener {
 
     fun onSurveyClick(shop_id: String)
 
+    fun outLocation(shop_id: String)
+
 
 }

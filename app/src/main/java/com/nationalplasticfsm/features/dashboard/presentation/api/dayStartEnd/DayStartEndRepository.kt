@@ -17,5 +17,9 @@ class DayStartEndRepository (val apiService: DayStartEndApi){
         return apiService.statusDayStartEnd(Pref.session_token!!, Pref.user_id!!,date)
     }
 
+    fun daystartendDelete(sessionToken:String,usrID:String,date:String,dayStDel:String,dayEndDel:String): Observable<BaseResponse> {
+        return apiService.submitDayStartEndDelApi(sessionToken,usrID,date,dayStDel,dayEndDel)
+    }
+
 
 }

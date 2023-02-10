@@ -91,6 +91,8 @@ import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.nationalplasticfsm.MonitorService
 import com.nationalplasticfsm.features.addshop.model.*
 import com.nationalplasticfsm.features.addshop.model.assigntopplist.AddShopUploadImg
+import com.nationalplasticfsm.features.addshop.presentation.ShopExtraContactReq
+import com.nationalplasticfsm.features.addshop.presentation.multiContactRequestData
 import com.nationalplasticfsm.features.login.api.LoginRepositoryProvider
 import com.nationalplasticfsm.features.login.model.GetConcurrentUserResponse
 import com.nationalplasticfsm.features.returnsOrder.ReturnProductList
@@ -116,6 +118,9 @@ import kotlin.collections.ArrayList
 /**
  * Created by Kinsuk on 14-01-2019.
  */
+//Revision History
+// 1.0 LogoutSyncFragment AppV 4.0.6 suman 12-01-2023 multiple contact updation
+// 2.0 LogoutSyncFragment AppV 4.0.6 saheli 20-01-2023  Shop duartion Issue mantis 25597
 class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -1421,7 +1426,12 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                                 XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                 if (addShopResult.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
-
+                                    if(AppUtils.isOnline(mContext)){
+//                                        if(Pref.isMultipleVisitEnable)
+                                        // Shop duartion Issue mantis 25597
+//                                            AppDatabase.getDBInstance()!!.shopActivityDao().updateIsUploaded(true, addShop.shop_id!!,AppUtils.getCurrentDateForShopActi())
+                                            AppDatabase.getDBInstance()!!.shopActivityDao().updateIsNewshopUploaded(true, addShop.shop_id!!,AppUtils.getCurrentDateForShopActi())
+                                    }
                                     doAsync {
                                         val resultAs = runLongTask(addShop.shop_id)
                                         uiThread {
@@ -1518,7 +1528,12 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                                 XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                 if (addShopResult.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
-
+                                    if(AppUtils.isOnline(mContext)){
+//                                        if(Pref.isMultipleVisitEnable)
+                                        // Shop duartion Issue mantis 25597
+//                                        AppDatabase.getDBInstance()!!.shopActivityDao().updateIsUploaded(true, addShop.shop_id!!,AppUtils.getCurrentDateForShopActi())
+                                        AppDatabase.getDBInstance()!!.shopActivityDao().updateIsNewshopUploaded(true, addShop.shop_id!!,AppUtils.getCurrentDateForShopActi())
+                                    }
                                     doAsync {
                                         val resultAs = runLongTask(addShop.shop_id)
                                         uiThread {
@@ -1608,6 +1623,10 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
 
 
     private fun runLongTask(shop_id: String?): Any {
+//       var shopActivitynewIsuploaded = AppDatabase.getDBInstance()!!.shopActivityDao().IsnewShop(shop_id!!, true, true)
+//        if(shopActivitynewIsuploaded!=null){
+//            return true
+//        }
         val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().durationAvailableForShop(shop_id!!, true, false)
         if (shopActivity != null)
             callShopActivitySubmit(shop_id)
@@ -1616,6 +1635,8 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
 
     private fun callShopActivitySubmit(shopId: String) {
         var list = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(shopId, AppUtils.getCurrentDateForShopActi())
+//        var list = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDayisUploaded(shopId, AppUtils.getCurrentDateForShopActi(),false)
+
         if (list.isEmpty())
             return
         var shopDataList: MutableList<ShopDurationRequestData> = java.util.ArrayList()
@@ -1706,6 +1727,11 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
             shopDataList.add(shopDurationData)
         }
@@ -1798,6 +1824,11 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                 }catch (ex:Exception){
                     shopDurationData.spent_duration="00:00:10"
                 }
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
                 shopDataList.add(shopDurationData)
             }
@@ -2369,7 +2400,11 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
             product.scheme_rate = list[j].scheme_rate
             product.total_scheme_price = list[j].total_scheme_price
 
-            product.MRP = list[i].MRP
+            product.MRP = list[j].MRP
+
+            //mantis 25601
+            product.order_mrp = list[j].order_mrp
+            product.order_discount = list[j].order_discount
 
             productList.add(product)
         }
@@ -3047,6 +3082,7 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
 
     //==========================================Revisit Shop============================================================//
     private fun checkToCallVisitShopApi() {
+        //AppDatabase.getDBInstance()!!.shopActivityDao().updateTest(true,"11984_1672046682954746",AppUtils.getCurrentDateForShopActi(), false)
 
         if (Pref.user_id.isNullOrEmpty() || BaseActivity.isShopActivityUpdating)
             return
@@ -3147,13 +3183,18 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
 
                         //duration garbage fix
                         try{
-                            if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
-                            {
-                                shopDurationData.spent_duration="00:00:10"
+                            if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8) {
+                                shopDurationData.spent_duration = "00:00:10"
                             }
                         }catch (ex:Exception){
                             shopDurationData.spent_duration="00:00:10"
                         }
+
+                        //New shop Create issue
+                        shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+                        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
                         shopDataList.add(shopDurationData)
 
@@ -3246,6 +3287,8 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                         }catch (ex:Exception){
                             shopDurationData.spent_duration="00:00:10"
                         }
+                        //New shop Create issue
+                        shopDurationData.isnewShop = it.isnewShop!!
 
 
                         shopDataList.add(shopDurationData)
@@ -3355,11 +3398,28 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                     }
                 }
 
-                BaseActivity.compositeDisposable.add(
-                        repository.shopDuration(shopDurationApiReq)
+                var shopDurationApiReqForNewShop = ShopDurationRequest()
+                var shopDurationApiReqForOldShop = ShopDurationRequest()
+                shopDurationApiReqForNewShop.user_id = Pref.user_id
+                shopDurationApiReqForNewShop.session_token = Pref.session_token
+                shopDurationApiReqForOldShop.user_id = Pref.user_id
+                shopDurationApiReqForOldShop.session_token = Pref.session_token
+                shopDurationApiReqForNewShop.shop_list = ArrayList()
+                shopDurationApiReqForOldShop.shop_list = ArrayList()
+                shopDurationApiReqForNewShop.shop_list = shopDurationApiReq!!.shop_list!!.filter { it.isnewShop!! == true } as ArrayList<ShopDurationRequestData>
+                shopDurationApiReqForOldShop.shop_list = shopDurationApiReq!!.shop_list!!.filter { it.isnewShop!! == false } as ArrayList<ShopDurationRequestData>
+
+                if(shopDurationApiReqForNewShop.shop_list!!.size>0){
+                    uploadNewShopVisit(shopDurationApiReqForNewShop,newShopList,shopDataList as ArrayList<ShopDurationRequestData>)
+                }
+                Handler().postDelayed(Runnable {
+                    if(shopDurationApiReqForOldShop.shop_list!!.size>0){
+                        shopDurationApiReq!!.shop_list = shopDurationApiReqForOldShop.shop_list
+                        shopDurationApiReq.isnewShop = 0
+                        BaseActivity.compositeDisposable.add(
+                            repository.shopDuration(shopDurationApiReq)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
-//                        .timeout(60 * 1, TimeUnit.SECONDS)
                                 .subscribe({ result ->
                                     XLog.d("callShopDurationApi : RESPONSE " + result.status)
                                     if (result.status == NetworkConstant.SUCCESS) {
@@ -3400,7 +3460,8 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                                                 //checkToRetryVisitButton()
                                             }
                                         }
-                                    } else {
+                                    }
+                                    else {
                                         BaseActivity.isShopActivityUpdating = false
                                         /*revisitTickImg.visibility = View.VISIBLE
                                         revisitSyncImg.visibility = View.GONE
@@ -3420,9 +3481,17 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                                         error.printStackTrace()
                                     }
                                     checkToRetryVisitButton()
-//                                (mContext as DashboardActivity).showSnackMessage("ERROR")
                                 })
-                )
+                        )
+                    }
+                    else{
+                        stopAnimation(revisitSyncImg)
+                        revisitTickImg.visibility = View.VISIBLE
+                        revisitSyncImg.visibility = View.GONE
+                        checkToCallBillingApi()
+                    }
+                }, 1500)
+
             }
         }
         else {
@@ -3432,6 +3501,51 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
             checkToCallBillingApi()
             //calllogoutApi(Pref.user_id!!, Pref.session_token!!)
         }
+    }
+
+    fun uploadNewShopVisit(shopDurationApiReqCus :ShopDurationRequest ,  newShopList : ArrayList<ShopDurationRequestData> ,  shopDataList: ArrayList<ShopDurationRequestData>){
+        shopDurationApiReqCus.isnewShop = 1
+        val repository = ShopDurationRepositoryProvider.provideShopDurationRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.shopDuration(shopDurationApiReqCus)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    XLog.d("callShopDurationApi : RESPONSE " + result.status)
+                    if (result.status == NetworkConstant.SUCCESS) {
+                        if (newShopList.size > 0) {
+                            for (i in 0 until newShopList.size) {
+                                AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, newShopList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(newShopList[i].visited_date!!) /*AppUtils.getCurrentDateForShopActi()*/)
+                            }
+                            BaseActivity.isShopActivityUpdating = false
+                        }
+                        else {
+                            BaseActivity.isShopActivityUpdating = false
+                            if (!Pref.isMultipleVisitEnable) {
+                                for (i in 0 until shopDataList.size) {
+                                    AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopDataList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(shopDataList[i].visited_date!!) /*AppUtils.getCurrentDateForShopActi()*/)
+                                }
+                            }
+                            else {
+                                for (i in 0 until shopDataList.size) {
+                                    AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopDataList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(shopDataList[i].visited_date!!), shopDataList[i].start_timestamp!!)
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        BaseActivity.isShopActivityUpdating = false
+                    }
+                }, { error ->
+                    BaseActivity.isShopActivityUpdating = false
+                    if (error == null) {
+                        XLog.d("callShopDurationApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
+                    } else {
+                        XLog.d("callShopDurationApi : ERROR " + error.localizedMessage)
+                        error.printStackTrace()
+                    }
+                })
+        )
     }
 
 
@@ -6982,7 +7096,8 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                 val fileUrl = Uri.parse(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "xnationalplasticfsmlogsample/log.zip").path);
                 val file = File(fileUrl.path)
                 if (!file.exists()) {
-                    checkToCallActivity()
+                    //checkToCallActivity()
+                    syncExtraContact()
                 }
                 val uri: Uri = FileProvider.getUriForFile(mContext, mContext!!.applicationContext.packageName.toString() + ".provider", file)
                 try{
@@ -6996,7 +7111,8 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                                 if (result.status == NetworkConstant.SUCCESS){
                                     //XLog.d("Return : RESPONSE URL " + result.file_url +  " " +Pref.user_name)
                                 }
-                                checkToCallActivity()
+                                //checkToCallActivity()
+                                syncExtraContact()
                             },{error ->
                                 if (error == null) {
                                     XLog.d("Logshare : ERROR " + "UNEXPECTED ERROR IN Log share API")
@@ -7004,24 +7120,221 @@ class LogoutSyncFragment : BaseFragment(), View.OnClickListener {
                                     XLog.d("Logshare : ERROR " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
-                                checkToCallActivity()
+                                //checkToCallActivity()
+                                syncExtraContact()
                             })
                     )
 
                 } catch (ex:Exception){
                     ex.printStackTrace()
                     XLog.d("Logshare : Exception " + "UNEXPECTED ERROR IN Log share API")
-                    checkToCallActivity()
+                    //checkToCallActivity()
+                    syncExtraContact()
                 }
             }catch (ex:Exception){
                 XLog.d("Logshare : log.zip error " + ex.message)
+                //checkToCallActivity()
+                syncExtraContact()
+            }
+        }else{
+            //checkToCallActivity()
+            syncExtraContact()
+        }
+    }
+
+    // 1.0 LogoutSyncFragment AppV 4.0.6 suman 12-01-2023 multiple contact updation
+    private fun syncExtraContact(){
+        var unsyncShopIDL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListShopIDUnsync(false) as ArrayList<String>
+        if(unsyncShopIDL.size>0){
+            var shopListSubmitReqAdd : multiContactRequestData = multiContactRequestData()
+            shopListSubmitReqAdd.user_id = Pref.user_id!!
+            shopListSubmitReqAdd.session_token = Pref.session_token!!
+
+            var shopListSubmitReqAddEdit : multiContactRequestData = multiContactRequestData()
+            shopListSubmitReqAddEdit.user_id = Pref.user_id!!
+            shopListSubmitReqAddEdit.session_token = Pref.session_token!!
+
+            for(i in 0..unsyncShopIDL.size-1){
+                var extraContResponseObj : ShopExtraContactReq = ShopExtraContactReq()
+                extraContResponseObj.shop_id = unsyncShopIDL.get(i)
+
+                var extraContL = AppDatabase.getDBInstance()?.shopExtraContactDao()?.getExtraContListByShopID(unsyncShopIDL.get(i)) as ArrayList<ShopExtraContactEntity>
+
+                var isFirstUpload = true
+                for(l in 0..extraContL.size-1){
+                    if(extraContL.get(l).contact_serial.equals("1") && extraContL.get(l).isUploaded ){
+                        isFirstUpload = false
+                        break
+                    }
+                }
+                for(a in 0..extraContL.size-1){
+                    if(a==0){
+                        extraContResponseObj.apply {
+                            contact_name1 = extraContL.get(a).contact_name.toString()
+                            contact_number1 = extraContL.get(a).contact_number.toString()
+                            contact_email1 = extraContL.get(a).contact_email.toString()
+                            contact_doa1 = extraContL.get(a).contact_doa.toString()
+                            contact_dob1 = extraContL.get(a).contact_dob.toString()
+                        }
+                    }
+                    if(a==1){
+                        extraContResponseObj.apply {
+                            contact_name2 = extraContL.get(a).contact_name.toString()
+                            contact_number2 = extraContL.get(a).contact_number.toString()
+                            contact_email2 = extraContL.get(a).contact_email.toString()
+                            contact_doa2 = extraContL.get(a).contact_doa.toString()
+                            contact_dob2 = extraContL.get(a).contact_dob.toString()
+                        }
+                    }
+                    if(a==2){
+                        extraContResponseObj.apply {
+                            contact_name3 = extraContL.get(a).contact_name.toString()
+                            contact_number3 = extraContL.get(a).contact_number.toString()
+                            contact_email3 = extraContL.get(a).contact_email.toString()
+                            contact_doa3 = extraContL.get(a).contact_doa.toString()
+                            contact_dob3 = extraContL.get(a).contact_dob.toString()
+                        }
+                    }
+                    if(a==3){
+                        extraContResponseObj.apply {
+                            contact_name4 = extraContL.get(a).contact_name.toString()
+                            contact_number4 = extraContL.get(a).contact_number.toString()
+                            contact_email4 = extraContL.get(a).contact_email.toString()
+                            contact_doa4 = extraContL.get(a).contact_doa.toString()
+                            contact_dob4 = extraContL.get(a).contact_dob.toString()
+                        }
+                    }
+                    if(a==4){
+                        extraContResponseObj.apply {
+                            contact_name5 = extraContL.get(a).contact_name.toString()
+                            contact_number5 = extraContL.get(a).contact_number.toString()
+                            contact_email5 = extraContL.get(a).contact_email.toString()
+                            contact_doa5 = extraContL.get(a).contact_doa.toString()
+                            contact_dob5 = extraContL.get(a).contact_dob.toString()
+                        }
+                    }
+                    if(a==5){
+                        extraContResponseObj.apply {
+                            contact_name6 = extraContL.get(a).contact_name.toString()
+                            contact_number6 = extraContL.get(a).contact_number.toString()
+                            contact_email6 = extraContL.get(a).contact_email.toString()
+                            contact_doa6 = extraContL.get(a).contact_doa.toString()
+                            contact_dob6 = extraContL.get(a).contact_dob.toString()
+                        }
+                    }
+                }
+                if(isFirstUpload){
+                    shopListSubmitReqAdd.shop_list.add(extraContResponseObj)
+                }else{
+                    shopListSubmitReqAddEdit.shop_list.add(extraContResponseObj)
+                }
+            }
+            if(shopListSubmitReqAdd.shop_list.size>0){
+                syncAddMultiContact( shopListSubmitReqAdd,shopListSubmitReqAddEdit)
+            }else if(shopListSubmitReqAddEdit.shop_list.size>0){
+                syncEditMultiContact(shopListSubmitReqAddEdit)
+            }else{
                 checkToCallActivity()
             }
-
         }else{
             checkToCallActivity()
         }
     }
 
+    // 1.0 LogoutSyncFragment AppV 4.0.6 suman 12-01-2023 multiple contact updation
+    fun syncAddMultiContact( shopListSubmitReqAdd:multiContactRequestData, shopListSubmitReqEdit:multiContactRequestData){
+        val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.addMutiContact(shopListSubmitReqAdd)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val addmutliContactResult = result as BaseResponse
+                    if (addmutliContactResult.status==NetworkConstant.SUCCESS){
+                        doAsync {
+                            for(l in 0..shopListSubmitReqAdd.shop_list.size-1){
+                                val obj = shopListSubmitReqAdd.shop_list.get(l)
+                                if(obj.contact_serial1.equals("1") && !obj.contact_name1.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial1)
+                                }
+                                if(obj.contact_serial2.equals("2") && !obj.contact_name2.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial2)
+                                }
+                                if(obj.contact_serial3.equals("3") && !obj.contact_name3.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial3)
+                                }
+                                if(obj.contact_serial4.equals("4") && !obj.contact_name4.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial4)
+                                }
+                                if(obj.contact_serial5.equals("5") && !obj.contact_name5.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial5)
+                                }
+                                if(obj.contact_serial6.equals("6") && !obj.contact_name6.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial6)
+                                }
+                            }
+                            uiThread {
+                                if(shopListSubmitReqEdit.shop_list.size>0){
+                                    syncEditMultiContact(shopListSubmitReqEdit)
+                                }else{
+                                    checkToCallActivity()
+                                }
+                            }
+                        }
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                    (mContext as DashboardActivity).showSnackMessage("Error added contact")
+                    checkToCallActivity()
+                })
+        )
+    }
+
+    // 1.0 LogoutSyncFragment AppV 4.0.6 suman 12-01-2023 multiple contact updation
+    fun syncEditMultiContact(shopListSubmitReqEdit:multiContactRequestData){
+        val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.updateMutiContact(shopListSubmitReqEdit)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val addmutliContactResult = result as BaseResponse
+                    if (addmutliContactResult.status==NetworkConstant.SUCCESS){
+                        doAsync {
+                            for(l in 0..shopListSubmitReqEdit.shop_list.size-1){
+                                val obj = shopListSubmitReqEdit.shop_list.get(l)
+                                if(obj.contact_serial1.equals("1") && !obj.contact_name1.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial1)
+                                }
+                                if(obj.contact_serial2.equals("2") && !obj.contact_name2.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial2)
+                                }
+                                if(obj.contact_serial3.equals("3") && !obj.contact_name3.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial3)
+                                }
+                                if(obj.contact_serial4.equals("4") && !obj.contact_name4.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial4)
+                                }
+                                if(obj.contact_serial5.equals("5") && !obj.contact_name5.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial5)
+                                }
+                                if(obj.contact_serial6.equals("6") && !obj.contact_name6.equals("")){
+                                    AppDatabase.getDBInstance()?.shopExtraContactDao()?.updateIsUploaded(true,obj.shop_id,obj.contact_serial6)
+                                }
+                            }
+                            uiThread {
+                                checkToCallActivity()
+                            }
+                        }
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                    (mContext as DashboardActivity).showSnackMessage("Error added contact")
+                    checkToCallActivity()
+                })
+        )
+    }
 
 }

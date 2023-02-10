@@ -156,6 +156,12 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
         fab.setOnClickListener(this)
         ll_conveyence.setOnClickListener(this)
 
+        if(Pref.isExpenseFeatureAvailable){
+            ll_conveyence.visibility = View.GONE
+        }else{
+            ll_conveyence.visibility = View.VISIBLE
+        }
+
         rv_reimbursment_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -464,12 +470,20 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
 
             override fun onEditClick(adapterPosition: Int) {
                 (mContext as DashboardActivity).reimbursementSelectPosition = adapterPosition
-                (mContext as DashboardActivity).loadFragment(FragType.EditReimbursementFragment, true, reimbursementListDataModel)
+                if(Pref.isExpenseFeatureAvailable){
+                    (mContext as DashboardActivity).loadFragment(FragType.EditReimbNFrag, true, reimbursementListDataModel)
+                }else{
+                    (mContext as DashboardActivity).loadFragment(FragType.EditReimbursementFragment, true, reimbursementListDataModel)
+                }
             }
 
             override fun onViewClick(adapterPosition: Int) {
                 (mContext as DashboardActivity).reimbursementSelectPosition = adapterPosition
-                (mContext as DashboardActivity).loadFragment(FragType.ReimbursementDetailsFragment, true, reimbursementListDataModel)
+                if(Pref.isExpenseFeatureAvailable){
+                    (mContext as DashboardActivity).loadFragment(FragType.ReimbursDtlsNFrag, true, reimbursementListDataModel)
+                }else{
+                    (mContext as DashboardActivity).loadFragment(FragType.ReimbursementDetailsFragment, true, reimbursementListDataModel)
+                }
             }
         })
 
@@ -611,8 +625,14 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
 
                 if (!Pref.isAddAttendence)
                     (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
-                else
-                    (mContext as DashboardActivity).loadFragment(FragType.ReimbursementFragment, true, "")
+                else{
+                    if(Pref.isExpenseFeatureAvailable){
+                        (mContext as DashboardActivity).loadFragment(FragType.ReimbursementNFrag, true, "")
+                    }else{
+                        (mContext as DashboardActivity).loadFragment(FragType.ReimbursementFragment, true, "")
+                    }
+                }
+
             }
 
             R.id.ll_conveyence -> {

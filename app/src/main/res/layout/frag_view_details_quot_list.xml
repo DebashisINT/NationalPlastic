@@ -11,6 +11,17 @@
     android:clickable="true"
     android:focusable="true">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+
     <LinearLayout
         android:id="@+id/frag_view_details_quot_list_LL"
         android:layout_width="match_parent"
@@ -25,6 +36,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/tv_frag_view_details_quot_list_shopName"
                 android:layout_width="wrap_content"
@@ -44,6 +56,54 @@
                 android:textSize="@dimen/_11sdp"/>
 
         </LinearLayout>
+
+        <!--Contact Details design added by saheli 09-01-2023-->
+
+
+        <LinearLayout
+            android:id="@+id/ll_frag_quto_list_dtls_contact_dtls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_frag_view_details_quot_list_contactP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/_30sdp"
+                android:text="Contact Person: "
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/tv_frag_view_details_quot_list_contactPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/_30sdp"
+                android:text="Contact Phone: "
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/tv_frag_view_details_quot_list_contactEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="@dimen/_30sdp"
+                android:text="Contact Email: "
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_frag_view_dtls_quto_project_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_30sdp"
+            android:gravity="center|start"
+            android:hint="Project Name"
+            android:textColor="@color/black"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,15 +169,14 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="@dimen/_100sdp"
         android:layout_marginTop="@dimen/_5sdp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/quot_view_list_rv"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <com.pnikosis.materialishprogress.ProgressWheel
@@ -168,6 +227,157 @@
 
     </FrameLayout>
 
+    <!--Term & condition design added by saheli 09-01-2023-->
+
+    <com.nationalplasticfsm.widgets.AppCustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center|start"
+        android:padding="@dimen/_1sdp"
+        android:text="@string/terms_conditions"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13sdp"
+        android:textStyle="bold"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:background="@drawable/black_line_custom" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@color/color_silver">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_taxes"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Taxes"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/black_50" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_freight"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Freight"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/black_50"
+                />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_del_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Delivery Time "
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textColor="@color/black_50"
+                android:textSize="@dimen/_11sdp" />
+
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_payment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Payment"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/black_50" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_validity"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Validity "
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textColor="@color/black_50"
+                android:textSize="@dimen/_11sdp" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_billing"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Billing"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textColor="@color/black_50"
+                android:textSize="@dimen/_11sdp" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_product_tolrence"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Product Tolerance of Thickness "
+                android:paddingStart="@dimen/_10sdp"
+                android:textColor="@color/black_50"
+                android:textSize="@dimen/_11sdp" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_coating_tolrence"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Tolerance of Coating Thickness"
+                android:paddingStart="@dimen/_10sdp"
+                android:textColor="@color/black_50"
+                android:textSize="@dimen/_11sdp" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_product_salemans"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Salesman"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textSize="@dimen/_11sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:textColor="@color/black_50" />
+
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_remarks"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Remarks"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textSize="@dimen/_11sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:textColor="@color/black_50" />
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_frag_view_dtls_quot_list_template"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:hint="Template"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_10sdp"
+                android:singleLine="true"
+                android:textSize="@dimen/_11sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:textColor="@color/black_50" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/update_TV_frag_view_details_quot_list"
         android:layout_width="match_parent"
@@ -181,5 +391,9 @@
         android:text="@string/update"
         android:textSize="@dimen/_13sdp"
         android:visibility="gone" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

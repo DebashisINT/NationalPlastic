@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.content.FileProvider
@@ -71,6 +72,7 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
     private var selectedBeat: String = ""
     private var selectedBeatName: String = ""
     private lateinit var date_rangeDisplay: AppCustomTextView
+    private lateinit var llRv_root: LinearLayout
 
     private lateinit var beatTeamListAdapter :BeatTeamListAdapter
     private lateinit var ftn_share: MovableFloatingActionButton
@@ -123,6 +125,9 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
         iv_show.setOnClickListener(this)
         tv_no_data.visibility = View.GONE
         ftn_share=view.findViewById(R.id.add_share)
+
+        llRv_root=view.findViewById(R.id.ll_frag_team_beat_list_rv_root)
+
         ftn_share.setCustomClickListener{
             saveDataAsPdf()
         }
@@ -471,6 +476,7 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
             return
         }
 
+        var statusC = ""
         val repository = VisitReportRepoProvider.provideVisitReportRepository()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -479,11 +485,18 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     val visitList = result as BeatTeamResponseModel
+                    statusC = visitList.status.toString()
                     when {
                         visitList.status == NetworkConstant.SUCCESS -> {
                             progress_wheel.stopSpinning()
-                            initAdapter(visitList.visit_report_list)
-
+                            llRv_root.visibility = View.VISIBLE
+                            tv_no_data.visibility = View.GONE
+                            if(visitList.visit_report_list.size>0){
+                                initAdapter(visitList.visit_report_list)
+                            }else{
+                                llRv_root.visibility = View.GONE
+                                tv_no_data.visibility = View.VISIBLE
+                            }
                         }
                         visitList.status == NetworkConstant.SESSION_MISMATCH -> {
                             progress_wheel.stopSpinning()
@@ -500,21 +513,27 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
                         visitList.status == NetworkConstant.NO_DATA -> {
                             progress_wheel.stopSpinning()
                             tv_no_data.visibility = View.VISIBLE
+                            llRv_root.visibility = View.GONE
                             (mContext as DashboardActivity).showSnackMessage(visitList.message!!)
 
                         }
                         else -> {
                             progress_wheel.stopSpinning()
                             tv_no_data.visibility = View.VISIBLE
+                            llRv_root.visibility = View.GONE
                             (mContext as DashboardActivity).showSnackMessage(visitList.message!!)
                         }
                     }
-
                 }, { error ->
                     progress_wheel.stopSpinning()
                     error.printStackTrace()
                     tv_no_data.visibility = View.VISIBLE
-                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                    llRv_root.visibility = View.GONE
+                   if(statusC.equals("200") || statusC.equals("205")){
+
+                   }else{
+                       (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                   }
                 })
         )
     }
@@ -533,7 +552,8 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
         }
 
         if(rootObj!=null && rootObj.visit_details_list.size>0){
-
+            llRv_root.visibility=View.VISIBLE
+            tv_no_data.visibility = View.GONE
             var beatViewModelList:ArrayList<BeatViewModel> = ArrayList()
 
             do{
@@ -583,7 +603,19 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
             else
                 tv_no_data.visibility = View.GONE
 
-            if(finalList.size>0){
+            if(finalList.size==1){
+                finalList = finalList as ArrayList<BeatViewModel>
+                for(i in 0..finalList.size-1){
+                    for(j in 0..finalList.get(i).beatList.size-1){
+                        finalList.get(i).beatList = finalList.get(i).beatList.reversed() as ArrayList<BeatViewListModel>
+                    }
+                }
+                shareBeatModel=finalList
+                beatTeamListAdapter = BeatTeamListAdapter(mContext,finalList)
+                rv_list.adapter=beatTeamListAdapter
+                ftn_share.visibility = View.VISIBLE
+            }
+            else if(finalList.size>0){
                 finalList = finalList.reversed() as ArrayList<BeatViewModel>
 
                 for(i in 0..finalList.size-1){
@@ -600,6 +632,9 @@ class TeamBeatListFragment : BaseFragment(), DatePickerDialog.OnDateSetListener,
                 shareBeatModel = ArrayList()
                 ftn_share.visibility = View.GONE
             }
+        }else{
+            llRv_root.visibility=View.GONE
+            tv_no_data.visibility = View.VISIBLE
         }
 
     }

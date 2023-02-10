@@ -7,15 +7,67 @@
     android:orientation="vertical"
     android:padding="@dimen/_5sdp">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_cursor_two">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_weight="1"
+            android:text="Select Sales Rep Type  : "
+            android:gravity="center"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/_10sdp"/>
+
+
+        <LinearLayout
+            android:id="@+id/ll_type_view_root"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/rounded_corner_gray_boarder_trans_bg"
+            android:gravity="center_vertical"
+            android:padding="@dimen/_7sdp"
+            android:layout_gravity="end">
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_prospect"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_weight="0.2"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_down_arrow" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/_10sdp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_frag_photo_attend_user_details"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            wheel:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            wheel:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <com.pnikosis.materialishprogress.ProgressWheel
             android:id="@+id/progress_wheel_frag_photo_attend"
@@ -28,6 +80,6 @@
             android:layout_gravity="center"/>
 
 
-    </FrameLayout>
+    </RelativeLayout>
 
 </LinearLayout>

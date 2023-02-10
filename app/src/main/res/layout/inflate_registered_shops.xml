@@ -291,10 +291,41 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/rl_party_status"
+                    android:id="@+id/rl_retailer_entity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rl_entity_type">
+
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:id="@+id/tv_retailer_entity_headerr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="true"
+                        android:text="Party Category"
+                        android:textColor="@color/light_gray"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:id="@+id/tv_retailer_entity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_toRightOf="@id/tv_retailer_entity_headerr"
+                        android:singleLine="true"
+                        android:text="N.A."
+                        android:textColor="@color/login_txt_color"
+                        android:textSize="@dimen/_11sdp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_party_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_retailer_entity">
 
                     <com.nationalplasticfsm.widgets.AppCustomTextView
                         android:id="@+id/tv_party_status_header"
@@ -674,6 +705,25 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:layout_marginLeft="@dimen/_10sdp"/>
 
+            <!--Add new layout IsAllowShopStatusUpdate-->
+
+            <com.nationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_update_status_inflate_registered_shops"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_10sdp"
+                android:paddingTop="@dimen/_1sdp"
+                android:text="Update Status"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10sdp"
+                android:drawableTint="@color/colorPrimary"
+                android:drawableLeft="@drawable/ic_party_status_small"
+                android:drawablePadding="@dimen/_5sdp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_gravity="bottom"/>
+
             <com.nationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/update_address_TV"
                 android:layout_width="wrap_content"
@@ -805,6 +855,38 @@
                             android:background="@drawable/ic_tag_icon"
                             android:padding="@dimen/_5sdp"
                             android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/shop_extra_contact_ll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/_23sdp"
+                                android:layout_height="@dimen/_25sdp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/icon_contact_book"
+                                android:backgroundTint="@color/dark_gray"/>
+
+                            <com.nationalplasticfsm.widgets.AppCustomTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="Multi Contact Info"
+                                android:textColor="@color/login_txt_color"
+                                android:textSize="@dimen/_8sdp"  />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/shop_extra_contact_view"
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@color/popup_window_bar_color" />
 
                         <LinearLayout
                             android:id="@+id/shop_survey_ll"

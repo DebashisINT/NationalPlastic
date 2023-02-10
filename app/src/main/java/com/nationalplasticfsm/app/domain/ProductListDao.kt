@@ -12,7 +12,7 @@ interface ProductListDao {
 
     @Query("SELECT * FROM " + AppConstant.PRODUCT_LIST_TABLE)
     fun getAll(): List<ProductListEntity>
-
+    
     @Query("SELECT * FROM " + AppConstant.PRODUCT_LIST_TABLE +" where id IN (SELECT id FROM product_list group by brand)")
     fun getUniqueBrandList(): List<ProductListEntity>
 
@@ -99,4 +99,7 @@ interface ProductListDao {
 
     @Query("SELECT * FROM " + AppConstant.PRODUCT_LIST_TABLE +" where id=:id")
     fun getSingleProduct(id: Int): ProductListEntity
+
+
+
 }

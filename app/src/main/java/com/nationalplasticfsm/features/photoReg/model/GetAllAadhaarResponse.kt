@@ -7,3 +7,5 @@ class GetAllAadhaarResponse {
 }
 
 data class AllUserAadhaarList(var user_id:Int,var user_login_id:String,var RegisteredAadhaarNo:String)
+
+data class ProsCustom(var prosid :String,var prosName:String)

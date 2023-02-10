@@ -3,25 +3,25 @@ package com.nationalplasticfsm.features.localshops
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.text.SpannableString
-import android.text.Spanned.SPAN_INCLUSIVE_INCLUSIVE
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.AbsoluteSizeSpan
-import android.text.style.RelativeSizeSpan
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.elvishew.xlog.XLog
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
@@ -37,11 +37,13 @@ import com.nationalplasticfsm.app.utils.FTStorageUtils
 import com.nationalplasticfsm.app.utils.PermissionUtils
 import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.presentation.BaseFragment
+import com.nationalplasticfsm.features.commondialogsinglebtn.AddFeedbackSingleBtnDialog
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard.Companion.NEARBY_RADIUS
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
+import com.nationalplasticfsm.widgets.AppCustomTextView
 import java.util.*
-
+import kotlin.collections.ArrayList
 
 /**
  * Created by riddhi on 2/1/18.
@@ -186,17 +188,15 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
         }
 
-//        noShopAvailable.text = "No Registered " + Pref.shopText + "Available"+"\n\n(Suggestion: Click on the Home icon &amp; go to Shops/Customer -> Search the Customer name whom you are Nearby -> Press 'Update Address' button &amp; check again in Nearby Shops)"
-
+//        noShopAvailable.text = "No Registered " + Pref.shopText + " Available"+"\n(Suggestion: Click on the Home icon &amp; go to Shops/Customer -> Search the Customer name whom you are Nearby -> Press 'Update Address' button &amp; check again in Nearby Shops)"
         var text1 = "No Registered " + Pref.shopText + "Available"
         var text2 = "\n\n(Suggestion: Click on the Home icon & go to Shops/Customer -> Search the Customer name whom you are Nearby -> Press 'Update Address' button & check again in Nearby Shops)"
         val span1 = SpannableString(text1)
-        span1.setSpan(AbsoluteSizeSpan(46), 0, text1.length, SPAN_INCLUSIVE_INCLUSIVE)
+        span1.setSpan(AbsoluteSizeSpan(46), 0, text1.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         val span2 = SpannableString(text2)
-        span2.setSpan(AbsoluteSizeSpan(10), 0, text2.length, SPAN_INCLUSIVE_INCLUSIVE)
+        span2.setSpan(AbsoluteSizeSpan(10), 0, text2.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         val finalText: CharSequence = TextUtils.concat(span1, " ", span2)
         noShopAvailable.text =finalText.toString()
-
         if(Pref.IsnewleadtypeforRuby){
             initPermissionCheck()
         }
@@ -255,8 +255,32 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
             try {
 
-                localShopsListAdapter = LocalShopsListAdapter(mContext, list, object : LocalShopListClickListener {
-                    override fun onQuationClick(shop: Any) {
+                localShopsListAdapter = LocalShopsListAdapter(mContext, list,
+                    object : LocalShopListClickListener {
+                        override fun outLocation(shop_id: String) {
+
+                            var ob = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shop_id)
+                            var feedbackDialog: AddFeedbackSingleBtnDialog? = null
+                            feedbackDialog = AddFeedbackSingleBtnDialog.getInstance(ob.shopName + "\n" + ob.ownerContactNumber, getString(R.string.confirm_revisit), shop_id, object : AddFeedbackSingleBtnDialog.OnOkClickListener {
+                                override fun onOkClick(mFeedback: String, mNextVisitDate: String, filePath: String, mapproxValue: String, mprosId: String,sel_extraContNameStr:String,sel_extraContPhStr:String) {
+                                    AppDatabase.getDBInstance()!!.shopActivityDao().updateFeedbackVisitdate(mFeedback,mNextVisitDate, shop_id, AppUtils.getCurrentDateForShopActi())
+                                    manualProceed(shop_id)
+                                }
+
+                                override fun onCloseClick(mfeedback: String,sel_extraContNameStr :String,sel_extraContPhStr : String) {
+                                    //
+                                    manualProceed(shop_id)
+                                }
+
+                                override fun onClickCompetitorImg() {
+                                    //
+                                }
+                            })
+                            feedbackDialog?.show((mContext as DashboardActivity).supportFragmentManager, "AddFeedbackSingleBtnDialog")
+
+                        }
+
+                        override fun onQuationClick(shop: Any) {
                         (mContext as DashboardActivity).isBack = true
                         val nearbyShop: AddShopDBModelEntity = shop as AddShopDBModelEntity
                         (mContext as DashboardActivity).loadFragment(FragType.QuotationListFragment, true, nearbyShop.shop_id)
@@ -341,6 +365,28 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
         progress_wheel.stopSpinning()
 
+    }
+
+    fun manualProceed(shop_id:String){
+        progress_wheel.spin()
+        AppUtils.endShopDuration(shop_id, mContext)
+
+        var statusL = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(shop_id, AppUtils.getCurrentDateForShopActi())
+        val duration = AppUtils.getTimeFromTimeSpan(statusL.get(0).startTimeStamp,statusL.get(0).endTimeStamp)
+        progress_wheel.stopSpinning()
+
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_ok)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+        dialogHeader.text = "Your spend duration for the outlet ${statusL.get(0).shop_name} is $duration"
+        val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            simpleDialog.cancel()
+            getNearyShopList(AppUtils.mLocation!!)
+        })
+        simpleDialog.show()
     }
 
 
@@ -454,6 +500,7 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
         val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getAllOwn(true)
 
         val newList = java.util.ArrayList<AddShopDBModelEntity>()
+        progress_wheel.spin()
 
         for (i in allShopList.indices) {
             /*val userId = allShopList[i].shop_id.substring(0, allShopList[i].shop_id.indexOf("_"))
@@ -523,6 +570,7 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
         }
 
         initAdapter()
+        progress_wheel.stopSpinning()
     }
 
     fun shoulIBotherToUpdate(shopId: String): Boolean {

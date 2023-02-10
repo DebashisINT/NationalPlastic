@@ -64,7 +64,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-
+// 1.0 NewReturnListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class NewReturnListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -544,6 +544,10 @@ class NewReturnListFragment : BaseFragment() {
             product.scheme_rate = list[i].scheme_rate
             product.total_scheme_price = list[i].total_scheme_price
             product.MRP = list[i].MRP
+
+            //mantis 25601 23-01-2023
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
             productList.add(product)
         }
 
@@ -1150,6 +1154,10 @@ class NewReturnListFragment : BaseFragment() {
             product.total_scheme_price = list[i].total_scheme_price
 
             product.MRP = list[i].MRP
+            //mantis 25601
+            product.order_mrp = list[i].order_mrp
+            product.order_discount = list[i].order_discount
+
             productList.add(product)
         }
 
@@ -1618,6 +1626,13 @@ class NewReturnListFragment : BaseFragment() {
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 NewReturnListFragment  AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1700,6 +1715,13 @@ class NewReturnListFragment : BaseFragment() {
                     shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                 else
                     shopDurationData.approximate_1st_billing_value = ""
+
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 NewReturnListFragment  AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
                 shopDataList.add(shopDurationData)
             }
@@ -2383,7 +2405,11 @@ class NewReturnListFragment : BaseFragment() {
             product.scheme_qty = list[i].scheme_qty
             product.scheme_rate = list[i].scheme_rate
             product.total_scheme_price = list[i].total_scheme_price
-            product.MRP = list[i].MRP
+            product.MRP = list[j].MRP
+
+            //mantis 25601 23-01-2023
+            product.order_mrp = list[j].order_mrp
+            product.order_discount = list[j].order_discount
             productList.add(product)
         }
 

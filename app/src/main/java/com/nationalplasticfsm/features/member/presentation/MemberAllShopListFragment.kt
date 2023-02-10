@@ -11,6 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.android.volley.AuthFailureError
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.JsonObjectRequest
+import com.nationalplasticfsm.CustomStatic
+import com.nationalplasticfsm.MySingleton
 import com.elvishew.xlog.XLog
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.nationalplasticfsm.R
@@ -21,8 +27,11 @@ import com.nationalplasticfsm.app.SearchListener
 import com.nationalplasticfsm.app.domain.MemberShopEntity
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.utils.AppUtils
+import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
+import com.nationalplasticfsm.features.addAttendence.api.addattendenceapi.AddAttendenceRepoProvider
+import com.nationalplasticfsm.features.addAttendence.model.GetReportToFCMResponse
 import com.nationalplasticfsm.features.addshop.presentation.AccuracyIssueDialog
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
@@ -31,13 +40,20 @@ import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
 import com.nationalplasticfsm.features.member.model.TeamShopListResponseModel
 import com.nationalplasticfsm.features.nearbyshops.api.updateaddress.ShopAddressUpdateRepoProvider
 import com.nationalplasticfsm.features.nearbyshops.model.updateaddress.AddressUpdateRequest
+import com.nationalplasticfsm.features.nearbyshops.presentation.UpdateShopStatusDialog
 import com.nationalplasticfsm.widgets.AppCustomTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.HashMap
 
 /**
  * Created by Saikat on 28-02-2020.
  */
+//Revision History
+// 1.0 MemberAllShopListFragment  AppV 4.0.6  Saheli    11/01/2023 IsAllowShopStatusUpdate
+// 2.0 MemberAllShopListFragment  AppV 4.0.6  Saheli    13/01/2023 getTeamShopList function work for size 1
 class MemberAllShopListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -53,7 +69,8 @@ class MemberAllShopListFragment : BaseFragment() {
     private var userId = ""
     private var shopId = ""
     private var isBackPressed = false
-    private var shop_list: ArrayList<TeamShopListDataModel>? = null
+    //private var shop_list: ArrayList<TeamShopListDataModel>? = null
+    private var shop_list: ArrayList<TeamShopListDataModel> = ArrayList()
     private var adapter: MemberAllShopListAdapter? = null
     private var isAddressUpdating = false
     private var dialog: AccuracyIssueDialog? = null
@@ -93,6 +110,8 @@ class MemberAllShopListFragment : BaseFragment() {
         val view = inflater.inflate(R.layout.fragment_team_shop_list, container, false)
 
         initView(view)
+
+        CustomStatic.TeamUserSelect_user_id = userId
 
         isBackPressed = false
         getTeamShopList()
@@ -179,8 +198,17 @@ class MemberAllShopListFragment : BaseFragment() {
 
                                 if (response.shop_list != null && response.shop_list!!.size > 0) {
                                     //if(shopId.equals(""))
-                                        response.shop_list = response.shop_list!!.distinctBy { it.shop_id } as ArrayList<TeamShopListDataModel>
-                                    shop_list = response.shop_list
+                                    response.shop_list = response.shop_list!!.distinctBy { it.shop_id } as ArrayList<TeamShopListDataModel>
+                                    // 2.0 MemberAllShopListFragment  AppV 4.0.6 getTeamShopList function work for size 1
+                                    try{
+                                        if(response.shop_list!!.size>1){
+                                            shop_list = response.shop_list!!.reversed() as ArrayList<TeamShopListDataModel>
+                                            response.shop_list = response.shop_list!!.reversed() as ArrayList<TeamShopListDataModel>
+                                        }
+                                        shop_list = response.shop_list!!
+                                    }catch (ex:Exception){
+                                        ex.printStackTrace()
+                                    }
                                     initAdapter(response.shop_list!!)
                                 } else {
                                     if (TextUtils.isEmpty(shopId))
@@ -290,6 +318,25 @@ class MemberAllShopListFragment : BaseFragment() {
                         (mContext as DashboardActivity).loadFragment(FragType.ShopFeedbackHisFrag, true, it)
                     }
                 }
+            }, { teamShop: TeamShopListDataModel ->   // 1.0 MemberAllShopListFragment  AppV 4.0.6  IsAllowShopStatusUpdate
+                UpdateShopStatusDialog.getInstance(teamShop.shop_name!!, "Cancel", "Confirm", true,"","",
+                    object : UpdateShopStatusDialog.OnDSButtonClickListener {
+                        override fun onLeftClick() {
+
+                        }
+                        override fun onRightClick(status: String) {
+                            if(!status.equals("")){
+                                if(status.equals("Inactive")){
+                                    var selShopId = teamShop.shop_id
+                                    getFCMInfo(userId,selShopId,teamShop.shop_name)
+                                }
+                                if(status.equals("Active")){
+
+                                }
+                            }
+
+                        }
+                    }).show((mContext as DashboardActivity).supportFragmentManager, "")
             })
 
         rv_team_shop_list.adapter = adapter
@@ -402,5 +449,78 @@ class MemberAllShopListFragment : BaseFragment() {
         }
 
         getTeamShopList()
+    }
+    // 1.0 MemberAllShopListFragment  AppV 4.0.6  IsAllowShopStatusUpdate
+    private fun getFCMInfo(usrID:String,shopID:String,shopName:String){
+        try{
+            val repository = AddAttendenceRepoProvider.addAttendenceRepo()
+            BaseActivity.compositeDisposable.add(
+                repository.getReportToFCMInfo(usrID,Pref.session_token.toString())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as GetReportToFCMResponse
+
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            sendFCMNotiForShopStatus(response.device_token!!,shopID,shopName)
+                        }
+
+                    }, { error ->
+                        XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                        BaseActivity.isApiInitiated = false
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                    })
+            )
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
+
+    }
+
+    private fun sendFCMNotiForShopStatus(superVisor_fcmToken:String,shopID:String,shopName:String){
+        if (superVisor_fcmToken != "") {
+            try {
+                val jsonObject = JSONObject()
+                val notificationBody = JSONObject()
+                notificationBody.put("body","Shop : $shopName inactive by ${Pref.user_name}")
+                notificationBody.put("body1",shopID)
+                //notificationBody.put("body2",shopName)
+                //notificationBody.put("body3",Pref.user_name)
+                notificationBody.put("flag", "shop_status_update")
+                notificationBody.put("applied_user_id",Pref.user_id)
+                jsonObject.put("data", notificationBody)
+                val jsonArray = JSONArray()
+                jsonArray.put(0,superVisor_fcmToken)
+                jsonObject.put("registration_ids", jsonArray)
+                sendCustomNotification(jsonObject)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun sendCustomNotification(notification: JSONObject) {
+        val jsonObjectRequest: JsonObjectRequest = object : JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notification,
+            object : Response.Listener<JSONObject?> {
+                override fun onResponse(response: JSONObject?) {
+                    (mContext as DashboardActivity).onBackPressed()
+                }
+            },
+            object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError?) {
+
+                }
+            }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params["Authorization"] = "key=AAAAIoWfCpc:APA91bEMOPyfjsyziPC1WYJiPHjzdmTQJmAOKP0fM24iXI9BgrmyhH4uLY6Jd-6Lpjp8mvSdpSp-zm20ApTOYQ3Ean4m6LicJ5CoECS_v5u2PUAwA8E6FLsu2ZC6_WxuSYnTTLzlUi4E"
+                params["Content-Type"] = "application/json"
+                return params
+            }
+        }
+
+        MySingleton.getInstance(mContext)!!.addToRequestQueue(jsonObjectRequest)
     }
 }

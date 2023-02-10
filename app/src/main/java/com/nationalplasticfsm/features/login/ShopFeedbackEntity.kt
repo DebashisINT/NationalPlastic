@@ -21,4 +21,10 @@ class ShopFeedbackEntity {
     @ColumnInfo(name = "date_time")
     var date_time: String? = null
 
+    @ColumnInfo(name = "multi_contact_name")
+    var multi_contact_name: String? = null
+
+    @ColumnInfo(name = "multi_contact_number")
+    var multi_contact_number: String? = null
+
 }

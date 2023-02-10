@@ -20,6 +20,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.FileProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nationalplasticfsm.CustomConstants
@@ -44,13 +45,11 @@ import com.nationalplasticfsm.faceRec.tflite.SimilarityClassifier
 import com.nationalplasticfsm.faceRec.tflite.TFLiteObjectDetectionAPIModel
 import com.nationalplasticfsm.features.DecimalDigitsInputFilter
 import com.nationalplasticfsm.features.SearchLocation.locationInfoModel
+import com.nationalplasticfsm.features.addshop.api.AddShopRepositoryProvider
 import com.nationalplasticfsm.features.addshop.api.assignToPPList.AssignToPPListRepoProvider
 import com.nationalplasticfsm.features.addshop.api.assignedToDDList.AssignToDDListRepoProvider
 import com.nationalplasticfsm.features.addshop.api.typeList.TypeListRepoProvider
-import com.nationalplasticfsm.features.addshop.model.AssignedToShopListResponseModel
-import com.nationalplasticfsm.features.addshop.model.BeatListResponseModel
-import com.nationalplasticfsm.features.addshop.model.EntityResponseModel
-import com.nationalplasticfsm.features.addshop.model.PartyStatusResponseModel
+import com.nationalplasticfsm.features.addshop.model.*
 import com.nationalplasticfsm.features.addshop.model.assigntoddlist.AssignToDDListResponseModel
 import com.nationalplasticfsm.features.addshop.model.assigntopplist.AssignToPPListResponseModel
 import com.nationalplasticfsm.features.alarm.api.attendance_report_list_api.AttendanceReportRepoProvider
@@ -80,8 +79,9 @@ import com.nationalplasticfsm.features.document.model.DocumentTypeResponseModel
 import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
 import com.nationalplasticfsm.features.location.UserLocationDataEntity
-import com.nationalplasticfsm.features.location.model.ShopDurationRequestData
-import com.nationalplasticfsm.features.location.model.VisitRemarksResponseModel
+import com.nationalplasticfsm.features.location.api.LocationRepoProvider
+import com.nationalplasticfsm.features.location.model.*
+import com.nationalplasticfsm.features.location.shopRevisitStatus.ShopRevisitStatusRepositoryProvider
 import com.nationalplasticfsm.features.location.shopdurationapi.ShopDurationRepositoryProvider
 import com.nationalplasticfsm.features.login.api.LoginRepositoryProvider
 import com.nationalplasticfsm.features.login.api.alarmconfigapi.AlarmConfigRepoProvider
@@ -135,12 +135,22 @@ import org.json.JSONObject
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
 /**
  * Created by rp : 31-10-2017:16:49
  */
+//Revision History
+// 1.0   AppV 4.0.6  Suman    29/12/2022
+// 2.0 DashboardFragment  AppV 4.0.6  Suman    30/12/2022
+// 3.0 DashboardFragment  AppV 4.0.6  Saheli   06/01/2023 Addquot work
+// 4.0 DashboardFragment  AppV 4.0.6  Saheli   11/01/2023 GPS_SERVICE_STATUS & NETWORK_STATUS
+// 5.0 DashboardFragment  AppV 4.0.6  Saheli   11/01/2023 IsAllowShopStatusUpdate
+// 6.0 DashboardActivity AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
+// 7.0 DashboardFragment AppV 4.0.6  Saheli    25/01/2023  mantis 25623
+// 8.0 DashboardFragment  AppV 4.0.6 Saheli    01/02/2023  mantis 25637
 class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListener, View.OnTouchListener {
 
     var dX = 0f
@@ -232,11 +242,18 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     private lateinit var ll_dash_day_start_newD   : LinearLayout
     private lateinit var ll_dash_point_visit_newD   : LinearLayout
     private lateinit var ll_dash_day_end_newD   : LinearLayout
+    private lateinit var ll_dash_visit_attendance_newD: LinearLayout
+
+    private var shop_id = ""
+
+    private lateinit var revisit_ll: LinearLayout
 
     lateinit var tv_beatNamenew: TextView
+    lateinit var ll_beat_shop_wise: LinearLayout
 
-
-
+    lateinit var simpleDialogProcess : Dialog
+    lateinit var dialogHeaderProcess: AppCustomTextView
+    lateinit var dialog_yes_no_headerTVProcess: AppCustomTextView
 
 
     private val customProgressDialog: CustomProgressDialog by lazy {
@@ -615,6 +632,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     @SuppressLint("UseRequireInsteadOfGet", "RestrictedApi")
     private fun initView(view: View?) {
+        ll_beat_shop_wise = view!!.findViewById(R.id.ll_beat_shop_wise)
         tv_beatNamenew =  view!!.findViewById(R.id.tv_beatNamenew)
         cancel_timer = view!!.findViewById(R.id.cancel_timer)
         iv_screen_status = view!!.findViewById(R.id.iv_screen_status)
@@ -710,6 +728,18 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         ll_dash_day_start_newD    = view.findViewById(R.id.ll_dash_day_start_newD)
         ll_dash_point_visit_newD    = view.findViewById(R.id.ll_dash_point_visit_newD)
         ll_dash_day_end_newD    = view.findViewById(R.id.ll_dash_day_end_newD)
+        ll_dash_visit_attendance_newD = view.findViewById(R.id.ll_dash_visit_attendance_newD)
+        ll_dash_visit_attendance_newD.setOnClickListener(this)
+
+        simpleDialogProcess = Dialog(mContext)
+        simpleDialogProcess.setCancelable(false)
+        simpleDialogProcess.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialogProcess.setContentView(R.layout.dialog_message_progress)
+        dialogHeaderProcess = simpleDialogProcess.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        dialog_yes_no_headerTVProcess = simpleDialogProcess.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+
+        revisit_ll = view.findViewById(R.id.revisit_ll)
+        revisit_ll.setOnClickListener(this)
 
 
 //        fab.setBackgroundDrawable(getResources().getDrawable(R.drawable.custom_toolbar_back))
@@ -776,7 +806,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         })
 
         DDVisit_TV.setOnClickListener({ view ->
-            if(Pref.BatterySettingGlobal && Pref.BatterySetting ){
+        // 1.0  AppV 4.0.6 begin - new block introduced and old block commented
+            
+            /*if(Pref.BatterySettingGlobal && Pref.BatterySetting ){
                 if(AppUtils.getBatteryPercentage(mContext).toInt()<=15){
                     CustomDialog.getInstance(AppUtils.hiFirstNameText(),getString(R.string.battery_setting_message),"OK","", "0",object : OnDialogCustomClickListener {
                         override fun onOkClick() {
@@ -791,9 +823,243 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 }else{
                     pointTvClick()
                 }
-            }else{
-                pointTvClick()
             }
+            else{
+                pointTvClick()
+            }*/
+
+
+            var andrV = Build.VERSION.SDK_INT.toInt()
+            if (andrV < 26) {
+                val simpleDialogV = Dialog(mContext)
+                simpleDialogV.setCancelable(false)
+                simpleDialogV.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogV.setContentView(R.layout.dialog_message)
+                val dialogHeaderV =
+                    simpleDialogV.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                val dialog_yes_no_headerTVV =
+                    simpleDialogV.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                if (Pref.user_name != null) {
+                    dialog_yes_no_headerTVV.text = "Hi " + Pref.user_name!! + "!"
+                } else {
+                    dialog_yes_no_headerTVV.text = "Hi User" + "!"
+                }
+                dialogHeaderV.text = "Android Version is below 8.\n" +
+                        "Functionality may not be working properly."
+
+                val dialogYesV = simpleDialogV.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                dialogYesV.setOnClickListener({ view ->
+                    simpleDialogV.cancel()
+                    CustomStatic.FaceDetectionAccuracyLower = Pref.FaceDetectionAccuracyLower
+                    CustomStatic.FaceDetectionAccuracyUpper = Pref.FaceDetectionAccuracyUpper
+                    CustomStatic.IsFaceRecognitionOnEyeblink = Pref.IsFaceRecognitionOnEyeblink
+                    val stat = StatFs(Environment.getExternalStorageDirectory().path)
+                    val bytesAvailable: Long
+                    bytesAvailable =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                            stat.blockSizeLong * stat.availableBlocksLong
+                        } else {
+                            stat.blockSize.toLong() * stat.availableBlocks.toLong()
+                        }
+                    val megAvailable = bytesAvailable / (1024 * 1024)
+                    println("storage " + megAvailable.toString());
+                    XLog.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
+
+                    if (megAvailable < 1024) {
+                        val simpleDialog = Dialog(mContext)
+                        simpleDialog.setCancelable(false)
+                        simpleDialog.getWindow()!!
+                            .setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        simpleDialog.setContentView(R.layout.dialog_message)
+                        val dialogHeader =
+                            simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                        val dialog_yes_no_headerTV =
+                            simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                        if (Pref.user_name != null) {
+                            dialog_yes_no_headerTV.text = "Hi " + Pref.user_name!! + "!"
+                        } else {
+                            dialog_yes_no_headerTV.text = "Hi User" + "!"
+                        }
+                        //dialogHeader.text = "Please make sure that you have Min: 1GB. Upto 5GB(Best performance) memory available to get best login experience."
+                        dialogHeader.text =
+                            "Please note that memory available is less than 1 GB. App may not function properly. Please make available memory greater than 2 GB for better performance."
+
+                        val dialogYes =
+                            simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                        dialogYes.setOnClickListener({ view ->
+                            simpleDialog.cancel()
+
+                            if (Pref.BatterySettingGlobal && Pref.BatterySetting) {
+                                if (AppUtils.getBatteryPercentage(mContext).toInt() <= 15) {
+                                    CustomDialog.getInstance(
+                                        AppUtils.hiFirstNameText(),
+                                        getString(R.string.battery_setting_message),
+                                        "OK",
+                                        "",
+                                        "0",
+                                        object : OnDialogCustomClickListener {
+                                            override fun onOkClick() {
+                                                pointTvClick()
+                                            }
+
+                                            override fun onYesClick() {
+
+                                            }
+
+                                            override fun onNoClick() {
+                                            }
+                                        }).show(
+                                        (mContext as DashboardActivity).supportFragmentManager,
+                                        "CustomDialog"
+                                    )
+                                } else {
+                                    pointTvClick()
+                                }
+                            } else {
+                                pointTvClick()
+                            }
+
+                        })
+                        simpleDialog.show()
+                    } else {
+                        if (Pref.BatterySettingGlobal && Pref.BatterySetting) {
+                            if (AppUtils.getBatteryPercentage(mContext).toInt() <= 15) {
+                                CustomDialog.getInstance(
+                                    AppUtils.hiFirstNameText(),
+                                    getString(R.string.battery_setting_message),
+                                    "OK",
+                                    "",
+                                    "0",
+                                    object : OnDialogCustomClickListener {
+                                        override fun onOkClick() {
+                                            pointTvClick()
+                                        }
+
+                                        override fun onYesClick() {
+
+                                        }
+
+                                        override fun onNoClick() {
+                                        }
+                                    }).show(
+                                    (mContext as DashboardActivity).supportFragmentManager,
+                                    "CustomDialog"
+                                )
+                            } else {
+                                pointTvClick()
+                            }
+                        } else {
+                            pointTvClick()
+                        }
+                    }
+                })
+                simpleDialogV.show()
+            }
+            else {
+                CustomStatic.FaceDetectionAccuracyLower = Pref.FaceDetectionAccuracyLower
+                CustomStatic.FaceDetectionAccuracyUpper = Pref.FaceDetectionAccuracyUpper
+                CustomStatic.IsFaceRecognitionOnEyeblink = Pref.IsFaceRecognitionOnEyeblink
+                val stat = StatFs(Environment.getExternalStorageDirectory().path)
+                val bytesAvailable: Long
+                bytesAvailable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    stat.blockSizeLong * stat.availableBlocksLong
+                } else {
+                    stat.blockSize.toLong() * stat.availableBlocks.toLong()
+                }
+                val megAvailable = bytesAvailable / (1024 * 1024)
+                println("storage " + megAvailable.toString());
+                XLog.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
+
+                if (megAvailable < 1024) {
+                    val simpleDialog = Dialog(mContext)
+                    simpleDialog.setCancelable(false)
+                    simpleDialog.getWindow()!!
+                        .setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    simpleDialog.setContentView(R.layout.dialog_message)
+                    val dialogHeader =
+                        simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                    val dialog_yes_no_headerTV =
+                        simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                    if (Pref.user_name != null) {
+                        dialog_yes_no_headerTV.text = "Hi " + Pref.user_name!! + "!"
+                    } else {
+                        dialog_yes_no_headerTV.text = "Hi User" + "!"
+                    }
+                    //dialogHeader.text = "Please make sure that you have Min: 1GB. Upto 5GB(Best performance) memory available to get best login experience."
+                    dialogHeader.text =
+                        "Please note that memory available is less than 1 GB. App may not function properly. Please make available memory greater than 2 GB for better performance."
+
+                    val dialogYes =
+                        simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                    dialogYes.setOnClickListener({ view ->
+                        simpleDialog.cancel()
+
+                        if (Pref.BatterySettingGlobal && Pref.BatterySetting) {
+                            if (AppUtils.getBatteryPercentage(mContext).toInt() <= 15) {
+                                CustomDialog.getInstance(
+                                    AppUtils.hiFirstNameText(),
+                                    getString(R.string.battery_setting_message),
+                                    "OK",
+                                    "",
+                                    "0",
+                                    object : OnDialogCustomClickListener {
+                                        override fun onOkClick() {
+                                            pointTvClick()
+                                        }
+
+                                        override fun onYesClick() {
+
+                                        }
+
+                                        override fun onNoClick() {
+                                        }
+                                    }).show(
+                                    (mContext as DashboardActivity).supportFragmentManager,
+                                    "CustomDialog"
+                                )
+                            } else {
+                                pointTvClick()
+                            }
+                        } else {
+                            pointTvClick()
+                        }
+
+                    })
+                    simpleDialog.show()
+                } else {
+                    if (Pref.BatterySettingGlobal && Pref.BatterySetting) {
+                        if (AppUtils.getBatteryPercentage(mContext).toInt() <= 15) {
+                            CustomDialog.getInstance(
+                                AppUtils.hiFirstNameText(),
+                                getString(R.string.battery_setting_message),
+                                "OK",
+                                "",
+                                "0",
+                                object : OnDialogCustomClickListener {
+                                    override fun onOkClick() {
+                                        pointTvClick()
+                                    }
+
+                                    override fun onYesClick() {
+
+                                    }
+
+                                    override fun onNoClick() {
+                                    }
+                                }).show(
+                                (mContext as DashboardActivity).supportFragmentManager,
+                                "CustomDialog"
+                            )
+                        } else {
+                            pointTvClick()
+                        }
+                    } else {
+                        pointTvClick()
+                    }
+                }
+            }
+
+            // 1.0  AppV 4.0.6 end
 
         })
 
@@ -833,6 +1099,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         tv_pick_date_range.setOnClickListener(this)
         n_shops_TV.setOnClickListener(this)
         n_time_TV.setOnClickListener(this)
+        ll_beat_shop_wise.setOnClickListener(this)
 
         fab_bot.setCustomClickListener {
             (mContext as DashboardActivity).showLanguageAlert(false)
@@ -985,6 +1252,16 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 //            no_of_shop_TV.visibility = View.GONE
         }
 
+        if (Pref.IsAttendVisitShowInDashboardGlobal) { // 2.0 DashboardFragment  AppV 4.0.6
+            if (Pref.IsAttendVisitShowInDashboard) {
+                ll_dash_visit_attendance_newD.visibility = View.VISIBLE
+            } else {
+                ll_dash_visit_attendance_newD.visibility = View.GONE
+            }
+        } else {
+            ll_dash_visit_attendance_newD.visibility = View.GONE
+        }
+
         if (Pref.IsShowVisitDurationOnAppDashboard) {
 //            time_RL.visibility = View.VISIBLE
             ll_dash_visit_duration_newD.visibility =  View.VISIBLE
@@ -1022,6 +1299,15 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 //            start_shop.visibility = View.GONE
 
         }
+        if (Pref.IsAttendVisitShowInDashboardGlobal) { // 2.0 DashboardFragment  AppV 4.0.6
+            if (Pref.IsAttendVisitShowInDashboard) {
+                ll_dash_visit_attendance_newD.visibility = View.VISIBLE
+            } else {
+                ll_dash_visit_attendance_newD.visibility = View.GONE
+            }
+        } else {
+            ll_dash_visit_attendance_newD.visibility = View.GONE
+        }
         if(Pref.IsShowDayEnd){
 
             ll_dash_day_end_newD.visibility = View.VISIBLE
@@ -1034,7 +1320,10 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 //            endRL.visibility = View.GONE
 //            enddate_TV.visibility = View.GONE
         }
-
+        if (Pref.ShowAutoRevisitInDashboard)
+            revisit_ll.visibility = View.VISIBLE
+        else
+            revisit_ll.visibility = View.GONE
 
         initAdapter()
         initBottomAdapter()
@@ -1123,6 +1412,66 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     override fun onClick(p0: View?) {
         when (p0!!.id) {
 
+            R.id.revisit_ll -> {
+                //if (!Pref.isAddAttendence) {
+                if (!Pref.isAddAttendence && false){
+                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                }
+                else {
+                    if (Pref.IsShowDayStart && !Pref.DayStartMarked) {
+                        val simpleDialog = Dialog(mContext)
+                        simpleDialog.setCancelable(false)
+                        simpleDialog.getWindow()!!
+                            .setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        simpleDialog.setContentView(R.layout.dialog_message)
+                        val dialogHeader =
+                            simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                        val dialog_yes_no_headerTV =
+                            simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                        dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()
+                        dialogHeader.text = "Please start your day..."
+                        val dialogYes =
+                            simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                        dialogYes.setOnClickListener({ view ->
+                            simpleDialog.cancel()
+                        })
+                        simpleDialog.show()
+                    }
+                    else {
+                        progress_wheel.spin()
+                        revisit_ll.isEnabled=false
+                        //checkAutoRevisit()
+
+                        var loc:Location = Location("")
+                        loc.latitude=Pref.current_latitude.toDouble()
+                        loc.longitude=Pref.current_longitude.toDouble()
+                        checkAutoRevisitManual(loc)
+
+                        Handler().postDelayed(Runnable {
+                            revisit_ll.isEnabled=true
+                            progress_wheel.stopSpinning()
+                            val simpleDialog = Dialog(mContext)
+                            simpleDialog.setCancelable(false)
+                            simpleDialog.getWindow()!!
+                                .setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                            simpleDialog.setContentView(R.layout.dialog_message)
+                            val dialogHeader =
+                                simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                            val dialog_yes_no_headerTV =
+                                simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                            dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()
+                            dialogHeader.text = "Process has been successfully completed."
+                            val dialogYes =
+                                simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                            dialogYes.setOnClickListener({ view ->
+                                simpleDialog.cancel()
+                            })
+                            simpleDialog.show()
+                        }, 5000)
+                    }
+                }
+            }
+
             R.id.fab -> {
                 if (!Pref.isAddAttendence)
                     (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
@@ -1141,6 +1490,24 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }).show((mContext as DashboardActivity).supportFragmentManager, "")
                     }*/
+
+                    var objL =  AppDatabase.getDBInstance()!!.shopActivityDao().getDurationCalculatedVisitedShopForADay(AppUtils.getCurrentDateForShopActi(), false)
+                    if(Pref.IsmanualInOutTimeRequired && objL.size>0){
+                        val simpleDialog = Dialog(mContext)
+                        simpleDialog.setCancelable(false)
+                        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        simpleDialog.setContentView(R.layout.dialog_ok)
+                        val dialogHeader = simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+                        dialogHeader.text = "Shop out location is pending."
+                        val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+                        dialogYes.setOnClickListener({ view ->
+                            simpleDialog.cancel()
+                            (context as DashboardActivity).loadFragment(FragType.PendingOutLocationFrag, false, "")
+                        })
+                        simpleDialog.show()
+
+                        return
+                    }
 
                     if(Pref.IsShowDayStart){
                         if (!Pref.DayStartMarked) {
@@ -1162,7 +1529,6 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             return
                         }
                     }
-
 
                     if (Pref.isMeetingAvailable && Pref.isShopAddEditAvailable) {
                         CustomStatic.IsCommDLeftBtnColor = true
@@ -1400,6 +1766,24 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 //(mContext as DashboardActivity).loadFragment(FragType.NewNearByShopsListFragment, false, "")
 
             }
+            R.id.ll_beat_shop_wise -> {
+                if (!Pref.isShowShopBeatWise) {
+                    (mContext as DashboardActivity).isShopFromChatBot = false
+                    if (!Pref.isServiceFeatureEnable)
+                        if(Pref.SelectedBeatIDFromAttend.equals("-1")){
+                            (mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
+                        }
+                        else if(Pref.SelectedBeatIDFromAttend.equals("0")){
+                            (mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
+                        }
+                        else{
+                            (mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, true, Pref.SelectedBeatIDFromAttend!!)
+                        }
+                    else
+                        (mContext as DashboardActivity).loadFragment(FragType.CustomerListFragment, false, "")
+                } else
+                    (mContext as DashboardActivity).loadFragment(FragType.BeatListFragment, false, "")
+            }
             R.id.attandance_ll -> {
                 (mContext as DashboardActivity).isChatBotAttendance = false
                 (mContext as DashboardActivity).loadFragment(FragType.AttendanceFragment, false, "")
@@ -1469,6 +1853,49 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
             R.id.fab_bot -> {
                 (mContext as DashboardActivity).showLanguageAlert(false)
+            }
+            R.id.ll_dash_visit_attendance_newD -> {
+                if (AppUtils.isOnline(mContext)) {
+                    if(Pref.PartyUpdateAddrMandatory){
+                        var isDDLatLongNull=true
+                        var assignDD  = AppDatabase.getDBInstance()!!.ddListDao().getAll()
+                        try{
+                            for (i in assignDD.indices) {
+                                if(!assignDD[i].dd_latitude.toString().equals("0") && !assignDD[i].dd_longitude.toString().equals("0")){
+                                    isDDLatLongNull=false
+                                }
+                            }
+                        }catch (ex:Exception){
+                            ex.printStackTrace()
+                        }
+                        if(isDDLatLongNull && assignDD.size>0){
+                            val simpleDialog = Dialog(mContext)
+                            simpleDialog.setCancelable(true)
+                            simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                            simpleDialog.setContentView(R.layout.dialog_message_broad)
+                            val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                            val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                            dialog_yes_no_headerTV.text = "Hi "+Pref.user_name!!+"!"
+                            dialogHeader.text="You must update WD Point address from Dashboard > Customer > Update Address."
+
+                            val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+                            dialogYes.setOnClickListener({ view ->
+                                Handler().postDelayed(Runnable {
+                                    (mContext as DashboardActivity).loadFragment(FragType.NearByShopsListFragment, false, "")
+                                }, 100)
+                                simpleDialog.cancel()
+                            })
+                            simpleDialog.show()
+                        }else{
+                            (mContext as DashboardActivity).loadFragment(FragType.PhotoAttendanceFragment, false, "")
+                        }
+                    }else{
+                        (mContext as DashboardActivity).loadFragment(FragType.PhotoAttendanceFragment, false, "")
+                    }
+
+                } else {
+                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                }
             }
         }
     }
@@ -1782,9 +2209,16 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             //Pref.IsBeatRouteAvailableinAttendance=true
 
             if(!Pref.SelectedBeatIDFromAttend.equals("-1") && Pref.IsBeatRouteAvailableinAttendance && Pref.isAddAttendence){
-                tv_beatNamenew.visibility = View.VISIBLE
-                tv_beatNamenew.text = "Beat Name: " +AppDatabase.getDBInstance()?.beatDao()?.getSingleItem(Pref.SelectedBeatIDFromAttend)!!.name
+                try{
+                    ll_beat_shop_wise .visibility = View.VISIBLE
+                    var beatName:String = "Beat Name: " +AppDatabase.getDBInstance()?.beatDao()?.getSingleItem(Pref.SelectedBeatIDFromAttend)!!.name
+                    var beatShopSize = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopBeatWise(Pref.SelectedBeatIDFromAttend).size
+                    tv_beatNamenew.text = "Total Shop Count : " +beatShopSize+" "+"\n"+beatName
+                }catch (ex:Exception){
+                    ex.printStackTrace()
+                }
                 return
+
                 scope.launch {
                     pjpList = loadpjpWithThread(pjpList)
                 }.invokeOnCompletion {
@@ -3856,6 +4290,16 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     Pref.IsFeedbackAvailableInShop = response.getconfigure!![i].Value == "1"
                                                 }
                                             }
+                                                 else if (response.getconfigure!![i].Key.equals("IsFeedbackMandatoryforNewShop", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsFeedbackMandatoryforNewShop = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure!![i].Key.equals("IsLoginSelfieRequired", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsLoginSelfieRequired = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
                                             else if (response.getconfigure!![i].Key.equals("IsAllowBreakageTracking", ignoreCase = true)) {
                                                 if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
                                                     Pref.IsAllowBreakageTracking = response.getconfigure!![i].Value == "1"
@@ -3901,6 +4345,20 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                 }
 
                                             }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("OfflineShopAccuracy")) {
+                                                try {
+                                                    Pref.OfflineShopAccuracy = response.getconfigure!![i].Value!!
+                                                    if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                        Pref.OfflineShopAccuracy = response.getconfigure?.get(i)?.Value!!
+                                                    }
+                                                    if (Pref.OfflineShopAccuracy.length == 0 || Pref.OfflineShopAccuracy.equals("")) {
+                                                        Pref.OfflineShopAccuracy = "700"
+                                                    }
+                                                } catch (e: Exception) {
+                                                    e.printStackTrace()
+                                                    Pref.OfflineShopAccuracy = "700"
+                                                }
+                                            }
                                             else if (response.getconfigure?.get(i)?.Key.equals("GPSNetworkIntervalMins", ignoreCase = true)) {
                                                 try{
                                                     Pref.GPSNetworkIntervalMins =response.getconfigure!![i].Value!!
@@ -3909,8 +4367,124 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     Pref.GPSNetworkIntervalMins = "0"
                                                 }
                                             }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("ShowAutoRevisitInAppMenu", ignoreCase = true)) {
+                                                Pref.ShowAutoRevisitInAppMenu = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.ShowAutoRevisitInAppMenu = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure!![i].Key.equals("IsJointVisitEnable", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsJointVisitEnable = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure!![i].Key.equals("IsShowAllEmployeeforJointVisit", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowAllEmployeeforJointVisit = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure!![i].Key.equals("IsAllowClickForVisit", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsAllowClickForVisit = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsShowTypeInRegistration", ignoreCase = true)) {
+                                                Pref.IsShowTypeInRegistration = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowTypeInRegistration = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("UpdateUserName", ignoreCase = true)) {
+                                                Pref.UpdateUserName =
+                                                    response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.UpdateUserName =
+                                                        response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsAllowClickForPhotoRegister", ignoreCase = true)) {
+                                                Pref.IsAllowClickForPhotoRegister =
+                                                    response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsAllowClickForPhotoRegister =
+                                                        response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }else if (response.getconfigure?.get(i)?.Key.equals("IsFaceRecognitionOnEyeblink", ignoreCase = true)) {
+                                                Pref.IsFaceRecognitionOnEyeblink = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsFaceRecognitionOnEyeblink = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                                CustomStatic.IsFaceRecognitionOnEyeblink = Pref.IsFaceRecognitionOnEyeblink
+                                            }else if (response.getconfigure!![i].Key.equals("PartyUpdateAddrMandatory", ignoreCase = true)) { // 2.0 AppV 4.0.6
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.PartyUpdateAddrMandatory = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }else if (response.getconfigure?.get(i)?.Key.equals("IsAttendVisitShowInDashboard", ignoreCase = true)) { // 2.0 DashboardFragment  AppV 4.0.6
+                                                Pref.IsAttendVisitShowInDashboard = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsAttendVisitShowInDashboard = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }else if (response.getconfigure?.get(i)?.Key.equals("CommonAINotification", ignoreCase = true)) {// 1.0  AppV 4.0.6 LocationFuzedService
+                                                Pref.CommonAINotification = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.CommonAINotification = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsIMEICheck", ignoreCase = true)) {//1.0 LoginActivity  AppV 4.0.6
+                                                Pref.IsIMEICheck = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsIMEICheck = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("Show_App_Logout_Notification", ignoreCase = true)) {//2.0 LocationFuzedService  AppV 4.0.6
+                                                Pref.Show_App_Logout_Notification = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.Show_App_Logout_Notification = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }else if (response.getconfigure!![i].Key.equals("AllowProfileUpdate", ignoreCase = true)) {// 1.0 MyProfileFragment  AppV 4.0.6
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.AllowProfileUpdate = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }else if (response.getconfigure?.get(i)?.Key.equals("ShowAutoRevisitInDashboard", ignoreCase = true)) {
+                                                Pref.ShowAutoRevisitInDashboard = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.ShowAutoRevisitInDashboard = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            // 3.0  AppV 4.0.6  DashboardActivity
+                                            else if (response.getconfigure!![i].Key.equals("ShowTotalVisitAppMenu", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.ShowTotalVisitAppMenu = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
 
-
+                                            else if (response.getconfigure!![i].Key.equals("IsMultipleContactEnableforShop", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsMultipleContactEnableforShop = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure!![i].Key.equals("IsContactPersonSelectionRequiredinRevisit", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsContactPersonSelectionRequiredinRevisit = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                        // 3.0  AppV 4.0.6 Addquot work
+                                            else if (response.getconfigure!![i].Key.equals("IsContactPersonRequiredinQuotation", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsContactPersonRequiredinQuotation = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            // 5.0 DashboardFragment  AppV 4.0.6  IsAllowShopStatusUpdate
+                                            else if (response.getconfigure!![i].Key.equals("IsAllowShopStatusUpdate", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsAllowShopStatusUpdate = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
+                                            else if (response.getconfigure!![i].Key.equals("IsShowBeatInMenu", ignoreCase = true)) {
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowBeatInMenu = response.getconfigure!![i].Value == "1"
+                                                }
+                                            }
                                         }
                                     }
                                 } catch (e: Exception) {
@@ -4186,10 +4760,72 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 if (configResponse.IsMultipleImagesRequired != null)
                                     Pref.IsMultipleImagesRequired = configResponse.IsMultipleImagesRequired!!
 
+                                if (configResponse.IsALLDDRequiredforAttendance != null)
+                                    Pref.IsALLDDRequiredforAttendance = configResponse.IsALLDDRequiredforAttendance!!
+
+                                if (configResponse.IsShowNewOrderCart != null)
+                                    Pref.IsShowNewOrderCart = configResponse.IsShowNewOrderCart!!
+
+                                if (configResponse.IsmanualInOutTimeRequired != null)
+                                    Pref.IsmanualInOutTimeRequired = configResponse.IsmanualInOutTimeRequired!!
+
+                                if (!TextUtils.isEmpty(configResponse.surveytext))
+                                    Pref.surveytext = configResponse.surveytext
+
+                                if (configResponse.IsDiscountInOrder != null)
+                                    Pref.IsDiscountInOrder = configResponse.IsDiscountInOrder!!
+
+                                if (configResponse.IsViewMRPInOrder != null)
+                                    Pref.IsViewMRPInOrder = configResponse.IsViewMRPInOrder!!
+                                
+                                if (configResponse.IsShowStateInTeam != null)
+                                    Pref.IsShowStateInTeam = configResponse.IsShowStateInTeam!!
+
+                                if (configResponse.IsShowBranchInTeam != null)
+                                    Pref.IsShowBranchInTeam = configResponse.IsShowBranchInTeam!!
+
+                                if (configResponse.IsShowDesignationInTeam != null)
+                                    Pref.IsShowDesignationInTeam = configResponse.IsShowDesignationInTeam!!
+
+                                if (configResponse.IsShowInPortalManualPhotoRegn != null)
+                                    Pref.IsShowInPortalManualPhotoRegn = configResponse.IsShowInPortalManualPhotoRegn!!
+
+                                if (configResponse.IsAttendVisitShowInDashboard != null) // 2.0 DashboardFragment  AppV 4.0.6
+                                    Pref.IsAttendVisitShowInDashboardGlobal = configResponse.IsAttendVisitShowInDashboard!!
+
+                                if (configResponse.Show_App_Logout_Notification != null)//2.0 LocationFuzedService  AppV 4.0.6
+                                    Pref.Show_App_Logout_Notification_Global = configResponse.Show_App_Logout_Notification!!
+
+                                if (configResponse.IsBeatAvailable != null)
+                                    Pref.IsBeatAvailable = configResponse.IsBeatAvailable!!
+
+                                // 7.0 AppV 4.0.6 mantis 25623
+                                if (configResponse.IsDiscountEditableInOrder != null)
+                                    Pref.IsDiscountEditableInOrder = configResponse.IsDiscountEditableInOrder!!
+
+                                // 6.0 LoginActivity AppV 4.0.6 mantis 25607
+                                if (configResponse.isExpenseFeatureAvailable != null)
+                                    Pref.isExpenseFeatureAvailable = configResponse.isExpenseFeatureAvailable!!
+
+                                // 7.0 LoginActivity AppV 4.0.6 mantis 25637
+                                if (configResponse.IsRouteStartFromAttendance != null)
+                                    Pref.IsRouteStartFromAttendance = configResponse.IsRouteStartFromAttendance!!
+
+
                             }
                             BaseActivity.isApiInitiated = false
                             /*API_Optimization 02-03-2022*/
                             //checkToCallAlarmConfigApi()
+                            
+                            if(Pref.IsBeatAvailable==false){
+                                Pref.IsAllBeatAvailableforParty = false
+                                Pref.IsBeatRouteAvailableinAttendance = false
+                                Pref.IsBeatRouteReportAvailableinTeam = false
+                                Pref.isShowShopBeatWise = false
+                                Pref.isShowBeatGroup = false
+                                Pref.IsShowBeatInMenu = false
+                            }
+                            
                             checkToCallAssignedDDListApi()   // calling instead of checkToCallAlarmConfigApi()
 
                         }, { error ->
@@ -5222,6 +5858,17 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 //            start_shop.visibility = View.GONE
 
         }
+
+        if (Pref.IsAttendVisitShowInDashboardGlobal) { // 2.0 DashboardFragment  AppV 4.0.6
+            if (Pref.IsAttendVisitShowInDashboard) {
+                ll_dash_visit_attendance_newD.visibility = View.VISIBLE
+            } else {
+                ll_dash_visit_attendance_newD.visibility = View.GONE
+            }
+        } else {
+            ll_dash_visit_attendance_newD.visibility = View.GONE
+        }
+
         if(Pref.IsShowDayEnd){
             ll_dash_day_end_newD.visibility = View.VISIBLE
 //            endRL.visibility = View.VISIBLE
@@ -5267,6 +5914,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             attandance_ll.visibility = View.VISIBLE
         else
             attandance_ll.visibility = View.GONE
+
+        if (Pref.ShowAutoRevisitInDashboard)
+            revisit_ll.visibility = View.VISIBLE
+        else
+            revisit_ll.visibility = View.GONE
 
         initAdapter()
         initBottomAdapter()
@@ -6217,6 +6869,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
                                                     dialogYes.setOnClickListener({ view ->
                                                         simpleDialog.cancel()
+                                                        callShopActivityApiForActivityCheck()
                                                     })
                                                     simpleDialog.show()
 //                                                    (mContext as DashboardActivity).showSnackMessage("Thanks! Updated Successfully.")
@@ -6228,7 +6881,15 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     isCameraDayStart = false
                                                     initPermissionCheck()
                                                 } else {
-                                                    // 27-08-21 For ITC
+                                                    // 3.0 DashboardFragment  AppV 4.0.6 GPS_SERVICE_STATUS & NETWORK_STATUS
+                                                    Handler().postDelayed(Runnable {
+                                                        //callShopDurationApi()
+                                                        //syncShopListOnebyOne()
+                                                        syncGpsNetData()
+                                                    }, 350)
+
+                                                    // 3.0 DashboardFragment  AppV 4.0.6 GPS_SERVICE_STATUS & NETWORK_STATUS off old code
+                                                  /*  // 27-08-21 For ITC
                                                     val simpleDialog = Dialog(mContext)
                                                     simpleDialog.setCancelable(false)
                                                     simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -6247,7 +6908,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     simpleDialog.show()
 //                                                    (mContext as DashboardActivity).showSnackMessage("Thanks! Updated Successfully.")
                                                     voiceAttendanceMsg("Hi, your day end marked successfully.")
-                                                   /* Handler(Looper.getMainLooper()).postDelayed({
+                                                   *//* Handler(Looper.getMainLooper()).postDelayed({
                                                         (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
                                                     }, 2000)*/
                                                 }
@@ -6277,6 +6938,135 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             progress_wheel.stopSpinning()
         }
 
+    }
+
+    private fun callShopActivityApiForActivityCheck() {
+        XLog.d("DashboardFragment callShopActivityApiForActivityCheck started " + AppUtils.getCurrentDateTime())
+        dialogHeaderProcess.text = "Syncing Important Data. Please wait..."
+        val dialogYes = simpleDialogProcess.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        val progD = simpleDialogProcess.findViewById(R.id.progress_wheel_progress) as ProgressWheel
+        progD.spin()
+        simpleDialogProcess.show()
+
+        var shopActivity = ShopActivityRequest()
+        shopActivity.user_id = Pref.user_id
+        shopActivity.session_token = Pref.session_token
+        shopActivity.date_span = "30"
+        shopActivity.from_date = ""
+        shopActivity.to_date = ""
+        val repository = ShopActivityRepositoryProvider.provideShopActivityRepository()
+
+        BaseActivity.compositeDisposable.add(
+            repository.fetchShopActivitynew(Pref.session_token!!, Pref.user_id!!, "30", "", "")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    var shopActityResponse = result as ShopActivityResponse
+                    //simpleDialogProcess.dismiss()
+                    XLog.d("DashboardFragment callShopActivityApiForActivityCheck response ${shopActityResponse.status}" + AppUtils.getCurrentDateTime())
+                    if (shopActityResponse.status == "200") {
+                        if(shopActityResponse.date_list!!.size>0){
+                            var actiList = shopActityResponse.date_list as ArrayList<ShopActivityResponseDataList>
+                            if(actiList!!.size>1){
+                                //actiList.removeAt(actiList!!.size-1)
+                                Handler().postDelayed(Runnable {
+                                    updateActivityGarbage(actiList.reversed() as ArrayList<ShopActivityResponseDataList>)
+                                }, 150)
+
+                            }
+                        }
+                    }else{
+                        endShopDuration()
+                    }
+                }, { error ->
+                    XLog.d("DashboardFragment callShopActivityApiForActivityCheck error" + AppUtils.getCurrentDateTime())
+                    simpleDialogProcess.dismiss()
+                    error.printStackTrace()
+                    endShopDuration()
+                })
+        )
+    }
+
+    fun updateActivityGarbage(listUnsync:ArrayList<ShopActivityResponseDataList>){
+        doAsync {
+
+            var dateL :ArrayList<String> = listUnsync.map { it.date } as ArrayList<String>
+            var todayDatee: LocalDate = LocalDate.now()
+            for(p in 0..15){
+                todayDatee = AppUtils.findPrevDay(todayDatee)!!
+                if(!dateL.contains(todayDatee.toString())){
+                    AppDatabase.getDBInstance()!!.shopActivityDao().updateShopForIsuploadZeroByDate(false,todayDatee.toString())
+                }
+            }
+
+            XLog.d("updateActivityGarbage DashFrag started " + AppUtils.getCurrentDateTime())
+            for(i in 0..listUnsync.size-1){
+                var shopListRoom = AppDatabase.getDBInstance()!!.shopActivityDao().getAllShopActivityByDate(listUnsync.get(i)!!.date!!.toString()) as ArrayList<String>
+                var shopListApi : ArrayList<String> = listUnsync.get(i)?.shop_list!!.map { it.shopid } as ArrayList<String>
+                if(shopListRoom.size > shopListApi.size){
+                    var unsyncedList: List<String> = shopListRoom - shopListApi
+                    for(j in 0..unsyncedList.size-1){
+                        try{
+                            XLog.d("updateActivityGarbage DashFrag marked unsync for  ${unsyncedList.get(j)} " + AppUtils.getCurrentDateTime())
+                        }catch (ex:Exception){
+                            ex.printStackTrace()
+                        }
+                        AppDatabase.getDBInstance()!!.shopActivityDao().updateShopForIsuploadZero(false,unsyncedList.get(j),listUnsync.get(i)!!.date!!.toString())
+                    }
+                }
+
+                if(i==15){
+                    break
+                }
+
+            }
+            uiThread {
+                //simpleDialogProcess.dismiss()
+                //callShopDurationApiNew()
+                XLog.d("DashboardFragment updateActivityGarbage success calling endShopDuration " + AppUtils.getCurrentDateTime())
+                endShopDuration()
+            }
+        }
+    }
+
+    fun endShopDuration(){
+        var isDurationPendingList = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDurationWise(false,false)
+        if(isDurationPendingList.size > 0){
+            for(j in 0..isDurationPendingList.size-1){
+                val endTimeStamp = System.currentTimeMillis().toString()
+                val totalMinute = AppUtils.getMinuteFromTimeStamp(isDurationPendingList[j].startTimeStamp, endTimeStamp)
+                val duration = AppUtils.getTimeFromTimeSpan(isDurationPendingList[j].startTimeStamp, endTimeStamp)
+
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateTotalMinuteForDayOfShop(isDurationPendingList[j].shopid!!, totalMinute, isDurationPendingList[j].date!!)
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateEndTimeOfShop(endTimeStamp, isDurationPendingList[j].shopid!!, isDurationPendingList[j].date!!)
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateTimeDurationForDayOfShop(isDurationPendingList[j].shopid!!, duration, isDurationPendingList[j].date!!)
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateDurationAvailable(true, isDurationPendingList[j].shopid!!, isDurationPendingList[j].date!!)
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateIsUploaded(false, isDurationPendingList[j].shopid!!, isDurationPendingList[j].date!!)
+
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateOutTime(AppUtils.getCurrentTimeWithMeredian(), isDurationPendingList[j].shopid!!, isDurationPendingList[j].date!!, isDurationPendingList[j].startTimeStamp)
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateOutLocation(LocationWizard.getNewLocationName(mContext, Pref.current_latitude.toDouble(), Pref.current_longitude.toDouble()), isDurationPendingList[j].shopid!!, isDurationPendingList[j].date!!, isDurationPendingList[j].startTimeStamp)
+
+                val netStatus = if (AppUtils.isOnline(mContext))
+                    "Online"
+                else
+                    "Offline"
+
+                val netType = if (AppUtils.getNetworkType(mContext).equals("wifi", ignoreCase = true))
+                    AppUtils.getNetworkType(mContext)
+                else
+                    "Mobile ${AppUtils.mobNetType(mContext)}"
+
+                AppDatabase.getDBInstance()!!.shopActivityDao().updateDeviceStatusReason(AppUtils.getDeviceName(), AppUtils.getAndroidVersion(),
+                    AppUtils.getBatteryPercentage(mContext).toString(), netStatus, netType.toString(), isDurationPendingList[j].shopid!!,isDurationPendingList[j].date!!)
+            }
+            progress_wheel.stopSpinning()
+            simpleDialogProcess.dismiss()
+            //callShopDurationApiNew()
+        }else{
+            progress_wheel.stopSpinning()
+            simpleDialogProcess.dismiss()
+            //callShopDurationApiNew()
+        }
     }
 
     private fun voiceAttendanceMsg(msg: String) {
@@ -7229,6 +8019,351 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         }
     }
 
+    fun checkAutoRevisitManual(location:Location) {
+        var nearestDist = 5000
+        var nearBy: Double = Pref.DistributorGPSAccuracy.toDouble()
+        var finalNearByShop: AddShopDBModelEntity = AddShopDBModelEntity()
+        val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
+        val newList = java.util.ArrayList<AddShopDBModelEntity>()
+        for (i in allShopList.indices) {
+            newList.add(allShopList[i])
+        }
+
+        var visitedForToday = AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi()) as List<ShopActivityEntity>
+        if(visitedForToday.size > 0 && newList.size>0){
+            for(i in 0..visitedForToday.size-1) {
+                var match = false
+                var pos = 0
+                for (j in 0..newList.size - 1) {
+                    if (newList.get(j).shop_id.equals(visitedForToday.get(i).shopid)) {
+                        match = true
+                        pos = j
+                        break
+                    }
+                }
+                if (match) {
+                    newList.removeAt(pos)
+                }
+            }
+        }
+
+
+        if (newList != null && newList.size > 0) {
+            for (i in 0 until newList.size) {
+                val shopLat: Double = newList[i].shopLat
+                val shopLong: Double = newList[i].shopLong
+                if (shopLat != null && shopLong != null) {
+                    val shopLocation = Location("")
+                    shopLocation.latitude = shopLat
+                    shopLocation.longitude = shopLong
+                    //val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, LocationWizard.NEARBY_RADIUS)
+                    val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(
+                        location,
+                        shopLocation,
+                        Pref.DistributorGPSAccuracy.toInt()
+                    )
+                    var dist = location.distanceTo(shopLocation).toInt()  //21-10-2021
+                    if (isShopNearby) {
+                        if ((location.distanceTo(shopLocation)) < nearBy) {
+                            nearBy = location.distanceTo(shopLocation).toDouble()
+                            finalNearByShop = newList[i]
+                        }
+                    } else {
+                        if (dist < nearestDist) {
+                            nearestDist = dist
+                        }
+                    }
+                }
+            }
+
+        } else {
+            //(mContext as DashboardActivity).showSnackMessage("No Shop Found")
+        }
+
+        if (finalNearByShop.shop_id != null && finalNearByShop.shop_id!!.length > 1) {
+            shop_id = finalNearByShop.shop_id
+            AppUtils.isAutoRevisit = true
+            revisitShop()
+            shop_id = ""
+        }else{
+            return
+        }
+
+    }
+
+    private fun revisitShop() {
+
+        XLog.e("revisitShop started")
+        try {
+            val shopActivityEntity = AppDatabase.getDBInstance()!!.shopActivityDao()
+                .getShopForDay(shop_id, AppUtils.getCurrentDateForShopActi())
+            val imageUpDateTime = AppUtils.getCurrentISODateTime()
+
+            val mAddShopDBModelEntity =
+                AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shop_id)
+
+            if (shopActivityEntity.isEmpty() || shopActivityEntity[0].date != AppUtils.getCurrentDateForShopActi()) {
+                val mShopActivityEntity = ShopActivityEntity()
+                AppUtils.changeLanguage(mContext, "en")
+                mShopActivityEntity.startTimeStamp = System.currentTimeMillis().toString()
+                changeLocale()
+                mShopActivityEntity.isUploaded = false
+                mShopActivityEntity.isVisited = true
+                mShopActivityEntity.shop_name = mAddShopDBModelEntity?.shopName
+                mShopActivityEntity.duration_spent = "00:00:00"
+                mShopActivityEntity.date = AppUtils.getCurrentDateForShopActi()
+                mShopActivityEntity.shop_address = mAddShopDBModelEntity?.address
+                mShopActivityEntity.shopid = mAddShopDBModelEntity?.shop_id
+                mShopActivityEntity.visited_date =
+                    imageUpDateTime //AppUtils.getCurrentISODateTime()
+                mShopActivityEntity.isDurationCalculated = false
+                if (mAddShopDBModelEntity?.totalVisitCount != null && mAddShopDBModelEntity?.totalVisitCount != "") {
+                    val visitCount = mAddShopDBModelEntity?.totalVisitCount?.toInt()!! + 1
+                    AppDatabase.getDBInstance()!!.addShopEntryDao()
+                        .updateTotalCount(visitCount.toString(), shop_id)
+                    AppDatabase.getDBInstance()!!.addShopEntryDao()
+                        .updateLastVisitDate(AppUtils.getCurrentDateChanged(), shop_id)
+                }
+
+                var distance = 0.0
+                var address = ""
+                XLog.e("======New Distance (At auto revisit time)=========")
+
+                val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shop_id)
+                address = if (!TextUtils.isEmpty(shop.actual_address))
+                    shop.actual_address
+                else
+                    LocationWizard.getNewLocationName(
+                        mContext,
+                        shop.shopLat.toDouble(),
+                        shop.shopLong.toDouble()
+                    )
+
+                if (Pref.isOnLeave.equals("false", ignoreCase = true)) {
+
+                    XLog.e("=====User is at work (At auto revisit time)=======")
+
+                    val locationList = AppDatabase.getDBInstance()!!.userLocationDataDao()
+                        .getLocationUpdateForADay(AppUtils.getCurrentDateForShopActi())
+
+                    //val distance = LocationWizard.getDistance(shop.shopLat, shop.shopLong, location.latitude, location.longitude)
+
+                    val userlocation = UserLocationDataEntity()
+                    userlocation.latitude = shop.shopLat.toString()
+                    userlocation.longitude = shop.shopLong.toString()
+
+                    var loc_distance = 0.0
+
+                    if (locationList != null && locationList.isNotEmpty()) {
+                        loc_distance = LocationWizard.getDistance(
+                            locationList[locationList.size - 1].latitude.toDouble(),
+                            locationList[locationList.size - 1].longitude.toDouble(),
+                            userlocation.latitude.toDouble(),
+                            userlocation.longitude.toDouble()
+                        )
+                    }
+                    val finalDistance = (Pref.tempDistance.toDouble() + loc_distance).toString()
+
+                    XLog.e("===Distance (At auto shop revisit time)===")
+                    XLog.e("Temp Distance====> " + Pref.tempDistance)
+                    XLog.e("Normal Distance====> $loc_distance")
+                    XLog.e("Total Distance====> $finalDistance")
+                    XLog.e("===========================================")
+
+                    userlocation.distance = finalDistance
+                    userlocation.locationName = LocationWizard.getNewLocationName(
+                        mContext,
+                        userlocation.latitude.toDouble(),
+                        userlocation.longitude.toDouble()
+                    )
+                    userlocation.timestamp = LocationWizard.getTimeStamp()
+                    userlocation.time = LocationWizard.getFormattedTime24Hours(true)
+                    userlocation.meridiem = LocationWizard.getMeridiem()
+                    userlocation.hour = LocationWizard.getHour()
+                    userlocation.minutes = LocationWizard.getMinute()
+                    userlocation.isUploaded = false
+                    userlocation.shops = AppDatabase.getDBInstance()!!.shopActivityDao()
+                        .getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi()).size.toString()
+                    userlocation.updateDate = AppUtils.getCurrentDateForShopActi()
+                    userlocation.updateDateTime = AppUtils.getCurrentDateTime()
+                    userlocation.network_status =
+                        if (AppUtils.isOnline(mContext)) "Online" else "Offline"
+                    userlocation.battery_percentage =
+                        AppUtils.getBatteryPercentage(mContext).toString()
+                    AppDatabase.getDBInstance()!!.userLocationDataDao().insertAll(userlocation)
+
+                    XLog.e("=====Shop auto revisit data added=======")
+
+                    Pref.totalS2SDistance =
+                        (Pref.totalS2SDistance.toDouble() + userlocation.distance.toDouble()).toString()
+
+                    distance = Pref.totalS2SDistance.toDouble()
+                    Pref.totalS2SDistance = "0.0"
+                    Pref.tempDistance = "0.0"
+                } else {
+                    XLog.e("=====User is on leave (At auto revisit time)=======")
+                    distance = 0.0
+                }
+
+                XLog.e("shop to shop distance (At auto revisit time)=====> $distance")
+
+                mShopActivityEntity.distance_travelled = distance.toString()
+                mShopActivityEntity.in_time = AppUtils.getCurrentTimeWithMeredian()
+                mShopActivityEntity.in_loc = address
+
+//                AppUtils.isShopVisited = true
+
+                Pref.isShopVisited = true
+
+                var shopAll = AppDatabase.getDBInstance()!!.shopActivityDao().getShopActivityAll()
+                mShopActivityEntity.shop_revisit_uniqKey =
+                    Pref.user_id + System.currentTimeMillis().toString()
+
+                AppDatabase.getDBInstance()!!.shopActivityDao().insertAll(mShopActivityEntity)
+
+                /*Terminate All other Shop Visit*/
+                val shopList = AppDatabase.getDBInstance()!!.shopActivityDao()
+                    .getTotalShopVisitedForADay(AppUtils.getCurrentDateForShopActi())
+                for (i in 0 until shopList.size) {
+                    if (shopList[i].shopid != mShopActivityEntity.shopid && !shopList[i].isDurationCalculated) {
+                        AppUtils.changeLanguage(mContext, "en")
+                        val endTimeStamp = System.currentTimeMillis().toString()
+                        changeLocale()
+                        val duration =
+                            AppUtils.getTimeFromTimeSpan(shopList[i].startTimeStamp, endTimeStamp)
+                        val totalMinute = AppUtils.getMinuteFromTimeStamp(
+                            shopList[i].startTimeStamp,
+                            endTimeStamp
+                        )
+                        //If duration is greater than 20 hour then stop incrementing
+                        if (totalMinute.toInt() > 20 * 60) {
+                            AppDatabase.getDBInstance()!!.shopActivityDao().updateDurationAvailable(
+                                true,
+                                shopList[i].shopid!!,
+                                AppUtils.getCurrentDateForShopActi()
+                            )
+                            return
+                        }
+                        AppDatabase.getDBInstance()!!.shopActivityDao().updateEndTimeOfShop(
+                            endTimeStamp,
+                            shopList[i].shopid!!,
+                            AppUtils.getCurrentDateForShopActi()
+                        )
+                        AppDatabase.getDBInstance()!!.shopActivityDao()
+                            .updateTotalMinuteForDayOfShop(
+                                shopList[i].shopid!!,
+                                totalMinute,
+                                AppUtils.getCurrentDateForShopActi()
+                            )
+                        AppDatabase.getDBInstance()!!.shopActivityDao()
+                            .updateTimeDurationForDayOfShop(
+                                shopList[i].shopid!!,
+                                duration,
+                                AppUtils.getCurrentDateForShopActi()
+                            )
+                        AppDatabase.getDBInstance()!!.shopActivityDao().updateDurationAvailable(
+                            true,
+                            shopList[i].shopid!!,
+                            AppUtils.getCurrentDateForShopActi()
+                        )
+                        AppDatabase.getDBInstance()!!.shopActivityDao().updateOutTime(
+                            AppUtils.getCurrentTimeWithMeredian(),
+                            shopList[i].shopid!!,
+                            AppUtils.getCurrentDateForShopActi(),
+                            shopList[i].startTimeStamp
+                        )
+                        AppDatabase.getDBInstance()!!.shopActivityDao().updateOutLocation(
+                            LocationWizard.getNewLocationName(
+                                mContext,
+                                Pref.current_latitude.toDouble(),
+                                Pref.current_longitude.toDouble()
+                            ),
+                            shopList[i].shopid!!,
+                            AppUtils.getCurrentDateForShopActi(),
+                            shopList[i].startTimeStamp
+                        )
+
+                        val netStatus = if (AppUtils.isOnline(mContext))
+                            "Online"
+                        else
+                            "Offline"
+
+                        val netType =
+                            if (AppUtils.getNetworkType(mContext).equals("wifi", ignoreCase = true))
+                                AppUtils.getNetworkType(mContext)
+                            else
+                                "Mobile ${AppUtils.mobNetType(mContext)}"
+
+                        AppDatabase.getDBInstance()!!.shopActivityDao().updateDeviceStatusReason(
+                            AppUtils.getDeviceName(),
+                            AppUtils.getAndroidVersion(),
+                            AppUtils.getBatteryPercentage(mContext).toString(),
+                            netStatus,
+                            netType.toString(),
+                            shopList[i].shopid!!,
+                            AppUtils.getCurrentDateForShopActi()
+                        )
+                    }
+                }
+            }
+
+            AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdList(shop_id)!![0].visited = true
+
+            val performance = AppDatabase.getDBInstance()!!.performanceDao()
+                .getTodaysData(AppUtils.getCurrentDateForShopActi())
+            if (performance != null) {
+                val list = AppDatabase.getDBInstance()!!.shopActivityDao()
+                    .getDurationCalculatedVisitedShopForADay(
+                        AppUtils.getCurrentDateForShopActi(),
+                        true
+                    )
+                AppDatabase.getDBInstance()!!.performanceDao().updateTotalShopVisited(
+                    list.size.toString(),
+                    AppUtils.getCurrentDateForShopActi()
+                )
+                var totalTimeSpentForADay = 0
+                for (i in list.indices) {
+                    totalTimeSpentForADay += list[i].totalMinute.toInt()
+                }
+                AppDatabase.getDBInstance()!!.performanceDao().updateTotalDuration(
+                    totalTimeSpentForADay.toString(),
+                    AppUtils.getCurrentDateForShopActi()
+                )
+            } else {
+                val list = AppDatabase.getDBInstance()!!.shopActivityDao()
+                    .getDurationCalculatedVisitedShopForADay(
+                        AppUtils.getCurrentDateForShopActi(),
+                        true
+                    )
+                val performanceEntity = PerformanceEntity()
+                performanceEntity.date = AppUtils.getCurrentDateForShopActi()
+                performanceEntity.total_shop_visited = list.size.toString()
+                var totalTimeSpentForADay = 0
+                for (i in list.indices) {
+                    totalTimeSpentForADay += list[i].totalMinute.toInt()
+                }
+                performanceEntity.total_duration_spent = totalTimeSpentForADay.toString()
+                AppDatabase.getDBInstance()!!.performanceDao().insert(performanceEntity)
+            }
+
+
+
+            AppUtils.isAutoRevisit = false
+            val intent = Intent()
+            intent.action = "AUTO_REVISIT_BROADCAST"
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+            XLog.e("revisitShop ended")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            progress_wheel.stopSpinning()
+        }
+    }
+
+    private fun changeLocale() {
+        val intent = Intent()
+        intent.action = "CHANGE_LOCALE_BROADCAST"
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+    }
 
     private fun disableScreen(){
         requireActivity().getWindow().setFlags(
@@ -7238,6 +8373,709 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun enableScreen(){
         requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+
+    // 3.0 DashboardFragment  AppV 4.0.6 GPS_SERVICE_STATUS & NETWORK_STATUS
+    private fun syncGpsNetData() {
+        val unSyncData = AppDatabase.getDBInstance()?.newGpsStatusDao()?.getNotUploaded(false)
+        if (unSyncData == null || unSyncData.isEmpty()){
+            syncShopListOnebyOne()
+        }else{
+            progress_wheel.spin()
+            val gps_net_status_list = ArrayList<NewGpsStatusEntity>()
+            unSyncData.forEach {
+                var obj :NewGpsStatusEntity = NewGpsStatusEntity()
+                obj.apply {
+                    id=it.id
+                    date_time = it.date_time
+                    gps_service_status = it.gps_service_status
+                    network_status = it.network_status
+                }
+                gps_net_status_list.add(obj)
+            }
+
+            var sendObj : GpsNetInputModel = GpsNetInputModel()
+            sendObj.user_id = Pref.user_id!!
+            sendObj.session_token = Pref.session_token!!
+            sendObj.gps_net_status_list = gps_net_status_list
+
+            val repository = LocationRepoProvider.provideLocationRepository()
+            BaseActivity.compositeDisposable.add(
+                repository.gpsNetInfo(sendObj)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as BaseResponse
+                        progress_wheel.stopSpinning()
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            doAsync {
+                                unSyncData.forEach {
+                                    AppDatabase.getDBInstance()?.newGpsStatusDao()?.updateIsUploadedAccordingToId(true, it.id)
+                                }
+                                uiThread {
+                                    syncShopListOnebyOne()
+                                }
+                            }
+                        }else{
+                            syncShopListOnebyOne()
+                        }
+                    }, { error ->
+                        if (error == null) {
+                            XLog.d("App Info : ERROR : " + "UNEXPECTED ERROR IN LOCATION ACTIVITY API")
+                        } else {
+                            XLog.d("App Info : ERROR : " + error.localizedMessage)
+                            error.printStackTrace()
+                        }
+                        progress_wheel.stopSpinning()
+                        syncShopListOnebyOne()
+                    })
+            )
+        }
+
+    }
+
+    private fun syncShopListOnebyOne() {
+        dialogHeaderProcess.text = "Syncing Important Data. Please wait..."
+        val dialogYes = simpleDialogProcess.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        val progD = simpleDialogProcess.findViewById(R.id.progress_wheel_progress) as ProgressWheel
+        progD.spin()
+        simpleDialogProcess.show()
+
+        val shopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getUnSyncedShops(false)
+        if (shopList.isEmpty() || shopList.size==0){
+            //callShopDurationApiOneByOne()
+            callShopDurationApi()
+        }
+        else{
+            val addShopData = AddShopRequestData()
+            val mAddShopDBModelEntity = shopList[0]
+            addShopData.session_token = Pref.session_token
+            addShopData.address = mAddShopDBModelEntity.address
+            addShopData.owner_contact_no = mAddShopDBModelEntity.ownerContactNumber
+            addShopData.owner_email = mAddShopDBModelEntity.ownerEmailId
+            addShopData.owner_name = mAddShopDBModelEntity.ownerName
+            addShopData.pin_code = mAddShopDBModelEntity.pinCode
+            addShopData.shop_lat = mAddShopDBModelEntity.shopLat.toString()
+            addShopData.shop_long = mAddShopDBModelEntity.shopLong.toString()
+            addShopData.shop_name = mAddShopDBModelEntity.shopName.toString()
+            addShopData.type = mAddShopDBModelEntity.type.toString()
+            addShopData.shop_id = mAddShopDBModelEntity.shop_id
+            addShopData.user_id = Pref.user_id
+            addShopData.assigned_to_dd_id = mAddShopDBModelEntity.assigned_to_dd_id
+            addShopData.assigned_to_pp_id = mAddShopDBModelEntity.assigned_to_pp_id
+            addShopData.added_date = mAddShopDBModelEntity.added_date
+            addShopData.amount = mAddShopDBModelEntity.amount
+            addShopData.area_id = mAddShopDBModelEntity.area_id
+            addShopData.model_id = mAddShopDBModelEntity.model_id
+            addShopData.primary_app_id = mAddShopDBModelEntity.primary_app_id
+            addShopData.secondary_app_id = mAddShopDBModelEntity.secondary_app_id
+            addShopData.lead_id = mAddShopDBModelEntity.lead_id
+            addShopData.stage_id = mAddShopDBModelEntity.stage_id
+            addShopData.funnel_stage_id = mAddShopDBModelEntity.funnel_stage_id
+            addShopData.booking_amount = mAddShopDBModelEntity.booking_amount
+            addShopData.type_id = mAddShopDBModelEntity.type_id
+
+            addShopData.director_name = mAddShopDBModelEntity.director_name
+            addShopData.key_person_name = mAddShopDBModelEntity.person_name
+            addShopData.phone_no = mAddShopDBModelEntity.person_no
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.family_member_dob))
+                addShopData.family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.family_member_dob)
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_dob))
+                addShopData.addtional_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_dob)
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.add_doa))
+                addShopData.addtional_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.add_doa)
+
+            addShopData.specialization = mAddShopDBModelEntity.specialization
+            addShopData.category = mAddShopDBModelEntity.category
+            addShopData.doc_address = mAddShopDBModelEntity.doc_address
+            addShopData.doc_pincode = mAddShopDBModelEntity.doc_pincode
+            addShopData.is_chamber_same_headquarter = mAddShopDBModelEntity.chamber_status.toString()
+            addShopData.is_chamber_same_headquarter_remarks = mAddShopDBModelEntity.remarks
+            addShopData.chemist_name = mAddShopDBModelEntity.chemist_name
+            addShopData.chemist_address = mAddShopDBModelEntity.chemist_address
+            addShopData.chemist_pincode = mAddShopDBModelEntity.chemist_pincode
+            addShopData.assistant_contact_no = mAddShopDBModelEntity.assistant_no
+            addShopData.average_patient_per_day = mAddShopDBModelEntity.patient_count
+            addShopData.assistant_name = mAddShopDBModelEntity.assistant_name
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.doc_family_dob))
+                addShopData.doc_family_member_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.doc_family_dob)
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_dob))
+                addShopData.assistant_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_dob)
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_doa))
+                addShopData.assistant_doa = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_doa)
+
+            if (!TextUtils.isEmpty(mAddShopDBModelEntity.assistant_family_dob))
+                addShopData.assistant_family_dob = AppUtils.changeAttendanceDateFormatToCurrent(mAddShopDBModelEntity.assistant_family_dob)
+
+            addShopData.entity_id = mAddShopDBModelEntity.entity_id
+            addShopData.party_status_id = mAddShopDBModelEntity.party_status_id
+            addShopData.retailer_id = mAddShopDBModelEntity.retailer_id
+            addShopData.dealer_id = mAddShopDBModelEntity.dealer_id
+            addShopData.beat_id = mAddShopDBModelEntity.beat_id
+            addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
+            addShopData.actual_address = mAddShopDBModelEntity.actual_address
+
+            var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
+            addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+
+            // duplicate shop api call
+            addShopData.isShopDuplicate=mAddShopDBModelEntity.isShopDuplicate
+
+
+            Handler().postDelayed(Runnable {
+                callAddShopApi(addShopData, mAddShopDBModelEntity.shopImageLocalPath, shopList, true,
+                    mAddShopDBModelEntity.doc_degree)
+            }, 100)
+
+
+        }
+    }
+
+    fun callAddShopApi(addShop: AddShopRequestData, shop_imgPath: String?, shopList: MutableList<AddShopDBModelEntity>?,
+                       isFromInitView: Boolean, degree_imgPath: String?) {
+        if (!AppUtils.isOnline(mContext)) {
+            (this as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+            return
+        }
+        val index = addShop.shop_id!!.indexOf("_")
+        if (shop_imgPath != null)
+            XLog.d("shop image path=======> $shop_imgPath")
+
+        if (degree_imgPath != null)
+            XLog.d("doctor degree image path=======> $degree_imgPath")
+
+        if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
+            val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
+            BaseActivity.compositeDisposable.add(
+                repository.addShop(addShop)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val addShopResult = result as AddShopResponse
+                        XLog.d("syncShopFromShopList : BaseActivity " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+
+                        when (addShopResult.status) {
+                            NetworkConstant.SUCCESS -> {
+                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+
+                                syncShopListOnebyOne()
+                            }
+                            NetworkConstant.DUPLICATE_SHOP_ID -> {
+                                XLog.d("DuplicateShop : BaseActivity " + ", SHOP: " + addShop.shop_name)
+                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+
+
+                                if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
+                                    AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
+                                }
+                                doAsync {
+                                    uiThread {
+                                        syncShopListOnebyOne()
+                                    }
+                                }
+
+                            }
+                            else -> {
+                                (this as DashboardActivity).showSnackMessage(addShopResult.message!!)
+                            }
+                        }
+                    }, { error ->
+                        error.printStackTrace()
+                        (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                        syncShopListOnebyOne()
+                        if (error != null)
+                            XLog.d("syncShopFromShopList : BaseActivity " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                    })
+            )
+        }
+        else {
+            val repository = AddShopRepositoryProvider.provideAddShopRepository()
+            BaseActivity.compositeDisposable.add(
+                repository.addShopWithImage(addShop, shop_imgPath, degree_imgPath, mContext)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val addShopResult = result as AddShopResponse
+                        XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+
+                        when (addShopResult.status) {
+                            NetworkConstant.SUCCESS -> {
+                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+
+
+                                doAsync {
+                                    uiThread {
+                                        syncShopListOnebyOne()
+                                    }
+                                }
+                            }
+                            NetworkConstant.DUPLICATE_SHOP_ID -> {
+                                XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
+
+                                if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
+                                    AppDatabase.getDBInstance()!!.addShopEntryDao().deleteShopById(addShop.shop_id)
+                                    AppDatabase.getDBInstance()!!.shopActivityDao().deleteShopByIdAndDate(addShop.shop_id!!, AppUtils.getCurrentDateForShopActi())
+                                }
+                                doAsync {
+                                    uiThread {
+                                        syncShopListOnebyOne()
+                                    }
+                                }
+
+                            }
+                            else -> {
+                                (this as DashboardActivity).showSnackMessage(addShopResult.message!!)
+                            }
+                        }
+                    }, { error ->
+                        error.printStackTrace()
+                        (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                        syncShopListOnebyOne()
+                        if (error != null)
+                            XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                    })
+            )
+        }
+    }
+
+    private fun callShopDurationApi() {
+        XLog.e("visit_tag : callShopDurationApi")
+        //dialogHeaderProcess.text = "Syncing Important Data. Please wait..."
+        //val dialogYes = simpleDialogProcess.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        //simpleDialogProcess.show()
+
+        var shopId = ""
+        var previousShopVisitDateNumber = 0L
+        var shopVisitDate = ""
+        var i = 0
+
+        if (Pref.user_id.isNullOrEmpty() || BaseActivity.isShopActivityUpdating){
+            simpleDialogProcess.dismiss()
+            (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+        }else{
+            val syncedShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().getUnSyncedShops(true)
+            if (syncedShopList.isEmpty()){
+                simpleDialogProcess.dismiss()
+                (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+            }else{
+                BaseActivity.isShopActivityUpdating = true
+
+                val shopDataList: MutableList<ShopDurationRequestData> = ArrayList()
+                val syncedShop = ArrayList<ShopActivityEntity>()
+
+                val revisitStatusList : MutableList<ShopRevisitStatusRequestData> = ArrayList()
+
+                doAsync {
+
+                    var counterShopList:Int = 0
+
+                    for (k in 0 until syncedShopList.size) {
+
+                        if (!Pref.isMultipleVisitEnable) {
+                            /* Get shop activity that has completed time duration calculation*/
+                            val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().durationAvailableForShop(syncedShopList[k].shop_id, true, false)
+
+                            if (shopActivity == null) {
+                                val shop_activity = AppDatabase.getDBInstance()!!.shopActivityDao().durationAvailableForTodayShop(syncedShopList[k].shop_id,true, true,
+                                    AppUtils.getCurrentDateForShopActi())
+                                if (shop_activity != null)
+                                    syncedShop.add(shop_activity)
+
+                            } else {
+                                val shopDurationData = ShopDurationRequestData()
+                                shopDurationData.shop_id = shopActivity.shopid
+                                shopDurationData.spent_duration = shopActivity.duration_spent
+                                shopDurationData.visited_date = shopActivity.visited_date
+                                shopDurationData.visited_time = shopActivity.visited_date
+                                if (AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopActivity.shopid) != null)
+                                    shopDurationData.total_visit_count = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopActivity.shopid).totalVisitCount
+                                else
+                                    shopDurationData.total_visit_count = "1"
+
+                                if (TextUtils.isEmpty(shopActivity.distance_travelled))
+                                    shopActivity.distance_travelled = "0.0"
+                                shopDurationData.distance_travelled = shopActivity.distance_travelled
+
+                                val currentShopVisitDateNumber = AppUtils.getTimeStampFromDateOnly(shopActivity.date!!)
+
+                                if (shopId == shopActivity.shopid && previousShopVisitDateNumber == currentShopVisitDateNumber)
+                                    continue
+
+                                shopId = shopActivity.shopid!!
+                                shopVisitDate = shopActivity.date!!
+                                previousShopVisitDateNumber = currentShopVisitDateNumber
+
+                                if (!TextUtils.isEmpty(shopActivity.feedback))
+                                    shopDurationData.feedback = shopActivity.feedback
+                                else
+                                    shopDurationData.feedback = ""
+
+                                shopDurationData.isFirstShopVisited = shopActivity.isFirstShopVisited
+                                shopDurationData.distanceFromHomeLoc = shopActivity.distance_from_home_loc
+
+                                shopDurationData.next_visit_date = shopActivity.next_visit_date
+
+                                if (!TextUtils.isEmpty(shopActivity.early_revisit_reason))
+                                    shopDurationData.early_revisit_reason = shopActivity.early_revisit_reason
+                                else
+                                    shopDurationData.early_revisit_reason = ""
+
+                                shopDurationData.device_model = shopActivity.device_model
+                                shopDurationData.android_version = shopActivity.android_version
+                                shopDurationData.battery = shopActivity.battery
+                                shopDurationData.net_status = shopActivity.net_status
+                                shopDurationData.net_type = shopActivity.net_type
+                                shopDurationData.in_time = shopActivity.in_time
+                                shopDurationData.out_time = shopActivity.out_time
+                                shopDurationData.start_timestamp = shopActivity.startTimeStamp
+                                shopDurationData.in_location = shopActivity.in_loc
+                                shopDurationData.out_location = shopActivity.out_loc
+                                try{
+                                    shopDurationData.shop_revisit_uniqKey = shopActivity.shop_revisit_uniqKey!!
+                                }catch (ex:Exception){
+                                    ex.printStackTrace()
+                                    shopDurationData.shop_revisit_uniqKey =Pref.user_id + System.currentTimeMillis().toString()
+                                }
+
+                                //duration garbage fix
+                                try{
+                                    if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                                    {
+                                        shopDurationData.spent_duration="00:00:10"
+                                    }
+                                }catch (ex:Exception){
+                                    shopDurationData.spent_duration="00:00:10"
+                                }
+                                  //New shop Create issue
+                                shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+                                // 6.0 DashboardFragment AppV 4.0.6  multiple contact Data added on Api called
+                                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
+                                shopDataList.add(shopDurationData)
+
+                                //////////////////////////
+                                var revisitStatusObj= ShopRevisitStatusRequestData()
+                                var data=AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.getSingleItem(shopDurationData.shop_revisit_uniqKey.toString())
+                                if(data != null ){
+                                    revisitStatusObj.shop_id=data.shop_id
+                                    revisitStatusObj.order_status=data.order_status
+                                    revisitStatusObj.order_remarks=data.order_remarks
+                                    revisitStatusObj.shop_revisit_uniqKey=data.shop_revisit_uniqKey
+                                    revisitStatusList.add(revisitStatusObj)
+                                }
+
+                                counterShopList++
+                                if(counterShopList > 300){
+                                    //break
+                                }
+
+                            }
+
+                            try{
+                                XLog.d("====SYNC VISITED SHOP DATA (Dashboard)====")
+                                XLog.d("SHOP ID======> " + shopDurationData!!.shop_id)
+                                XLog.d("SPENT DURATION======> " + shopDurationData!!.spent_duration)
+                                XLog.d("VISIT DATE=========> " + shopDurationData?.visited_date)
+                                XLog.d("VISIT DATE TIME==========> " + shopDurationData?.visited_date)
+                                XLog.d("TOTAL VISIT COUNT========> " + shopDurationData?.total_visit_count)
+                                XLog.d("DISTANCE TRAVELLED========> " + shopDurationData?.distance_travelled)
+                                XLog.d("FEEDBACK========> " + shopDurationData?.feedback)
+                                XLog.d("isFirstShopVisited========> " + shopDurationData?.isFirstShopVisited)
+                                XLog.d("distanceFromHomeLoc========> " + shopDurationData?.distanceFromHomeLoc)
+                                XLog.d("next_visit_date========> " + shopDurationData?.next_visit_date)
+                                XLog.d("device_model========> " + shopDurationData?.device_model)
+                                XLog.d("android_version========> " + shopDurationData?.android_version)
+                                XLog.d("battery========> " + shopDurationData?.battery)
+                                XLog.d("net_status========> " + shopDurationData?.net_status)
+                                XLog.d("net_type========> " + shopDurationData?.net_type)
+                                XLog.d("in_time========> " + shopDurationData?.in_time)
+                                XLog.d("out_time========> " + shopDurationData?.out_time)
+                                XLog.d("start_timestamp========> " + shopDurationData?.start_timestamp)
+                                XLog.d("in_location========> " + shopDurationData?.in_location)
+                                XLog.d("out_location========> " + shopDurationData?.out_location)
+                                XLog.d("========================================================")
+                            }catch (ex:Exception){
+
+                            }
+
+
+                        }
+                        else {
+                            val shopActivity = AppDatabase.getDBInstance()!!.shopActivityDao().durationAvailableForShopList(syncedShopList[k].shop_id, true,
+                                false)
+
+                            shopActivity?.forEach {
+                                val shopDurationData = ShopDurationRequestData()
+                                shopDurationData.shop_id = it.shopid
+                                shopDurationData.spent_duration = it.duration_spent
+                                shopDurationData.visited_date = it.visited_date
+                                shopDurationData.visited_time = it.visited_date
+                                if (AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(it.shopid) != null)
+                                    shopDurationData.total_visit_count = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(it.shopid).totalVisitCount
+                                else
+                                    shopDurationData.total_visit_count = "1"
+
+                                if (TextUtils.isEmpty(it.distance_travelled))
+                                    it.distance_travelled = "0.0"
+                                shopDurationData.distance_travelled = it.distance_travelled
+
+                                if (!TextUtils.isEmpty(it.feedback))
+                                    shopDurationData.feedback = it.feedback
+                                else
+                                    shopDurationData.feedback = ""
+
+                                shopDurationData.isFirstShopVisited = it.isFirstShopVisited
+                                shopDurationData.distanceFromHomeLoc = it.distance_from_home_loc
+
+                                shopDurationData.next_visit_date = it.next_visit_date
+
+                                if (!TextUtils.isEmpty(it.early_revisit_reason))
+                                    shopDurationData.early_revisit_reason = it.early_revisit_reason
+                                else
+                                    shopDurationData.early_revisit_reason = ""
+
+                                shopDurationData.device_model = it.device_model
+                                shopDurationData.android_version = it.android_version
+                                shopDurationData.battery = it.battery
+                                shopDurationData.net_status = it.net_status
+                                shopDurationData.net_type = it.net_type
+                                shopDurationData.in_time = it.in_time
+                                shopDurationData.out_time = it.out_time
+                                shopDurationData.start_timestamp = it.startTimeStamp
+                                shopDurationData.in_location = it.in_loc
+                                shopDurationData.out_location = it.out_loc
+                                shopDurationData.shop_revisit_uniqKey=it.shop_revisit_uniqKey!!
+
+                                //duration garbage fix
+                                try{
+                                    if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
+                                    {
+                                        shopDurationData.spent_duration="00:00:10"
+                                    }
+                                }catch (ex:Exception){
+                                    shopDurationData.spent_duration="00:00:10"
+                                }
+                                //New shop Create issue
+                                shopDurationData.isnewShop = it.isnewShop!!
+
+                                // 6.0 DashboardFragment AppV 4.0.6  multiple contact Data added on Api called
+                                shopDurationData.multi_contact_name = it.multi_contact_name
+                                shopDurationData.multi_contact_number = it.multi_contact_number
+
+                                shopDataList.add(shopDurationData)
+
+                                //////////////////////////
+                                var revisitStatusObj= ShopRevisitStatusRequestData()
+                                var data=AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.getSingleItem(shopDurationData.shop_revisit_uniqKey.toString())
+                                if(data != null ){
+                                    revisitStatusObj.shop_id=data.shop_id
+                                    revisitStatusObj.order_status=data.order_status
+                                    revisitStatusObj.order_remarks=data.order_remarks
+                                    revisitStatusObj.shop_revisit_uniqKey=data.shop_revisit_uniqKey
+                                    revisitStatusList.add(revisitStatusObj)
+                                }
+
+                            }
+                        }
+                    }
+
+                    uiThread {
+                        if (shopDataList.isEmpty()) {
+                            BaseActivity.isShopActivityUpdating = false
+                            simpleDialogProcess.dismiss()
+                            if(Pref.isAppInfoEnable){
+                                callAppInfoApi()
+                            }else{
+                                (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+                            }
+                            //(mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+                        } else {
+                            val hashSet = HashSet<ShopDurationRequestData>()
+                            val newShopList = ArrayList<ShopDurationRequestData>()
+
+                            if (!Pref.isMultipleVisitEnable) {
+                                for (i in shopDataList.indices) {
+                                    if (hashSet.add(shopDataList[i]))
+                                        newShopList.add(shopDataList[i])
+                                }
+                            }
+
+                            val shopDurationApiReq = ShopDurationRequest()
+                            shopDurationApiReq.user_id = Pref.user_id
+                            shopDurationApiReq.session_token = Pref.session_token
+                            if (newShopList.size > 0) {
+                                XLog.e("Unique ShopData List size===> " + newShopList.size)
+                                shopDurationApiReq.shop_list = newShopList
+                            } else
+                                shopDurationApiReq.shop_list = shopDataList
+
+                            val repository = ShopDurationRepositoryProvider.provideShopDurationRepository()
+
+                            XLog.d("callShopDurationApi : REQUEST")
+
+                            BaseActivity.compositeDisposable.add(
+                                repository.shopDuration(shopDurationApiReq)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe({ result ->
+                                        XLog.d("callShopDurationApi : RESPONSE " + result.status)
+                                        if (result.status == NetworkConstant.SUCCESS) {
+
+                                            if(!revisitStatusList.isEmpty()){
+                                                callRevisitStatusUploadApi(revisitStatusList!!)
+                                            }
+                                            if (newShopList.size > 0) {
+                                                for (i in 0 until newShopList.size) {
+                                                    AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, newShopList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(newShopList[i].visited_date!!) /*AppUtils.getCurrentDateForShopActi()*/)
+                                                }
+                                            } else {
+                                                if (!Pref.isMultipleVisitEnable) {
+                                                    for (i in 0 until shopDataList.size) {
+                                                        AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopDataList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(shopDataList[i].visited_date!!) /*AppUtils.getCurrentDateForShopActi()*/)
+                                                    }
+                                                }
+                                                else {
+                                                    for (i in 0 until shopDataList.size) {
+                                                        AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopDataList[i].shop_id!!, AppUtils.changeAttendanceDateFormatToCurrent(shopDataList[i].visited_date!!), shopDataList[i].start_timestamp!!)
+                                                    }
+                                                }
+                                            }
+                                            BaseActivity.isShopActivityUpdating = false
+                                            simpleDialogProcess.dismiss()
+                                            if(Pref.isAppInfoEnable){
+                                                callAppInfoApi()
+                                            }else{
+                                                (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+                                            }
+                                        }else{
+                                            BaseActivity.isShopActivityUpdating = false
+                                            simpleDialogProcess.dismiss()
+                                            if(Pref.isAppInfoEnable){
+                                                callAppInfoApi()
+                                            }else{
+                                                (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+                                            }
+                                        }
+                                        BaseActivity.isShopActivityUpdating = false
+                                    }, { error ->
+                                        BaseActivity.isShopActivityUpdating = false
+                                        simpleDialogProcess.dismiss()
+                                        if(Pref.isAppInfoEnable){
+                                            callAppInfoApi()
+                                        }else{
+                                            (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+                                        }
+                                        if (error == null) {
+                                            XLog.d("callShopDurationApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
+                                        } else {
+                                            XLog.d("callShopDurationApi : ERROR " + error.localizedMessage)
+                                            error.printStackTrace()
+                                        }
+                                    })
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun callRevisitStatusUploadApi(revisitStatusList : MutableList<ShopRevisitStatusRequestData>){
+        val revisitStatus = ShopRevisitStatusRequest()
+        revisitStatus.user_id=Pref.user_id
+        revisitStatus.session_token=Pref.session_token
+        revisitStatus.ordernottaken_list=revisitStatusList
+
+        val repository = ShopRevisitStatusRepositoryProvider.provideShopRevisitStatusRepository()
+        BaseActivity.compositeDisposable.add(
+            repository.shopRevisitStatus(revisitStatus)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    XLog.d("callRevisitStatusUploadApi : RESPONSE " + result.status)
+                    if (result.status == NetworkConstant.SUCCESS){
+                        for(i in revisitStatusList.indices){
+                            AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.updateOrderStatus(revisitStatusList[i]!!.shop_revisit_uniqKey!!)
+                        }
+                    }
+                },{error ->
+                    if (error == null) {
+                        XLog.d("callRevisitStatusUploadApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
+                    } else {
+                        XLog.d("callRevisitStatusUploadApi : ERROR " + error.localizedMessage)
+                        error.printStackTrace()
+                    }
+                })
+        )
+    }
+
+    private fun callAppInfoApi() {
+        try{
+            if (Pref.isAppInfoEnable) {
+
+                doAsync {
+
+                    val stat = StatFs(Environment.getExternalStorageDirectory().path)
+                    val totalSt = StatFs(Environment.getExternalStorageDirectory().path)
+                    val bytesAvailable: Long
+                    bytesAvailable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        stat.blockSizeLong * stat.availableBlocksLong
+                    } else {
+                        stat.blockSize.toLong() * stat.availableBlocks.toLong()
+                    }
+                    val bytesTotal: Long
+                    bytesTotal = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        totalSt.blockCountLong * totalSt.blockSizeLong
+                    } else {
+                        totalSt.blockCountLong.toLong() * totalSt.blockSizeLong.toLong()
+                    }
+                    val megAvailable = bytesAvailable / (1024 * 1024)
+                    val megTotal = bytesTotal / (1024 * 1024)
+                    println("phone_storage : FREE SPACE : " + megAvailable.toString() + " TOTAL SPACE : " + megTotal.toString() + " Time :" + AppUtils.getCurrentDateTime());
+                    val batNetEntity = BatteryNetStatusEntity()
+                    AppDatabase.getDBInstance()?.batteryNetDao()?.insert(batNetEntity.apply {
+                        AppUtils.changeLanguage(mContext,"en")
+                        bat_net_id = Pref.user_id + "_batNet_" + System.currentTimeMillis()
+                        changeLocale()
+                        date_time = AppUtils.getCurrentISODateTime()
+                        date = AppUtils.getCurrentDateForShopActi()
+                        bat_status = AppUtils.getBatteryStatus(mContext)
+                        bat_level = AppUtils.getBatteryPercentage(mContext).toString()
+                        net_type = AppUtils.getNetworkType(mContext)
+                        mob_net_type = AppUtils.mobNetType(mContext)
+                        device_model = AppUtils.getDeviceName()
+                        android_version = Build.VERSION.SDK_INT.toString()
+                        Available_Storage= megAvailable.toString()+"mb"
+                        Total_Storage=megTotal.toString()+"mb"
+                        isUploaded = false
+                        Power_Saver_Status = Pref.PowerSaverStatus
+                    })
+
+                    uiThread {
+                        (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+                    }
+                }
+
+
+
+            }else{
+                (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+            }
+        }catch (ex:Exception){
+            (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
+        }
+
     }
 
 }

@@ -82,7 +82,7 @@
                 <ImageView
                     android:id="@+id/frag_lead_pending_show_team"
                     android:layout_width="@dimen/_25sdp"
-                    android:layout_height="@dimen/_25sdp"
+                    android:layout_height="20dp"
                     android:layout_gravity="center|end"
                     android:background="@drawable/ic_arrow1"
                     android:backgroundTint="@color/colorAccent"
@@ -92,19 +92,29 @@
 
             </LinearLayout>
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
-                android:id="@+id/frag_team_beat_date_range_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_5sdp"
-                android:text=""
-                android:textColor="@color/colorAccent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_frag_team_beat_list"
+            <LinearLayout
+                android:id="@+id/ll_frag_team_beat_list_rv_root"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/frag_team_beat_date_range_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp"
+                    android:text=""
+                    android:textColor="@color/colorAccent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_frag_team_beat_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+
+
 
 
 

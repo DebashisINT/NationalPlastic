@@ -326,6 +326,10 @@ class NeworderScrCartFragment : BaseFragment(), View.OnClickListener {
             product.scheme_rate = "0"
             product.total_scheme_price = "0"
             product.MRP = "0"
+
+            //mantis 25601 23-01-2023
+            product.order_mrp = "0"
+            product.order_discount = "0"
             productList.add(product)
         }
 

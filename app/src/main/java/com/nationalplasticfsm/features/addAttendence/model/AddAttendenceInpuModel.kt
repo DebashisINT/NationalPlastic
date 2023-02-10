@@ -32,5 +32,9 @@ class AddAttendenceInpuModel {
     var from_id = ""
     var to_id = ""
     var distance = ""
-    var beat_id = ""
+    var beat_id = "0"
+    var IsJointVisit = "false"
+    var JointVisitTeam_MemberName = ""
+    var JointVisitTeam_Member_User_ID = "0"
+    var isDistributorwiseNearbyShopVisit = "No"
 }

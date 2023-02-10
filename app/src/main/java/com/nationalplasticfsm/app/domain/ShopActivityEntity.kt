@@ -116,4 +116,13 @@ class ShopActivityEntity {
     @ColumnInfo(name = "pros_id") // pros_id used as stage_id in pref.IsnewleadtypeforRuby and type of shop = 16
     var pros_id: String? = null
 
+    @ColumnInfo(name = "isnewShop")
+    var isnewShop = false
+
+    @ColumnInfo(name = "multi_contact_name")
+    var multi_contact_name: String? = null
+
+    @ColumnInfo(name = "multi_contact_number")
+    var multi_contact_number: String? = null
+
 }

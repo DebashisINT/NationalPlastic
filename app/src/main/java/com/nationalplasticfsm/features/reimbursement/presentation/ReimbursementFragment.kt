@@ -312,7 +312,7 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
         rv_ta_list.layoutManager = LinearLayoutManager(mContext)
         ivBottomSheetExapnd = view.findViewById(R.id.ivBottomSheetExapnd)
         bottom_sheet = view.findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet!!);
         setBottomSheetbehaviour()
         //attachnationalplasticfsmData()
 
@@ -667,6 +667,7 @@ class ReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListener,
         }
     }
 
+    @SuppressLint("ResourceType")
     override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
         val rb = group?.findViewById<RadioButton>(checkedId)
         if (null != rb && checkedId > -1) {

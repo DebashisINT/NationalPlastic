@@ -71,11 +71,11 @@
 
                     <ImageView
                         android:id="@+id/iv_dropd"
-                        android:layout_width="@dimen/_20sdp"
+                        android:layout_width="22dp"
                         android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
                         android:background="@drawable/ic_arrow1"
-                        android:rotation="270"
-                        android:layout_gravity="center"/>
+                        android:rotation="270" />
 
                     <Space
                         android:layout_width="@dimen/_10sdp"

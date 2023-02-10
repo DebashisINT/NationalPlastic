@@ -28,6 +28,8 @@ import com.elvishew.xlog.XLog
 import kotlinx.android.synthetic.main.activity_splash.*
 import java.text.SimpleDateFormat
 import java.util.*
+//Revision History
+// 1.0 MonitorService  AppV 4.0.6  Saheli    11/01/2023 GPS_SERVICE_STATUS & NETWORK_STATUS
 
 class MonitorService:Service() {
     private val monitorNotiID = 201
@@ -133,6 +135,7 @@ class MonitorService:Service() {
                 //cancelGpsBroadcast()
             }
         }
+        // 1.0 MonitorService  AppV 4.0.6 GPS_SERVICE_STATUS & NETWORK_STATUS
         val newNetStatusObj = NewGpsStatusEntity()
         if (shouldShopActivityUpdate()) {
             newNetStatusObj.date_time = AppUtils.getCurrentDateTime()
@@ -239,7 +242,7 @@ class MonitorService:Service() {
         }
 
     }
-
+    // 1.0 MonitorService  AppV 4.0.6 GPS_SERVICE_STATUS & NETWORK_STATUS
     private fun shouldGpsNetSyncDuration(): Boolean {
         AppUtils.changeLanguage(this,"en")
 

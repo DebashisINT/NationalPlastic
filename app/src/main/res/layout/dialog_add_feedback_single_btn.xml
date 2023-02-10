@@ -7,6 +7,7 @@
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/_10sdp">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,6 +72,17 @@
                         app:theme="@style/EvoEditTextTheme" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+            <!--//3.0  AppV 4.0.7  AddFeedbackSingleBtnDialog  Saheli    07/01/2023 mantis 25649 add feedback using voice-->
+
+            <ImageView
+                android:id="@+id/iv_dialog_add_feedback_mic"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginRight="@dimen/_17sdp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_mic"/>
 
 
 
@@ -387,6 +399,36 @@
 
 
 
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_dialog_add_feed_single_extra_contact_root"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_22sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_below="@+id/rl_competitor_image">
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tv_dialog_add_feed_single_extra_contact_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/ic_down_icon"
+                    android:drawablePadding="@dimen/_3sdp"
+                    android:hint="Select Contact Person"
+                    android:textColorHint="@color/light_gray"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/tv_dialog_add_feed_single_extra_contact_dropdown"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:background="@color/gray" />
 
             </RelativeLayout>
 

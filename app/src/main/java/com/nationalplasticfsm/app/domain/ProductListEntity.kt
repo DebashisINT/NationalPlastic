@@ -9,6 +9,8 @@ import com.nationalplasticfsm.app.utils.AppUtils
 /**
  * Created by Saikat on 08-11-2018.
  */
+//Revision History
+// 1.0   AppV 4.0.6  Saheli    01/02/2023  product_list   migration changes
 @Entity(tableName = AppConstant.PRODUCT_LIST_TABLE)
 class ProductListEntity {
 
@@ -39,4 +41,10 @@ class ProductListEntity {
 
     @ColumnInfo(name = "watt")
     var watt: String? = null
+
+    @ColumnInfo(name = "product_mrp_show")// 1.0   AppV 4.0.6  product_list   migration changes
+    var product_mrp_show: String? = null
+
+    @ColumnInfo(name = "product_discount_show")// 1.0   AppV 4.0.6  product_list   migration changes
+    var product_discount_show: String? = null
 }

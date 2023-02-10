@@ -49,6 +49,7 @@ import org.jetbrains.anko.uiThread
 /**
  * Created by Saikat on 15-Jun-20.
  */
+// 1.0 QuotationListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class QuotationListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -930,6 +931,13 @@ class QuotationListFragment : BaseFragment() {
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 QuotationListFragment  AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1014,6 +1022,13 @@ class QuotationListFragment : BaseFragment() {
                     shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                 else
                     shopDurationData.approximate_1st_billing_value = ""
+
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 QuotationListFragment  AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
                 shopDataList.add(shopDurationData)
             }

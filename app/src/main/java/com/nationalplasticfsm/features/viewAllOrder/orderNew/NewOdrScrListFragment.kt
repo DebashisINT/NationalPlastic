@@ -296,6 +296,7 @@ class NewOdrScrListFragment: BaseFragment(), DatePickerListener {
     }
 
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun sharePdf(){
         var odr_shop_list: List<ViewDataNewOdrScr> = emptyList()
         if (CustomStatic.IsOrderFromTotalOrder) {

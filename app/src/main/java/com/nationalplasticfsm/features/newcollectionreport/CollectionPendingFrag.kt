@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
@@ -18,13 +19,15 @@ import com.nationalplasticfsm.features.photoReg.ProtoRegistrationFragment
 import com.nationalplasticfsm.features.shopdetail.presentation.AddCollectionDialog
 import java.util.*
 import kotlin.collections.ArrayList
-
+// ReVision History
+// 1.0 CollectionPendingFrag  AppV 4.0.6 Saheli    30/01/2023 mantis 25630 NoData Text showing
 class CollectionPendingFrag : BaseFragment(),View.OnClickListener{
 
     private lateinit var mContext: Context
 
     private lateinit var rv_CollectionList:RecyclerView
     private lateinit var adapter:CollectionPendingListAdapter
+    private lateinit var tvNodata: TextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,6 +45,7 @@ class CollectionPendingFrag : BaseFragment(),View.OnClickListener{
 
     private fun initView(view: View){
         rv_CollectionList=view.findViewById(R.id.rv_frag_coll_pending_list)
+        tvNodata = view.findViewById(R.id.tv_frag_coll_pend_list_noData)
 
         getData()
     }
@@ -87,7 +91,11 @@ class CollectionPendingFrag : BaseFragment(),View.OnClickListener{
                 }
             }
             if(pendingCollDataList.size>0){
+                tvNodata.visibility=View.GONE  // AppV 4.0.6  mantis 25630
                 initAdapter(pendingCollDataList)
+            }
+            else{                              // AppV 4.0.6  mantis 25630
+                tvNodata.visibility=View.VISIBLE
             }
         }
         else{
@@ -124,7 +132,11 @@ class CollectionPendingFrag : BaseFragment(),View.OnClickListener{
                 }
             }
             if(pendingCollDataList.size>0){
+                tvNodata.visibility=View.GONE // AppV 4.0.6  mantis 25630
                 initAdapter(pendingCollDataList)
+            }
+            else{                              // AppV 4.0.6  mantis 25630
+                tvNodata.visibility=View.VISIBLE
             }
         }
     }

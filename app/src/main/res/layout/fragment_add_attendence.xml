@@ -949,6 +949,58 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/card_root_joint_visit_check"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="@dimen/_2sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_5sdp">
+
+                    <CheckBox
+                        android:id="@+id/cb_frag_attend_joint_visit"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_40sdp"
+                            android:text="Joint Visit"
+                            android:textSize="@dimen/_13sdp"
+                            android:background="@drawable/shape_cursor_cus"/>
+
+<!--                    android:buttonTint="@color/gray_50"-->
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_root_joint_team_sel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="@dimen/_4sdp"
+                    app:cardElevation="@dimen/_2sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_5sdp">
+
+
+                        <com.nationalplasticfsm.widgets.AppCustomTextView
+                            android:id="@+id/tv_frag_attend_team_member"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_40sdp"
+                            android:hint="Select Team Member"
+                            android:gravity="center|start"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@color/light_gray"
+                            android:textSize="@dimen/_13sdp"
+                            android:drawableEnd="@drawable/ic_down_arrow"
+                            android:background="@drawable/shape_cursor_two"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"

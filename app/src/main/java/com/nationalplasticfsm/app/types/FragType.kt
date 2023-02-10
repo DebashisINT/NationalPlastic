@@ -3,6 +3,8 @@ package com.nationalplasticfsm.app.types
 /**
  * Created by rp : 27-10-2017:18:08
  */
+//REvision History
+// 1.0 FragType AppV 4.0.6   Suman 13/01/2023  MenuBeatFrag
 enum class FragType {
     DEFAULT, AddShopFragment, BaseFragment, HomeFragment, NearByShopsListFragment, MyOrderListFragment, ShopDetailFragment,
     OrderDetailFragment, OrderhistoryFragment, MyallowanceRequestFragment, AddOrderFragment, SupportMapFragment, OrderHistoryFragment, SettingsFragment, ChangePasswordDialog,
@@ -40,5 +42,6 @@ enum class FragType {
     LeadFrag,LeadPendingFrag,LeadInProcessFrag,ViewLeadFrag,ShopFeedbackHisFrag,CollectionNotiViewPagerFrag,CollectionPendingFrag,CollectionNotiViewPagerFrag1
     ,ZeroCollectionPendingFrag,CollectionPendingDtlsFrag,CollectionPendingTeamFrag,CollectionPendingTeamDtlsFrag,CollectionNotiViewPagerFrag2,RepeatOrderFrag,
     TeamRepeatOrderFrag,MapViewForTeamFrag,ShopDamageProductListFrag,ShopDamageProductSubmitFrag,DistributorwiseorderlistFragment,
-    SurveyFrag,SurveyViewFrag,SurveyViewDtlsFrag,TeamBeatListFragment,MultipleImageFragment
+    SurveyFrag,SurveyViewFrag,SurveyViewDtlsFrag,TeamBeatListFragment,MultipleImageFragment,PendingOutLocationFrag,PhotoRegAadhaarFragment,
+    MenuBeatFrag,ReimbursementNFrag,ReimbursDtlsNFrag,EditReimbNFrag
 }

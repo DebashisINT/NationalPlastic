@@ -43,10 +43,12 @@ import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_stage_hea
 /**
  * Created by Saikat on 28-02-2020.
  */
+//Revision History
+// 1.0 MemberAllShopListAdapter  AppV 4.0.6  Saheli    11/01/2023 IsAllowShopStatusUpdate
 class MemberAllShopListAdapter(private val context: Context, private val teamShopList: ArrayList<TeamShopListDataModel>,
                                private val listener: (TeamShopListDataModel) -> Unit, private val onUpdateLocClick: (TeamShopListDataModel) -> Unit,
                                private val getListSize: (Int) -> Unit,private val onDamageClick: (TeamShopListDataModel) -> Unit,private val onQuotClick: (TeamShopListDataModel) -> Unit,private val onHistoryClick: (AddShopDBModelEntity) -> Unit
-) : RecyclerView.Adapter<MemberAllShopListAdapter.MyViewHolder>(),
+,private val getShopStatusDtls: (TeamShopListDataModel) -> Unit) : RecyclerView.Adapter<MemberAllShopListAdapter.MyViewHolder>(),
         Filterable {
 
     private val layoutInflater: LayoutInflater by lazy {
@@ -72,7 +74,7 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindItems(context, shopList!!, listener, onUpdateLocClick,onDamageClick,onQuotClick,onHistoryClick)
+        holder.bindItems(context, shopList!!, listener, onUpdateLocClick,onDamageClick,onQuotClick,onHistoryClick,getShopStatusDtls)
     }
 
     override fun getItemCount(): Int {
@@ -83,7 +85,7 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
 
         fun bindItems(context: Context, teamShopList: ArrayList<TeamShopListDataModel>, listener: (TeamShopListDataModel) -> Unit,
                       onUpdateLocClick: (TeamShopListDataModel) -> Unit,onDamageClick: (TeamShopListDataModel) -> Unit,onQuotClick: (TeamShopListDataModel) -> Unit,
-                      onHistoryClick: (AddShopDBModelEntity) -> Unit) {
+                      onHistoryClick: (AddShopDBModelEntity) -> Unit,getShopStatusDtls:(TeamShopListDataModel) -> Unit) {
             itemView.apply {
                 myshop_name_TV.text = teamShopList[adapterPosition].shop_name
                 myshop_address_TV.text = teamShopList[adapterPosition].shop_address
@@ -269,6 +271,16 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
 
                 if(Pref.IsNewQuotationfeatureOn || Pref.IsFeedbackHistoryActivated){
                     iconWrapper_rl.visibility = View.VISIBLE
+                }
+                // 1.0 MemberAllShopListAdpater  AppV 4.0.6  IsAllowShopStatusUpdate
+                if(Pref.IsAllowShopStatusUpdate) {
+                    tv_update_status.visibility = View.VISIBLE
+                }
+                else {
+                    tv_update_status.visibility = View.GONE
+                }
+                tv_update_status.setOnClickListener {
+                    getShopStatusDtls(teamShopList[adapterPosition])
                 }
 
             }

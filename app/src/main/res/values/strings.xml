@@ -1427,6 +1427,10 @@
     <!--Splash-->
     <string name="use_location" translatable="false">Use your location</string>
     <string name="loc_msg" translatable="false">Field Sales Management App collects location data after you open and login into the App,\u0020to identify nearby Parties location even when the app is running in the background and not in use.</string>
+    <string name="loc_msg_new" translatable="false">Field Sales Management App collects location data after you open and login into the App,\u0020to identify nearby Parties location even when the app is running in the background and not in use.This app collects location data to enable nearby shops, GPS route,
+        even when the app is closed or not in use.</string>
+
+
 
     <!--My Jobs-->
     <string name="view_details" translatable="false">View Details</string>
@@ -1573,5 +1577,35 @@
 
     <string name="GenderTextNewOrd" translatable="false">Gender</string>
     <string name="ProductTextNewOrd" translatable="false">Product Type</string>
+    <string name="try_again_later" translatable="false">Please try again later</string>
+    <string name="aadhaar_reg_guide_header" translatable="false">Aadhar Registration Guide:</string>
+    <string name="aadhaar_reg_guide_body" translatable="false">1. Avoid Background area\n
+                                            2. Take Only Aadhar Card Area, check the below sample photo.\n
+                                            3. Take Photo in Normal daylight\n
+                                            4. Make sure all the information is showing clearly in Aadhar Card\n
+                                            5. Take Closure Look photo of Aadhar Card\n
+                                            6. Please only Capture Aadhaar image and dont try with any other image. It will block your registration.</string>
 
+    <string name="voter_reg_guide_header" translatable="false">Voter Registration Guide:</string>
+    <string name="voter_reg_guide_body" translatable="false">1. Avoid Background area\n
+                                            2. Take Only Voter Card Area, check the below sample photo.\n
+                                            3. Take Photo in Normal daylight\n
+                                            4. Make sure all the information is showing clearly in Voter Card\n
+                                            5. Take Closure Look photo of Voter Card\n
+                                            6. Please only Capture Voter image and dont try with any other image. It will block your registration.</string>
+
+    <string name="pan_reg_guide_header" translatable="false">PAN Registration Guide:</string>
+    <string name="pan_reg_guide_body" translatable="false">1. Avoid Background area\n
+    2. Take Only PAN Card Area, check the below sample photo.\n
+    3. Take Photo in Normal daylight\n
+    4. Make sure all the information is showing clearly in PAN Card\n
+    5. Take Closure Look photo of PAN Card\n
+        6. Please only Capture PAN image and dont try with any other image. It will block your registration.</string>
+
+    <string name="registration_net_connected" translatable="false">Internet connection strength is good, you can Register now.</string>
+    <string name="login_logout_reg_msg" translatable="false">Good Internet connectivity is mandatory for Registration</string>
+    <string name="aadhaar_registration" translatable="false">Aadhaar Registration</string>
+    <string name="voter_registration" translatable="false">Voter Registration</string>
+    <string name="pan_registration" translatable="false">Pan Registration</string>
+    <string name="reg_net_disconnected" translatable="false">Internet is disconnected, you cannot Register, please switch on the internet</string>
 </resources>

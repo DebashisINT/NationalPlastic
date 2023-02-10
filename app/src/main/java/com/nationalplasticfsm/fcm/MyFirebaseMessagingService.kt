@@ -38,7 +38,7 @@ import org.jetbrains.anko.uiThread
 /**
  * Created by Saikat on 20-09-2018.
  */
-
+// MyFirebaseMessagingService V 4.0.6 saheli 27-01-2023 For new firebase update MyFirebaseInstanceIDService is obsolated and override function onNewToken introduced
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private var messageDetails = ""

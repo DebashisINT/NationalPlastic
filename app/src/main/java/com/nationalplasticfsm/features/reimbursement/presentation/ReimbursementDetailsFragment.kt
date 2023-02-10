@@ -315,7 +315,7 @@ class ReimbursementDetailsFragment : BaseFragment(), DateAdapter.onPetSelectedLi
         rv_ta_list.layoutManager = LinearLayoutManager(mContext)
         ivBottomSheetExapnd = view.findViewById(R.id.ivBottomSheetExapnd)
         bottom_sheet = view.findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet!!);
         //setBottomSheetbehaviour()
         //attachnationalplasticfsmData()
 

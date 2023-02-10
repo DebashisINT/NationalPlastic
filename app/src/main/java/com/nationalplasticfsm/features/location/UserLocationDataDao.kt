@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.nationalplasticfsm.app.AppConstant
+import com.nationalplasticfsm.app.domain.OrderDetailsListEntity
 
 /**
  * Created by riddhi on 7/11/17.
@@ -70,4 +71,8 @@ interface UserLocationDataDao {
 
     @Query("update " + AppConstant.LOCATION_TABLE+" set location_name=:location_name where updateDate=:date and isUploaded=:isUploaded")
     fun updateUnknownLocationTest(date: String,location_name:String,isUploaded:Boolean)
+
+    @Query("SELECT * FROM " + AppConstant.LOCATION_TABLE + " where updateDate=:date order by locationId desc")
+    fun getListAccordingDate(date: String): List<UserLocationDataEntity>
+
 }

@@ -74,6 +74,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by Pratishruti on 15-11-2017.
  */
+// 1.0 AverageShopFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickListener {
 
     lateinit var averageShopListAdapter: AverageShopListAdapter
@@ -407,6 +408,14 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+            // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
 
             shopDataList.add(shopDurationData)
 
@@ -884,6 +893,12 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+            // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
             shopDataList.add(shopDurationData)
 
@@ -1772,6 +1787,12 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
                     }catch (ex:Exception){
                         shopDurationData.spent_duration="00:00:10"
                     }
+                    //New shop Create issue
+                    shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+                    // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+                    shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                    shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
                     shopDataList.add(shopDurationData)
                 }
@@ -2188,6 +2209,12 @@ class AverageShopFragment : BaseFragment(), DatePickerListener, View.OnClickList
         }catch (ex:Exception){
             shopDurationData.spent_duration="00:00:10"
         }
+        //New shop Create issue
+        shopDurationData.isnewShop = shopActivity.isnewShop!!
+
+        // 1.0 AverageShopFragment AppV 4.0.6  multiple contact Data added on Api called
+        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {

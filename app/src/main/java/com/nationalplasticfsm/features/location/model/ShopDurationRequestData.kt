@@ -34,6 +34,9 @@ class ShopDurationRequestData {
     var updated_by: String?= null
     var updated_on: String?= null
     var pros_id: String?= null
+    var isnewShop: Boolean? = null
+    var multi_contact_name: String?= null
+    var multi_contact_number: String?= null
 
 
 //    "visited_date": "yyyy-MM-dd",

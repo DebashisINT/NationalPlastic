@@ -24,6 +24,8 @@ class AddQuotRequestData {
     var Remarks:String?=null
     var document_number:String?=null
     var quotation_status:String?=null
+    var sel_quotation_pdf_template:String?=null
+    var extra_contact_list: ArrayList<Extra_contact_list>? = null
 
 }
 data class product_list (var product_name:String?=null,
@@ -34,6 +36,12 @@ data class product_list (var product_name:String?=null,
                          var rate_sqmtr:String?=null,
                          var qty:String?=null,
                          var amount:String?=null)
+
+data class Extra_contact_list(    var quotation_contact_person:String?=null,
+                 var quotation_contact_number:String?=null,
+                 var quotation_contact_email:String?=null,
+                 var quotation_contact_doa:String?=null,
+                 var quotation_contact_dob:String?=null)
 
 
 

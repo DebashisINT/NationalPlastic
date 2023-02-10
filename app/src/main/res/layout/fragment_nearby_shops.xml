@@ -38,7 +38,6 @@
                 android:textSize="@dimen/_16sdp"
                 android:textStyle="normal" />
 
-
             <com.nationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/min_TV"
                 android:layout_width="wrap_content"
@@ -132,7 +131,6 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:visibility="gone"/>
 
-
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_beat_name"
         android:layout_width="wrap_content"
@@ -159,26 +157,11 @@
         android:visibility="gone"
         android:layout_below="@+id/tv_beat_name"/>
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
-        android:id="@+id/tv_suggest_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_geofence_relax"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical"
-        android:text="(Suggestion: Click on the Home icon &amp; go to Shops/Customer -> Search the Customer name whom you are Nearby -> Press 'Update Address' button &amp; check again in Nearby Shops)"
-        android:textColor="@color/black_50"
-        android:textSize="@dimen/_9sdp"
-        android:visibility="gone"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_10sdp" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/near_by_shops_RCV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_suggest_text"
+        android:layout_below="@id/tv_geofence_relax"
         android:overScrollMode="never" />
 
     <com.nationalplasticfsm.widgets.AppCustomTextView

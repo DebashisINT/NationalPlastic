@@ -1,7 +1,8 @@
 package com.nationalplasticfsm.features.photoReg
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.Dialog
@@ -17,15 +18,19 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
+import android.os.Build.VERSION.SDK_INT
 import android.provider.MediaStore
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.text.Editable
+import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -34,55 +39,42 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder.with
-import com.bumptech.glide.GenericTransitionOptions.with
-import com.bumptech.glide.Glide.with
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.*
-import com.nationalplasticfsm.app.domain.OrderStatusRemarksModelEntity
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.uiaction.IntentActionable
 import com.nationalplasticfsm.app.utils.*
 import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
-import com.nationalplasticfsm.features.addshop.model.AddLogReqData
-import com.nationalplasticfsm.features.addshop.presentation.AddShopFragment
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
-import com.nationalplasticfsm.features.login.ShopFeedbackEntity
-import com.nationalplasticfsm.features.login.model.ShopFeedbackResponseModel
 import com.nationalplasticfsm.features.myjobs.model.WIPImageSubmit
-import com.nationalplasticfsm.features.orderList.api.neworderlistapi.NewOrderListRepoProvider
 import com.nationalplasticfsm.features.photoReg.adapter.AdapterUserList
 import com.nationalplasticfsm.features.photoReg.adapter.PhotoRegUserListner
 import com.nationalplasticfsm.features.photoReg.api.GetUserListPhotoRegProvider
 import com.nationalplasticfsm.features.photoReg.model.*
+import com.nationalplasticfsm.features.photoReg.present.UpdateDSTypeStatusDialog
 import com.nationalplasticfsm.features.reimbursement.presentation.FullImageDialog
-import com.nationalplasticfsm.features.shopdetail.presentation.ShopDetailFragment
-import com.nationalplasticfsm.features.shopdetail.presentation.api.EditShopRepoProvider
-import com.nationalplasticfsm.mappackage.SendBrod
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.elvishew.xlog.XLog
-import com.hahnemann.features.commondialog.presentation.CommonDialogTripleBtn
-import com.hahnemann.features.commondialog.presentation.CommonTripleDialogClickListener
 import com.squareup.picasso.*
+import com.squareup.picasso.Picasso.RequestTransformer
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.customnotification.view.*
 import kotlinx.android.synthetic.main.fragment_photo_registration.*
-import kotlinx.android.synthetic.main.row_user_list_face_regis.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
 import java.io.FileInputStream
-import java.net.URLEncoder
+import java.util.*
 
-class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
+
+class ProtoRegistrationFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
     private lateinit var mRv_userList: RecyclerView
@@ -94,6 +86,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
 
     private lateinit var et_attachment: AppCustomEditText
     private lateinit var et_photo: AppCustomEditText
+    private lateinit var tv_cust_no_frag_reg: TextView
 
     private var isAttachment = false
     private var dataPath = ""
@@ -133,37 +126,60 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                 if (query.isBlank()) {
                     userList?.let {
                         adapter?.refreshList(it)
-                        tv_cust_no.text = "Total customer(s): " + it.size
+                        //tv_cust_no_frag_reg.text = "Total customer(s) : " + it.size
                     }
                 } else {
                     adapter?.filter?.filter(query)
+                    //tv_cust_no_frag_reg.text = "Total customer(s) : "+ CustomStatic.PhotoRegUserSearchCount.toString()
+
                 }
             }
         })
 
         return view
     }
-
-    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view: View) {
-        et_attachment = view!!.findViewById(R.id.et_attachment)
-        et_photo = view!!.findViewById(R.id.et_photo)
-        mRv_userList = view!!.findViewById(R.id.rv_frag_photo_reg)
+        et_attachment = view.findViewById(R.id.et_attachment)
+        et_photo = view.findViewById(R.id.et_photo)
+        mRv_userList = view.findViewById(R.id.rv_frag_photo_reg)
         progress_wheel = view.findViewById(R.id.progress_wheel)
+        tv_cust_no_frag_reg = view.findViewById(R.id.tv_cust_no_frag_reg)
+
+        tv_cust_no_frag_reg.visibility=View.GONE
 
         mRv_userList.layoutManager = LinearLayoutManager(mContext)
 
-
         initPermissionCheck()
-
         progress_wheel.spin()
         Handler(Looper.getMainLooper()).postDelayed({
             callUSerListApi()
-        }, 300)
+        }, 3000)
+
+        //startVoiceInput()
 
     }
 
+    private fun startVoiceInput() {
+        val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.ENGLISH)
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+        try {
+            startActivityForResult(intent, 7009)
+        } catch (a: ActivityNotFoundException) {
+            a.printStackTrace()
+        }
+    }
 
+    fun loadUpdateList(){
+        Handler(Looper.getMainLooper()).postDelayed({
+            callUSerListApi()
+        }, 300)
+    }
 
     private var permissionUtils: PermissionUtils? = null
     private fun initPermissionCheck() {
@@ -216,7 +232,6 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                                                 aadhaarList.add(userList.get(j).RegisteredAadhaarNo!!)
                                             }
                                         }*/
-
                                         uiThread {
                                             callAllUserAadhaarDetailsApi()
                                             //setAdapter()
@@ -227,7 +242,8 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_date_found))
                                 }
 //
-                            } else {
+                            }
+                            else {
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_date_found))
                             }
                         }, { error ->
@@ -236,7 +252,6 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
 //                            (mContext as DashboardActivity).showSnackMessage("ERROR")
                         })
         )
-
     }
 
     private fun callAllUserAadhaarDetailsApi() {
@@ -286,10 +301,9 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
         )
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
     private fun getBytesForMemCache(percent: Int): Int {
         val mi: ActivityManager.MemoryInfo = ActivityManager.MemoryInfo()
-        val activityManager: ActivityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val activityManager: ActivityManager = mContext!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
         activityManager.getMemoryInfo(mi)
         val availableMemory: Double = mi.availMem.toDouble()
         return (percent * availableMemory / 100).toInt()
@@ -300,7 +314,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
         //set 12% of available app memory for image cache
         builder.memoryCache(LruCache(getBytesForMemCache(12)))
         //set request transformer
-        val requestTransformer = Picasso.RequestTransformer { request ->
+        val requestTransformer = RequestTransformer { request ->
             Log.d("image request", request.toString())
             request
         }
@@ -312,12 +326,34 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
     private fun setAdapter() {
 
         //Toast.makeText(mContext,userList.size.toString(),Toast.LENGTH_SHORT).show()
+        //tv_cust_no_frag_reg.text = "Total customer(s) : " + userList!!.size
 
+        //filter userList for duplicate value
+        var userList_temp:ArrayList<UserListResponseModel> = ArrayList()
+
+        for(i in 0..userList.size-1){
+            if(userList_temp.size==0){
+                userList_temp.add(userList.get(i))
+            }
+            var isDuplicate = false
+            for(j in 0..userList_temp.size-1){
+                if(userList.get(i).user_id == userList_temp.get(j).user_id){
+                    isDuplicate=true
+                    break
+                }
+            }
+            if(!isDuplicate){
+                userList_temp.add(userList.get(i))
+            }
+        }
+        userList.clear()
+        userList=userList_temp
 
         adapter = AdapterUserList(mContext, userList!!, object : PhotoRegUserListner {
 
             override fun getUserInfoOnLick(obj: UserListResponseModel) {
-                (mContext as DashboardActivity).loadFragment(FragType.RegisTerFaceFragment, true, obj)
+                showFaceIns(obj)
+                //(mContext as DashboardActivity).loadFragment(FragType.RegisTerFaceFragment, true, obj)
             }
 
             override fun getPhoneOnLick(phone: String) {
@@ -381,21 +417,12 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                 val faceCanel = simpleDialogg.findViewById(R.id.iv_face_reg_cancel) as ImageView
                 faceName.text = name
 
-                //var ppiic=Picasso.setSingletonInstance(getCustomPicasso()!!)
-                //Picasso.get().load(img_link).resize(500, 500).into(faceImg);
-
-
-                /*          Glide.with(mContext)
-                             .load(img_link)
-                             .into(faceImg)
-                                  .clearOnDetach()*/
-
                 val picasso = Picasso.Builder(mContext)
                         .memoryCache(Cache.NONE)
                         .indicatorsEnabled(false)
-                        .loggingEnabled(true) //add other settings as needed
+                        .loggingEnabled(true)
                         .build()
-                //Picasso.setSingletonInstance(picasso)
+
                 picasso.load(Uri.parse(img_link))
                         .centerCrop()
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -403,15 +430,57 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                         .resize(500, 500)
                         .into(faceImg)
 
-                /*Picasso.get()
-                        .load(Uri.parse(img_link))
-                        .resize(500, 500)
-                        .into(faceImg)*/
+                progress_wheel.stopSpinning()
 
-                /*  Picasso.get()
-                          .load(img_link)
-                          .resize(500, 500)
-                          .into(faceImg)*/
+                simpleDialogg.show()
+
+                faceCanel.setOnClickListener({ view ->
+                    simpleDialogg.dismiss()
+                })
+
+                simpleDialogg.setOnCancelListener({ view ->
+                    simpleDialogg.dismiss()
+
+                })
+                simpleDialogg.setOnDismissListener({ view ->
+                    simpleDialogg.dismiss()
+
+                })
+            }
+
+            override fun getAadhaarOnLick(obj: UserListResponseModel) {
+                //OpenDialogForAdhaarReg(obj)
+                if(!obj.aadhar_image_link!!.contains("CommonFolder"))
+                    return
+
+                progress_wheel.spin()
+                val simpleDialogg = Dialog(mContext)
+                simpleDialogg.setCancelable(true)
+                simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogg.setContentView(R.layout.view_face_img)
+
+
+                val faceImg = simpleDialogg.findViewById(R.id.iv_face_img) as ImageView
+                faceImg.setImageDrawable(null)
+                faceImg.setBackgroundDrawable(null)
+                faceImg.invalidate();
+                faceImg.setImageBitmap(null);
+                val faceName = simpleDialogg.findViewById(R.id.face_name) as AppCustomTextView
+                val faceCanel = simpleDialogg.findViewById(R.id.iv_face_reg_cancel) as ImageView
+                faceName.text = obj.user_name!!
+
+                val picasso = Picasso.Builder(mContext)
+                        .memoryCache(Cache.NONE)
+                        .indicatorsEnabled(false)
+                        .loggingEnabled(true)
+                        .build()
+
+                picasso.load(Uri.parse(obj.aadhar_image_link))
+                        .centerCrop()
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .resize(700, 400)
+                        .into(faceImg)
 
 
                 progress_wheel.stopSpinning()
@@ -433,18 +502,292 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                 })
             }
 
-            override fun getAadhaarOnLick(obj: UserListResponseModel) {
-                OpenDialogForAdhaarReg(obj)
+            override fun updateTypeOnClick(obj: UserListResponseModel) {
+                UpdateDSTypeStatusDialog.getInstance(obj.user_name!!, "Cancel", "Confirm", true,obj.type_name.toString(),obj.user_id.toString()!!,
+                        object : UpdateDSTypeStatusDialog.OnDSButtonClickListener {
+                    override fun onLeftClick() {
+
+                    }
+
+                            override fun onRightClick(typeId: String, typeName: String, usrId: String) {
+                                if(!typeName.equals("") && typeName.length>0)
+                                    updateUserType(typeId,usrId)
+                            }
+                        }).show((mContext as DashboardActivity).supportFragmentManager, "")
             }
 
-            override fun updateTypeOnClick(obj: UserListResponseModel) {
+            override fun updateContactOnClick(obj: UserListResponseModel) {
+                val simpleDialogg = Dialog(mContext)
+                simpleDialogg.setCancelable(true)
+                simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogg.setContentView(R.layout.dialog_update_contact_photo_reg)
 
+                val heading = simpleDialogg.findViewById(R.id.tv_dialog_upsate_ph_name) as TextView
+                val cancel = simpleDialogg.findViewById(R.id.cancel_TV) as AppCustomTextView
+                val update = simpleDialogg.findViewById(R.id.ok_TV) as AppCustomTextView
+                val et_phone = simpleDialogg.findViewById(R.id.et_dialog_upsate_ph_no) as EditText
+
+                if(obj.emp_phone_no!!.length>0){
+                    heading.text=obj!!.user_name+"   (  "+obj.emp_phone_no+"   )"
+                }
+                else{
+                    heading.text=obj!!.user_name
+                }
+
+                cancel.setOnClickListener({ view ->
+                    simpleDialogg.dismiss()
+                })
+                update.setOnClickListener({ view ->
+
+                    var cont=et_phone.text.toString()
+                    if(cont.length==10){
+                        simpleDialogg.dismiss()
+                        updateEmpPhone(obj.emp_phone_no!!,cont,obj.user_id.toString(),obj.user_contactid!!)
+                    }else{
+                        et_phone.setError("Enter valid Phone No.")
+                        et_phone.requestFocus()
+                    }
+
+                })
+
+                simpleDialogg.show()
+            }
+
+            override fun addContactOnClick(obj: UserListResponseModel) {
+                val simpleDialogg = Dialog(mContext)
+                simpleDialogg.setCancelable(true)
+                simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogg.setContentView(R.layout.dialog_update_contact_photo_reg)
+
+                val heading = simpleDialogg.findViewById(R.id.tv_dialog_upsate_ph_name) as TextView
+                val cancel = simpleDialogg.findViewById(R.id.cancel_TV) as AppCustomTextView
+                val update = simpleDialogg.findViewById(R.id.ok_TV) as AppCustomTextView
+                val et_phone = simpleDialogg.findViewById(R.id.et_dialog_upsate_ph_no) as EditText
+
+                if(obj.emp_phone_no!!.length>0){
+                    heading.text=obj!!.user_name+"   (  "+obj.emp_phone_no+"   )"
+                }
+                else{
+                    heading.text=obj!!.user_name
+                }
+
+                update.text="Add Phone"
+
+                cancel.setOnClickListener({ view ->
+                    simpleDialogg.dismiss()
+                })
+                update.setOnClickListener({ view ->
+
+                    var cont=et_phone.text.toString()
+                    if(cont.length==10){
+                        simpleDialogg.dismiss()
+                        addEmpPhone(cont,obj.user_id!!.toString(),obj!!.user_contactid!!)
+                    }else{
+                        et_phone.setError("Enter valid Phone No.")
+                        et_phone.requestFocus()
+                    }
+
+                })
+
+                simpleDialogg.show()
+            }
+
+            override fun updateUserNameOnClick(obj: UserListResponseModel) {
+                updateUserName(obj)
+            }
+
+            override fun updateOtherIDOnClick(obj: UserListResponseModel) {
+                val simpleDialogg = Dialog(mContext)
+                simpleDialogg.setCancelable(true)
+                simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogg.setContentView(R.layout.dialog_update_contact_photo_reg)
+
+                val heading = simpleDialogg.findViewById(R.id.tv_dialog_upsate_ph_name) as TextView
+                val cancel = simpleDialogg.findViewById(R.id.cancel_TV) as AppCustomTextView
+                val update = simpleDialogg.findViewById(R.id.ok_TV) as AppCustomTextView
+                val et_phone = simpleDialogg.findViewById(R.id.et_dialog_upsate_ph_no) as EditText
+
+                heading.text=obj!!.user_name
+                et_phone.setHint("Enter Other ID")
+                et_phone.inputType=InputType.TYPE_CLASS_TEXT
+
+                cancel.setOnClickListener({ view ->
+                    simpleDialogg.dismiss()
+                })
+                update.setOnClickListener({ view ->
+                    simpleDialogg.dismiss()
+                    var cont=et_phone.text.toString()
+                    updateOtherID(cont,obj.user_contactid!!)
+                })
+                simpleDialogg.show()
+            }
+
+            override fun updateLoginIDOnClick(obj: UserListResponseModel) {
+                val simpleDialogg = Dialog(mContext)
+                simpleDialogg.setCancelable(true)
+                simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                simpleDialogg.setContentView(R.layout.dialog_update_contact_photo_reg)
+
+                val heading = simpleDialogg.findViewById(R.id.tv_dialog_upsate_ph_name) as TextView
+                val cancel = simpleDialogg.findViewById(R.id.cancel_TV) as AppCustomTextView
+                val update = simpleDialogg.findViewById(R.id.ok_TV) as AppCustomTextView
+                val et_phone = simpleDialogg.findViewById(R.id.et_dialog_upsate_ph_no) as EditText
+
+                heading.text=obj!!.user_name
+                et_phone.setHint("Enter User ID")
+                et_phone.inputType=InputType.TYPE_CLASS_TEXT
+
+                cancel.setOnClickListener({ view ->
+                    simpleDialogg.dismiss()
+                })
+                update.setOnClickListener({ view ->
+                    var cont=et_phone.text.toString()
+                    if(cont.length!=0){
+                        simpleDialogg.dismiss()
+                        updateUserLoginID(obj.user_id!!.toString(),cont)
+                    }else{
+                        et_phone.setError("Enter User ID")
+                        et_phone.requestFocus()
+                    }
+
+                })
+                simpleDialogg.show()
             }
         }, {
             it
         })
 
         mRv_userList.adapter = adapter
+    }
+
+    private fun updateUserName(obj: UserListResponseModel){
+        val simpleDialogg = Dialog(mContext)
+        simpleDialogg.setCancelable(true)
+        simpleDialogg.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialogg.setContentView(R.layout.dialog_update_user_name_photo_reg)
+
+        val heading = simpleDialogg.findViewById(R.id.tv_dialog_update_usr_name_header) as TextView
+        val cancel = simpleDialogg.findViewById(R.id.cancel_TV) as AppCustomTextView
+        val update = simpleDialogg.findViewById(R.id.ok_TV) as AppCustomTextView
+
+        val et_first_name = simpleDialogg.findViewById(R.id.et_dialog_update_usr_name_first) as EditText
+        val et_middle_name = simpleDialogg.findViewById(R.id.et_dialog_update_usr_name_middle) as EditText
+        val et_last_name = simpleDialogg.findViewById(R.id.et_dialog_update_usr_name_last) as EditText
+
+
+        heading.text="Update Name of : "+obj!!.user_name
+
+        cancel.setOnClickListener({ view ->
+            simpleDialogg.dismiss()
+        })
+        update.setOnClickListener({ view ->
+
+            var cont=et_first_name.text.toString()
+            if(cont.length>0){
+                simpleDialogg.dismiss()
+                updateUserNameApi(obj,
+                        et_first_name.text.toString()+" "+et_middle_name.text.toString()+" "+et_last_name.text.toString(),
+                        et_first_name.text.toString(),et_middle_name.text.toString(),et_last_name.text.toString())
+            }else{
+                et_first_name.setError("Enter First Name")
+                et_first_name.requestFocus()
+            }
+
+        })
+
+        simpleDialogg.show()
+    }
+
+
+    private fun updateUserNameApi(obj: UserListResponseModel,name:String,firstName:String,middleName:String,lastName:String){
+        try{
+            progress_wheel.spin()
+
+            var userModel=UpdateUserNameModel()
+            userModel.name_updation_user_id=obj.user_id.toString()
+            userModel.updated_name=name
+            userModel.updated_first_name=firstName
+            userModel.updated_middle_name=middleName
+            userModel.updated_last_name=lastName
+            userModel.updation_date_time=AppUtils.getCurrentDateTime()
+
+            val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+            BaseActivity.compositeDisposable.add(
+                    repository.updateUserName(userModel)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                progress_wheel.stopSpinning()
+                                var response = result as UpdateUserNameResponse
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    showMessage("Name updation success for "+response.updated_name!!+".")
+                                    //callUSerListApi()
+                                } else {
+                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                                }
+                            }, { error ->
+                                progress_wheel.stopSpinning()
+                                error.printStackTrace()
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+        }catch (ex:Exception){
+            progress_wheel.stopSpinning()
+            ex.printStackTrace()
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+        }
+
+    }
+
+
+    private fun showFaceIns(obj: UserListResponseModel){
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(true)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_message_face_aadhaar_guide)
+        val body = simpleDialog.findViewById(R.id.dialog_message_header_TV) as TextView
+        val header = simpleDialog.findViewById(R.id.dialog_message_headerTV) as TextView
+        val iv_photo = simpleDialog.findViewById(R.id.iv_dialog_msg_face_aadhaar_g) as ImageView
+
+
+        iv_photo.setImageDrawable(getResources().getDrawable(R.drawable.face_sample));
+
+        header.text = "Face/Photo Registration Guide:"
+        body.text = "1. Avoid Background area.\n" +
+                "2. Take Only Face Area, check the below photo face area.\n" +
+                "3. Don't take any side face.\n" +
+                "4. Take Photo in Normal daylight.\n" +
+                "5. Take Photo of Normal Face look / Expression which you have 99% times.\n" +
+                "6. Important : Always take photo of Front Face and Closure Look."
+
+
+        val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            //simpleDialog.cancel()
+
+            val simpleDialogYN = Dialog(mContext)
+            simpleDialogYN.setCancelable(false)
+            simpleDialogYN.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            simpleDialogYN.setContentView(R.layout.dialog_yes_no)
+            val dialogHeader = simpleDialogYN.findViewById(R.id.dialog_cancel_order_header_TV) as AppCustomTextView
+            val dialog_yes_no_headerTV = simpleDialogYN.findViewById(R.id.dialog_yes_no_headerTV) as AppCustomTextView
+            dialog_yes_no_headerTV.text = "Hi "+Pref.user_name!!+"!"
+            dialogHeader.text = "Have you read the instruction?"
+            val dialogYes = simpleDialogYN.findViewById(R.id.tv_dialog_yes_no_yes) as AppCustomTextView
+            val dialogNo = simpleDialogYN.findViewById(R.id.tv_dialog_yes_no_no) as AppCustomTextView
+            dialogYes.setOnClickListener({ view ->
+                simpleDialog.cancel()
+                simpleDialogYN.cancel()
+                (mContext as DashboardActivity).loadFragment(FragType.RegisTerFaceFragment, true, obj)
+            })
+            dialogNo.setOnClickListener({ view ->
+                simpleDialogYN.cancel()
+            })
+            simpleDialogYN.show()
+
+
+        })
+        simpleDialog.show()
     }
 
 
@@ -884,7 +1227,6 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
         simpleDialogAdhhar.show()
     }
 
-
     private fun voiceAttendanceMsg(msg: String) {
         if (Pref.isVoiceEnabledForAttendanceSubmit) {
             val speechStatus = (mContext as DashboardActivity).textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null)
@@ -1071,14 +1413,13 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
         }
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
     private fun openFile(file: File) {
 
         val mimeType = NewFileUtils.getMemeTypeFromFile(file.absolutePath + "." + NewFileUtils.getExtension(file))
 
         if (mimeType?.equals("application/pdf")!!) {
 //            val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/pdf")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1090,7 +1431,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
             }
         } else if (mimeType == "application/msword") {
             //val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/msword")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1101,7 +1442,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
             }
         } else if (mimeType == "application/vnd.ms-excel") {
             //val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/vnd.ms-excel")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1113,7 +1454,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
 
         } else if (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.template") {
             //val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/vnd.openxmlformats-officedocument.wordprocessingml.template")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1124,7 +1465,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
             }
         } else if (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
             //val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1136,7 +1477,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
 
         } else if (mimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
             //val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/vnd.ms-excel")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1147,7 +1488,7 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
             }
         } else if (mimeType == "application/vnd.openxmlformats-officedocument.spreadsheetml.template") {
             //val path1 = Uri.fromFile(file)
-            val path1 = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+            val path1 = FileProvider.getUriForFile(mContext, requireContext().applicationContext.packageName.toString() + ".provider", file)
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(path1, "application/vnd.ms-excel")
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1163,11 +1504,11 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
 
 
     private fun checkPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        return if (SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
         } else {
-            val result: Int = ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE)
-            val result1: Int = ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            val result: Int = ContextCompat.checkSelfPermission(mContext, READ_EXTERNAL_STORAGE)
+            val result1: Int = ContextCompat.checkSelfPermission(mContext, WRITE_EXTERNAL_STORAGE)
             result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
         }
     }
@@ -1187,10 +1528,10 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
         }*/
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2296) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
                     callUSerListApi()
                 } else {
@@ -1198,5 +1539,169 @@ class ProtoRegistrationFragment:BaseFragment(),View.OnClickListener {
                 }
             }
         }
+         if(requestCode == 7009){
+             val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+             var t= result!![0]
+             Toaster.msgShort(mContext,t)
+         }
     }
+
+
+    private fun updateUserType(typeID:String,usrId:String){
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.updateUserType(usrId!!, Pref.session_token!!,typeID!!)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            var response = result as BaseResponse
+
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                (mContext as DashboardActivity).showSnackMessage("Type updation successful.")
+                                voiceAttendanceMsg("Type updation successful.")
+                            } else {
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
+    }
+
+    private fun addEmpPhone(phone:String,usrID:String,usrContID:String){
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.addEmpPhone(usrID!!, Pref.session_token!!,usrContID!!,phone)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            var response = result as BaseResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                (mContext as DashboardActivity).showSnackMessage("Phone added successful.")
+                                voiceAttendanceMsg("Phone added successful.")
+                            } else {
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
+    }
+
+    private fun updateEmpPhone(oldPhone:String,newPhone:String,usrID:String,usrContID:String){
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.updateEmpPhone(usrID!!, Pref.session_token!!,usrContID!!,oldPhone!!,newPhone!!)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            var response = result as BaseResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                (mContext as DashboardActivity).showSnackMessage("Phone updation successful.")
+                                voiceAttendanceMsg("Phone updation successful.")
+                            } else {
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
+    }
+
+    private fun updateOtherID(value:String,contactid:String){
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.updateOtherID(contactid,value)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            var response = result as BaseResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                //(mContext as DashboardActivity).showSnackMessage("Updation successful.")
+                                //voiceAttendanceMsg("Updation successful.")
+                                showMessage("Updation successful.")
+                            } else {
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
+    }
+
+    private fun updateUserLoginID(updating_user_id:String,new_login_id:String){
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.updateUserLoginID(updating_user_id,new_login_id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            var response = result as BaseResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                //(mContext as DashboardActivity).showSnackMessage("Updation successful.")
+                                //voiceAttendanceMsg("Updation successful.")
+                                showMessage("Updation successful.")
+                            } else if(response.status == NetworkConstant.NO_DATA){
+                                val simpleDialogAdhhar = Dialog(mContext)
+                                simpleDialogAdhhar.setCancelable(false)
+                                simpleDialogAdhhar.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                simpleDialogAdhhar.setContentView(R.layout.dialog_message)
+                                val dialogHeader = simpleDialogAdhhar.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+                                val dialogBody = simpleDialogAdhhar.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+                                dialogHeader.text = "Hi! "+Pref.user_name
+                                dialogBody.text = "Duplicate ID"
+                                val tv_message_ok = simpleDialogAdhhar.findViewById(R.id.tv_message_ok) as AppCustomTextView
+
+                                tv_message_ok.setOnClickListener({ view ->
+                                    simpleDialogAdhhar.cancel()
+                                    callUSerListApi()
+                                })
+                                simpleDialogAdhhar.show()
+                            }else{
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        })
+        )
+    }
+
+    private fun showMessage(msg:String){
+        val simpleDialogAdhhar = Dialog(mContext)
+        simpleDialogAdhhar.setCancelable(false)
+        simpleDialogAdhhar.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialogAdhhar.setContentView(R.layout.dialog_message)
+        val dialogHeader = simpleDialogAdhhar.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+        val dialogBody = simpleDialogAdhhar.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        dialogHeader.text = "Hi! "+Pref.user_name
+        dialogBody.text = msg
+        val tv_message_ok = simpleDialogAdhhar.findViewById(R.id.tv_message_ok) as AppCustomTextView
+
+        tv_message_ok.setOnClickListener({ view ->
+            simpleDialogAdhhar.cancel()
+            callUSerListApi()
+        })
+        simpleDialogAdhhar.show()
+    }
+
 }

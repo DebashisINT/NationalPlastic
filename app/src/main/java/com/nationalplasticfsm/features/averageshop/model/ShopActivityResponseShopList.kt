@@ -28,6 +28,9 @@ class ShopActivityResponseShopList {
     var agency_name: String? = null
     var pros_id: String? = null
     var approximate_1st_billing_value: Double? = 0.00
+    var multi_contact_name: String? = null
+    var multi_contact_number: String? = null
+}
 
 //    "date": "2017-11-12",--------------yyyy-MM-dd
 //    "shopid": "378_1512478115504",
@@ -36,4 +39,3 @@ class ShopActivityResponseShopList {
 //    "shop_address": "L2, GP Block, Sector V, Salt Lake City, Kolkata, West Bengal 700091, India",
 //    "visited_date": "2017-11-12T00:00:00"  "yyyy-MM-dd'T'HH:mm:ss"
 
-}

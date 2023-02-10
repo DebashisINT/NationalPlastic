@@ -339,7 +339,7 @@ class EditReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListe
         rv_ta_list.layoutManager = LinearLayoutManager(mContext)
         ivBottomSheetExapnd = view.findViewById(R.id.ivBottomSheetExapnd)
         bottom_sheet = view.findViewById(R.id.bottom_sheet);
-        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet!!);
         //setBottomSheetbehaviour()
         //attachnationalplasticfsmData()
         til_amount = view.findViewById(R.id.til_amount)
@@ -419,6 +419,7 @@ class EditReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListe
     }
 
     private fun setData() {
+
 
         if (reimbursementDetails?.visit_type.equals("local", ignoreCase = true)) {
             visitTypeId = "1"
@@ -1119,6 +1120,7 @@ class EditReimbursementFragment : BaseFragment(), DateAdapter.onPetSelectedListe
         }
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun selectLocation(ll_loc: LinearLayout, tv_loc: AppCustomTextView) {
         if (TextUtils.isEmpty(expense_type_TV.text.toString().trim()))

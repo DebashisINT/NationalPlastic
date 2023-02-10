@@ -1,6 +1,9 @@
 package com.nationalplasticfsm.features.localshops
 
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
@@ -19,10 +22,12 @@ import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
 import com.nationalplasticfsm.app.domain.OrderDetailsListEntity
+import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard
+import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.*
 import kotlinx.android.synthetic.main.inflate_nearby_shops.view.add_order_ll
@@ -53,7 +58,7 @@ import org.jetbrains.anko.uiThread
 /**
  * Created by riddhi on 2/1/18.
  */
-
+// 1.0 LocalShopsListAdapter  AppV 4.0.6  Suman   31/01/2023 Retailer/Entity show from room db mantis_id 25636
 class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, val listener: LocalShopListClickListener,private val getSize: (Int) -> Unit) :
         RecyclerView.Adapter<LocalShopsListAdapter.MyViewHolder>(), Filterable {
     private val layoutInflater: LayoutInflater
@@ -171,6 +176,9 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
             itemView.last_visited_date_TV.text = " " + list[adapterPosition].lastVisitedDate
 
             if (list[adapterPosition].visited) {
+
+                var obj = list[adapterPosition]
+
                 itemView.visit_icon.visibility = View.VISIBLE
                 if(Pref.isMultipleVisitEnable){
                     itemView.visit_TV.text = "Revisit Again"
@@ -181,6 +189,21 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
                     itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.maroon))
                     itemView.visit_icon.setColorFilter(ContextCompat.getColor(context,R.color.maroon),android.graphics.PorterDuff.Mode.SRC_IN)
                 }
+
+                if(Pref.IsmanualInOutTimeRequired){
+                    var statusL = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(obj.shop_id, AppUtils.getCurrentDateForShopActi())
+                    if(statusL.get(0).isDurationCalculated == false){
+                        itemView.visit_TV.text = "Out Location"
+                        itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.red))
+                        itemView.visit_icon.setColorFilter(ContextCompat.getColor(context,R.color.red),android.graphics.PorterDuff.Mode.SRC_IN)
+                    }
+                    else{
+                        itemView.visit_TV.text = "Revisited Today"
+                        itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.maroon))
+                        itemView.visit_icon.setColorFilter(ContextCompat.getColor(context,R.color.maroon),android.graphics.PorterDuff.Mode.SRC_IN)
+                    }
+                }
+
             } else {
                 itemView.visit_icon.visibility = View.GONE
 
@@ -191,7 +214,12 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
 
                 itemView.visit_TV.text = "Revisit Now"
                 itemView.visit_TV.setTextColor(ContextCompat.getColor(context, R.color.color_custom_green))
+
+                if(Pref.IsmanualInOutTimeRequired){
+                    itemView.visit_TV.text = "In Location"
+                }
             }
+
 
             itemView.shop_list_LL.setOnClickListener(View.OnClickListener {
                 //                listener.OnNearByShopsListClick(adapterPosition)
@@ -217,8 +245,39 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
                     listener.visitShop(list[adapterPosition])
                 }
                 else {
-                    if (!list[adapterPosition].visited)
-                        listener.visitShop(list[adapterPosition])
+                    var objL =  AppDatabase.getDBInstance()!!.shopActivityDao().getDurationCalculatedVisitedShopForADay(AppUtils.getCurrentDateForShopActi(), false)
+                    if(objL.size>0 && Pref.IsmanualInOutTimeRequired){
+                        if(objL.get(0).shopid.equals(list.get(adapterPosition).shop_id)){
+                            var statusL = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(list[adapterPosition].shop_id, AppUtils.getCurrentDateForShopActi())
+                            if(statusL.get(0).isDurationCalculated == false){
+                                listener.outLocation(list[adapterPosition].shop_id)
+                            }
+                        }else{
+                            val simpleDialog = Dialog(context)
+                            simpleDialog.setCancelable(false)
+                            simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                            simpleDialog.setContentView(R.layout.dialog_ok)
+                            val dialogHeader = simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+                            dialogHeader.text = "Shop out location is pending."
+                            val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+                            dialogYes.setOnClickListener({ view ->
+                                simpleDialog.cancel()
+                                (context as DashboardActivity).loadFragment(FragType.PendingOutLocationFrag, false, "")
+                            })
+                            simpleDialog.show()
+                        }
+
+                    }else{
+                        if (!list[adapterPosition].visited )
+                            listener.visitShop(list[adapterPosition])
+                        else if(Pref.IsmanualInOutTimeRequired){
+                            var statusL = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(list[adapterPosition].shop_id, AppUtils.getCurrentDateForShopActi())
+                            if(statusL.get(0).isDurationCalculated == false){
+                                listener.outLocation(list[adapterPosition].shop_id)
+                            }
+                        }
+                    }
+
                 }
             })
 
@@ -397,6 +456,17 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
             }
             else
                 itemView.tv_party_value.text = "N.A."
+
+            itemView.tv_retailer_entity_header.text = "Party Category: "
+            try{
+                if(list[adapterPosition].retailer_id == null || list[adapterPosition].retailer_id.equals("")){
+                    itemView.tv_retailer_entity_value.text = "N.A."
+                }else{
+                    itemView.tv_retailer_entity_value.text = AppDatabase.getDBInstance()?.retailerDao()?.getSingleItem(list[adapterPosition].retailer_id.toString())!!.name
+                }
+            }catch (ex:Exception){
+                itemView.tv_retailer_entity_value.text = "N.A."
+            }
 
 
             if(Pref.IsFeedbackHistoryActivated){

@@ -176,10 +176,13 @@ class NearByShopsMapFragment : BaseFragment(), View.OnClickListener, OnMapReadyC
         list.clear()
         val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
 
+
+
         val newList = java.util.ArrayList<AddShopDBModelEntity>()
 
         for (i in allShopList.indices) {
-            val userId = allShopList[i].shop_id.substring(0, allShopList[i].shop_id.indexOf("_"))
+//            val userId = allShopList[i].shop_id.substring(0, allShopList[i].shop_id.indexOf("_"))
+            val userId = allShopList[i].user_id
             if (userId == Pref.user_id)
                 newList.add(allShopList[i])
         }

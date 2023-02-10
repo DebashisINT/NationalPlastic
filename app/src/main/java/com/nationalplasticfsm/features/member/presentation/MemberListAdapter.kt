@@ -179,6 +179,29 @@ class MemberListAdapter(context: Context, val teamList: ArrayList<TeamListDataMo
                 listener.onBeatClick(teamList[adapterPosition])
             }
 
+            if(Pref.IsShowStateInTeam){
+                itemView.ll_state_root.visibility = View.VISIBLE
+            }else{
+                itemView.ll_state_root.visibility = View.GONE
+            }
+            if(Pref.IsShowBranchInTeam){
+                itemView.ll_branch_root.visibility = View.VISIBLE
+            }else{
+                itemView.ll_branch_root.visibility = View.GONE
+            }
+            if(Pref.IsShowDesignationInTeam){
+                itemView.ll_design_root.visibility = View.VISIBLE
+            }else{
+                itemView.ll_design_root.visibility = View.GONE
+            }
+
+
+            itemView.tv_state_member_list_show.text  = teamList[adapterPosition].State
+            itemView.tv_branch_member_list_show.text  = teamList[adapterPosition].Branch
+            itemView.tv_des_member_list_show.text  = teamList[adapterPosition].Designation
+
+            itemView.tv_empcode_member_list_show.text  = teamList[adapterPosition].Employee_Code
+
         }
     }
 

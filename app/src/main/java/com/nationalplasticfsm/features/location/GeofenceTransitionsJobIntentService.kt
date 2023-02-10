@@ -27,6 +27,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by aranya on 15/1/18.
  */
+// 1.0 GeofenceTransitionsJobIntentService AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class GeofenceTransitionsJobIntentService : JobIntentService() {
 
 
@@ -267,6 +268,12 @@ class GeofenceTransitionsJobIntentService : JobIntentService() {
         shopDurationData.isFirstShopVisited = shopActivity.isFirstShopVisited
         shopDurationData.distanceFromHomeLoc = shopActivity.distance_from_home_loc
         shopDurationData.next_visit_date = shopActivity.next_visit_date
+        //New shop Create issue
+        shopDurationData.isnewShop = shopActivity.isnewShop!!
+        // 1.0 GeofenceTransitionsJobIntentService  AppV 4.0.6  multiple contact Data added on Api called
+        shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+        shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
         shopDataList.add(shopDurationData)
 
         if (shopDataList.isEmpty()) {

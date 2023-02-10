@@ -8,11 +8,11 @@
 
     <ImageView
         android:id="@+id/logo_new"
-        android:layout_width="@dimen/_155sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="@dimen/_185sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:src="@drawable/breezelogo"
         android:layout_marginTop="@dimen/_170sdp"
-        android:src="@drawable/breezelogo" />
+        android:layout_centerHorizontal="true" />
 
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/Logo_name_TV"

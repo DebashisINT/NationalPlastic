@@ -3,26 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_custom_side_menu"
+    android:background="@drawable/sidebar_image_3"
     android:gravity="end">
+    <!--android:background="@drawable/shape_custom_side_menu" -->
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+      <ScrollView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/menu_RL"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="end">
+          <RelativeLayout
+              android:id="@+id/menu_RL"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="end">
 
-            <!--        <android.support.v7.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_8sdp"
-                        android:layout_marginTop="?actionBarSize"
-                        app:cardElevation="@dimen/_5sdp"
-                        app:cardUseCompatPadding="true">-->
+              <!--        <android.support.v7.widget.CardView
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginEnd="@dimen/_8sdp"
+                          android:layout_marginTop="?actionBarSize"
+                          app:cardElevation="@dimen/_5sdp"
+                          app:cardUseCompatPadding="true">-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,7 +34,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_menu_header_image">
+                    android:background="@drawable/ic_menu_header_image"
+                    android:backgroundTint="#1A2F8FF7">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -199,6 +201,38 @@
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
 
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tb_auto_revisit_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="Revisit"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <!-- 3.0  AppV 4.0.6  DashboardActivity -->
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tb_total_visit_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="Total Visit"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+
                 <!--clear Attendance -->
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_clear_attendance"
@@ -341,6 +375,36 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/nearby_shops"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/menu_beat_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Beat"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tv_pending_out_loc_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Pending Out Location"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />

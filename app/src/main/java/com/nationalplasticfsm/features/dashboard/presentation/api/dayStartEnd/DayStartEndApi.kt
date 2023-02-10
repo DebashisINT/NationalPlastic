@@ -25,6 +25,12 @@ interface DayStartEndApi {
     fun statusDayStartEnd(@Field("session_token") session_token: String, @Field("user_id") user_id: String,@Field("date") date: String):
             Observable<StatusDayStartEnd>
 
+    @FormUrlEncoded
+    @POST("UserWiseDayStartEnd/UserDayStartEndDelete")
+    fun submitDayStartEndDelApi(@Field("session_token") session_token: String,@Field("user_id") user_id: String,
+                                @Field("date") date: String,@Field("isdaystartdel") isdaystartdel: String,
+                                @Field("isdayenddel") isdayenddel: String,): Observable<BaseResponse>
+
     companion object Factory {
         fun create(): DayStartEndApi {
             val retrofit = Retrofit.Builder()

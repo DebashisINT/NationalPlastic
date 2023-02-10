@@ -1,6 +1,7 @@
 package com.nationalplasticfsm.features.nearbyshops.api
 
 import com.nationalplasticfsm.app.Pref
+import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.features.login.model.GetQtsAnsSubmitDtlsResponseModel
 import com.nationalplasticfsm.features.login.model.GetSecImageUploadResponseModel
 import com.nationalplasticfsm.features.login.model.productlistmodel.ModelListResponse
@@ -71,4 +72,10 @@ class ShopListRepository(val apiService: ShopListApi) {
     fun getQuestionList(): Observable<QuesListResponseModel> {
         return apiService.getQuesList(Pref.session_token!!, Pref.user_id!!)
     }
+
+    fun deleteImei(): Observable<BaseResponse> {
+        return apiService.deleteImeiAPI(Pref.session_token!!, Pref.user_id!!)
+    }
+
+
 }

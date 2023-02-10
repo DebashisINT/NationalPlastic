@@ -12,10 +12,12 @@ import android.os.*
 import android.speech.tts.TextToSpeech
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
@@ -25,6 +27,7 @@ import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.SearchListener
 import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
 import com.nationalplasticfsm.app.domain.AssignToDDEntity
+import com.nationalplasticfsm.app.domain.ProspectEntity
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.FTStorageUtils
@@ -38,21 +41,28 @@ import com.nationalplasticfsm.faceRec.tflite.SimilarityClassifier
 import com.nationalplasticfsm.faceRec.tflite.TFLiteObjectDetectionAPIModel
 import com.nationalplasticfsm.features.addAttendence.PrimaryValueAdapter
 import com.nationalplasticfsm.features.addAttendence.api.addattendenceapi.AddAttendenceRepoProvider
+import com.nationalplasticfsm.features.addAttendence.api.leavetytpeapi.LeaveTypeRepoProvider
 import com.nationalplasticfsm.features.addAttendence.model.AddAttendenceInpuModel
 import com.nationalplasticfsm.features.addAttendence.model.PrimaryValueDataModel
 import com.nationalplasticfsm.features.attendance.api.AttendanceRepositoryProvider
 import com.nationalplasticfsm.features.attendance.model.AttendanceRequest
 import com.nationalplasticfsm.features.attendance.model.AttendanceResponse
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
+import com.nationalplasticfsm.features.dashboard.presentation.api.dayStartEnd.DayStartEndRepoProvider
+import com.nationalplasticfsm.features.dashboard.presentation.model.DaystartDayendRequest
+import com.nationalplasticfsm.features.leaveapplynew.model.clearAttendanceonRejectReqModelRejectReqModel
 import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
-import com.nationalplasticfsm.features.photoReg.adapter.AdapterUserList
+import com.nationalplasticfsm.features.logout.presentation.api.LogoutRepositoryProvider
 import com.nationalplasticfsm.features.photoReg.adapter.AdapterUserListAttenD
 import com.nationalplasticfsm.features.photoReg.adapter.PhotoAttendanceListner
-import com.nationalplasticfsm.features.photoReg.adapter.PhotoRegUserListner
+import com.nationalplasticfsm.features.photoReg.adapter.ProsListSelectionAdapter
+import com.nationalplasticfsm.features.photoReg.adapter.ProsListSelectionListner
 import com.nationalplasticfsm.features.photoReg.api.GetUserListPhotoRegProvider
 import com.nationalplasticfsm.features.photoReg.model.GetUserListResponse
+import com.nationalplasticfsm.features.photoReg.model.ProsCustom
 import com.nationalplasticfsm.features.photoReg.model.UserListResponseModel
+import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.elvishew.xlog.XLog
 import com.google.android.gms.tasks.OnSuccessListener
@@ -63,19 +73,21 @@ import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_photo_registration.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.IOException
 import java.io.InputStream
+import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
+    private lateinit var tv_prospect: AppCustomTextView
     private lateinit var rvUserDtls:RecyclerView
+    private lateinit var ll_type_view_root:LinearLayout
     private lateinit var progress_wheel: com.pnikosis.materialishprogress.ProgressWheel
     var userList:ArrayList<UserListResponseModel> = ArrayList()
     private var adapter: AdapterUserListAttenD?= null
@@ -93,11 +105,19 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
     val TF_OD_API_LABELS_FILE = "file:///android_asset/labelmap.txt"
     val TF_OD_API_INPUT_SIZE = 112
 
+    var prosCusList:ArrayList<ProsCustom> = ArrayList()
+
+    var prosPopupWindow: PopupWindow? = null
+
     private val addAttendenceModel: AddAttendenceInpuModel by lazy {
         AddAttendenceInpuModel()
     }
 
     lateinit var obj_temp :UserListResponseModel
+
+    lateinit var simpleDialogProcess : Dialog
+    lateinit var dialogHeaderProcess: AppCustomTextView
+    lateinit var dialog_yes_no_headerTVProcess: AppCustomTextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -125,7 +145,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                 if (query.isBlank()) {
                     userList?.let {
                         adapter?.refreshList(it)
-                        tv_cust_no.text = "Total customer(s): " + it.size
+                        //tv_cust_no.text = "Total customer(s): " + it.size
                     }
                 } else {
                     adapter?.filter?.filter(query)
@@ -139,18 +159,127 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
     private fun initView(view: View){
         rvUserDtls = view.findViewById(R.id.rv_frag_photo_attend_user_details)
         progress_wheel = view.findViewById(R.id.progress_wheel_frag_photo_attend)
+        tv_prospect = view.findViewById(R.id.tv_prospect)
+        ll_type_view_root = view.findViewById(R.id.ll_type_view_root)
+        tv_prospect.setOnClickListener(this)
+        ll_type_view_root.setOnClickListener(this)
 
         faceDetectorSetUp()
 
         initPermissionCheck()
+
+
+        var prospectList = AppDatabase.getDBInstance()!!.prosDao().getAll() as ArrayList<ProspectEntity>
+        prosCusList.clear()
+        prosCusList.add(ProsCustom("0","All"))
+        for(i in 0..prospectList.size-1){
+            prosCusList.add(ProsCustom(prospectList.get(i).pros_id!!,prospectList.get(i).pros_name!!))
+        }
+        tv_prospect.text=prosCusList.get(0).prosName
+
+        simpleDialogProcess = Dialog(mContext)
+        simpleDialogProcess.setCancelable(false)
+        simpleDialogProcess.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialogProcess.setContentView(R.layout.dialog_message)
+        dialogHeaderProcess = simpleDialogProcess.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        dialog_yes_no_headerTVProcess = simpleDialogProcess.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+
         progress_wheel.spin()
         Handler(Looper.getMainLooper()).postDelayed({
             callUSerListApi()
-        }, 300)
+        }, 1000)
+
+        enableScreen()
     }
 
     override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.ll_type_view_root,R.id.tv_prospect->{
+                if (prosPopupWindow != null && prosPopupWindow!!.isShowing)
+                    prosPopupWindow?.dismiss()
+                else
+                    showProsTypePopup()
+            }
+        }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun showProsTypePopup(){
+        val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+        val customView = inflater!!.inflate(R.layout.dialog_months, null)
+        prosPopupWindow = PopupWindow(customView, resources.getDimensionPixelOffset(R.dimen._110sdp), resources.getDimensionPixelOffset(R.dimen._100sdp))
+        prosPopupWindow?.isFocusable=true
+        val rv_pros_list = customView.findViewById(R.id.rv_months) as RecyclerView
+        rv_pros_list.layoutManager = LinearLayoutManager(mContext)
+        val et_search = customView.findViewById<AppCustomEditText>(R.id.et_search)
+        et_search.visibility = View.GONE
+
+        prosPopupWindow?.elevation = 200f
+        prosPopupWindow!!.width=resources.getDimensionPixelOffset(R.dimen._200sdp)
+        prosPopupWindow!!.height=resources.getDimensionPixelOffset(R.dimen._200sdp)
+        rv_pros_list.adapter = ProsListSelectionAdapter(mContext, prosCusList, object : ProsListSelectionListner {
+            override fun getInfo(obj: ProsCustom) {
+                prosPopupWindow?.dismiss()
+                tv_prospect.text=obj.prosName
+                if(obj.prosid.equals("0")){
+                    callUSerListApi()
+                }else{
+                    loadFilteredList(obj.prosid)
+                }
+
+            }
+        })
+
+        if (prosPopupWindow != null && !prosPopupWindow?.isShowing!!) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                prosPopupWindow?.showAsDropDown(ll_type_view_root, resources.getDimensionPixelOffset(R.dimen._10sdp), 0, Gravity.BOTTOM)
+            } else {
+                prosPopupWindow?.showAsDropDown(ll_type_view_root, ll_type_view_root.width - prosPopupWindow?.width!!, 0)
+            }
+        }
+
+    }
+
+    private fun loadFilteredList(typeId:String){
+        userList.clear()
+        val repository = GetUserListPhotoRegProvider.provideUserListPhotoReg()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                repository.getUserListApi(Pref.user_id!!, Pref.session_token!!)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            var response = result as GetUserListResponse
+                            if (response.status == NetworkConstant.SUCCESS) {
+                                if (response.user_list!!.size > 0 && response.user_list!! != null) {
+
+                                    doAsync {
+                                        var list=response.user_list
+
+                                        for(i in 0..list!!.size-1){
+                                            if(list.get(i).type_id == typeId.toInt())
+                                                userList.add(list.get(i))
+                                        }
+
+                                        uiThread {
+                                            setAdapter()
+                                        }
+                                    }
+
+                                } else {
+                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_date_found))
+                                }
+//
+                            } else {
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_date_found))
+                            }
+                        }, { error ->
+                            progress_wheel.stopSpinning()
+                            error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage("Please try again later.")
+                        })
+        )
     }
 
     private var permissionUtils: PermissionUtils? = null
@@ -199,36 +328,79 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                         }, { error ->
                             progress_wheel.stopSpinning()
                             error.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.try_again_later))
 //                            (mContext as DashboardActivity).showSnackMessage("ERROR")
                         })
         )
     }
 
     private fun setAdapter(){
+
+        //filter userList for duplicate value
+        var userList_temp:ArrayList<UserListResponseModel> = ArrayList()
+
+        for(i in 0..userList.size-1){
+            if(userList_temp.size==0){
+                userList_temp.add(userList.get(i))
+            }
+            var isDuplicate = false
+            for(j in 0..userList_temp.size-1){
+                if(userList.get(i).user_id == userList_temp.get(j).user_id){
+                    isDuplicate=true
+                    break
+                }
+            }
+            if(!isDuplicate){
+                userList_temp.add(userList.get(i))
+            }
+        }
+        userList.clear()
+        userList=userList_temp
+
         adapter=AdapterUserListAttenD(mContext,userList,object : PhotoAttendanceListner{
             override fun getUserInfoOnLick(obj: UserListResponseModel) {
-                obj_temp=obj
-                if(AppUtils.isOnline(mContext)){
-                    if(Pref.isAddAttendence || true){
-                        if(obj_temp.isFaceRegistered!!){
-                            if(AppUtils.isOnline(mContext)){
-                                progress_wheel.spin()
-                                checkCurrentDayAttdUserWise()
-                            }else{
-                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
-                            }
 
-                            //getLocforDD()
-                            //GetImageFromUrl().execute(obj_temp.face_image_link)
+                progress_wheel.spin()
+                faceDetector=null
+                faceDetectorSetUp()
+                XLog.d("AdapterUserListAttenD onclick")
+                //GetImageFromUrl().execute(obj.face_image_link!!)
+                //GetImageFromUrl().execute("http://fts.indusnettechnologies.com:7007/CommonFolder/FaceImageDetection/EMA0003358.jpg")
+                //GetImageFromUrl().execute("http://3.7.30.86:82/CommonFolder/FaceImageDetection/EMK0000014.jpg")
+                //return
+
+                //Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                Handler().postDelayed(Runnable {
+                    progress_wheel.stopSpinning()
+                    CustomStatic.FaceDetectionAccuracyLower=Pref.FaceDetectionAccuracyLower
+                    CustomStatic.FaceDetectionAccuracyUpper=Pref.FaceDetectionAccuracyUpper
+                    obj_temp=obj
+                    //obj_temp.IsActiveUser=false
+                    if(!obj_temp.IsActiveUser!!){
+                        inactiveUserMsg("Login is inactive for ${obj_temp.user_name}. Please talk to administrator.")
+                    }else if(AppUtils.isOnline(mContext)){
+                        if(Pref.isAddAttendence || true){
+                            if(obj_temp.isFaceRegistered!! || obj_temp.IsTeamAttenWithoutPhoto!!){
+                                if(AppUtils.isOnline(mContext)){
+                                    progress_wheel.spin()
+                                    checkCurrentDayAttdUserWise()
+                                    //prepareAddAttendanceInputParams()
+                                }else{
+                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                                }
+                                //getLocforDD()
+                                //GetImageFromUrl().execute(obj_temp.face_image_link)
+                            }else{
+                                (mContext as DashboardActivity).showSnackMessage("Face Not Registered")
+                            }
                         }else{
-                            (mContext as DashboardActivity).showSnackMessage("Face Not Registered")
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.choose_attendance_type))
                         }
-                    }else{
-                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.choose_attendance_type))
                     }
-                }else{
-                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
-                }
+                    else{
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                    }
+                }, 500)
             }
 
             override fun getUserInfoAttendReportOnLick(obj: UserListResponseModel) {
@@ -239,6 +411,22 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
         })
 
         rvUserDtls.adapter=adapter
+    }
+
+    private fun inactiveUserMsg(msgBody:String){
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_message)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+        dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()+"!"
+        dialogHeader.text = msgBody
+        val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            simpleDialog.cancel()
+        })
+        simpleDialog.show()
     }
 
     private fun checkCurrentDayAttdUserWise(){
@@ -258,7 +446,14 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                             val attendanceList = result as AttendanceResponse
                             if (attendanceList.status == "205"){
                                 progress_wheel.stopSpinning()
+                                try{
+                                    CustomStatic.FaceUrl=obj_temp.face_image_link
+                                }catch (ex:Exception){
+
+                                }
                                 getLocforDD()
+
+                                //GetImageFromUrl().execute(obj_temp.face_image_link!!)
                             }else if(attendanceList.status == NetworkConstant.SUCCESS){
                                 progress_wheel.stopSpinning()
                                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.team_attendance_submited))
@@ -283,8 +478,8 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
         val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
         dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()+"!"
         //dialogHeader.text = "Attendance of "+obj_temp!!.user_name +" submitted for today."
-        dialogHeader.text = "Attendance for "+obj_temp!!.user_name+" already marked for today."
-        voiceAttendanceMsg("Attendance for "+obj_temp!!.user_name+" already marked for today.")
+        dialogHeader.text = "Visit for "+obj_temp!!.user_name+" already marked for today."
+        voiceAttendanceMsg("Visit for "+obj_temp!!.user_name+" already marked for today.")
         val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
         dialogYes.setOnClickListener({ view ->
             simpleDialog.cancel()
@@ -336,6 +531,8 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                         if (isGetLocation == -1) {
                             isGetLocation = 0
                             if (location.accuracy > Pref.gpsAccuracy.toInt()) {
+                                XLog.d("PhotoAttendanceFragment : loc.accuracy : "+location.accuracy.toString()+
+                                        " Pref.gpsAccuracy : "+Pref.gpsAccuracy.toInt().toString())
                                 (mContext as DashboardActivity).showSnackMessage("Unable to fetch accurate GPS data. Please try again.")
                                 progress_wheel.stopSpinning()
                             } else
@@ -363,6 +560,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
     }
 
     private fun getNearyShopListDD(location: Location) {
+        progress_wheel.spin()
         var nearBy: Double = Pref.shopLocAccuracy.toDouble()
         var shop_id: String = ""
         var finalNearByShop: AddShopDBModelEntity = AddShopDBModelEntity()
@@ -405,11 +603,20 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
             //(mContext as DashboardActivity).showSnackMessage("No Shop Found")
         }
 
+        //test code
+        //prepareAddAttendanceInputParams()
+        //return
+
 
         //finalNearByDD=newDDList[5]
-
+        progress_wheel.stopSpinning()
         if (finalNearByDD.dd_id != null && finalNearByDD.dd_id!!.length > 1) {
-            GetImageFromUrl().execute(obj_temp.face_image_link)
+            XLog.d("PhotoAtend nearby found onclick")
+            if(obj_temp.IsTeamAttenWithoutPhoto!!){
+                prepareAddAttendanceInputParams()
+            }else{
+                GetImageFromUrl().execute(obj_temp.face_image_link)
+            }
             //prepareAddAttendanceInputParams()
         }  else {
             progress_wheel.stopSpinning()
@@ -453,9 +660,25 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
         override fun onPostExecute(result: Bitmap?) {
             super.onPostExecute(result)
             println("reg_face - registerFace called"+AppUtils.getCurrentDateTime());
-            registerFace(result)
+            registerFace(getResizedBitmap(result!!,240,240))
+            //registerFace(result)
         }
+    }
 
+    fun getResizedBitmap(bm: Bitmap, newHeight: Int, newWidth: Int): Bitmap? {
+        val width = bm.width
+        val height = bm.height
+        val scaleWidth = newWidth.toFloat() / width
+        val scaleHeight = newHeight.toFloat() / height
+
+        // create a matrix for the manipulation
+        val matrix = Matrix()
+
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight)
+
+        // recreate the new Bitmap
+        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false)
     }
 
     fun faceDetectorSetUp(){
@@ -477,8 +700,10 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
         val options = FaceDetectorOptions.Builder()
                 .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
                 //.setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                .setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                //.setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
                 .build()
 
         val detector = FaceDetection.getClient(options)
@@ -494,6 +719,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                 //Toast.makeText(this, "No File", Toast.LENGTH_SHORT).show()
                 return
             }
+            progress_wheel.spin()
             //ivFace.setImageBitmap(mBitmap)
             previewWidth = mBitmap.width
             previewHeight = mBitmap.height
@@ -503,6 +729,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
             faceBmp = Bitmap.createBitmap(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, Bitmap.Config.ARGB_8888)
             faceDetector?.process(image)?.addOnSuccessListener(OnSuccessListener<List<Face>> { faces ->
                 if (faces.size == 0) {
+                    progress_wheel.stopSpinning()
                     println("reg_face - add_attendance_registerFace no face detected"+AppUtils.getCurrentDateTime());
                     return@OnSuccessListener
                 }
@@ -510,6 +737,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                     object : Thread() {
                         override fun run() {
                             //action
+                            progress_wheel.stopSpinning()
                             println("reg_face - add_attendance_registerFace face detected"+AppUtils.getCurrentDateTime());
                             onFacesDetected(1, faces, true) //no need to add currtime
                         }
@@ -521,10 +749,12 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
 
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
+            progress_wheel.stopSpinning()
         }
     }
 
     fun onFacesDetected(currTimestamp: Long, faces: List<Face>, add: Boolean) {
+        progress_wheel.spin()
         val paint = Paint()
         paint.color = Color.RED
         paint.style = Paint.Style.STROKE
@@ -632,13 +862,19 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
         //    if (saved) {
 //      lastSaved = System.currentTimeMillis();
 //    }
+
         CustomStatic.IsCameraFacingFromTeamAttdCametaStatus=true
         CustomStatic.IsCameraFacingFromTeamAttd=true
         Log.e("xc", "startabc" )
         val rec = mappedRecognitions[0]
         FaceStartActivity.detector.register("", rec)
-        val intent = Intent(mContext, DetectorActivity::class.java)
-        startActivityForResult(intent, 172)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(mContext, DetectorActivity::class.java)
+            startActivityForResult(intent, 172)
+        }, 200)
+
+
 //        startActivity(new Intent(this,DetectorActivity.class));
 //        finish();
 
@@ -707,6 +943,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
     }
 
     private fun prepareAddAttendanceInputParams() {
+        disableScreen()
         progress_wheel.stopSpinning()
 
         try {
@@ -751,7 +988,7 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                     Pref.source_longitude = Pref.current_longitude
                 }
 
-                var stateList = AppUtils.loadSharedPreferencesStateList(mContext)
+               var stateList = AppUtils.loadSharedPreferencesStateList(mContext)
                 if (stateList != null && stateList!!.size > 0) {
 
                     val primaryList = ArrayList<PrimaryValueDataModel>()
@@ -773,24 +1010,44 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
 
             }
 
-            addAttendenceModel.work_date_time = /*"2018-12-21T18:05:41"*/ AppUtils.getCurrentISODateTime()//AppUtils.getCurrentDateTime12FormatToAttr(AppUtils.getCurrentDateTime12Format())
+            addAttendenceModel.work_date_time =  AppUtils.getCurrentISODateTime()//AppUtils.getCurrentDateTime12FormatToAttr(AppUtils.getCurrentDateTime12Format())
             val addAttendenceTime =  /*"06:05 PM"*/ AppUtils.getCurrentTimeWithMeredian()
             addAttendenceModel.add_attendence_time = addAttendenceTime
             addAttendenceModel.from_id = ""
             addAttendenceModel.to_id = ""
 
-
-
             addAttendenceModel.distance = ""
+
+
+
+            try{
+                dialog_yes_no_headerTVProcess.text = AppUtils.hiFirstNameText()!!+"!"
+            }catch (ex:Exception){
+                dialog_yes_no_headerTVProcess.text = "Hi"+"!"
+            }
+
+            dialogHeaderProcess.text = "Submitting Visit, Please wait...."
+            val dialogYes = simpleDialogProcess.findViewById(R.id.tv_message_ok) as AppCustomTextView
+            dialogYes.setOnClickListener {
+                simpleDialogProcess.dismiss()
+            }
+            simpleDialogProcess.show()
 
             doAttendance()
 
         } catch (e: Exception) {
+            enableScreen()
             e.printStackTrace()
         }
     }
 
     private fun doAttendance(){
+        XLog.d("PhotoAttendance : doAttendance " +AppUtils.getCurrentDateTime())
+        XLog.d("PhotoAttendance : doAttendance :add_attendence_time " +addAttendenceModel.add_attendence_time)
+        //XLog.d("PhotoAttendance : doAttendance :work_date_time " +addAttendenceModel.work_date_time)
+        XLog.d("PhotoAttendance : doAttendance :work_lat : work_long " +addAttendenceModel.work_lat + " "+addAttendenceModel.work_long)
+        XLog.d("PhotoAttendance : doAttendance :user_id " +addAttendenceModel.user_id)
+
         BaseActivity.isApiInitiated = true
         val repository = AddAttendenceRepoProvider.addAttendenceRepo()
         progress_wheel.spin()
@@ -801,27 +1058,40 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
-                            XLog.d("AddAttendance Response Code========> " + response.status)
-                            XLog.d("AddAttendance Response Msg=========> " + response.message)
+                            XLog.d("VISIT AddAttendance Response Code========> " + response.status)
+                            XLog.d("VISIT AddAttendance Response Msg=========> " + response.message)
+                            enableScreen()
                             if (response.status == NetworkConstant.SUCCESS) {
                                 BaseActivity.isApiInitiated = false
                                 if(Pref.user_id!!.equals(addAttendenceModel.user_id)){
                                     Pref.isAddAttendence=true
                                 }
-                                showAttendSuccessMsg()
-                            }
-                            else {
+                                //showAttendSuccessMsg()
+
+                                Handler().postDelayed(Runnable {
+                                    //getLocforStart(obj_temp!!.user_id.toString())
+
+                                    var locc : Location = Location("")
+                                    locc.latitude=Pref.current_latitude.toDouble()
+                                    locc.longitude=Pref.current_longitude.toDouble()
+                                    calllogoutApi(locc,obj_temp!!.user_id.toString())
+                                }, 1500)
+
+                            } else {
                                 BaseActivity.isApiInitiated = false
-                                (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                                //(mContext as DashboardActivity).showSnackMessage(response.message!!)
+                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.try_again_later))
                             }
-
-                            Log.e("add attendance team", "api work type")
-
                         }, { error ->
-                            XLog.d("AddAttendance team Response Msg=========> " + error.message)
+
+                            //delete attendance-daystartend
+                            apiCallOnClearAttenReject(obj_temp!!.user_id.toString())
+
+                            XLog.d("VISIT AddAttendance team Response Msg=========> " + error.message)
+                            enableScreen()
                             BaseActivity.isApiInitiated = false
                             progress_wheel.stopSpinning()
-                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            //(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
     }
@@ -834,12 +1104,13 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
         val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
         val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
         dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()!!+"!"
-        dialogHeader.text = "Attendance successfully marked for "+obj_temp.user_name+".Thanks ."
-        voiceAttendanceMsg("Attendance successfully marked for "+obj_temp.user_name)
+        dialogHeader.text = "Visit successfully marked for "+obj_temp.user_name+". Thanks."
+        voiceAttendanceMsg("Visit successfully marked for "+obj_temp.user_name)
         val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
         dialogYes.setOnClickListener({ view ->
             simpleDialog.cancel()
-            (mContext as DashboardActivity).loadFragment(FragType.PhotoAttendanceFragment, false, "")
+            callUSerListApi()
+            //(mContext as DashboardActivity).loadFragment(FragType.PhotoAttendanceFragment, false, "")
         })
         simpleDialog.show()
     }
@@ -851,4 +1122,490 @@ class PhotoAttendanceFragment: BaseFragment(), View.OnClickListener {
                 Log.e("Add Day Start", "TTS error in converting Text to Speech!");
         }
     }
+
+    fun getLocforStart(usrID:String) {
+        if (AppUtils.isOnline(mContext)) {
+            if(AppUtils.mLocation!=null && false){
+                startDay(AppUtils.mLocation!!,usrID)
+            }else{
+                var locNw = Location("")
+                locNw.latitude = Pref.current_latitude.toDouble()
+                locNw.longitude = Pref.current_longitude.toDouble()
+                AppUtils.mLocation = locNw
+                startDay(AppUtils.mLocation!!,usrID)
+            }
+        }else{
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+        }
+
+        /*if (AppUtils.isOnline(mContext)) {
+            if (AppUtils.mLocation != null) {
+                if (AppUtils.mLocation!!.accuracy <= Pref.gpsAccuracy.toInt()) {
+                    if (AppUtils.mLocation!!.accuracy <= Pref.shopLocAccuracy.toFloat()) {
+                        startDay(AppUtils.mLocation!!,usrID)
+                    } else {
+                        //getDDList(AppUtils.mLocation!!)
+                        singleLocation(usrID)
+                    }
+                } else {
+                    XLog.d("=====Inaccurate current location (Local Shop List)=====")
+                    singleLocation(usrID)
+                }
+            } else {
+                XLog.d("=====null location (Local Shop List)======")
+                singleLocation(usrID)
+            }
+        } else
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))*/
+
+    }
+
+    private fun singleLocation(usrID:String) {
+        progress_wheel.spin()
+        isGetLocation = -1
+        SingleShotLocationProvider.requestSingleUpdate(mContext,
+                object : SingleShotLocationProvider.LocationCallback {
+                    override fun onStatusChanged(status: String) {
+                       
+                    }
+
+                    override fun onProviderEnabled(status: String) {
+
+                    }
+
+                    override fun onProviderDisabled(status: String) {
+
+                    }
+
+                    override fun onNewLocationAvailable(location: Location) {
+                        if (isGetLocation == -1) {
+                            isGetLocation = 0
+                            if (location.accuracy > Pref.gpsAccuracy.toInt()) {
+                                XLog.d("PhotoAttendanceFragment : loc.accuracy : "+location.accuracy.toString()+
+                                        " Pref.gpsAccuracy : "+Pref.gpsAccuracy.toInt().toString())
+                                (mContext as DashboardActivity).showSnackMessage("Unable to fetch accurate GPS data. Please try again.")
+                                progress_wheel.stopSpinning()
+                            } else
+                                startDay(location,usrID)
+                        }
+                    }
+                })
+        val t = Timer()
+        t.schedule(object : TimerTask() {
+            override fun run() {
+                try {
+                    if (isGetLocation == -1) {
+                        isGetLocation = 1
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage("GPS data to show nearby party is inaccurate. Please stop " +
+                                "internet, stop GPS/Location service, and then restart internet and GPS services to get nearby party list.")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }, 15000)
+    }
+
+    fun startDay(loc: Location,usrID:String) {
+        try{
+            XLog.d("PhotoAtendFrag : startDay  ========> " +AppUtils.getCurrentDateTime())
+        }catch (ex:Exception){ex.printStackTrace()}
+
+        disableScreen()
+        progress_wheel.spin()
+        try {
+            var dayst: DaystartDayendRequest = DaystartDayendRequest()
+            dayst.user_id = usrID
+            dayst.session_token = Pref.session_token
+            //dayst.date = AppUtils.getCurrentDateTime()
+            dayst.date = AppUtils.getCurrentDateTimeNew()
+            if(dayst.date.equals("") || dayst.date==null){
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                return
+            }
+            if (!TextUtils.isEmpty(loc.latitude.toString()) && !TextUtils.isEmpty(loc.longitude.toString())) {
+            dayst.location_name = LocationWizard.getNewLocationName(mContext, loc.latitude, loc.longitude)
+            }else{
+                dayst.location_name=""
+            }
+            if (!TextUtils.isEmpty(loc.latitude.toString())){
+                    dayst.latitude = loc.latitude.toString()
+            }else{
+                dayst.latitude = ""
+            }
+            if (!TextUtils.isEmpty(loc.longitude.toString())){
+                dayst.longitude = loc.longitude.toString()
+            }else{
+                dayst.longitude = ""
+            }
+            dayst.IsDDvistedOnceByDay = "0"
+            dayst.visit_distributor_date_time = ""
+            dayst.visit_distributor_id = ""
+            dayst.visit_distributor_name = ""
+
+            dayst.shop_type = ""
+            dayst.shop_id = ""
+            dayst.isStart = "1"
+            dayst.isEnd = "0"
+            dayst.sale_Value = "0.0"
+            dayst.remarks = ""
+
+            var addr=""
+            try{
+                addr=LocationWizard.getAdressFromLatlng(mContext, loc.latitude, loc.longitude)
+            }catch (ex:Exception){
+                addr=""
+            }
+            try{
+                XLog.d("PhotoAtendFrag : startDay : getCurrentDateTime() " +AppUtils.getCurrentDateTime())
+                XLog.d("PhotoAtendFrag : startDay : getCurrentDateTimeNew() " +AppUtils.getCurrentDateTimeNew())
+                XLog.d("PhotoAtendFrag : startDay : user_id ${dayst.user_id}")
+                XLog.d("PhotoAtendFrag : startDay : date ${dayst.date}")
+                XLog.d("PhotoAtendFrag : startDay : locationName ${dayst.location_name}")
+                XLog.d("PhotoAtendFrag : startDay : address $addr")
+                XLog.d("PhotoAtendFrag : startDay :  lat : " +dayst.latitude.toString() + " long : "+dayst.longitude)
+            }catch (ex:Exception){
+                ex.printStackTrace()
+            }
+
+            val repository = DayStartEndRepoProvider.dayStartRepositiry()
+            BaseActivity.compositeDisposable.add(
+                    repository.dayStart(dayst)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                XLog.d("DayStart (PhotoAttendanceFragment): DayStarted Success status " + result.status + " usr_id : "+usrID+" lat "+
+                                        loc.latitude.toString()+ " long "+ loc.longitude.toString()+" addr "+addr+" "+AppUtils.getCurrentDateTime() )
+                                progress_wheel.stopSpinning()
+                                enableScreen()
+                                val response = result as BaseResponse
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    Handler().postDelayed(Runnable {
+                                        endDay(loc,usrID)
+                                    }, 1500)
+
+                                }
+                            }, { error ->
+                                enableScreen()
+
+                                //delete attendance-daystartend
+                                apiCallOnClearAttenReject(obj_temp!!.user_id.toString())
+
+                                if (error == null) {
+                                    XLog.d("DayStart (PhotoAttendanceFragment) : ERROR " + " usr_id : "+usrID+" UNEXPECTED ERROR IN DayStart API "+AppUtils.getCurrentDateTime())
+                                } else {
+                                    XLog.d("DayStart (PhotoAttendanceFragment) : ERROR " +" usr_id : "+usrID+ " "+error.localizedMessage+" "+AppUtils.getCurrentDateTime())
+                                    error.printStackTrace()
+                                }
+                                progress_wheel.stopSpinning()
+                                //(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+
+        } catch (ex: Exception) {
+            //delete attendance-daystartend
+            apiCallOnClearAttenReject(obj_temp!!.user_id.toString())
+
+            XLog.d("DayStart (PhotoAttendanceFragment) : exception " + " usr_id : "+usrID+" UNEXPECTED ERROR IN DayStart API "+AppUtils.getCurrentDateTime())
+            enableScreen()
+            ex.printStackTrace()
+            progress_wheel.stopSpinning()
+            //(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+        }
+
+    }
+
+    fun endDay(loc: Location,usrID:String) {
+        disableScreen()
+        progress_wheel.spin()
+        try {
+            var dayst: DaystartDayendRequest = DaystartDayendRequest()
+            dayst.user_id = usrID
+            dayst.session_token = Pref.session_token
+            //dayst.date = AppUtils.getCurrentDateTime()
+            dayst.date = AppUtils.getCurrentDateTimeNew()
+            dayst.location_name = LocationWizard.getNewLocationName(mContext, loc.latitude, loc.longitude)
+            dayst.latitude = loc.latitude.toString()
+            dayst.longitude = loc.longitude.toString()
+            dayst.IsDDvistedOnceByDay = "0"
+            dayst.visit_distributor_date_time = ""
+            dayst.visit_distributor_id = ""
+            dayst.visit_distributor_name = ""
+
+            dayst.shop_type = ""
+            dayst.shop_id = ""
+            dayst.isStart = "0"
+            dayst.isEnd = "1"
+            dayst.sale_Value = "0.0"
+            dayst.remarks = ""
+
+            var addr=""
+            try{
+                addr=LocationWizard.getAdressFromLatlng(mContext, loc.latitude, loc.longitude)
+            }catch (ex:Exception){
+                addr=""
+            }
+            try{
+                XLog.d("PhotoAtendFrag : endDay :  AppUtils.getCurrentDateTime() " +AppUtils.getCurrentDateTime())
+                XLog.d("PhotoAtendFrag : endDay :  AppUtils.getCurrentDateTimeNew() " +AppUtils.getCurrentDateTimeNew())
+
+                XLog.d("PhotoAtendFrag : endDay : user_id ${dayst.user_id}")
+                XLog.d("PhotoAtendFrag : endDay : date ${dayst.date}")
+                XLog.d("PhotoAtendFrag : endDay : locationName ${dayst.location_name}")
+                XLog.d("PhotoAtendFrag : endDay : address $addr")
+                XLog.d("PhotoAtendFrag : endDay :  lat : " +dayst.latitude.toString() + " long : "+dayst.longitude)
+            }catch (ex:Exception){
+                ex.printStackTrace()
+            }
+
+            val repository = DayStartEndRepoProvider.dayStartRepositiry()
+            BaseActivity.compositeDisposable.add(
+                    repository.dayStart(dayst)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ result ->
+                                XLog.d("DayEnd (PhotoAttendanceFragment): DayStarted Success status " + result.status + " usr_id : "+usrID+" lat "+
+                                        loc.latitude.toString()+ " long "+ loc.longitude.toString()+" addr "+addr+" "+AppUtils.getCurrentDateTime())
+                                progress_wheel.stopSpinning()
+                                enableScreen()
+                                val response = result as BaseResponse
+                                if (response.status == NetworkConstant.SUCCESS) {
+                                    Handler().postDelayed(Runnable {
+                                        calllogoutApi(loc,usrID)
+                                    }, 1500)
+                                }
+                            }, { error ->
+                                enableScreen()
+
+                                //delete attendance-daystartend
+                                apiCallOnClearAttenReject(obj_temp!!.user_id.toString())
+
+                                if (error == null) {
+                                    XLog.d("DayEnd (PhotoAttendanceFragment) : ERROR " + " usr_id : "+usrID+" UNEXPECTED ERROR IN DayStart API "+AppUtils.getCurrentDateTime())
+                                } else {
+                                    XLog.d("DayEnd (PhotoAttendanceFragment) : ERROR " +" usr_id : "+usrID+ " "+error.localizedMessage+" "+AppUtils.getCurrentDateTime())
+                                    error.printStackTrace()
+                                }
+                                progress_wheel.stopSpinning()
+                                //(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                            })
+            )
+
+        } catch (ex: Exception) {
+            XLog.d("DayEnd (PhotoAttendanceFragment) : ERRORRR " + " usr_id : "+usrID+" err $ex "+AppUtils.getCurrentDateTime())
+            enableScreen()
+
+            //delete attendance-daystartend
+            apiCallOnClearAttenReject(obj_temp!!.user_id.toString())
+
+            ex.printStackTrace()
+            progress_wheel.stopSpinning()
+            //(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+        }
+
+    }
+
+    private fun calllogoutApi(loc: Location,usrID:String) {
+        disableScreen()
+        var distance = 0.0
+        var location = ""
+
+        if (loc.latitude.toString() != "0.0" && loc.longitude.toString() != "0.0") {
+            location = LocationWizard.getAdressFromLatlng(mContext, loc.latitude.toDouble(), loc.longitude.toDouble())
+            if (location.contains("http"))
+                location = "Unknown"
+        }
+        val repository = LogoutRepositoryProvider.provideLogoutRepository()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+                //repository.logout(usrID, Pref.session_token!!, loc.latitude.toString(), loc.longitude.toString(), AppUtils.getCurrentDateTime(), distance.toString(), "0", location)
+                repository.logout(usrID, Pref.session_token!!, loc.latitude.toString(), loc.longitude.toString(), AppUtils.getCurrentDateTimeNew(), distance.toString(), "0", location)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            progress_wheel.stopSpinning()
+                            val logoutResponse = result as BaseResponse
+                            XLog.d("PhotoAttendanceFragment LOGOUT : " + "RESPONSE : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + usrID + ",MESSAGE : " + logoutResponse.message)
+                            enableScreen()
+                            simpleDialogProcess.dismiss()
+                            if (logoutResponse.status == NetworkConstant.SUCCESS) {
+                                (mContext as DashboardActivity).isChangedPassword = false
+                                Pref.tempDistance = "0.0"
+                                BaseActivity.isApiInitiated = false
+                                showAttendSuccessMsg()
+
+                            } else if (logoutResponse.status == NetworkConstant.SESSION_MISMATCH) {
+                                //clearData()
+                                (mContext as DashboardActivity).isChangedPassword = false
+                                /*startActivity(Intent(mContext, LoginActivity::class.java))
+                                (mContext as DashboardActivity).overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                                (mContext as DashboardActivity).finishAffinity()*/
+                            } else {
+                                progress_wheel.stopSpinning()
+                                (mContext as DashboardActivity).showSnackMessage("Failed to logout")
+
+                                if ((mContext as DashboardActivity).isChangedPassword) {
+                                    (mContext as DashboardActivity).isChangedPassword = false
+                                    (mContext as DashboardActivity).onBackPressed()
+                                }
+                            }
+                            BaseActivity.isApiInitiated = false
+
+                        }, { error ->
+                            enableScreen()
+                            BaseActivity.isApiInitiated = false
+                            progress_wheel.stopSpinning()
+                            simpleDialogProcess.dismiss()
+                            error.printStackTrace()
+                            XLog.d("PhotoAttendanceFragment LOGOUT : " + "RESPONSE ERROR: " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + usrID + ",MESSAGE : " + error.localizedMessage)
+                            //(mContext as DashboardActivity).showSnackMessage(error.localizedMessage)
+
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.try_again_later))
+
+                            //delete attendance-daystartend
+                            apiCallOnClearAttenReject(obj_temp!!.user_id.toString())
+
+                            if ((mContext as DashboardActivity).isChangedPassword) {
+                                (mContext as DashboardActivity).isChangedPassword = false
+                                (mContext as DashboardActivity).onBackPressed()
+                            }
+
+                        })
+        )
+    }
+
+    private fun disableScreen(){
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private fun enableScreen(){
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private fun apiCallOnClearAttenReject(usrID:String) {  // clearing leave if isOnLeave is true
+
+        simpleDialogProcess.dismiss()
+        /*(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+        return*/
+
+        var req : clearAttendanceonRejectReqModelRejectReqModel = clearAttendanceonRejectReqModelRejectReqModel()
+        req.user_id=usrID
+        req.leave_apply_date=AppUtils.getCurrentDateForShopActi()
+        req.isOnLeave=true
+        req.IsLeaveDelete = "1"
+
+        val repository = LeaveTypeRepoProvider.leaveTypeListRepoProvider()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+            repository.clearAttendanceonRejectclick(req)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val response = result as BaseResponse
+                    progress_wheel.stopSpinning()
+                    if (response.status == NetworkConstant.SUCCESS) {
+                        Handler().postDelayed(Runnable {
+                            apiCallOnClearAttenReject1(usrID)
+                        }, 500)
+
+                    }
+                }, { error ->
+                    progress_wheel.stopSpinning()
+                    //(mContext as DashboardActivity).showSnackMessage("ERROR")
+                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.try_again_later))
+                })
+        )
+    }
+
+    private fun apiCallOnClearAttenReject1(usrID:String) { // clearing attendance if isOnLeave is false
+        var req : clearAttendanceonRejectReqModelRejectReqModel = clearAttendanceonRejectReqModelRejectReqModel()
+        req.user_id=usrID
+        req.leave_apply_date=AppUtils.getCurrentDateForShopActi()
+        req.isOnLeave=false
+        req.IsLeaveDelete = "1"
+
+        val repository = LeaveTypeRepoProvider.leaveTypeListRepoProvider()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+            repository.clearAttendanceonRejectclick(req)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val response = result as BaseResponse
+                    progress_wheel.stopSpinning()
+                    if (response.status == NetworkConstant.SUCCESS) {
+                        Handler().postDelayed(Runnable {
+                            deleteDaystartEnd(usrID)
+                        }, 500)
+
+                    }
+                }, { error ->
+                    progress_wheel.stopSpinning()
+                    //(mContext as DashboardActivity).showSnackMessage("ERROR")
+                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.try_again_later))
+                })
+        )
+    }
+
+    fun deleteDaystartEnd(usrID:String) {
+        progress_wheel.spin()
+        try {
+            val repository = DayStartEndRepoProvider.dayStartRepositiry()
+            BaseActivity.compositeDisposable.add(
+                repository.daystartendDelete(Pref.session_token.toString(),usrID,AppUtils.getCurrentDateForShopActi(),"1","1")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        progress_wheel.stopSpinning()
+                        enableScreen()
+                        val response = result as BaseResponse
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            Handler().postDelayed(Runnable {
+                                tryAgainMsg()
+                            }, 500)
+
+                        }
+                    }, { error ->
+                        enableScreen()
+                        if (error == null) {
+                            XLog.d("DayStart (PhotoAttendanceFragment) : ERROR " + " usr_id : "+usrID+" UNEXPECTED ERROR IN DayStart API "+AppUtils.getCurrentDateTime())
+                        } else {
+                            XLog.d("DayStart (PhotoAttendanceFragment) : ERROR " +" usr_id : "+usrID+ " "+error.localizedMessage+" "+AppUtils.getCurrentDateTime())
+                            error.printStackTrace()
+                        }
+                        progress_wheel.stopSpinning()
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                    })
+            )
+
+        } catch (ex: Exception) {
+            XLog.d("DayStart (PhotoAttendanceFragment) : exception " + " usr_id : "+usrID+" UNEXPECTED ERROR IN DayStart API "+AppUtils.getCurrentDateTime())
+            enableScreen()
+            ex.printStackTrace()
+            progress_wheel.stopSpinning()
+            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+        }
+    }
+
+    fun tryAgainMsg(){
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_message)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_message_header_TV) as AppCustomTextView
+        val dialog_yes_no_headerTV = simpleDialog.findViewById(R.id.dialog_message_headerTV) as AppCustomTextView
+        dialog_yes_no_headerTV.text = AppUtils.hiFirstNameText()!!+"!"
+        dialogHeader.text = "Please try Again."
+        val dialogYes = simpleDialog.findViewById(R.id.tv_message_ok) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            simpleDialog.cancel()
+            callUSerListApi()
+            //(mContext as DashboardActivity).loadFragment(FragType.PhotoAttendanceFragment, false, "")
+        })
+        simpleDialog.show()
+    }
+
+
 }

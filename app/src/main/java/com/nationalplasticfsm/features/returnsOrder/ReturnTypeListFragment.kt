@@ -65,6 +65,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
+// 1.0 ReturnTypeListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class ReturnTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -678,6 +679,11 @@ class ReturnTypeListFragment : BaseFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).tv_cart_count.visibility = View.VISIBLE
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.add_product_cart))
 
+            }
+        },object : ProductListAdapter.OnProductDelClickListener{
+
+            override fun onProductDelClick(position: ProductListEntity) {
+                TODO("Not yet implemented")
             }
         })
 
@@ -1647,6 +1653,13 @@ class ReturnTypeListFragment : BaseFragment(), View.OnClickListener {
             else
                 shopDurationData.approximate_1st_billing_value = ""
 
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 ReturnTypeListFragment  AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
         } else {
             for (i in list.indices) {
@@ -1728,6 +1741,13 @@ class ReturnTypeListFragment : BaseFragment(), View.OnClickListener {
                     shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
                 else
                     shopDurationData.approximate_1st_billing_value = ""
+
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 ReturnTypeListFragment  AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
 
                 shopDataList.add(shopDurationData)
             }

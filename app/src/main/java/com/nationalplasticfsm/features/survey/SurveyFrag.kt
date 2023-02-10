@@ -59,6 +59,7 @@ class SurveyFrag: BaseFragment(), View.OnClickListener {
     lateinit var ll_root: LinearLayout
     lateinit var progress_wheel: ProgressWheel
     lateinit var tv_surveyFromType:AppCustomTextView
+    lateinit var tv_survey_from_type:TextView
     lateinit var iv_arrow_dd:ImageView
     lateinit var btnSubmit:Button
 
@@ -103,12 +104,16 @@ class SurveyFrag: BaseFragment(), View.OnClickListener {
     private fun initView(view: View?) {
         ll_root=view?.findViewById(R.id.lll_root_qa) as LinearLayout
         progress_wheel=view?.findViewById(R.id.progress_wheel) as ProgressWheel
+        tv_survey_from_type = view?.findViewById(R.id.survey_from_typeSpinner) as TextView
         tv_surveyFromType = view?.findViewById(R.id.survey_from_typeSpinner) as AppCustomTextView
         iv_arrow_dd =  view?.findViewById(R.id.iv_dropd) as ImageView
         btnSubmit =  view?.findViewById(R.id.btn_frag_survey_submit) as Button
         btnSubmit.visibility=View.GONE
         btnSubmit.setOnClickListener(this)
+        iv_arrow_dd.setOnClickListener(this)
 
+        tv_survey_from_type.text = "Select"+ Pref.surveytext +"Form Type"
+        tv_surveyFromType.text = "Select"+ Pref.surveytext +"Form Type"
         initPermissionCheckFirstTime()
         getQuestion()
     }
@@ -151,11 +156,14 @@ class SurveyFrag: BaseFragment(), View.OnClickListener {
     }
 
     fun filterData(){
-        var listWithID :ArrayList<Question_list> = ArrayList()
-        listWithID= qList.filter { it.question_for_shoptype_id!!.toInt() == mAddShopDataObj!!.type.toInt() } as ArrayList<Question_list>
-        var uniqGr = listWithID.map { it.group_name }.distinct()
-        formSelectionDD(uniqGr!! as List<String>,listWithID)
-
+        try{
+            var listWithID :ArrayList<Question_list> = ArrayList()
+            listWithID= qList.filter { it.question_for_shoptype_id!!.toInt() == mAddShopDataObj!!.type.toInt() } as ArrayList<Question_list>
+            var uniqGr = listWithID.map { it.group_name }.distinct()
+            formSelectionDD(uniqGr!! as List<String>,listWithID)
+        }catch (ex:Exception) {
+            ex.printStackTrace()
+        }
     }
 
     fun formSelectionDD(uniqGr:List<String>,listWithID:ArrayList<Question_list>){
@@ -459,6 +467,19 @@ class SurveyFrag: BaseFragment(), View.OnClickListener {
                     saveQAModel.answer_list!!.add(obj)
                 }
                 getQuestionSubmit(saveQAModel)
+            }
+
+            R.id.iv_dropd ->{
+                var listWithID :ArrayList<Question_list> = ArrayList()
+                listWithID= qList.filter { it.question_for_shoptype_id!!.toInt() == mAddShopDataObj!!.type.toInt() } as ArrayList<Question_list>
+                var uniqGr = listWithID.map { it.group_name }.distinct()
+                formSelectionDD(uniqGr!! as List<String>,listWithID)
+                SurveyFromListDialog.newInstance(uniqGr as ArrayList<String>) {
+                    ll_root.removeAllViewsInLayout()
+                    tv_surveyFromType.text = it
+                    filterDataByGr(listWithID.filter { it.group_name.equals(tv_surveyFromType.text.toString()) })
+                }.show((mContext as DashboardActivity).supportFragmentManager, "")
+
             }
         }
     }

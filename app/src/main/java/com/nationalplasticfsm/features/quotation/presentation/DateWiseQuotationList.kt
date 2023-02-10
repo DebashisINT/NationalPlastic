@@ -56,6 +56,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by Saikat on 16-Jun-20.
  */
+// 1.0 DateWiseQuotationList AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 class DateWiseQuotationList : BaseFragment(), DatePickerListener {
 
     private lateinit var mContext: Context
@@ -1176,6 +1177,13 @@ class DateWiseQuotationList : BaseFragment(), DatePickerListener {
             }catch (ex:Exception){
                 shopDurationData.spent_duration="00:00:10"
             }
+            //New shop Create issue
+            shopDurationData.isnewShop = shopActivity.isnewShop
+
+            // 1.0 DateWiseQuotationList  AppV 4.0.6  multiple contact Data added on Api called
+            shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+            shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
             shopDataList.add(shopDurationData)
         }
         else {
@@ -1266,6 +1274,13 @@ class DateWiseQuotationList : BaseFragment(), DatePickerListener {
                 }catch (ex:Exception){
                     shopDurationData.spent_duration="00:00:10"
                 }
+                //New shop Create issue
+                shopDurationData.isnewShop = shopActivity.isnewShop
+
+                // 1.0 DateWiseQuotationList  AppV 4.0.6  multiple contact Data added on Api called
+                shopDurationData.multi_contact_name = shopActivity.multi_contact_name
+                shopDurationData.multi_contact_number = shopActivity.multi_contact_number
+
                 shopDataList.add(shopDurationData)
             }
         }
