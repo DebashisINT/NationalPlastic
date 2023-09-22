@@ -3,10 +3,12 @@ package com.nationalplasticfsm.features.dailyPlan.prsentation
 import android.Manifest
 import android.app.Activity
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +17,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.nationalplasticfsm.R
-import com.nationalplasticfsm.app.AppDatabase
-import com.nationalplasticfsm.app.NetworkConstant
-import com.nationalplasticfsm.app.Pref
-import com.nationalplasticfsm.app.SearchListener
+import com.nationalplasticfsm.app.*
 import com.nationalplasticfsm.app.domain.SelectedRouteEntity
 import com.nationalplasticfsm.app.domain.SelectedRouteShopListEntity
 import com.nationalplasticfsm.app.domain.SelectedWorkTypeEntity
@@ -51,11 +50,17 @@ import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 /**
  * Created by Saikat on 20-12-2019.
  */
+// Revision History
+// 1.0 DailyPlanListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
 class DailyPlanListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -151,7 +156,53 @@ class DailyPlanListFragment : BaseFragment() {
                 }
             }
         })
+
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
     }
+
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex: java.lang.Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
+
 
     private fun addAttendance(){
         if (addAttendenceModel?.is_on_leave?.toBoolean()!!)
@@ -188,6 +239,20 @@ class DailyPlanListFragment : BaseFragment() {
 
     private var permissionUtils: PermissionUtils? = null
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 //showPictureDialog()
@@ -198,7 +263,7 @@ class DailyPlanListFragment : BaseFragment() {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -284,11 +349,11 @@ class DailyPlanListFragment : BaseFragment() {
         updatePlanListModel.user_id = Pref.user_id!!
         updatePlanListModel.update_plan_list = updatePlanFinalList
 
-        XLog.d("=====UpdatePlan Input Params========")
-        XLog.d("session_token=======> " + updatePlanListModel.session_token)
-        XLog.d("user_id======> " + updatePlanListModel.user_id)
-        XLog.d("update_plan_list size======> " + updatePlanListModel.update_plan_list?.size)
-        XLog.d("====================================")
+        Timber.d("=====UpdatePlan Input Params========")
+        Timber.d("session_token=======> " + updatePlanListModel.session_token)
+        Timber.d("user_id======> " + updatePlanListModel.user_id)
+        Timber.d("update_plan_list size======> " + updatePlanListModel.update_plan_list?.size)
+        Timber.d("====================================")
 
         val repository = PlanRepoProvider.planListRepoProvider()
         progress_wheel.spin()
@@ -298,7 +363,7 @@ class DailyPlanListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val baseResponse = result as BaseResponse
-                            XLog.d("Update Plan Response Code========> " + baseResponse.status)
+                            Timber.d("Update Plan Response Code========> " + baseResponse.status)
 
                             progress_wheel.stopSpinning()
 
@@ -321,7 +386,7 @@ class DailyPlanListFragment : BaseFragment() {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("Update Plan ERROR=======> " + error.localizedMessage)
+                            Timber.d("Update Plan ERROR=======> " + error.localizedMessage)
                         })
         )
     }
@@ -335,34 +400,34 @@ class DailyPlanListFragment : BaseFragment() {
 
         addAttendenceModel?.update_plan_list = updatePlanFinalList!!
 
-        XLog.e("==========AddAttendance (From plan list)=============")
-        XLog.d("=====AddAttendance Input Params========")
-        XLog.d("session_token-----> " + addAttendenceModel?.session_token)
-        XLog.d("user_id----------> " + addAttendenceModel?.user_id)
-        XLog.d("is_on_leave----------> " + addAttendenceModel?.is_on_leave)
-        XLog.d("work_lat----------> " + addAttendenceModel?.work_lat)
-        XLog.d("work_long----------> " + addAttendenceModel?.work_long)
-        XLog.d("work_address----------> " + addAttendenceModel?.work_address)
-        XLog.d("work_type----------> " + addAttendenceModel?.work_type)
-        XLog.d("route----------> " + addAttendenceModel?.route)
-        XLog.d("leave_from_date----------> " + addAttendenceModel?.leave_from_date)
-        XLog.d("leave_to_date----------> " + addAttendenceModel?.leave_to_date)
-        XLog.d("leave_type----------> " + addAttendenceModel?.leave_type)
-        XLog.d("leave_reason----------> " + addAttendenceModel?.leave_reason)
-        XLog.d("work_date_time----------> " + addAttendenceModel?.work_date_time)
-        XLog.d("add_attendence_time----------> " + addAttendenceModel?.add_attendence_time)
-        XLog.d("order taken----------> " + addAttendenceModel?.order_taken)
-        XLog.d("collection taken----------> " + addAttendenceModel?.collection_taken)
-        XLog.d("visit new shop----------> " + addAttendenceModel?.new_shop_visit)
-        XLog.d("revisit shop----------> " + addAttendenceModel?.revisit_shop)
-        XLog.d("state id----------> " + addAttendenceModel?.state_id)
-        XLog.d("shop_list size----------> " + addAttendenceModel?.shop_list?.size)
-        XLog.d("primary_value_list size----------> " + addAttendenceModel?.primary_value_list?.size)
-        XLog.d("update_plan_list size----------> " + addAttendenceModel?.update_plan_list?.size)
-        XLog.d("from_id----------> " + addAttendenceModel?.from_id)
-        XLog.d("to_id----------> " + addAttendenceModel?.to_id)
-        XLog.d("distance----------> " + addAttendenceModel?.distance)
-        XLog.d("======End AddAttendance Input Params======")
+        Timber.e("==========AddAttendance (From plan list)=============")
+        Timber.d("=====AddAttendance Input Params========")
+        Timber.d("session_token-----> " + addAttendenceModel?.session_token)
+        Timber.d("user_id----------> " + addAttendenceModel?.user_id)
+        Timber.d("is_on_leave----------> " + addAttendenceModel?.is_on_leave)
+        Timber.d("work_lat----------> " + addAttendenceModel?.work_lat)
+        Timber.d("work_long----------> " + addAttendenceModel?.work_long)
+        Timber.d("work_address----------> " + addAttendenceModel?.work_address)
+        Timber.d("work_type----------> " + addAttendenceModel?.work_type)
+        Timber.d("route----------> " + addAttendenceModel?.route)
+        Timber.d("leave_from_date----------> " + addAttendenceModel?.leave_from_date)
+        Timber.d("leave_to_date----------> " + addAttendenceModel?.leave_to_date)
+        Timber.d("leave_type----------> " + addAttendenceModel?.leave_type)
+        Timber.d("leave_reason----------> " + addAttendenceModel?.leave_reason)
+        Timber.d("work_date_time----------> " + addAttendenceModel?.work_date_time)
+        Timber.d("add_attendence_time----------> " + addAttendenceModel?.add_attendence_time)
+        Timber.d("order taken----------> " + addAttendenceModel?.order_taken)
+        Timber.d("collection taken----------> " + addAttendenceModel?.collection_taken)
+        Timber.d("visit new shop----------> " + addAttendenceModel?.new_shop_visit)
+        Timber.d("revisit shop----------> " + addAttendenceModel?.revisit_shop)
+        Timber.d("state id----------> " + addAttendenceModel?.state_id)
+        Timber.d("shop_list size----------> " + addAttendenceModel?.shop_list?.size)
+        Timber.d("primary_value_list size----------> " + addAttendenceModel?.primary_value_list?.size)
+        Timber.d("update_plan_list size----------> " + addAttendenceModel?.update_plan_list?.size)
+        Timber.d("from_id----------> " + addAttendenceModel?.from_id)
+        Timber.d("to_id----------> " + addAttendenceModel?.to_id)
+        Timber.d("distance----------> " + addAttendenceModel?.distance)
+        Timber.d("======End AddAttendance Input Params======")
 
         val repository = AddAttendenceRepoProvider.addAttendenceRepo()
         progress_wheel.spin()
@@ -373,8 +438,8 @@ class DailyPlanListFragment : BaseFragment() {
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
-                            XLog.d("AddAttendance Response Code========> " + response.status)
-                            XLog.d("AddAttendance Response Msg=========> " + response.message)
+                            Timber.d("AddAttendance Response Code========> " + response.status)
+                            Timber.d("AddAttendance Response Msg=========> " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 Pref.visitDistance = (mContext as DashboardActivity).visitDistance
@@ -496,7 +561,7 @@ class DailyPlanListFragment : BaseFragment() {
                             Log.e("add attendance", "api work type")
 
                         }, { error ->
-                            XLog.d("AddAttendance Response Msg=========> " + error.message)
+                            Timber.d("AddAttendance Response Msg=========> " + error.message)
                             BaseActivity.isApiInitiated = false
                             //AppUtils.isFromAttendance = false
                             progress_wheel.stopSpinning()
@@ -577,7 +642,7 @@ class DailyPlanListFragment : BaseFragment() {
                             progress_wheel.stopSpinning()
                             tv_no_attendance.visibility = View.VISIBLE
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("DailyPlanList ERROR: " + error.localizedMessage)
+                            Timber.d("DailyPlanList ERROR: " + error.localizedMessage)
                         })
         )
     }

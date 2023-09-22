@@ -12,10 +12,11 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import android.text.TextUtils
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.features.dashboard.presentation.SystemEventReceiver
+import timber.log.Timber
 
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -43,7 +44,7 @@ class LocationJobService : JobService() {
             return true
         }
 
-        XLog.d("=============================Start Job " + AppUtils.getCurrentDateTime() + "==============================")
+        Timber.d("=============================Start Job " + AppUtils.getCurrentDateTime() + "==============================")
 
         val myIntent = Intent(this, LocationFuzedService::class.java)
 
@@ -71,7 +72,7 @@ class LocationJobService : JobService() {
     }
 
     override fun onStopJob(p0: JobParameters?): Boolean {
-        XLog.d("=========================Stop Job " + AppUtils.getCurrentDateTime() + "============================")
+        Timber.d("=========================Stop Job " + AppUtils.getCurrentDateTime() + "============================")
 
         //unregisterReceiver(eventReceiver)
 
@@ -89,9 +90,9 @@ class LocationJobService : JobService() {
             val resultCode = jobScheduler.schedule(jobInfo)
 
             if (resultCode == JobScheduler.RESULT_SUCCESS) {
-                XLog.d("========================Job rescheduled (LocationJobService) " + AppUtils.getCurrentDateTime() + "==============================")
+                Timber.d("========================Job rescheduled (LocationJobService) " + AppUtils.getCurrentDateTime() + "==============================")
             } else {
-                XLog.d("========================Job not rescheduled (LocationJobService) " + AppUtils.getCurrentDateTime() + "==========================")
+                Timber.d("========================Job not rescheduled (LocationJobService) " + AppUtils.getCurrentDateTime() + "==========================")
             }
         }
 

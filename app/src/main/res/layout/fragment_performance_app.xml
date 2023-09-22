@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/selector_tab_LL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <com.nationalplasticfsm.widgets.AppCustomTextView
+            android:id="@+id/ownPerformace_TV_frag_performace_app"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_weight="1"
+            android:background="@drawable/selected_performance_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/_20sdp"
+            android:text="Own"
+            android:drawableLeft="@drawable/ic_customer"
+            android:drawablePadding="-20dp"
+            android:drawableTint="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@drawable/selector_text_color_white_performance" />
+
+        <com.nationalplasticfsm.widgets.AppCustomTextView
+            android:id="@+id/teamPerformace_TV_frag_performace_app"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_weight="1"
+            android:background="@drawable/selected_performance_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:drawableLeft="@drawable/ic_team_icon"
+            android:drawableTint="@color/white"
+            android:gravity="center"
+            android:paddingStart="@dimen/_20sdp"
+            android:text="Team"
+            android:textStyle="bold"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@drawable/selector_text_color_white_performance" />
+
+
+        <com.nationalplasticfsm.widgets.AppCustomTextView
+            android:id="@+id/all_TV_frag_performace_app"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_weight="1"
+            android:background="@drawable/selected_performance_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:drawableLeft="@drawable/ic_team_icon"
+            android:drawableTint="@color/white"
+            android:gravity="center"
+            android:paddingStart="@dimen/_20sdp"
+            android:text="All"
+            android:textStyle="bold"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@drawable/selector_text_color_white_performance" />
+
+    </LinearLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/performance_vp_frag_performance_app"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/selector_tab_LL" />
+</LinearLayout>

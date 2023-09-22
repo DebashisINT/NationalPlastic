@@ -5,7 +5,9 @@
     android:id="@+id/rl_bill_details_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_silver">
+    android:background="@color/color_silver"
+    android:focusable="true"
+    android:clickable="true">
 
     <LinearLayout
         android:layout_width="match_parent"

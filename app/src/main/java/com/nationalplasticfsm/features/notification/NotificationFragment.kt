@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.NetworkConstant
@@ -209,8 +210,15 @@ class NotificationFragment : BaseFragment() {
                 if(notification_list?.get(adapterPosition)!!.notificationmessage!!.contains("Please take action on it")){
                     if (!Pref.isAddAttendence)
                         (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
-                    else
+                    else{
+                        var splitTT = notification_list?.get(adapterPosition)!!.notificationmessage!!.split(".")
+                        var date = splitTT.get(2).split(":").get(1).replace(" ","")
+                        var enqType = splitTT.get(3).split(":").get(1).trim()
+                        CustomStatic.lead_msgBody = splitTT.get(0).toString()
+                        CustomStatic.lead_msgLeadDate = date
+                        CustomStatic.lead_msgLeadEnquiry = enqType
                         (mContext as DashboardActivity).loadFragment(FragType.LeadFrag, false, "")
+                    }
                 }
 
             }

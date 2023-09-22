@@ -30,10 +30,11 @@ import com.nationalplasticfsm.features.task.api.TaskRepoProvider
 import com.nationalplasticfsm.features.task.model.AddTaskInputModel
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -143,10 +144,12 @@ class AddTaskFragment : BaseFragment(), View.OnClickListener {
             isStatusUpdated = -1
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             initPermissionCheck(task)
-        else
+        }
+        else {
             addEventToCalender(task)
+        }
     }
 
     private fun initPermissionCheck(task: TaskEntity) {
@@ -215,16 +218,16 @@ class AddTaskFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-        XLog.d("==============Add Task Input Params (Add Task)====================")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("date=======> " + task.date)
-        XLog.d("task_id=======> " + task.task_id)
-        XLog.d("task_name=======> " + task.task_name)
-        XLog.d("details=======> " + task.details)
-        XLog.d("isCompleted=======> " + task.isCompleted)
-        XLog.d("eventId=======> " + task.eventId)
-        XLog.d("===================================================================")
+        Timber.d("==============Add Task Input Params (Add Task)====================")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("date=======> " + task.date)
+        Timber.d("task_id=======> " + task.task_id)
+        Timber.d("task_name=======> " + task.task_name)
+        Timber.d("details=======> " + task.details)
+        Timber.d("isCompleted=======> " + task.isCompleted)
+        Timber.d("eventId=======> " + task.eventId)
+        Timber.d("===================================================================")
 
         val taskInput = AddTaskInputModel(Pref.session_token!!, Pref.user_id!!, task.task_id!!, task.date!!, task.task_name!!,
                 task.details!!, task.isCompleted, task.eventId)
@@ -237,7 +240,7 @@ class AddTaskFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("ADD TASK: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("ADD TASK: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                             progress_wheel.stopSpinning()
 
@@ -252,7 +255,7 @@ class AddTaskFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ADD TASK: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("ADD TASK: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage("Task added successfully")
                             (mContext as DashboardActivity).onBackPressed()

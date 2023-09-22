@@ -9,8 +9,9 @@
     <LinearLayout
         android:id="@+id/notification_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/_80sdp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -57,7 +58,7 @@
                 android:paddingTop="@dimen/_8sdp"
                 android:text="Body goes here"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_12sdp" />
 
             <TextView
                 android:id="@+id/organization_tag"
@@ -67,7 +68,7 @@
                 android:paddingTop="@dimen/_8sdp"
                 android:text="@string/organization_name"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/_10sdp"
+                android:textSize="@dimen/_12sdp"
                 android:visibility="invisible"/>
 
 

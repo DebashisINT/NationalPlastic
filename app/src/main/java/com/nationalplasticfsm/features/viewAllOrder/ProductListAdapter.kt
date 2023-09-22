@@ -2,6 +2,8 @@ package com.nationalplasticfsm.features.viewAllOrder
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -43,6 +45,7 @@ import kotlinx.android.synthetic.main.inflate_product_new_list.view.*
 // 3.0  AppV 4.0.6  ProductListAdapter  Saheli    06/01/2023 decimal input handle
 // 4.0  AppV 4.0.6  ProductListAdapter  Saheli    06/01/2023 discount logic correction
 // 5.0  AppV 4.0.6  ProductListAdapter  Saheli    20/01/2023 Scroll handle mantis 25596
+// 6.0 ProductListAdapter AppV 4.0.7 saheli 10-02-2023 order rate issue mantis  25666
 class ProductListAdapter(
     private val context: Context,
     private val workTypeList: ArrayList<ProductListEntity>?,
@@ -374,7 +377,8 @@ class ProductListAdapter(
             else{
                 itemView.ll_qty_rt_product_new_list.visibility = View.GONE
             }
-
+            // 6.0 ProductListAdapter AppV 4.0.7 saheli 10-02-2023 order rate issue mantis  25666
+            Handler(Looper.getMainLooper()).postDelayed({
                 itemView.iv_prod_new_list_tick.setOnClickListener {
                     if(CustomStatic.productAddedID.contains(categoryList?.get(adapterPosition)!!.id)){
                         (context as DashboardActivity).showSnackMessage("This product has already added to cart")
@@ -419,6 +423,7 @@ class ProductListAdapter(
 
                     listener.onProductClick(categoryList!!.get(adapterPosition), adapterPosition)
                 }
+            }, 2000)
 
                 itemView.iv_prod_new_list_cross.setOnClickListener {
                     CustomStatic.productAddedID.remove(categoryList?.get(adapterPosition)!!.id)

@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.newcollection
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -137,8 +138,9 @@ class CollectionDetailsStatusFragment : BaseFragment(), View.OnClickListener {
                                 tv_today_percentage.text = String.format("%.2f", today_percentage) + "%"
                                 pb_today_collection.progress = today_percentage.roundToInt()
                             }
-                            else
+                            else {
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                            }
 
                         }, { error ->
                             error.printStackTrace()
@@ -148,6 +150,7 @@ class CollectionDetailsStatusFragment : BaseFragment(), View.OnClickListener {
         )
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onClick(v: View?) {
         when(v?.id) {
             R.id.cv_total_collection -> {
@@ -175,8 +178,9 @@ class CollectionDetailsStatusFragment : BaseFragment(), View.OnClickListener {
                         e.printStackTrace()
                     }
                 }
-                else
+                else {
                     (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
+                }
             }
         }
     }

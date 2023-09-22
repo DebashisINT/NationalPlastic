@@ -12,9 +12,7 @@ import android.location.Location
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.*
-import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
-import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
@@ -43,7 +41,6 @@ import com.nationalplasticfsm.faceRec.DetectorActivity
 import com.nationalplasticfsm.faceRec.FaceStartActivity
 import com.nationalplasticfsm.faceRec.tflite.SimilarityClassifier
 import com.nationalplasticfsm.faceRec.tflite.TFLiteObjectDetectionAPIModel
-import com.nationalplasticfsm.features.DecimalDigitsInputFilter
 import com.nationalplasticfsm.features.SearchLocation.locationInfoModel
 import com.nationalplasticfsm.features.addshop.api.AddShopRepositoryProvider
 import com.nationalplasticfsm.features.addshop.api.assignToPPList.AssignToPPListRepoProvider
@@ -63,8 +60,6 @@ import com.nationalplasticfsm.features.averageshop.model.ShopActivityResponse
 import com.nationalplasticfsm.features.averageshop.model.ShopActivityResponseDataList
 import com.nationalplasticfsm.features.commondialog.presentation.CommonDialog
 import com.nationalplasticfsm.features.commondialog.presentation.CommonDialogClickListener
-import com.nationalplasticfsm.features.commondialogsinglebtn.CommonDialogSingleBtn
-import com.nationalplasticfsm.features.commondialogsinglebtn.OnDialogClickListener
 import com.nationalplasticfsm.features.dashboard.presentation.api.dashboardApi.DashboardRepoProvider
 import com.nationalplasticfsm.features.dashboard.presentation.api.dayStartEnd.DayStartEndRepoProvider
 import com.nationalplasticfsm.features.dashboard.presentation.api.gteroutelistapi.GetRouteListRepoProvider
@@ -108,9 +103,8 @@ import com.nationalplasticfsm.features.report.presentation.ReportAdapter
 import com.nationalplasticfsm.features.timesheet.api.TimeSheetRepoProvider
 import com.nationalplasticfsm.features.timesheet.model.TimeSheetConfigResponseModel
 import com.nationalplasticfsm.features.timesheet.model.TimeSheetDropDownResponseModel
-import com.nationalplasticfsm.mappackage.SendBrod
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.mlkit.vision.common.InputImage
@@ -132,12 +126,11 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.*
 import java.net.URL
-import java.nio.file.Files
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by rp : 31-10-2017:16:49
@@ -151,6 +144,16 @@ import kotlin.collections.ArrayList
 // 6.0 DashboardActivity AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 // 7.0 DashboardFragment AppV 4.0.6  Saheli    25/01/2023  mantis 25623
 // 8.0 DashboardFragment  AppV 4.0.6 Saheli    01/02/2023  mantis 25637
+// 9.0 DashboardFragment  AppV 4.0.7 Saheli    15/02/2023  mantis 0025673  screen recoreder gradle & finction update
+// 10.0  DashboardFragment AppV 4.0.8 Saheli    06/04/2023  IsAssignedDDAvailableForAllUser Useds LoginActivity If this feature 'On' then Assigned DD [Assigned DD Table] shall be available in 'Shop Master' work 0025780 mantis
+// 11.0  DashboardFragment AppV 4.0.8 Saheli    20/04/2023  25860
+// Rev 12.0 DashboardFragment AppV 4.0.8 Suman    24/04/2023 Beat api fetch updation 0025898
+// 12.0  dashboardFrag AppV 4.0.8 Saheli    08/05/2023  26023
+// 13.0  DashboardFragment AppV 4.0.8 Saheli    12/05/2023 0026101
+// 14.0  DashboardFragment AppV 4.0.8 Suman    19/05/2023 26163
+// 15.0 DashboardFragment v 4.1.6 saheli mantis 0026370: Daywiseshop/Records ->Is_Newshopadd
+// 16.0 DashboardFragment v 4.1.6 Tufan 11/07/2023 mantis 26546 revisit sync time
+// 17.0 DashboardFragment v 4.1.6 Suman 13/07/2023 mantis 26555 Usersettings
 class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListener, View.OnTouchListener {
 
     var dX = 0f
@@ -275,7 +278,6 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         val view = inflater.inflate(R.layout.fragment_dashboard_new, container, false)
         //saheli added 27-07-21
         AppUtils.changeLanguage(mContext, "en")
-
         println("dash_test_check initView begin "+AppUtils.getCurrentDateTime()  );
         initView(view)
         println("dash_test_check initView end "+AppUtils.getCurrentDateTime()  );
@@ -326,8 +328,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 Pref.totalTimeSpenAtShop = (Pref.totalTimeSpenAtShop.toInt() - totalMinute).toString()
 
                                 val todaysShopVisitCount = InfoWizard.getAvergareShopVisitCount()
-                                XLog.e("=======RESPONSE FROM SHOP ACTIVITY API (DASHBOARD FRAGMENT)=======")
-                                XLog.e("Today's Shop Visit Count====> $todaysShopVisitCount")
+                                Timber.e("=======RESPONSE FROM SHOP ACTIVITY API (DASHBOARD FRAGMENT)=======")
+                                Timber.e("Today's Shop Visit Count====> $todaysShopVisitCount")
 
                                 avgShop.text = todaysShopVisitCount
                                 avgTime.text = InfoWizard.getAverageShopVisitTimeDuration() + " Hrs"
@@ -361,51 +363,70 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     }
 
     private fun updateShopTableInDB(date_list: List<ShopActivityResponseDataList>?) {
-        for (i in date_list!!.indices) {
-            for (j in 0 until date_list[i].shop_list!!.size) {
-                var shopActivityEntity = ShopActivityEntity()
-                shopActivityEntity.shopid = date_list[i].shop_list!![j].shopid
-                shopActivityEntity.shop_name = date_list[i].shop_list!![j].shop_name
-                shopActivityEntity.shop_address = date_list[i].shop_list!![j].shop_address
-                shopActivityEntity.date = date_list[i].shop_list!![j].date
-                if (date_list[i].shop_list!![j].duration_spent!!.contains("."))
-                    shopActivityEntity.duration_spent = date_list[i].shop_list!![j].duration_spent!!.split(".")[0]
-                else
-                    shopActivityEntity.duration_spent = date_list[i].shop_list!![j].duration_spent!!
-                shopActivityEntity.totalMinute = AppUtils.convertMinuteFromHHMMSS(shopActivityEntity.duration_spent)
 
-                if (!TextUtils.isEmpty(date_list[i].shop_list!![j].start_timestamp))
-                    shopActivityEntity.startTimeStamp = date_list[i].shop_list!![j].start_timestamp!!
-                else
-                    shopActivityEntity.startTimeStamp = "0"
+        doAsync {
+            for (i in date_list!!.indices) {
+                for (j in 0 until date_list[i].shop_list!!.size) {
+                    var shopActivityEntity = ShopActivityEntity()
+                    shopActivityEntity.shopid = date_list[i].shop_list!![j].shopid
+                    shopActivityEntity.shop_name = date_list[i].shop_list!![j].shop_name
+                    shopActivityEntity.shop_address = date_list[i].shop_list!![j].shop_address
+                    shopActivityEntity.date = date_list[i].shop_list!![j].date
+                    if (date_list[i].shop_list!![j].duration_spent!!.contains("."))
+                        shopActivityEntity.duration_spent = date_list[i].shop_list!![j].duration_spent!!.split(".")[0]
+                    else
+                        shopActivityEntity.duration_spent = date_list[i].shop_list!![j].duration_spent!!
+                    shopActivityEntity.totalMinute = AppUtils.convertMinuteFromHHMMSS(shopActivityEntity.duration_spent)
 
-                shopActivityEntity.endTimeStamp = "0"
-                shopActivityEntity.visited_date = date_list[i].shop_list!![j].visited_date
-                shopActivityEntity.isUploaded = true
-                shopActivityEntity.isVisited = true
-                shopActivityEntity.isDurationCalculated = true
-                shopActivityEntity.isFirstShopVisited = false
-                shopActivityEntity.distance_from_home_loc = ""
+                    if (!TextUtils.isEmpty(date_list[i].shop_list!![j].start_timestamp))
+                        shopActivityEntity.startTimeStamp = date_list[i].shop_list!![j].start_timestamp!!
+                    else
+                        shopActivityEntity.startTimeStamp = "0"
 
-                shopActivityEntity.device_model = date_list[i].shop_list!![j].device_model
-                shopActivityEntity.android_version = date_list[i].shop_list!![j].android_version
-                shopActivityEntity.battery = date_list[i].shop_list!![j].battery
-                shopActivityEntity.net_status = date_list[i].shop_list!![j].net_status
-                shopActivityEntity.net_type = date_list[i].shop_list!![j].net_type
+                    shopActivityEntity.endTimeStamp = "0"
+                    shopActivityEntity.visited_date = date_list[i].shop_list!![j].visited_date
+                    shopActivityEntity.isUploaded = true
+                    shopActivityEntity.isVisited = true
+                    shopActivityEntity.isDurationCalculated = true
+                    shopActivityEntity.isFirstShopVisited = false
+                    shopActivityEntity.distance_from_home_loc = ""
 
-                shopActivityEntity.in_time = date_list[i].shop_list!![j].in_time
-                shopActivityEntity.out_time = date_list[i].shop_list!![j].out_time
+                    shopActivityEntity.device_model = date_list[i].shop_list!![j].device_model
+                    shopActivityEntity.android_version = date_list[i].shop_list!![j].android_version
+                    shopActivityEntity.battery = date_list[i].shop_list!![j].battery
+                    shopActivityEntity.net_status = date_list[i].shop_list!![j].net_status
+                    shopActivityEntity.net_type = date_list[i].shop_list!![j].net_type
 
-                shopActivityEntity.in_loc = date_list[i].shop_list!![j].in_location
-                shopActivityEntity.out_loc = date_list[i].shop_list!![j].out_location
-                shopActivityEntity.shop_revisit_uniqKey = date_list[i].shop_list!![j].Key!!
+                    shopActivityEntity.in_time = date_list[i].shop_list!![j].in_time
+                    shopActivityEntity.out_time = date_list[i].shop_list!![j].out_time
 
-                shopActivityEntity.agency_name=date_list[i].shop_list!![j].agency_name
-                shopActivityEntity.pros_id=date_list[i].shop_list!![j].pros_id
+                    shopActivityEntity.in_loc = date_list[i].shop_list!![j].in_location
+                    shopActivityEntity.out_loc = date_list[i].shop_list!![j].out_location
+                    shopActivityEntity.shop_revisit_uniqKey = date_list[i].shop_list!![j].Key!!
 
-                AppDatabase.getDBInstance()!!.shopActivityDao().insertAll(shopActivityEntity)
+                    shopActivityEntity.agency_name=date_list[i].shop_list!![j].agency_name
+                    shopActivityEntity.pros_id=date_list[i].shop_list!![j].pros_id
+
+                    try{
+                        shopActivityEntity.distFromProfileAddrKms = date_list[i].shop_list!![j].distFromProfileAddrKms.toString()
+                        shopActivityEntity.stationCode = date_list[i].shop_list!![j].stationCode.toString()
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                    }
+
+                    // start 15.0 DashboardFragment v 4.1.6 saheli mantis 0026370: Daywiseshop/Records ->Is_Newshopadd
+                    shopActivityEntity.isnewShop = date_list[i].shop_list!![j].Is_Newshopadd
+                    // end 15.0 DashboardFragment v 4.1.6 saheli mantis 0026370: Daywiseshop/Records ->Is_Newshopadd
+
+                    AppDatabase.getDBInstance()!!.shopActivityDao().insertAll(shopActivityEntity)
+                }
+            }
+            uiThread {
+
             }
         }
+
+
 
     }
 
@@ -437,8 +458,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         val f = mContext.getDatabasePath(AppConstant.DBNAME)
         val dbSize = f.length()
         val dbSizeInKB = dbSize / 1024
-        XLog.e("Original DataBase Size====> $dbSize")
-        XLog.e("DataBase Size====> $dbSizeInKB KB")
+        //Timber.e("Original DataBase Size====> $dbSize")
+        //Timber.e("DataBase Size====> $dbSizeInKB KB")
 
         //checkToCallMemberList()
         writeDataToFile()
@@ -518,8 +539,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             val length = file.length()
             val lengthInKB = length / 1024
 
-            XLog.e("Original today accurate table Size====> $length")
-            XLog.e("Today accurate table Size====> $lengthInKB KB")
+            Timber.e("Original today accurate table Size====> $length")
+            Timber.e("Today accurate table Size====> $lengthInKB KB")
 
         } catch (e: Exception) {
               e.printStackTrace()
@@ -530,10 +551,10 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 CustomStatic.IsPJPAddEdited=false
                 //Toaster.msgShort(mContext,"DashboardFragment getOnlyPjpListApi() call")
                 if(Pref.isActivatePJPFeature){
-                    XLog.d("API_Optimization-> GET getPjpListApi : enable check->writeDataToFile" +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+                    Timber.d("API_Optimization-> GET getPjpListApi : enable check->writeDataToFile" +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
                     getOnlyPjpListApi()
                 }else{
-                    XLog.d("API_Optimization-> GET getPjpListApi : disable check->writeDataToFile" +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+                    Timber.d("API_Optimization-> GET getPjpListApi : disable check->writeDataToFile" +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
                 }
             }else{
                 //Toaster.msgShort(mContext,"DashboardFragment getOnlyPjpListApi() not call")
@@ -559,7 +580,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as UserPjpResponseModel
-                            XLog.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.pjp_list != null && response.pjp_list.isNotEmpty()) {
                                     doAsync {
@@ -597,7 +618,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             initBottomAdapter()
                         })
@@ -609,8 +630,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         super.updateUI(any)
 
         val todaysShopVisitCount = InfoWizard.getAvergareShopVisitCount()
-        XLog.e("=======UPDATE UI (DASHBOARD FRAGMENT)=======")
-        XLog.e("Today's Shop Visit Count====> $todaysShopVisitCount")
+        Timber.e("=======UPDATE UI (DASHBOARD FRAGMENT)=======")
+        Timber.e("Today's Shop Visit Count====> $todaysShopVisitCount")
 
         avgShop.text = todaysShopVisitCount
         avgTime.text = InfoWizard.getAverageShopVisitTimeDuration() + " Hrs"
@@ -863,7 +884,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         }
                     val megAvailable = bytesAvailable / (1024 * 1024)
                     println("storage " + megAvailable.toString());
-                    XLog.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
+                    Timber.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
 
                     if (megAvailable < 1024) {
                         val simpleDialog = Dialog(mContext)
@@ -968,7 +989,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 }
                 val megAvailable = bytesAvailable / (1024 * 1024)
                 println("storage " + megAvailable.toString());
-                XLog.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
+                Timber.d("phone storage : FREE SPACE AVAILABLE : " + megAvailable.toString() + " Time :" + AppUtils.getCurrentDateTime())
 
                 if (megAvailable < 1024) {
                     val simpleDialog = Dialog(mContext)
@@ -1080,8 +1101,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             tv_view_all.visibility = View.GONE
 
         val todaysShopVisitCount = InfoWizard.getAvergareShopVisitCount()
-        XLog.e("=======INIT VIEW (DASHBOARD FRAGMENT)=======")
-        XLog.e("Today's Shop Visit Count====> $todaysShopVisitCount")
+        Timber.e("=======INIT VIEW (DASHBOARD FRAGMENT)=======")
+        Timber.e("Today's Shop Visit Count====> $todaysShopVisitCount")
 
         avgShop.text = todaysShopVisitCount
         avgTime.text = InfoWizard.getAverageShopVisitTimeDuration() + " Hrs"
@@ -1953,7 +1974,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                 if (Pref.isOnLeave.equals("false", ignoreCase = true)) {
 
-                    XLog.e("=====User is at work (At meeting revisit time)=======")
+                    Timber.e("=====User is at work (At meeting revisit time)=======")
 
                     val userlocation = UserLocationDataEntity()
                     userlocation.latitude = meetingEntity.lattitude!!
@@ -1969,11 +1990,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     }
                     val finalDistance = (Pref.tempDistance.toDouble() + loc_distance).toString()
 
-                    XLog.e("===Distance (At meeting revisit time)===")
-                    XLog.e("Temp Distance====> " + Pref.tempDistance)
-                    XLog.e("Normal Distance====> $loc_distance")
-                    XLog.e("Total Distance====> $finalDistance")
-                    XLog.e("=====================================")
+                    Timber.e("===Distance (At meeting revisit time)===")
+                    Timber.e("Temp Distance====> " + Pref.tempDistance)
+                    Timber.e("Normal Distance====> $loc_distance")
+                    Timber.e("Total Distance====> $finalDistance")
+                    Timber.e("=====================================")
 
                     userlocation.distance = finalDistance
                     userlocation.locationName = LocationWizard.getNewLocationName(mContext, userlocation.latitude.toDouble(), userlocation.longitude.toDouble())
@@ -1997,7 +2018,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     Pref.totalS2SDistance = "0.0"
                     Pref.tempDistance = "0.0"
                 } else {
-                    XLog.e("=====User is on leave (At meeting revisit time)=======")
+                    Timber.e("=====User is on leave (At meeting revisit time)=======")
                     distance = 0.0
                 }
 
@@ -2422,7 +2443,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as UserPjpResponseModel
-                            XLog.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -2448,7 +2469,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             //(mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             rv_pjp_list.visibility = View.GONE
@@ -2757,7 +2778,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
 
     private fun checkToCallMemberList() {
-        XLog.e("==============checkToCallMemberList(Dashboard Fragment)==============")
+        Timber.e("==============checkToCallMemberList(Dashboard Fragment)==============")
         Handler().postDelayed(Runnable {
             if (Pref.isOfflineTeam && Pref.isAddAttendence) {
                 var progress_wheel: ProgressWheel? = null
@@ -2793,7 +2814,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         if (customProgressDialog.isAdded)
             return
 
-        XLog.e("==============call offline member api(Dashboard Fragment)==============")
+        Timber.e("==============call offline member api(Dashboard Fragment)==============")
 
         val repository = TeamRepoProvider.teamRepoProvider()
         customProgressDialog.show((mContext as DashboardActivity).supportFragmentManager, "")
@@ -2854,7 +2875,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     }
 
     private fun callMemberShopListApi() {
-
+        Timber.d("PJP api callMemberShopListApi DashFrag call")
         val repository = TeamRepoProvider.teamRepoProvider()
         BaseActivity.compositeDisposable.add(
                 repository.offlineTeamShopList("")
@@ -2928,8 +2949,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     fun updateUi() {
 
         val todaysShopVisitCount = InfoWizard.getAvergareShopVisitCount()
-        XLog.e("=======UPDATE UI FOR AUTO REVISIT (DASHBOARD FRAGMENT)=======")
-        XLog.e("Today's Shop Visit Count====> $todaysShopVisitCount")
+        Timber.e("=======UPDATE UI FOR AUTO REVISIT (DASHBOARD FRAGMENT)=======")
+        Timber.e("Today's Shop Visit Count====> $todaysShopVisitCount")
 
         avgShop.text = todaysShopVisitCount
         avgTime.text = InfoWizard.getAverageShopVisitTimeDuration() + " Hrs"
@@ -2970,9 +2991,10 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         getProductRateListApi()
     }
 
+
     private fun getProductRateListApi() {
         if(Pref.isOrderShow){
-            XLog.d("API_Optimization getProductRateListApi Login : enable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("api_call_dash  getProductRateListApi()")
             val repository = ProductListRepoProvider.productListProvider()
             progress_wheel.spin()
             BaseActivity.compositeDisposable.add(
@@ -3011,52 +3033,61 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     })
             )
         }else{
-            XLog.d("API_Optimization getProductRateListApi DashFrag : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization getProductRateListApi DashFrag : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
             getBeatListApi()
         }
     }
 
     private fun getBeatListApi() {
-        val repository = TypeListRepoProvider.provideTypeListRepository()
-        progress_wheel.spin()
-        BaseActivity.compositeDisposable.add(
-            repository.beatList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    val response = result as BeatListResponseModel
-                    if (response.status == NetworkConstant.SUCCESS) {
-                        val list = response.beat_list
-                        if (list != null && list.isNotEmpty()) {
-                            doAsync {
-                                AppDatabase.getDBInstance()?.beatDao()?.delete()
-                                list.forEach {
-                                    val beat = BeatEntity()
-                                    AppDatabase.getDBInstance()?.beatDao()?.insert(beat.apply {
-                                        beat_id = it.id
-                                        name = it.name
-                                    })
+        // Begin Rev 12.0 DashboardFragment AppV 4.0.8 Suman    24/04/2023 Beat api fetch updation 0025898
+        if(Pref.IsBeatAvailable){
+        //if(Pref.isShowBeatGroup){
+            // End of Rev 12.0 DashboardFragment AppV 4.0.8 Suman    24/04/2023 Beat api fetch updation 0025898
+            Timber.d("api_call_dash  beatList()")
+            val repository = TypeListRepoProvider.provideTypeListRepository()
+            progress_wheel.spin()
+            BaseActivity.compositeDisposable.add(
+                repository.beatList()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as BeatListResponseModel
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            val list = response.beat_list
+                            if (list != null && list.isNotEmpty()) {
+                                doAsync {
+                                    AppDatabase.getDBInstance()?.beatDao()?.delete()
+                                    list.forEach {
+                                        val beat = BeatEntity()
+                                        AppDatabase.getDBInstance()?.beatDao()?.insert(beat.apply {
+                                            beat_id = it.id
+                                            name = it.name
+                                        })
+                                    }
+                                    uiThread {
+                                        progress_wheel.stopSpinning()
+                                        callUserConfigApi()
+                                    }
                                 }
-                                uiThread {
-                                    progress_wheel.stopSpinning()
-                                    callUserConfigApi()
-                                }
+                            } else {
+                                progress_wheel.stopSpinning()
+                                callUserConfigApi()
                             }
                         } else {
                             progress_wheel.stopSpinning()
                             callUserConfigApi()
                         }
-                    } else {
-                        progress_wheel.stopSpinning()
-                        callUserConfigApi()
-                    }
 
-                }, { error ->
-                    progress_wheel.stopSpinning()
-                    error.printStackTrace()
-                    callUserConfigApi()
-                })
-        )
+                    }, { error ->
+                        progress_wheel.stopSpinning()
+                        error.printStackTrace()
+                        callUserConfigApi()
+                    })
+            )
+        }else{
+            callUserConfigApi()
+        }
+
     }
 
     private fun checkToCallAssignedDDListApi() {
@@ -3077,7 +3108,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             progress_wheel = progress_wheel_attendance
         else
             progress_wheel = this.progress_wheel
-
+        Timber.d("api_call_dash  assignToDDList()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 repository.assignToDDList(Pref.profile_state)
@@ -3166,6 +3197,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         else
             progress_wheel = this.progress_wheel
 
+        Timber.d("api_call_dash  assignToPPList()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 repository.assignToPPList(Pref.profile_state)
@@ -3217,6 +3249,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     private fun getAssignedToShopApi() {
         val repository = TypeListRepoProvider.provideTypeListRepository()
         progress_wheel.spin()
+        Timber.d("api_call_dash  assignToShopList()")
         BaseActivity.compositeDisposable.add(
                 repository.assignToShopList(Pref.profile_state)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -3269,14 +3302,14 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun getProductList(date: String?) {
         if(Pref.isOrderShow){
-            XLog.d("API_Optimization  getProductList DashFrag  : enable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization  getProductList DashFrag  : enable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
         val repository = ProductListRepoProvider.productListProvider()
         var progress_wheel: ProgressWheel? = null
         if (Pref.isAttendanceFeatureOnly)
             progress_wheel = progress_wheel_attendance
         else
             progress_wheel = this.progress_wheel
-
+            Timber.d("api_call_dash  getProductList()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 //repository.getProductList(Pref.session_token!!, Pref.user_id!!, date!!)
@@ -3332,7 +3365,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         })
         )
         }else{
-            XLog.d("API_Optimization getProductList DashFrag : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization getProductList DashFrag : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
             getSelectedRouteListRefresh()
         }
     }
@@ -3351,7 +3384,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             progress_wheel = progress_wheel_attendance
         else
             progress_wheel = this.progress_wheel
-
+        Timber.d("api_call_dash  routeList()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 repository.routeList()
@@ -3438,6 +3471,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         else
             progress_wheel = this.progress_wheel
 
+        Timber.d("api_call_dash  userConfig()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 repository.userConfig(Pref.user_id!!)
@@ -4086,7 +4120,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                 if (Pref.DistributorGPSAccuracy.length == 0 || Pref.DistributorGPSAccuracy.equals("")) {
                                                     Pref.DistributorGPSAccuracy = "500"
                                                 }
-                                                XLog.d("DistributorGPSAccuracy " + Pref.DistributorGPSAccuracy)
+                                                Timber.d("DistributorGPSAccuracy " + Pref.DistributorGPSAccuracy)
                                             }
 
                                             /*26-10-2021*/
@@ -4474,17 +4508,55 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                                     Pref.IsContactPersonRequiredinQuotation = response.getconfigure!![i].Value == "1"
                                                 }
                                             }
+                                            //end rev 3.0
                                             // 5.0 DashboardFragment  AppV 4.0.6  IsAllowShopStatusUpdate
                                             else if (response.getconfigure!![i].Key.equals("IsAllowShopStatusUpdate", ignoreCase = true)) {
                                                 if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
                                                     Pref.IsAllowShopStatusUpdate = response.getconfigure!![i].Value == "1"
                                                 }
                                             }
+                                            //end rev 5.0
                                             else if (response.getconfigure!![i].Key.equals("IsShowBeatInMenu", ignoreCase = true)) {
                                                 if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
                                                     Pref.IsShowBeatInMenu = response.getconfigure!![i].Value == "1"
                                                 }
                                             }
+
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsAssignedDDAvailableForAllUser", ignoreCase = true)) {//10.0 DashboradFrag  AppV 4.0.8 mantis 0025780
+                                                Pref.IsAssignedDDAvailableForAllUser = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsAssignedDDAvailableForAllUser = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            //end rev 10.0
+
+                                              else if (response.getconfigure?.get(i)?.Key.equals("IsShowEmployeePerformance", ignoreCase = true)) {//11.0 DashboradFrag  AppV 4.0.8 mantis 25860
+                                                Pref.IsShowEmployeePerformance = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsShowEmployeePerformance = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            //end rev 11.0
+
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsMenuShowAIMarketAssistant", ignoreCase = true)) {
+                                                Pref.IsMenuShowAIMarketAssistant = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsMenuShowAIMarketAssistant = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            } else if (response.getconfigure?.get(i)?.Key.equals("IsUsbDebuggingRestricted", ignoreCase = true)) {
+                                                Pref.IsUsbDebuggingRestricted = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsUsbDebuggingRestricted = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            //Begin 17.0 DashboardFragment v 4.1.6 Suman 13/07/2023 mantis 26555 Usersettings
+                                            else if (response.getconfigure?.get(i)?.Key.equals("IsUsbDebuggingRestricted", ignoreCase = true)) {
+                                                Pref.IsUsbDebuggingRestricted = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.IsUsbDebuggingRestricted = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
+                                            //End 17.0 DashboardFragment v 4.1.6 Suman 13/07/2023 mantis 26555 Usersettings
                                         }
                                     }
                                 } catch (e: Exception) {
@@ -4512,6 +4584,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         else
             progress_wheel = this.progress_wheel
 
+        Timber.d("api_call_dash  configFetch()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 repository.configFetch()
@@ -4520,7 +4593,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribe({ result ->
 
                             val configResponse = result as ConfigFetchResponseModel
-                            XLog.d("ConfigFetchApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
+                            Timber.d("ConfigFetchApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
 
                             progress_wheel.stopSpinning()
                             if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -4811,6 +4884,88 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 if (configResponse.IsRouteStartFromAttendance != null)
                                     Pref.IsRouteStartFromAttendance = configResponse.IsRouteStartFromAttendance!!
 
+                                // 3.0 Pref  AppV 4.0.7 Suman    10/03/2023 Pdf generation settings wise  mantis 25650
+                                if (configResponse.IsShowQuotationFooterforEurobond != null)
+                                    Pref.IsShowQuotationFooterforEurobond = configResponse.IsShowQuotationFooterforEurobond!!
+                                if (configResponse.IsShowOtherInfoinShopMaster != null)
+                                    Pref.IsShowOtherInfoinShopMaster = configResponse.IsShowOtherInfoinShopMaster!!
+
+                                if (configResponse.IsAllowZeroRateOrder != null)
+                                    Pref.IsAllowZeroRateOrder = configResponse.IsAllowZeroRateOrder!!
+
+                                // 4.0 Pref  AppV 4.0.7 Suman    23/03/2023 ShowApproxDistanceInNearbyShopList Show approx distance in nearby + shopmaster  mantis 0025742
+                                if (configResponse.ShowApproxDistanceInNearbyShopList != null)
+                                    Pref.ShowApproxDistanceInNearbyShopList = configResponse.ShowApproxDistanceInNearbyShopList!!
+                                //10.0 dashboardFrag  AppV 4.0.8  mantis 0025780
+                                if (configResponse.IsAssignedDDAvailableForAllUser != null)
+                                    Pref.IsAssignedDDAvailableForAllUserGlobal = configResponse.IsAssignedDDAvailableForAllUser!!
+                                //11.0 dashboardFrag  AppV 4.0.8  mantis 25860
+                                if (configResponse.IsShowEmployeePerformance != null)
+                                    Pref.IsShowEmployeePerformanceGlobal = configResponse.IsShowEmployeePerformance!!
+                                // end rev 11.0
+
+                                // 12.0  dashboardFrag AppV 4.0.8 Saheli    08/05/2023  26023
+                                if (configResponse.IsTaskManagementAvailable != null)
+                                    Pref.IsTaskManagementAvailable = configResponse.IsTaskManagementAvailable!!
+                                // end rev 12.0
+
+                                if (configResponse.IsShowPrivacyPolicyInMenu != null)
+                                    Pref.IsShowPrivacyPolicyInMenu = configResponse.IsShowPrivacyPolicyInMenu!!
+
+                                if (configResponse.IsAttendanceCheckedforExpense != null)
+                                    Pref.IsAttendanceCheckedforExpense = configResponse.IsAttendanceCheckedforExpense!!
+                                if (configResponse.IsShowLocalinExpense != null)
+                                    Pref.IsShowLocalinExpense = configResponse.IsShowLocalinExpense!!
+                                if (configResponse.IsShowOutStationinExpense != null)
+                                    Pref.IsShowOutStationinExpense = configResponse.IsShowOutStationinExpense!!
+                                if (configResponse.IsSingleDayTAApplyRestriction != null)
+                                    Pref.IsSingleDayTAApplyRestriction = configResponse.IsSingleDayTAApplyRestriction!!
+                                if (configResponse.IsTAAttachment1Mandatory != null)
+                                    Pref.IsTAAttachment1Mandatory = configResponse.IsTAAttachment1Mandatory!!
+                                if (configResponse.IsTAAttachment2Mandatory != null)
+                                    Pref.IsTAAttachment2Mandatory = configResponse.IsTAAttachment2Mandatory!!
+                                if (configResponse.NameforConveyanceAttachment1 != null)
+                                    Pref.NameforConveyanceAttachment1 = configResponse.NameforConveyanceAttachment1!!
+                                if (configResponse.NameforConveyanceAttachment2 != null)
+                                    Pref.NameforConveyanceAttachment2 = configResponse.NameforConveyanceAttachment2!!
+
+                                // 13.0  dashboardFrag AppV 4.0.8 Saheli    12/05/2023  0026101
+                                if (configResponse.IsAttachmentAvailableForCurrentStock != null)
+                                    Pref.IsAttachmentAvailableForCurrentStock = configResponse.IsAttachmentAvailableForCurrentStock!!
+                                // end rev 13.0
+
+                                if (configResponse.IsShowReimbursementTypeInAttendance != null)
+                                    Pref.IsShowReimbursementTypeInAttendance = configResponse.IsShowReimbursementTypeInAttendance!!
+
+                                //Begin 14.0  DashboardFragment AppV 4.0.8 Suman    19/05/2023 26163
+                                if (configResponse.IsBeatPlanAvailable != null)
+                                    Pref.IsBeatPlanAvailable = configResponse.IsBeatPlanAvailable!!
+                                //End of 14.0  DashboardFragment AppV 4.0.8 Suman    19/05/2023 26163
+
+                                if (configResponse.IsUpdateVisitDataInTodayTable != null)
+                                    Pref.IsUpdateVisitDataInTodayTable = configResponse.IsUpdateVisitDataInTodayTable!!
+
+                                //Begin 16.0 DashboardFragment v 4.1.6 Tufan 11/07/2023 mantis 26546 revisit sync time
+                                if (configResponse.ShopSyncIntervalInMinutes != null)
+                                    Pref.ShopSyncIntervalInMinutes = configResponse.ShopSyncIntervalInMinutes!!
+                                //End 16.0 DashboardFragment v 4.1.6 Tufan 11/07/2023 mantis 26546 revisit sync time
+
+                                if (configResponse.IsShowWhatsAppIconforVisit != null)
+                                    Pref.IsShowWhatsAppIconforVisit = configResponse.IsShowWhatsAppIconforVisit!!
+                                if (configResponse.IsAutomatedWhatsAppSendforRevisit != null)
+                                    Pref.IsAutomatedWhatsAppSendforRevisit = configResponse.IsAutomatedWhatsAppSendforRevisit!!
+
+                                if (configResponse.IsAllowBackdatedOrderEntry != null)
+                                    Pref.IsAllowBackdatedOrderEntry = configResponse.IsAllowBackdatedOrderEntry!!
+                                try{
+                                    Pref.Order_Past_Days = configResponse.Order_Past_Days!!.toString()
+                                }catch (ex:Exception){
+                                    Pref.Order_Past_Days = "0"
+                                }
+                                //Begin 15.0 Pref v 4.1.6 Tufan 22/08/2023 mantis 26649 Show distributor scheme with Product
+                                if (configResponse.Show_distributor_scheme_with_Product != null)
+                                    Pref.Show_distributor_scheme_with_Product = configResponse.Show_distributor_scheme_with_Product!!
+                                //End 15.0 Pref v 4.1.6 Tufan 22/08/2023 mantis 26649 Show distributor scheme with Product
 
                             }
                             BaseActivity.isApiInitiated = false
@@ -4835,7 +4990,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             //checkToCallAlarmConfigApi()
                             checkToCallAssignedDDListApi()   // calling instead of checkToCallAlarmConfigApi()
                             progress_wheel.stopSpinning()
-                            XLog.d("ConfigFetchApiResponse ERROR: " + error.localizedMessage)
+                            Timber.d("ConfigFetchApiResponse ERROR: " + error.localizedMessage)
                         })
         )
     }
@@ -4855,7 +5010,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             progress_wheel = progress_wheel_attendance
         else
             progress_wheel = this.progress_wheel
-
+        Timber.d("api_call_dash  alarmConfig()")
         progress_wheel?.spin()
         BaseActivity.compositeDisposable.add(
                 repository.alarmConfig()
@@ -4864,7 +5019,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribe({ result ->
 
                             val configResponse = result as AlarmConfigResponseModel
-                            XLog.d("AlarmConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
+                            Timber.d("AlarmConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
 
                             progress_wheel.stopSpinning()
                             if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -4897,7 +5052,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             BaseActivity.isApiInitiated = false
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            XLog.d("AlarmConfigApiResponse ERROR: " + error.localizedMessage)
+                            Timber.d("AlarmConfigApiResponse ERROR: " + error.localizedMessage)
                             getPjpListApi()
                         })
         )
@@ -4905,13 +5060,13 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun getPjpListApi() {
         if(Pref.isActivatePJPFeature){
-            XLog.d("API_Optimization-> GET getPjpListApi : enable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization-> GET getPjpListApi : enable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
         var progress_wheel: ProgressWheel? = null
         if (Pref.isAttendanceFeatureOnly)
             progress_wheel = progress_wheel_attendance
         else
             progress_wheel = this.progress_wheel
-
+            Timber.d("api_call_dash  getUserPJPList()")
         progress_wheel?.spin()
         val repository = TeamRepoProvider.teamRepoProvider()
         BaseActivity.compositeDisposable.add(
@@ -4920,7 +5075,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as UserPjpResponseModel
-                            XLog.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.pjp_list != null && response.pjp_list.isNotEmpty()) {
@@ -4961,27 +5116,27 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             getTeamAreaListApi()
                         })
         )
         }else{
-            XLog.d("API_Optimization-> GET getPjpListApi : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization-> GET getPjpListApi : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
             getTeamAreaListApi()
         }
     }
 
     private fun getTeamAreaListApi() {
         if(Pref.isOfflineTeam) {
-            XLog.d("API_Optimization-> isOfflineTeam Enable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+            Timber.d("API_Optimization-> isOfflineTeam Enable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
             val repository = TeamRepoProvider.teamRepoProvider()
             var progress_wheel: ProgressWheel? = null
             if (Pref.isAttendanceFeatureOnly)
                 progress_wheel = progress_wheel_attendance
             else
                 progress_wheel = this.progress_wheel
-
+            Timber.d("api_call_dash  teamAreaList()")
             progress_wheel?.spin()
             BaseActivity.compositeDisposable.add(
                     repository.teamAreaList()
@@ -5029,20 +5184,20 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             )
         }
         else{
-            XLog.d("API_Optimization-> isOfflineTeam Disable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization-> isOfflineTeam Disable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
             getTimesheetDropdownApi()
         }
     }
 
     private fun getTimesheetDropdownApi() {
         if (Pref.willTimesheetShow) {
-            XLog.d("API_Optimization-> TIMESHEET Enable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+            Timber.d("API_Optimization-> TIMESHEET Enable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
             var progress_wheel: ProgressWheel? = null
             if (Pref.isAttendanceFeatureOnly)
                 progress_wheel = progress_wheel_attendance
             else
                 progress_wheel = this.progress_wheel
-
+            Timber.d("api_call_dash  getTimeSheetDropdown()")
             progress_wheel?.spin()
             val repository = TimeSheetRepoProvider.timeSheetRepoProvider()
             BaseActivity.compositeDisposable.add(
@@ -5051,7 +5206,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as TimeSheetDropDownResponseModel
-                                XLog.d("TIMESHEET DROPDOWN: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                Timber.d("TIMESHEET DROPDOWN: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                                 if (response.status == NetworkConstant.SUCCESS) {
 
@@ -5107,14 +5262,14 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                             }, { error ->
                                 progress_wheel.stopSpinning()
-                                XLog.d("TIMESHEET DROPDOWN: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("TIMESHEET DROPDOWN: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 getTimesheetConfig()
                             })
             )
         }
         else{
-            XLog.d("API_Optimization-> TIMESHEET Disable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization-> TIMESHEET Disable: " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
             gePrimaryAppListApi()
         }
     }
@@ -5125,7 +5280,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             progress_wheel = progress_wheel_attendance
         else
             progress_wheel = this.progress_wheel
-
+        Timber.d("api_call_dash  timeSheetConfig()")
         progress_wheel?.spin()
         val repository = TimeSheetRepoProvider.timeSheetRepoProvider()
         BaseActivity.compositeDisposable.add(
@@ -5134,7 +5289,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as TimeSheetConfigResponseModel
-                            XLog.d("TIMESHEET CONFIG: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("TIMESHEET CONFIG: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                             progress_wheel.stopSpinning()
 
@@ -5156,7 +5311,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("TIMESHEET CONFIG: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("TIMESHEET CONFIG: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             gePrimaryAppListApi()
                         })
@@ -5164,58 +5319,65 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     }
 
     private fun gePrimaryAppListApi() {
-        progress_wheel.spin()
-        val repository = ShopListRepositoryProvider.provideShopListRepository()
-        BaseActivity.compositeDisposable.add(
+        if(Pref.isCustomerFeatureEnable){
+            progress_wheel.spin()
+            Timber.d("api_call_dash  getPrimaryAppList()")
+            val repository = ShopListRepositoryProvider.provideShopListRepository()
+            BaseActivity.compositeDisposable.add(
                 repository.getPrimaryAppList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ result ->
-                            val response = result as PrimaryAppListResponseModel
-                            XLog.d("GET PRIMARY APP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
-                            if (response.status == NetworkConstant.SUCCESS) {
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as PrimaryAppListResponseModel
+                        Timber.d("GET PRIMARY APP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                        if (response.status == NetworkConstant.SUCCESS) {
 
-                                if (response.primary_application_list != null && response.primary_application_list!!.isNotEmpty()) {
+                            if (response.primary_application_list != null && response.primary_application_list!!.isNotEmpty()) {
 
-                                    AppDatabase.getDBInstance()?.primaryAppListDao()?.deleteAll()
+                                AppDatabase.getDBInstance()?.primaryAppListDao()?.deleteAll()
 
-                                    doAsync {
+                                doAsync {
 
-                                        response.primary_application_list?.forEach {
-                                            val primaryEntity = PrimaryAppEntity()
-                                            AppDatabase.getDBInstance()?.primaryAppListDao()?.insertAll(primaryEntity.apply {
-                                                primary_app_id = it.id
-                                                primary_app_name = it.name
-                                            })
-                                        }
-
-                                        uiThread {
-                                            progress_wheel.stopSpinning()
-                                            geSecondaryAppListApi()
-                                        }
+                                    response.primary_application_list?.forEach {
+                                        val primaryEntity = PrimaryAppEntity()
+                                        AppDatabase.getDBInstance()?.primaryAppListDao()?.insertAll(primaryEntity.apply {
+                                            primary_app_id = it.id
+                                            primary_app_name = it.name
+                                        })
                                     }
-                                } else {
-                                    progress_wheel.stopSpinning()
-                                    geSecondaryAppListApi()
+
+                                    uiThread {
+                                        progress_wheel.stopSpinning()
+                                        geSecondaryAppListApi()
+                                    }
                                 }
-
-
                             } else {
                                 progress_wheel.stopSpinning()
                                 geSecondaryAppListApi()
                             }
 
-                        }, { error ->
+
+                        } else {
                             progress_wheel.stopSpinning()
-                            XLog.d("GET PRIMARY APP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
-                            error.printStackTrace()
                             geSecondaryAppListApi()
-                        })
-        )
+                        }
+
+                    }, { error ->
+                        progress_wheel.stopSpinning()
+                        Timber.d("GET PRIMARY APP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                        error.printStackTrace()
+                        geSecondaryAppListApi()
+                    })
+            )
+        }else{
+            getEntityTypeListApi()
+        }
+
     }
 
     private fun geSecondaryAppListApi() {
         progress_wheel.spin()
+        Timber.d("api_call_dash  getSecondaryAppList()")
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
                 repository.getSecondaryAppList()
@@ -5223,7 +5385,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as SecondaryAppListResponseModel
-                            XLog.d("GET SECONDARY APP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET SECONDARY APP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.secondary_application_list != null && response.secondary_application_list!!.isNotEmpty()) {
@@ -5258,7 +5420,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET SECONDARY APP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET SECONDARY APP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             geLeadApi()
                         })
@@ -5267,6 +5429,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun geLeadApi() {
         progress_wheel.spin()
+        Timber.d("api_call_dash  getLeadTypeList()")
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
                 repository.getLeadTypeList()
@@ -5274,7 +5437,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as LeadListResponseModel
-                            XLog.d("GET LEAD TYPE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET LEAD TYPE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.lead_type_list != null && response.lead_type_list!!.isNotEmpty()) {
@@ -5309,7 +5472,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET LEAD TYPE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET LEAD TYPE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             geStageApi()
                         })
@@ -5318,6 +5481,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun geStageApi() {
         progress_wheel.spin()
+        Timber.d("api_call_dash  getStagList()")
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
                 repository.getStagList()
@@ -5325,7 +5489,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as StageListResponseModel
-                            XLog.d("GET STAGE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET STAGE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.stage_list != null && response.stage_list!!.isNotEmpty()) {
@@ -5360,7 +5524,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             geFunnelStageApi()
                         })
@@ -5369,6 +5533,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun geFunnelStageApi() {
         progress_wheel.spin()
+        Timber.d("api_call_dash  getFunnelStageList()")
         val repository = ShopListRepositoryProvider.provideShopListRepository()
         BaseActivity.compositeDisposable.add(
                 repository.getFunnelStageList()
@@ -5376,7 +5541,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as FunnelStageListResponseModel
-                            XLog.d("GET FUNNEL STAGE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET FUNNEL STAGE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.funnel_stage_list != null && response.funnel_stage_list!!.isNotEmpty()) {
@@ -5411,7 +5576,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET FUNNEL STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET FUNNEL STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             getEntityTypeListApi()
                         })
@@ -5419,146 +5584,165 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     }
 
     private fun getEntityTypeListApi() {
-        val repository = TypeListRepoProvider.provideTypeListRepository()
-        progress_wheel.spin()
-        BaseActivity.compositeDisposable.add(
+        if(Pref.willShowEntityTypeforShop){
+            val repository = TypeListRepoProvider.provideTypeListRepository()
+            progress_wheel.spin()
+            Timber.d("api_call_dash  entityList()")
+            BaseActivity.compositeDisposable.add(
                 repository.entityList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ result ->
-                            val response = result as EntityResponseModel
-                            if (response.status == NetworkConstant.SUCCESS) {
-                                val list = response.entity_type
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as EntityResponseModel
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            val list = response.entity_type
 
-                                if (list != null && list.isNotEmpty()) {
-                                    AppDatabase.getDBInstance()?.entityDao()?.delete()
-                                    doAsync {
-                                        list.forEach {
-                                            val entity = EntityTypeEntity()
-                                            AppDatabase.getDBInstance()?.entityDao()?.insert(entity.apply {
-                                                entity_id = it.id
-                                                name = it.name
-                                            })
-                                        }
-
-                                        uiThread {
-                                            progress_wheel.stopSpinning()
-                                            getPartyStatusListApi()
-                                        }
+                            if (list != null && list.isNotEmpty()) {
+                                AppDatabase.getDBInstance()?.entityDao()?.delete()
+                                doAsync {
+                                    list.forEach {
+                                        val entity = EntityTypeEntity()
+                                        AppDatabase.getDBInstance()?.entityDao()?.insert(entity.apply {
+                                            entity_id = it.id
+                                            name = it.name
+                                        })
                                     }
-                                } else {
-                                    progress_wheel.stopSpinning()
-                                    getPartyStatusListApi()
+
+                                    uiThread {
+                                        progress_wheel.stopSpinning()
+                                        getPartyStatusListApi()
+                                    }
                                 }
                             } else {
                                 progress_wheel.stopSpinning()
                                 getPartyStatusListApi()
                             }
-
-                        }, { error ->
+                        } else {
                             progress_wheel.stopSpinning()
-                            error.printStackTrace()
                             getPartyStatusListApi()
-                        })
-        )
+                        }
+
+                    }, { error ->
+                        progress_wheel.stopSpinning()
+                        error.printStackTrace()
+                        getPartyStatusListApi()
+                    })
+            )
+        }else{
+            getPartyStatusListApi()
+        }
+
     }
 
     private fun getPartyStatusListApi() {
-        val repository = TypeListRepoProvider.provideTypeListRepository()
-        progress_wheel.spin()
-        BaseActivity.compositeDisposable.add(
+        if(Pref.willShowPartyStatus){
+            val repository = TypeListRepoProvider.provideTypeListRepository()
+            progress_wheel.spin()
+            Timber.d("api_call_dash  partyStatusList()")
+            BaseActivity.compositeDisposable.add(
                 repository.partyStatusList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ result ->
-                            val response = result as PartyStatusResponseModel
-                            if (response.status == NetworkConstant.SUCCESS) {
-                                val list = response.party_status
-                                if (list != null && list.isNotEmpty()) {
-                                    AppDatabase.getDBInstance()?.partyStatusDao()?.delete()
-                                    doAsync {
-                                        list.forEach {
-                                            val party = PartyStatusEntity()
-                                            AppDatabase.getDBInstance()?.partyStatusDao()?.insert(party.apply {
-                                                party_status_id = it.id
-                                                name = it.name
-                                            })
-                                        }
-
-                                        uiThread {
-                                            progress_wheel.stopSpinning()
-                                            getMeetingTypeListApi()
-                                        }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as PartyStatusResponseModel
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            val list = response.party_status
+                            if (list != null && list.isNotEmpty()) {
+                                AppDatabase.getDBInstance()?.partyStatusDao()?.delete()
+                                doAsync {
+                                    list.forEach {
+                                        val party = PartyStatusEntity()
+                                        AppDatabase.getDBInstance()?.partyStatusDao()?.insert(party.apply {
+                                            party_status_id = it.id
+                                            name = it.name
+                                        })
                                     }
-                                } else {
-                                    progress_wheel.stopSpinning()
-                                    getMeetingTypeListApi()
+
+                                    uiThread {
+                                        progress_wheel.stopSpinning()
+                                        getMeetingTypeListApi()
+                                    }
                                 }
                             } else {
                                 progress_wheel.stopSpinning()
                                 getMeetingTypeListApi()
                             }
-
-                        }, { error ->
+                        } else {
                             progress_wheel.stopSpinning()
-                            error.printStackTrace()
                             getMeetingTypeListApi()
-                        })
-        )
+                        }
+
+                    }, { error ->
+                        progress_wheel.stopSpinning()
+                        error.printStackTrace()
+                        getMeetingTypeListApi()
+                    })
+            )
+        }else{
+            getMeetingTypeListApi()
+        }
+
     }
 
     private fun getMeetingTypeListApi() {
-        val repository = LoginRepositoryProvider.provideLoginRepository()
-        progress_wheel.spin()
-        BaseActivity.compositeDisposable.add(
+        if(Pref.isMeetingAvailable){
+            val repository = LoginRepositoryProvider.provideLoginRepository()
+            progress_wheel.spin()
+            Timber.d("api_call_dash  getMeetingList()")
+            BaseActivity.compositeDisposable.add(
                 repository.getMeetingList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({ result ->
-                            val response = result as MeetingListResponseModel
-                            BaseActivity.isApiInitiated = false
-                            if (response.status == NetworkConstant.SUCCESS) {
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as MeetingListResponseModel
+                        BaseActivity.isApiInitiated = false
+                        if (response.status == NetworkConstant.SUCCESS) {
 
-                                if (response.meeting_type_list != null && response.meeting_type_list!!.size > 0) {
+                            if (response.meeting_type_list != null && response.meeting_type_list!!.size > 0) {
 
-                                    AppDatabase.getDBInstance()!!.addMeetingTypeDao().deleteAll()
+                                AppDatabase.getDBInstance()!!.addMeetingTypeDao().deleteAll()
 
-                                    doAsync {
-                                        val list = response.meeting_type_list
+                                doAsync {
+                                    val list = response.meeting_type_list
 
-                                        for (i in list!!.indices) {
-                                            val meetingType = MeetingTypeEntity()
-                                            meetingType.typeId = list[i].type_id.toInt()
-                                            meetingType.typeText = list[i].type_text
+                                    for (i in list!!.indices) {
+                                        val meetingType = MeetingTypeEntity()
+                                        meetingType.typeId = list[i].type_id.toInt()
+                                        meetingType.typeText = list[i].type_text
 
-                                            AppDatabase.getDBInstance()!!.addMeetingTypeDao().insertAll(meetingType)
-                                        }
-
-                                        uiThread {
-                                            progress_wheel.stopSpinning()
-                                            getRemarksList()
-                                        }
+                                        AppDatabase.getDBInstance()!!.addMeetingTypeDao().insertAll(meetingType)
                                     }
-                                } else {
-                                    progress_wheel.stopSpinning()
-                                    getRemarksList()
+
+                                    uiThread {
+                                        progress_wheel.stopSpinning()
+                                        getRemarksList()
+                                    }
                                 }
                             } else {
                                 progress_wheel.stopSpinning()
                                 getRemarksList()
                             }
-
-                        }, { error ->
-                            error.printStackTrace()
-                            BaseActivity.isApiInitiated = false
+                        } else {
                             progress_wheel.stopSpinning()
                             getRemarksList()
-                        })
-        )
+                        }
+
+                    }, { error ->
+                        error.printStackTrace()
+                        BaseActivity.isApiInitiated = false
+                        progress_wheel.stopSpinning()
+                        getRemarksList()
+                    })
+            )
+        }else{
+            getRemarksList()
+        }
+
     }
 
     private fun getRemarksList() {
         progress_wheel.spin()
+        Timber.d("api_call_dash  getRemarksList()")
         val repository = ShopDurationRepositoryProvider.provideShopDurationRepository()
         BaseActivity.compositeDisposable.add(
                 repository.getRemarksList()
@@ -5566,7 +5750,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as VisitRemarksResponseModel
-                            XLog.d("Visit Remarks List : RESPONSE " + response.status)
+                            Timber.d("Visit Remarks List : RESPONSE " + response.status)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()?.visitRemarksDao()?.delete()
 
@@ -5593,7 +5777,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         }, { error ->
                             progress_wheel.stopSpinning()
                             error.printStackTrace()
-                            XLog.d("Visit Remarks List : ERROR " + error.localizedMessage)
+                            Timber.d("Visit Remarks List : ERROR " + error.localizedMessage)
                             //changeUI()
                             getDocumentTypeApi()
                         })
@@ -5602,16 +5786,17 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun getDocumentTypeApi() {
         if (Pref.isDocumentRepoShow) {
-            XLog.d("API_Optimization GET getDocumentListApi dashboard : enable " + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+            Timber.d("API_Optimization GET getDocumentListApi dashboard : enable " + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
             val repository = DocumentRepoProvider.documentRepoProvider()
             progress_wheel.spin()
+            Timber.d("api_call_dash  getDocType()")
             BaseActivity.compositeDisposable.add(
                     repository.getDocType()
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as DocumentTypeResponseModel
-                                XLog.d("DOCUMENT TYPE LIST RESPONSE=======> " + response.status)
+                                Timber.d("DOCUMENT TYPE LIST RESPONSE=======> " + response.status)
 
                                 if (response.status == NetworkConstant.SUCCESS) {
                                     if (response.type_list != null && response.type_list!!.size > 0) {
@@ -5657,13 +5842,13 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             }, { error ->
                                 error.printStackTrace()
                                 progress_wheel.stopSpinning()
-                                XLog.d("DOCUMENT TYPE LIST ERROR=======> " + error.localizedMessage)
+                                Timber.d("DOCUMENT TYPE LIST ERROR=======> " + error.localizedMessage)
                                 getDocumentListApi()
                             })
             )
         }
         else{
-            XLog.d("API_Optimization GET getDocumentListApi  dashboard : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
+            Timber.d("API_Optimization GET getDocumentListApi  dashboard : disable " +  "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name )
             changeUI()
         }
     }
@@ -5671,13 +5856,14 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     private fun getDocumentListApi() {
         val repository = DocumentRepoProvider.documentRepoProvider()
         progress_wheel.spin()
+        Timber.d("api_call_dash  getDocList()")
         BaseActivity.compositeDisposable.add(
                 repository.getDocList("")
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as DocumentListResponseModel
-                            XLog.d("DOCUMENT LIST RESPONSE=======> " + response.status)
+                            Timber.d("DOCUMENT LIST RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.doc_list != null && response.doc_list!!.size > 0) {
@@ -5732,13 +5918,14 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             changeUI()
-                            XLog.d("DOCUMENT LIST ERROR=======> " + error.localizedMessage)
+                            Timber.d("DOCUMENT LIST ERROR=======> " + error.localizedMessage)
                         })
         )
     }
 
     @SuppressLint("RestrictedApi")
     private fun changeUI() {
+        Timber.d("api_call_dash  changeUI()")
         tv_shop.text = Pref.shopText + "(s)"
 
         if (Pref.willShowUpdateDayPlan)
@@ -6004,12 +6191,22 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         //DashboardFragment.timerRecord(false)
 
 
-        val path = hbRecorder!!.filePath
+//        val path = hbRecorder!!.filePath
+        val path = hbRecorder!!.getFilePath()
+
         val fileUrl = Uri.parse(path)
         val file = File(fileUrl.path)
 //        val uri = Uri.fromFile(file)
-        val uri:Uri = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
-
+        // 9.0 DashboardFragment  AppV 4.0.7 Saheli    15/02/2023  mantis 0025673  screen recoreder gradle & finction update start
+        var uri: Uri? = null
+        try {
+             uri = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+        }
+        catch(ex:Exception){
+            uri = FileProvider.getUriForFile(mContext, context!!.applicationContext.packageName.toString() + ".provider", file)
+//            Toast.makeText(mContext, "Video  " + uri, Toast.LENGTH_SHORT).show()
+        }
+        // 9.0 DashboardFragment  AppV 4.0.7 Saheli    15/02/2023  mantis 0025673  screen recoreder gradle & finction update end
 
         val simpleDialog = Dialog(mContext)
         simpleDialog.setCancelable(false)
@@ -6038,7 +6235,8 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 /*           val intent = Intent(mContext, ScreenRecService::class.java)
                            intent.action = CustomConstants.START_Screen_SERVICE
                            mContext.startService(intent)*/
-                hbRecorder!!.startScreenRecording(data, resultCode, mContext as Activity)
+//                hbRecorder!!.startScreenRecording(data, resultCode, mContext as Activity)
+                hbRecorder!!.startScreenRecording(data, resultCode) // 9.0 DashboardFragment  AppV 4.0.7 Saheli    15/02/2023  mantis 0025673  screen recoreder gradle & finction update
             }
             if (requestCode == 171){
                 println("reg_face - dashboard_frag face Detect Face Match"+AppUtils.getCurrentDateTime());
@@ -6096,11 +6294,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         singleLocation()
                     }
                 } else {
-                    XLog.d("=====Inaccurate current location (Local Shop List)=====")
+                    Timber.d("=====Inaccurate current location (Local Shop List)=====")
                     singleLocation()
                 }
             } else {
-                XLog.d("=====null location (Local Shop List)======")
+                Timber.d("=====null location (Local Shop List)======")
                 singleLocation()
             }
         } else
@@ -6327,13 +6525,13 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         }
 
         if (finalNearByDD.dd_id != null && finalNearByDD.dd_id!!.length > 1) {
-            XLog.d("DAYSTART" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby dd found")
+            Timber.d("DAYSTART" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby dd found")
             startDay(finalNearByShop, finalNearByDD, location, false)
         } else if (finalNearByShop.shop_id != null && finalNearByShop.shop_id!!.length > 1) {
-            XLog.d("DAYSTART" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby shop found")
+            Timber.d("DAYSTART" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby shop found")
             startDay(finalNearByShop, finalNearByDD, location, true)
         } else {
-            XLog.d("DAYSTART" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"no nearby shop/dd "+"user lat: "+location.latitude.toString()+" long :"+location.longitude)
+            Timber.d("DAYSTART" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"no nearby shop/dd "+"user lat: "+location.latitude.toString()+" long :"+location.longitude)
 
             progress_wheel.stopSpinning()
             // 27-08-21 For ITC
@@ -6400,7 +6598,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("DashboardFragment DayStart : RESPONSE " + result.status)
+                                Timber.d("DashboardFragment DayStart : RESPONSE " + result.status)
                                 val response = result as BaseResponse
                                 if (response.status == NetworkConstant.SUCCESS) {
                                     //(mContext as DashboardActivity).showSnackMessage("Thanks! Updated Successfully.")
@@ -6409,9 +6607,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 }
                             }, { error ->
                                 if (error == null) {
-                                    XLog.d("DashboardFragment DayStart : ERROR " + "UNEXPECTED ERROR IN DayStart API")
+                                    Timber.d("DashboardFragment DayStart : ERROR " + "UNEXPECTED ERROR IN DayStart API")
                                 } else {
-                                    XLog.d("DashboardFragment DayStart : ERROR " + error.localizedMessage)
+                                    Timber.d("DashboardFragment DayStart : ERROR " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
                                 progress_wheel.stopSpinning()
@@ -6439,11 +6637,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         singleLocationEnd()
                     }
                 } else {
-                    XLog.d("=====Inaccurate current location (Local Shop List)=====")
+                    Timber.d("=====Inaccurate current location (Local Shop List)=====")
                     singleLocationEnd()
                 }
             } else {
-                XLog.d("=====null location (Local Shop List)======")
+                Timber.d("=====null location (Local Shop List)======")
                 singleLocationEnd()
             }
         } else
@@ -6677,13 +6875,13 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         //finalNearByDD=newDDList[5]
 
         if (finalNearByDD.dd_id != null && finalNearByDD.dd_id!!.length > 1) {
-            XLog.d("DAYEND" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby dd found")
+            Timber.d("DAYEND" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby dd found")
             endDay(finalNearByShop, finalNearByDD, location, false)
         } else if (finalNearByShop.shop_id != null && finalNearByShop.shop_id!!.length > 1) {
-            XLog.d("DAYEND" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby shop found")
+            Timber.d("DAYEND" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"nearby shop found")
             endDay(finalNearByShop, finalNearByDD, location, true)
         } else {
-            XLog.d("DAYEND" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"no nearby shop/dd "+"user lat: "+location.latitude.toString()+" long :"+location.longitude)
+            Timber.d("DAYEND" + " , " + " Time :" + AppUtils.getCurrentDateTime()+"no nearby shop/dd "+"user lat: "+location.latitude.toString()+" long :"+location.longitude)
             progress_wheel.stopSpinning()
             // 27-08-21 For ITC
             val simpleDialog = Dialog(mContext)
@@ -6787,7 +6985,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({ result ->
-                                        XLog.d("DashboardFragment DayEnd : RESPONSE " + result.status)
+                                        Timber.d("DashboardFragment DayEnd : RESPONSE " + result.status)
                                         val response = result as BaseResponse
                                         if (response.status == NetworkConstant.SUCCESS) {
                                             //(mContext as DashboardActivity).showSnackMessage("Thanks! Updated Successfully.")
@@ -6796,9 +6994,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                         }
                                     }, { error ->
                                         if (error == null) {
-                                            XLog.d("DashboardFragment DayEnd : ERROR " + "UNEXPECTED ERROR IN DayStart API")
+                                            Timber.d("DashboardFragment DayEnd : ERROR " + "UNEXPECTED ERROR IN DayStart API")
                                         } else {
-                                            XLog.d("DashboardFragment DayEnd : ERROR " + error.localizedMessage)
+                                            Timber.d("DashboardFragment DayEnd : ERROR " + error.localizedMessage)
                                             error.printStackTrace()
                                         }
                                         progress_wheel.stopSpinning()
@@ -6833,7 +7031,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("DashboardFragment isStartOrEndDay : RESPONSE " + result.status + " " + AppUtils.getCurrentDateTime())
+                                Timber.d("DashboardFragment isStartOrEndDay : RESPONSE " + result.status + " " + AppUtils.getCurrentDateTime())
                                 val response = result as StatusDayStartEnd
                                 if (response.status == NetworkConstant.SUCCESS) {
                                     doAsync {
@@ -6923,9 +7121,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 }
                             }, { error ->
                                 if (error == null) {
-                                    XLog.d("DashboardFragment isStartOrEndDay : ERROR " + "UNEXPECTED ERROR IN DayStartEnd API")
+                                    Timber.d("DashboardFragment isStartOrEndDay : ERROR " + "UNEXPECTED ERROR IN DayStartEnd API")
                                 } else {
-                                    XLog.d("DashboardFragment isStartOrEndDay : ERROR " + error.localizedMessage)
+                                    Timber.d("DashboardFragment isStartOrEndDay : ERROR " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
                                 progress_wheel.stopSpinning()
@@ -6941,7 +7139,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
     }
 
     private fun callShopActivityApiForActivityCheck() {
-        XLog.d("DashboardFragment callShopActivityApiForActivityCheck started " + AppUtils.getCurrentDateTime())
+        Timber.d("DashboardFragment callShopActivityApiForActivityCheck started " + AppUtils.getCurrentDateTime())
         dialogHeaderProcess.text = "Syncing Important Data. Please wait..."
         val dialogYes = simpleDialogProcess.findViewById(R.id.tv_message_ok) as AppCustomTextView
         val progD = simpleDialogProcess.findViewById(R.id.progress_wheel_progress) as ProgressWheel
@@ -6963,7 +7161,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 .subscribe({ result ->
                     var shopActityResponse = result as ShopActivityResponse
                     //simpleDialogProcess.dismiss()
-                    XLog.d("DashboardFragment callShopActivityApiForActivityCheck response ${shopActityResponse.status}" + AppUtils.getCurrentDateTime())
+                    Timber.d("DashboardFragment callShopActivityApiForActivityCheck response ${shopActityResponse.status}" + AppUtils.getCurrentDateTime())
                     if (shopActityResponse.status == "200") {
                         if(shopActityResponse.date_list!!.size>0){
                             var actiList = shopActityResponse.date_list as ArrayList<ShopActivityResponseDataList>
@@ -6979,7 +7177,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         endShopDuration()
                     }
                 }, { error ->
-                    XLog.d("DashboardFragment callShopActivityApiForActivityCheck error" + AppUtils.getCurrentDateTime())
+                    Timber.d("DashboardFragment callShopActivityApiForActivityCheck error" + AppUtils.getCurrentDateTime())
                     simpleDialogProcess.dismiss()
                     error.printStackTrace()
                     endShopDuration()
@@ -6999,7 +7197,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 }
             }
 
-            XLog.d("updateActivityGarbage DashFrag started " + AppUtils.getCurrentDateTime())
+            Timber.d("updateActivityGarbage DashFrag started " + AppUtils.getCurrentDateTime())
             for(i in 0..listUnsync.size-1){
                 var shopListRoom = AppDatabase.getDBInstance()!!.shopActivityDao().getAllShopActivityByDate(listUnsync.get(i)!!.date!!.toString()) as ArrayList<String>
                 var shopListApi : ArrayList<String> = listUnsync.get(i)?.shop_list!!.map { it.shopid } as ArrayList<String>
@@ -7007,7 +7205,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     var unsyncedList: List<String> = shopListRoom - shopListApi
                     for(j in 0..unsyncedList.size-1){
                         try{
-                            XLog.d("updateActivityGarbage DashFrag marked unsync for  ${unsyncedList.get(j)} " + AppUtils.getCurrentDateTime())
+                            Timber.d("updateActivityGarbage DashFrag marked unsync for  ${unsyncedList.get(j)} " + AppUtils.getCurrentDateTime())
                         }catch (ex:Exception){
                             ex.printStackTrace()
                         }
@@ -7023,7 +7221,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             uiThread {
                 //simpleDialogProcess.dismiss()
                 //callShopDurationApiNew()
-                XLog.d("DashboardFragment updateActivityGarbage success calling endShopDuration " + AppUtils.getCurrentDateTime())
+                Timber.d("DashboardFragment updateActivityGarbage success calling endShopDuration " + AppUtils.getCurrentDateTime())
                 endShopDuration()
             }
         }
@@ -7080,6 +7278,20 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private var permissionUtils: PermissionUtils? = null
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 //showPictureDialog()
@@ -7090,7 +7302,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -7221,7 +7433,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             newFile = processImage.ProcessImageSelfie()
             uiThread {
                 if (newFile != null) {
-                    XLog.e("=========Image from new technique==========")
+                    Timber.e("=========Image from new technique==========")
                     val fileSize = AppUtils.getCompressImage(filePath)
                     setCameraImage(filePath)
                 } else {
@@ -7245,11 +7457,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         singleLocationDD()
                     }
                 } else {
-                    XLog.d("=====Inaccurate current location (Local Shop List)=====")
+                    Timber.d("=====Inaccurate current location (Local Shop List)=====")
                     singleLocationDD()
                 }
             } else {
-                XLog.d("=====null location (Local Shop List)======")
+                Timber.d("=====null location (Local Shop List)======")
                 singleLocationDD()
             }
         } else
@@ -7446,7 +7658,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({ result ->
-                                        XLog.d("DashboardFragment DayEnd : RESPONSE " + result.status)
+                                        Timber.d("DashboardFragment DayEnd : RESPONSE " + result.status)
                                         val response = result as BaseResponse
                                         if (response.status == NetworkConstant.SUCCESS) {
                                             (mContext as DashboardActivity).showSnackMessage("Thanks! Updated Successfully.")
@@ -7454,9 +7666,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                         }
                                     }, { error ->
                                         if (error == null) {
-                                            XLog.d("DashboardFragment DayEnd : ERROR " + "UNEXPECTED ERROR IN DayStart API")
+                                            Timber.d("DashboardFragment DayEnd : ERROR " + "UNEXPECTED ERROR IN DayStart API")
                                         } else {
-                                            XLog.d("DashboardFragment DayEnd : ERROR " + error.localizedMessage)
+                                            Timber.d("DashboardFragment DayEnd : ERROR " + error.localizedMessage)
                                             error.printStackTrace()
                                         }
                                         progress_wheel.stopSpinning()
@@ -7538,17 +7750,17 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 println("reg_face - GetImageFromUrl called"+AppUtils.getCurrentDateTime());
                                 GetImageFromUrl().execute(CustomStatic.FaceUrl)
 
-                                XLog.d(" AddAttendanceFragment : FaceRegistration/FaceMatch" +response.status.toString() +", : "  + ", Success: ")
+                                Timber.d(" AddAttendanceFragment : FaceRegistration/FaceMatch" +response.status.toString() +", : "  + ", Success: ")
                             }else{
                                 BaseActivity.isApiInitiated = false
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_reg_face))
                                 progress_wheel.stopSpinning()
-                                XLog.d("AddAttendanceFragment : FaceRegistration/FaceMatch : " + response.status.toString() +", : "  + ", Failed: ")
+                                Timber.d("AddAttendanceFragment : FaceRegistration/FaceMatch : " + response.status.toString() +", : "  + ", Failed: ")
                             }
                         },{
                             error ->
                             if (error != null) {
-                                XLog.d("AddAttendanceFragment : FaceRegistration/FaceMatch : " + " : "  + ", ERROR: " + error.localizedMessage)
+                                Timber.d("AddAttendanceFragment : FaceRegistration/FaceMatch : " + " : "  + ", ERROR: " + error.localizedMessage)
                             }
                             BaseActivity.isApiInitiated = false
                         })
@@ -8093,7 +8305,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
     private fun revisitShop() {
 
-        XLog.e("revisitShop started")
+        Timber.e("revisitShop started")
         try {
             val shopActivityEntity = AppDatabase.getDBInstance()!!.shopActivityDao()
                 .getShopForDay(shop_id, AppUtils.getCurrentDateForShopActi())
@@ -8127,7 +8339,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                 var distance = 0.0
                 var address = ""
-                XLog.e("======New Distance (At auto revisit time)=========")
+                Timber.e("======New Distance (At auto revisit time)=========")
 
                 val shop = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopDetail(shop_id)
                 address = if (!TextUtils.isEmpty(shop.actual_address))
@@ -8141,7 +8353,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
 
                 if (Pref.isOnLeave.equals("false", ignoreCase = true)) {
 
-                    XLog.e("=====User is at work (At auto revisit time)=======")
+                    Timber.e("=====User is at work (At auto revisit time)=======")
 
                     val locationList = AppDatabase.getDBInstance()!!.userLocationDataDao()
                         .getLocationUpdateForADay(AppUtils.getCurrentDateForShopActi())
@@ -8164,11 +8376,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     }
                     val finalDistance = (Pref.tempDistance.toDouble() + loc_distance).toString()
 
-                    XLog.e("===Distance (At auto shop revisit time)===")
-                    XLog.e("Temp Distance====> " + Pref.tempDistance)
-                    XLog.e("Normal Distance====> $loc_distance")
-                    XLog.e("Total Distance====> $finalDistance")
-                    XLog.e("===========================================")
+                    Timber.e("===Distance (At auto shop revisit time)===")
+                    Timber.e("Temp Distance====> " + Pref.tempDistance)
+                    Timber.e("Normal Distance====> $loc_distance")
+                    Timber.e("Total Distance====> $finalDistance")
+                    Timber.e("===========================================")
 
                     userlocation.distance = finalDistance
                     userlocation.locationName = LocationWizard.getNewLocationName(
@@ -8192,7 +8404,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         AppUtils.getBatteryPercentage(mContext).toString()
                     AppDatabase.getDBInstance()!!.userLocationDataDao().insertAll(userlocation)
 
-                    XLog.e("=====Shop auto revisit data added=======")
+                    Timber.e("=====Shop auto revisit data added=======")
 
                     Pref.totalS2SDistance =
                         (Pref.totalS2SDistance.toDouble() + userlocation.distance.toDouble()).toString()
@@ -8201,11 +8413,11 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     Pref.totalS2SDistance = "0.0"
                     Pref.tempDistance = "0.0"
                 } else {
-                    XLog.e("=====User is on leave (At auto revisit time)=======")
+                    Timber.e("=====User is on leave (At auto revisit time)=======")
                     distance = 0.0
                 }
 
-                XLog.e("shop to shop distance (At auto revisit time)=====> $distance")
+                Timber.e("shop to shop distance (At auto revisit time)=====> $distance")
 
                 mShopActivityEntity.distance_travelled = distance.toString()
                 mShopActivityEntity.in_time = AppUtils.getCurrentTimeWithMeredian()
@@ -8352,7 +8564,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
             val intent = Intent()
             intent.action = "AUTO_REVISIT_BROADCAST"
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
-            XLog.e("revisitShop ended")
+            Timber.e("revisitShop ended")
         } catch (e: Exception) {
             e.printStackTrace()
             progress_wheel.stopSpinning()
@@ -8422,9 +8634,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         }
                     }, { error ->
                         if (error == null) {
-                            XLog.d("App Info : ERROR : " + "UNEXPECTED ERROR IN LOCATION ACTIVITY API")
+                            Timber.d("App Info : ERROR : " + "UNEXPECTED ERROR IN LOCATION ACTIVITY API")
                         } else {
-                            XLog.d("App Info : ERROR : " + error.localizedMessage)
+                            Timber.d("App Info : ERROR : " + error.localizedMessage)
                             error.printStackTrace()
                         }
                         progress_wheel.stopSpinning()
@@ -8546,10 +8758,10 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
         }
         val index = addShop.shop_id!!.indexOf("_")
         if (shop_imgPath != null)
-            XLog.d("shop image path=======> $shop_imgPath")
+            Timber.d("shop image path=======> $shop_imgPath")
 
         if (degree_imgPath != null)
-            XLog.d("doctor degree image path=======> $degree_imgPath")
+            Timber.d("doctor degree image path=======> $degree_imgPath")
 
         if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
             val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
@@ -8559,7 +8771,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         val addShopResult = result as AddShopResponse
-                        XLog.d("syncShopFromShopList : BaseActivity " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                        Timber.d("syncShopFromShopList : BaseActivity " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
 
                         when (addShopResult.status) {
                             NetworkConstant.SUCCESS -> {
@@ -8568,7 +8780,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 syncShopListOnebyOne()
                             }
                             NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                XLog.d("DuplicateShop : BaseActivity " + ", SHOP: " + addShop.shop_name)
+                                Timber.d("DuplicateShop : BaseActivity " + ", SHOP: " + addShop.shop_name)
                                 AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
 
 
@@ -8592,7 +8804,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                         syncShopListOnebyOne()
                         if (error != null)
-                            XLog.d("syncShopFromShopList : BaseActivity " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                            Timber.d("syncShopFromShopList : BaseActivity " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                     })
             )
         }
@@ -8604,7 +8816,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         val addShopResult = result as AddShopResponse
-                        XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                        Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
 
                         when (addShopResult.status) {
                             NetworkConstant.SUCCESS -> {
@@ -8618,7 +8830,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                 }
                             }
                             NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                 AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
 
                                 if (AppDatabase.getDBInstance()!!.addShopEntryDao().getDuplicateShopData(addShop.owner_contact_no).size > 0) {
@@ -8641,14 +8853,14 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                         (this as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                         syncShopListOnebyOne()
                         if (error != null)
-                            XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                            Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                     })
             )
         }
     }
 
     private fun callShopDurationApi() {
-        XLog.e("visit_tag : callShopDurationApi")
+        Timber.e("visit_tag : callShopDurationApi")
         //dialogHeaderProcess.text = "Syncing Important Data. Please wait..."
         //val dialogYes = simpleDialogProcess.findViewById(R.id.tv_message_ok) as AppCustomTextView
         //simpleDialogProcess.show()
@@ -8783,28 +8995,28 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             }
 
                             try{
-                                XLog.d("====SYNC VISITED SHOP DATA (Dashboard)====")
-                                XLog.d("SHOP ID======> " + shopDurationData!!.shop_id)
-                                XLog.d("SPENT DURATION======> " + shopDurationData!!.spent_duration)
-                                XLog.d("VISIT DATE=========> " + shopDurationData?.visited_date)
-                                XLog.d("VISIT DATE TIME==========> " + shopDurationData?.visited_date)
-                                XLog.d("TOTAL VISIT COUNT========> " + shopDurationData?.total_visit_count)
-                                XLog.d("DISTANCE TRAVELLED========> " + shopDurationData?.distance_travelled)
-                                XLog.d("FEEDBACK========> " + shopDurationData?.feedback)
-                                XLog.d("isFirstShopVisited========> " + shopDurationData?.isFirstShopVisited)
-                                XLog.d("distanceFromHomeLoc========> " + shopDurationData?.distanceFromHomeLoc)
-                                XLog.d("next_visit_date========> " + shopDurationData?.next_visit_date)
-                                XLog.d("device_model========> " + shopDurationData?.device_model)
-                                XLog.d("android_version========> " + shopDurationData?.android_version)
-                                XLog.d("battery========> " + shopDurationData?.battery)
-                                XLog.d("net_status========> " + shopDurationData?.net_status)
-                                XLog.d("net_type========> " + shopDurationData?.net_type)
-                                XLog.d("in_time========> " + shopDurationData?.in_time)
-                                XLog.d("out_time========> " + shopDurationData?.out_time)
-                                XLog.d("start_timestamp========> " + shopDurationData?.start_timestamp)
-                                XLog.d("in_location========> " + shopDurationData?.in_location)
-                                XLog.d("out_location========> " + shopDurationData?.out_location)
-                                XLog.d("========================================================")
+                                Timber.d("====SYNC VISITED SHOP DATA (Dashboard)====")
+                                Timber.d("SHOP ID======> " + shopDurationData!!.shop_id)
+                                Timber.d("SPENT DURATION======> " + shopDurationData!!.spent_duration)
+                                Timber.d("VISIT DATE=========> " + shopDurationData?.visited_date)
+                                Timber.d("VISIT DATE TIME==========> " + shopDurationData?.visited_date)
+                                Timber.d("TOTAL VISIT COUNT========> " + shopDurationData?.total_visit_count)
+                                Timber.d("DISTANCE TRAVELLED========> " + shopDurationData?.distance_travelled)
+                                Timber.d("FEEDBACK========> " + shopDurationData?.feedback)
+                                Timber.d("isFirstShopVisited========> " + shopDurationData?.isFirstShopVisited)
+                                Timber.d("distanceFromHomeLoc========> " + shopDurationData?.distanceFromHomeLoc)
+                                Timber.d("next_visit_date========> " + shopDurationData?.next_visit_date)
+                                Timber.d("device_model========> " + shopDurationData?.device_model)
+                                Timber.d("android_version========> " + shopDurationData?.android_version)
+                                Timber.d("battery========> " + shopDurationData?.battery)
+                                Timber.d("net_status========> " + shopDurationData?.net_status)
+                                Timber.d("net_type========> " + shopDurationData?.net_type)
+                                Timber.d("in_time========> " + shopDurationData?.in_time)
+                                Timber.d("out_time========> " + shopDurationData?.out_time)
+                                Timber.d("start_timestamp========> " + shopDurationData?.start_timestamp)
+                                Timber.d("in_location========> " + shopDurationData?.in_location)
+                                Timber.d("out_location========> " + shopDurationData?.out_location)
+                                Timber.d("========================================================")
                             }catch (ex:Exception){
 
                             }
@@ -8915,21 +9127,21 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                             shopDurationApiReq.user_id = Pref.user_id
                             shopDurationApiReq.session_token = Pref.session_token
                             if (newShopList.size > 0) {
-                                XLog.e("Unique ShopData List size===> " + newShopList.size)
+                                Timber.e("Unique ShopData List size===> " + newShopList.size)
                                 shopDurationApiReq.shop_list = newShopList
                             } else
                                 shopDurationApiReq.shop_list = shopDataList
 
                             val repository = ShopDurationRepositoryProvider.provideShopDurationRepository()
 
-                            XLog.d("callShopDurationApi : REQUEST")
+                            Timber.d("callShopDurationApi : REQUEST")
 
                             BaseActivity.compositeDisposable.add(
                                 repository.shopDuration(shopDurationApiReq)
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({ result ->
-                                        XLog.d("callShopDurationApi : RESPONSE " + result.status)
+                                        Timber.d("callShopDurationApi : RESPONSE " + result.status)
                                         if (result.status == NetworkConstant.SUCCESS) {
 
                                             if(!revisitStatusList.isEmpty()){
@@ -8977,9 +9189,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                                             (mContext as DashboardActivity).loadFragment(FragType.LogoutSyncFragment, false, "")
                                         }
                                         if (error == null) {
-                                            XLog.d("callShopDurationApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
+                                            Timber.d("callShopDurationApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
                                         } else {
-                                            XLog.d("callShopDurationApi : ERROR " + error.localizedMessage)
+                                            Timber.d("callShopDurationApi : ERROR " + error.localizedMessage)
                                             error.printStackTrace()
                                         }
                                     })
@@ -9003,7 +9215,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    XLog.d("callRevisitStatusUploadApi : RESPONSE " + result.status)
+                    Timber.d("callRevisitStatusUploadApi : RESPONSE " + result.status)
                     if (result.status == NetworkConstant.SUCCESS){
                         for(i in revisitStatusList.indices){
                             AppDatabase.getDBInstance()?.shopVisitOrderStatusRemarksDao()!!.updateOrderStatus(revisitStatusList[i]!!.shop_revisit_uniqKey!!)
@@ -9011,9 +9223,9 @@ class DashboardFragment : BaseFragment(), View.OnClickListener, HBRecorderListen
                     }
                 },{error ->
                     if (error == null) {
-                        XLog.d("callRevisitStatusUploadApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
+                        Timber.d("callRevisitStatusUploadApi : ERROR " + "UNEXPECTED ERROR IN SHOP ACTIVITY API")
                     } else {
-                        XLog.d("callRevisitStatusUploadApi : ERROR " + error.localizedMessage)
+                        Timber.d("callRevisitStatusUploadApi : ERROR " + error.localizedMessage)
                         error.printStackTrace()
                     }
                 })

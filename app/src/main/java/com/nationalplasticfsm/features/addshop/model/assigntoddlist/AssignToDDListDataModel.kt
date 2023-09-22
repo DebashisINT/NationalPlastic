@@ -11,4 +11,5 @@ class AssignToDDListDataModel {
     var type_id: String? = null
     var dd_latitude: String? = null
     var dd_longitude: String? = null
+    var address: String? = null
 }

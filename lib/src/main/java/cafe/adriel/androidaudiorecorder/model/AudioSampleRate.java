@@ -7,7 +7,8 @@ public enum AudioSampleRate {
     HZ_22050,
     HZ_16000,
     HZ_11025,
-    HZ_8000;
+    HZ_8000,
+    HZ_100;
 
     public int getSampleRate(){
         return Integer.parseInt(name().replace("HZ_", ""));

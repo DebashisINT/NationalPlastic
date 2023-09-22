@@ -43,6 +43,14 @@
                     android:drawableTint="@color/white"
                     android:paddingEnd="@dimen/_10sdp"/>
 
+                <ImageView
+                    android:id="@+id/iv_frag_order_type_list_new_mic"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentRight="true"
+                    app:tint="@color/color_custom_red"
+                    android:src="@drawable/ic_mic"/>
+
             </LinearLayout>
 
 

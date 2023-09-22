@@ -177,8 +177,9 @@ class VisitReportFragment : BaseFragment(), View.OnClickListener, DatePickerDial
 
         rv_view_report_list.adapter = VisitReportAdapter(mContext, visit_report_list, object : VisitReportAdapter.OnClickListener {
             override fun onViewClick(adapterPosition: Int) {
-                if (visit_report_list?.get(adapterPosition)?.total_shop_count == "0")
+                if (visit_report_list?.get(adapterPosition)?.total_shop_count == "0") {
                     (mContext as DashboardActivity).showSnackMessage(visit_report_list[adapterPosition].member_name + " hasn't visited any shop yet")
+                }
                 else {
                     (mContext as DashboardActivity).visitReportDate = tv_pick_date_range.text.toString().trim()
                     (mContext as DashboardActivity).loadFragment(FragType.VisitReportDetailsFragment, true, visit_report_list?.get(adapterPosition)!!)
@@ -217,10 +218,12 @@ class VisitReportFragment : BaseFragment(), View.OnClickListener, DatePickerDial
     }
 
     private fun checkValidation() {
-        if (!iv_check_icon.isSelected)
+        if (!iv_check_icon.isSelected) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_check_review))
-        else
+        }
+        else {
             callConfirmReviewApi()
+        }
 
     }
 

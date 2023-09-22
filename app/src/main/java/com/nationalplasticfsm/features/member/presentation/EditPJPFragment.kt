@@ -33,12 +33,13 @@ import com.nationalplasticfsm.features.reimbursement.presentation.DateAdapter
 import com.nationalplasticfsm.features.reimbursement.presentation.MonthListAdapter
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -224,7 +225,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as TeamPjpConfigResponseModel
-                            XLog.d("GET TEAM PJP CONFIG DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TEAM PJP CONFIG DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
                                 tv_supervisor_name.text = response.supervisor_name
@@ -235,7 +236,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TEAM PJP CONFIG DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TEAM PJP CONFIG DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -256,7 +257,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as CustomerResponseModel
-                            XLog.d("GET TEAM CUSTOMER DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TEAM CUSTOMER DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -270,7 +271,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TEAM CUSTOMER DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TEAM CUSTOMER DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -373,7 +374,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("ADD PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("ADD PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(response.message!!)
                             if (response.status == NetworkConstant.SUCCESS) {
@@ -386,7 +387,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                             }
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ADD PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("ADD PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -402,7 +403,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as UserPjpResponseModel
-                            XLog.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET USER PJP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.pjp_list != null && response.pjp_list.isNotEmpty()) {
                                     doAsync {
@@ -439,7 +440,7 @@ class EditPJPFragment : BaseFragment(), DateAdapter.onPetSelectedListener, View.
                             }
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET USER PJP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).onBackPressed()
                         })

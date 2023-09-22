@@ -16,7 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.app.Pref
@@ -43,12 +43,15 @@ import com.rackspira.kristiawan.rackmonthpicker.RackMonthPicker
 import com.rackspira.kristiawan.rackmonthpicker.listener.DateMonthDialogListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.text.DateFormatSymbols
 import java.util.*
 
 /**
  * Created by Saikat on 22-01-2019.
  */
+// Revision History
+// 1.0 ReimbursementListFragment AppV 4.0.7 Saheli    02/03/2023 Timber Log Implementation
 class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -168,10 +171,12 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                 /*if (dy > 0 || dy < 0 && fab.isShown)
                     fab.hide()*/
 
-                if (dy < 0 && !fab.isShown)
+                if (dy < 0 && !fab.isShown) {
                     fab.show()
-                else if (dy > 0 && fab.isShown)
+                }
+                else if (dy > 0 && fab.isShown) {
                     fab.hide()
+                }
             }
 
 
@@ -215,13 +220,20 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
 
         val month = tv_month.text.toString().trim().substring(0, 3)
 
-        XLog.d("====ReimbursementList Input params======")
+     /*   XLog.d("====ReimbursementList Input params======")
         XLog.d("user id===> " + Pref.user_id!!)
         XLog.d("session token===> " + Pref.session_token!!)
         XLog.d("month===> " + AppUtils.getMonthValue(month))
         XLog.d("year===> " + tv_year.text.toString().trim())
         XLog.d("visit id===> $visitId")
-        XLog.d("========================================")
+        XLog.d("========================================")*/
+        Timber.d("====ReimbursementList Input params======")
+        Timber.d("user id===> " + Pref.user_id!!)
+        Timber.d("session token===> " + Pref.session_token!!)
+        Timber.d("month===> " + AppUtils.getMonthValue(month))
+        Timber.d("year===> " + tv_year.text.toString().trim())
+        Timber.d("visit id===> $visitId")
+        Timber.d("========================================")
 
         val repository = ReimbursementListRepoProvider.getReimbursementListRepository()
         progress_wheel.spin()
@@ -232,7 +244,8 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
 
                             val reimbursementResponse = result as ReimbursementListResponseModel
-                            XLog.d("ReimbursementList Api Response : " + "\n" + "Status=====> " + reimbursementResponse.status + ", Message====> " + reimbursementResponse.message)
+//                            XLog.d("ReimbursementList Api Response : " + "\n" + "Status=====> " + reimbursementResponse.status + ", Message====> " + reimbursementResponse.message)
+                            Timber.d("ReimbursementList Api Response : " + "\n" + "Status=====> " + reimbursementResponse.status + ", Message====> " + reimbursementResponse.message)
 
                             progress_wheel.stopSpinning()
                             if (reimbursementResponse.status == NetworkConstant.SUCCESS) {
@@ -249,8 +262,9 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                                 if (!TextUtils.isEmpty(reimbursementResponse.total_claim_amount))
                                     tv_claim_amount.text = reimbursementResponse.total_claim_amount
 
-                                if (reimbursementResponse.expense_list != null && reimbursementResponse.expense_list?.size!! > 0)
+                                if (reimbursementResponse.expense_list != null && reimbursementResponse.expense_list?.size!! > 0) {
                                     initExpenseAdapter(reimbursementResponse.expense_list, message)
+                                }
                                 else {
                                     //tv_no_data.visibility = View.VISIBLE
                                     tv_no_ta.visibility = View.VISIBLE
@@ -282,11 +296,13 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                             }
                             BaseActivity.isApiInitiated = false
 
-                        }, { error ->
+                        },
+                            { error ->
                             BaseActivity.isApiInitiated = false
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            XLog.d("ReimbursementList Api ERROR: " + error.localizedMessage)
+//                            XLog.d("ReimbursementList Api ERROR: " + error.localizedMessage)
+                            Timber.d("ReimbursementList Api ERROR: " + error.localizedMessage)
                             rv_expense_list.visibility = View.GONE
                             //tv_no_data.visibility = View.VISIBLE
                             tv_no_ta.visibility = View.VISIBLE
@@ -495,8 +511,10 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun showDeleteAlert(adapterPosition: Int, expense_list_details: ArrayList<ReimbursementListDetailsModel>?) {
-
-        CommonDialog.getInstance("Delete Alert", "Do you really want to delete this TA?", getString(R.string.cancel), getString(R.string.ok), object : CommonDialogClickListener {
+        //Begin 100.0  AppV 4.1.3 Sumaan 10/05/2023 Reimbursement bug fixing & updation mantis id -- 26075
+        //CommonDialog.getInstance("Delete Alert", "Do you really want to delete this TA?", getString(R.string.cancel), getString(R.string.ok), object : CommonDialogClickListener {
+        CommonDialog.getInstance("Delete Alert", "Do you really want to delete this document?", getString(R.string.cancel), getString(R.string.ok), object : CommonDialogClickListener {
+            //End of 100.0  AppV 4.1.3 Sumaan 10/05/2023 Reimbursement bug fixing & updation mantis id -- 26075
             override fun onLeftClick() {
             }
 
@@ -533,7 +551,8 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val configResponse = result as BaseResponse
-                            XLog.d("Delete Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+//                            XLog.d("Delete Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+                            Timber.d("Delete Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                             progress_wheel.stopSpinning()
                             if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -544,7 +563,8 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
                         }, { error ->
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            XLog.d("Delete Reimbursement Api ERROR: " + error.localizedMessage)
+//                            XLog.d("Delete Reimbursement Api ERROR: " + error.localizedMessage)
+                            Timber.d("Delete Reimbursement Api ERROR: " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
@@ -639,10 +659,12 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
 
                 mPopupWindow?.dismiss()
 
-                if (conveyancePopupWindow != null && conveyancePopupWindow!!.isShowing)
+                if (conveyancePopupWindow != null && conveyancePopupWindow!!.isShowing) {
                     conveyancePopupWindow?.dismiss()
-                else
+                }
+                else {
                     showConveyenceTypePopUp()
+                }
             }
         }
     }
@@ -741,7 +763,6 @@ class ReimbursementListFragment : BaseFragment(), View.OnClickListener {
         })
 
         if (conveyancePopupWindow != null && !conveyancePopupWindow?.isShowing!!) {
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 conveyancePopupWindow?.showAsDropDown(ll_conveyence, resources.getDimensionPixelOffset(R.dimen._10sdp), 0, Gravity.BOTTOM)
             } else {

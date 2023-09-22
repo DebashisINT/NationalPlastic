@@ -8,27 +8,30 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.app.utils.FTStorageUtils
 import com.nationalplasticfsm.features.location.LocationFuzedService
 import com.nationalplasticfsm.features.location.LocationJobService
+import timber.log.Timber
 
 /**
  * Created by Saikat on 30-04-2019.
  */
+//Revision History
+// 1.0 NewAlarmReceiver AppV 4.0.7 Saheli    03/03/2023 Timber Log Implementation
 class NewAlarmReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.hasExtra("request_code")) {
             if (intent.getIntExtra("request_code", 0) == 123) {
-                XLog.e("Time(NewAlarmReceiver): " + AppUtils.getCurrentDateTime())
+                Timber.e("Time(NewAlarmReceiver): " + AppUtils.getCurrentDateTime())
 
                 if (FTStorageUtils.isMyServiceRunning(LocationFuzedService::class.java, context)) {
-                    XLog.e("==========Service is running (NewAlarmReceiver)===========")
+                    Timber.e("==========Service is running (NewAlarmReceiver)===========")
                 } else {
-                    XLog.e("==========Service is stopped (NewAlarmReceiver)===========")
+                    Timber.e("==========Service is stopped (NewAlarmReceiver)===========")
 
                     if (Pref.user_id != null && Pref.user_id!!.isNotEmpty()) {
 
@@ -49,9 +52,11 @@ class NewAlarmReceiver : BroadcastReceiver() {
                             val resultCode = jobScheduler.schedule(jobInfo)
 
                             if (resultCode == JobScheduler.RESULT_SUCCESS) {
-                                XLog.d("===============================Job scheduled (NewAlarmReceiver)============================")
+//                                XLog.d("===============================Job scheduled (NewAlarmReceiver)============================")
+                                Timber.d("===============================Job scheduled (NewAlarmReceiver)============================")
                             } else {
-                                XLog.d("=====================Job not scheduled (NewAlarmReceiver)====================================")
+//                                XLog.d("=====================Job not scheduled (NewAlarmReceiver)====================================")
+                                Timber.d("=====================Job not scheduled (NewAlarmReceiver)====================================")
                             }
                         } else {
                             val serviceLauncher = Intent(context, LocationFuzedService::class.java)

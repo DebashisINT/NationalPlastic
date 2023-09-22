@@ -1,6 +1,7 @@
 package com.nationalplasticfsm.mappackage;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -344,6 +345,7 @@ public class MapActivityWithoutPath extends BaseActivity implements
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

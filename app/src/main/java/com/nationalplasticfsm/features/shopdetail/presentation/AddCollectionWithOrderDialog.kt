@@ -51,7 +51,7 @@ import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
-import com.elvishew.xlog.XLog
+
 import com.google.android.material.textfield.TextInputLayout
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.themechangeapp.pickimage.PermissionHelper
@@ -59,6 +59,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.File
 import java.util.*
 
@@ -762,7 +763,7 @@ class AddCollectionWithOrderDialog : DialogFragment(), View.OnClickListener {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     val response = result as PaymentModeResponseModel
-                    XLog.d("PAYMENT RESPONSE=======> " + response.status)
+                    Timber.d("PAYMENT RESPONSE=======> " + response.status)
 
                     if (response.status == NetworkConstant.SUCCESS) {
                         if (response.paymemt_mode_list != null && response.paymemt_mode_list!!.size > 0) {
@@ -799,12 +800,26 @@ class AddCollectionWithOrderDialog : DialogFragment(), View.OnClickListener {
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
                     Toaster.msgShort(mContext, getString(R.string.something_went_wrong))
-                    XLog.d("PAYMENT ERROR=======> " + error.localizedMessage)
+                    Timber.d("PAYMENT ERROR=======> " + error.localizedMessage)
                 })
         )
     }
 
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 showPictureDialog()
@@ -814,7 +829,7 @@ class AddCollectionWithOrderDialog : DialogFragment(), View.OnClickListener {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -862,6 +877,7 @@ class AddCollectionWithOrderDialog : DialogFragment(), View.OnClickListener {
     }
 
     fun setImage(file: File) {
+        println("AddColl_D setImage hit")
         dataPath = file.absolutePath
 
         val extension = NewFileUtils.getExtension(file)

@@ -3,6 +3,7 @@ package com.nationalplasticfsm.features.nearbyshops.presentation
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,29 +17,26 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
-import com.nationalplasticfsm.app.AppDatabase
-import com.nationalplasticfsm.app.NetworkConstant
-import com.nationalplasticfsm.app.Pref
-import com.nationalplasticfsm.app.SearchListener
+import com.nationalplasticfsm.app.*
+import com.nationalplasticfsm.app.Pref.IsVoiceEnable
 import com.nationalplasticfsm.app.domain.*
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.uiaction.IntentActionable
@@ -50,7 +48,6 @@ import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
-import com.nationalplasticfsm.features.addAttendence.model.LocationListResponseModel
 import com.nationalplasticfsm.features.addshop.api.AddShopRepositoryProvider
 import com.nationalplasticfsm.features.addshop.api.assignToPPList.AssignToPPListRepoProvider
 import com.nationalplasticfsm.features.addshop.api.assignedToDDList.AssignToDDListRepoProvider
@@ -83,14 +80,14 @@ import com.nationalplasticfsm.features.shopdetail.presentation.api.addcollection
 import com.nationalplasticfsm.features.shopdetail.presentation.model.addcollection.AddCollectionInputParamsModel
 import com.nationalplasticfsm.features.viewAllOrder.interf.QaOnCLick
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
-import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -105,6 +102,10 @@ import kotlin.collections.ArrayList
 // 3.0 NearByShopsListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 // 4.0 NearByShopsListFragment AppV 4.0.6 Suman 18-01-2023 show dob in extra contact
 // 5.0 NearByShopsListFragment AppV 4.0.6 Suman 03-02-2023 updateModifiedShop + sendModifiedShopList  for shop update mantis 25624
+// 6.0 NearByShopsListFragment AppV 4.0.7 saheli 20-02-2023 voice search mantis 0025683
+// 7.0 NearByShopsListFragment AppV 4.0.7 saheli 21-02-2023 voice search mantis 0025683
+// 8.0 NearByShopsListFragment AppV 4.0.7 saheli 08-06-2023 0026307 mantis  Play store console report issues
+// 9.0 NearByShopsListFragment AppV 4.0.7 Suman 26-06-2023 0026307 mantis  26437
 class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mNearByShopsListAdapter: NearByShopsListAdapter
@@ -146,6 +147,10 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     var shopExtraContactList:ArrayList<ShopExtraContactEntity> = ArrayList()
     private var shopDataModel = AddShopDBModelEntity()
 
+    private lateinit var iv_frag_nearby_shops_mic: ImageView // 6.0 NearByShopsListFragment AppV 4.0.7 voice search mantis 0025683
+
+//    private lateinit var queryText:String
+
     companion object {
         fun getInstance(beatId: Any?): NearByShopsListFragment {
             val fragment = NearByShopsListFragment()
@@ -161,7 +166,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
-
+        println("fab_check onAttach")
         try {
             beatId = arguments?.getString("beatId").toString()
         }
@@ -173,6 +178,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_nearby_shops, container, false)
+        println("fab_check onCreateView")
         initView(view)
 //        if (AppDatabase.getDBInstance()!!.marketingCategoryMasterDao().getAll().isEmpty())
 //            callMarketingCategoryListApi()
@@ -191,7 +197,24 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                     if (mNearByShopsListAdapter != null)
                         mNearByShopsListAdapter.updateAdapter(list)
-                } else {
+                }
+              /*  else if (queryText.isNotBlank()){
+                    (mContext as DashboardActivity).searchView.openSearch()
+                    (mContext as DashboardActivity).searchView.setQuery(queryText,false)
+                    var searchedList = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopBySearchDataNew(query)
+                    searchedList = searchedList.filter { it.isOwnshop==true }
+
+                    getOwnShop(searchedList)
+
+                    if (beatId.isNotEmpty())
+                        list = AppDatabase.getDBInstance()!!.addShopEntryDao().getSearchedShopBeatWise(beatId, query)
+
+                    tv_shop_count.text = "Total " + Pref.shopText + "(s): " + list.size
+
+                    if (mNearByShopsListAdapter != null)
+                        mNearByShopsListAdapter.updateAdapter(list)
+                }*/
+                else {
 //                    val searchedList = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopBySearchData(query)
                     var searchedList = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopBySearchDataNew(query)
                     searchedList = searchedList.filter { it.isOwnshop==true }
@@ -212,12 +235,17 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             }
 
         })
+        // 7.0 NearByShopsListFragment AppV 4.0.7  voice search mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 7.0 NearByShopsListFragment AppV 4.0.7  voice search mantis 0025683 start
 
         return view
 
     }
 
     private fun getOwnShop(allShopList: MutableList<AddShopDBModelEntity>) {
+        progress_wheel.spin()
         val newList = java.util.ArrayList<AddShopDBModelEntity>()
 
         for (i in allShopList.indices) {
@@ -225,7 +253,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             if (userId == Pref.user_id)*/
                 newList.add(allShopList[i])
         }
+
         list = newList
+        progress_wheel.stopSpinning()
     }
 
     private fun callMarketingCategoryListApi() {
@@ -326,7 +356,6 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-
     }
 
     override fun updateUI(any: Any) {
@@ -371,73 +400,99 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             shopObj.assigned_to_pp_id = shop_list[i].assigned_to_pp_id
             //shopObj.lastVisitedDate = AppUtils.getCurrentDate()
 
-            if (shop_list[i].last_visit_date!!.contains("."))
-                shopObj.lastVisitedDate = AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!.split(".")[0])
-            else
+            if (shop_list[i].last_visit_date!!.contains(".")) {
+                shopObj.lastVisitedDate =
+                    AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!.split(".")[0])
+            }
+            else {
                 shopObj.lastVisitedDate = AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!)
-
-            if (shopObj.lastVisitedDate == AppUtils.getCurrentDateChanged())
+            }
+            if (shopObj.lastVisitedDate == AppUtils.getCurrentDateChanged()) {
                 shopObj.visited = true
-            else
+                }
+            else {
                 shopObj.visited = false
+                }
 
             shopObj.is_otp_verified = shop_list[i].is_otp_verified
             shopObj.added_date = shop_list[i].added_date
 
-            if (shop_list[i].amount == null || shop_list[i].amount == "0.00")
+            if (shop_list[i].amount == null || shop_list[i].amount == "0.00") {
                 shopObj.amount = ""
-            else
+                }
+            else {
                 shopObj.amount = shop_list[i].amount
+                }
 
-            if (shop_list[i].entity_code == null)
+            if (shop_list[i].entity_code == null) {
                 shopObj.entity_code = ""
-            else
+                }
+            else {
                 shopObj.entity_code = shop_list[i].entity_code
+                }
 
-            if (shop_list[i].area_id == null)
+            if (shop_list[i].area_id == null) {
                 shopObj.area_id = ""
-            else
+                }
+            else {
                 shopObj.area_id = shop_list[i].area_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].model_id))
+            if (TextUtils.isEmpty(shop_list[i].model_id)) {
                 shopObj.model_id = ""
-            else
+                }
+            else {
                 shopObj.model_id = shop_list[i].model_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].primary_app_id))
+            if (TextUtils.isEmpty(shop_list[i].primary_app_id)) {
                 shopObj.primary_app_id = ""
-            else
+                }
+            else {
                 shopObj.primary_app_id = shop_list[i].primary_app_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].secondary_app_id))
+            if (TextUtils.isEmpty(shop_list[i].secondary_app_id)) {
                 shopObj.secondary_app_id = ""
-            else
+                }
+            else {
                 shopObj.secondary_app_id = shop_list[i].secondary_app_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].lead_id))
+            if (TextUtils.isEmpty(shop_list[i].lead_id)) {
                 shopObj.lead_id = ""
-            else
+                }
+            else {
                 shopObj.lead_id = shop_list[i].lead_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].stage_id))
+            if (TextUtils.isEmpty(shop_list[i].stage_id)) {
                 shopObj.stage_id = ""
-            else
+                }
+            else {
                 shopObj.stage_id = shop_list[i].stage_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].funnel_stage_id))
+            if (TextUtils.isEmpty(shop_list[i].funnel_stage_id)) {
                 shopObj.funnel_stage_id = ""
-            else
+                }
+            else {
                 shopObj.funnel_stage_id = shop_list[i].funnel_stage_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].booking_amount))
+            if (TextUtils.isEmpty(shop_list[i].booking_amount)) {
                 shopObj.booking_amount = ""
-            else
+                }
+            else {
                 shopObj.booking_amount = shop_list[i].booking_amount
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].type_id))
+            if (TextUtils.isEmpty(shop_list[i].type_id)) {
                 shopObj.type_id = ""
-            else
+                }
+            else {
                 shopObj.type_id = shop_list[i].type_id
+                }
 
             shopObj.family_member_dob = shop_list[i].family_member_dob
             shopObj.director_name = shop_list[i].director_name
@@ -464,60 +519,80 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             shopObj.assistant_doa = shop_list[i].assistant_doa
             shopObj.assistant_family_dob = shop_list[i].assistant_family_dob
 
-            if (TextUtils.isEmpty(shop_list[i].entity_id))
+            if (TextUtils.isEmpty(shop_list[i].entity_id)) {
                 shopObj.entity_id = ""
-            else
+                }
+            else {
                 shopObj.entity_id = shop_list[i].entity_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].party_status_id))
+            if (TextUtils.isEmpty(shop_list[i].party_status_id)) {
                 shopObj.party_status_id = ""
-            else
+                }
+            else {
                 shopObj.party_status_id = shop_list[i].party_status_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].retailer_id))
+            if (TextUtils.isEmpty(shop_list[i].retailer_id)) {
                 shopObj.retailer_id = ""
-            else
+                }
+            else {
                 shopObj.retailer_id = shop_list[i].retailer_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].dealer_id))
+            if (TextUtils.isEmpty(shop_list[i].dealer_id)) {
                 shopObj.dealer_id = ""
-            else
+                }
+            else {
                 shopObj.dealer_id = shop_list[i].dealer_id
-
-            if (TextUtils.isEmpty(shop_list[i].beat_id))
+            }
+            if (TextUtils.isEmpty(shop_list[i].beat_id)) {
                 shopObj.beat_id = ""
-            else
+                }
+            else {
                 shopObj.beat_id = shop_list[i].beat_id
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].account_holder))
+            if (TextUtils.isEmpty(shop_list[i].account_holder)) {
                 shopObj.account_holder = ""
-            else
+                }
+            else {
                 shopObj.account_holder = shop_list[i].account_holder
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].account_no))
+            if (TextUtils.isEmpty(shop_list[i].account_no)) {
                 shopObj.account_no = ""
-            else
+                }
+            else {
                 shopObj.account_no = shop_list[i].account_no
+                }
 
-            if (TextUtils.isEmpty(shop_list[i].bank_name))
+            if (TextUtils.isEmpty(shop_list[i].bank_name)) {
                 shopObj.bank_name = ""
-            else
+                }
+            else {
                 shopObj.bank_name = shop_list[i].bank_name
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].ifsc_code))
+            if (TextUtils.isEmpty(shop_list[i].ifsc_code)) {
                 shopObj.ifsc_code = ""
-            else
+                }
+            else {
                 shopObj.ifsc_code = shop_list[i].ifsc_code
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].upi))
+            if (TextUtils.isEmpty(shop_list[i].upi)) {
                 shopObj.upi_id = ""
-            else
+            }
+            else {
                 shopObj.upi_id = shop_list[i].upi
-
-            if (TextUtils.isEmpty(shop_list[i].assigned_to_shop_id))
+            }
+            if (TextUtils.isEmpty(shop_list[i].assigned_to_shop_id)) {
                 shopObj.assigned_to_shop_id = ""
-            else
+                }
+            else {
                 shopObj.assigned_to_shop_id = shop_list[i].assigned_to_shop_id
+                }
 
             shopObj.project_name=shop_list[i].project_name
             shopObj.landline_number=shop_list[i].landline_number
@@ -544,6 +619,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun initView(view: View) {
+        iv_frag_nearby_shops_mic = view.findViewById(R.id.iv_frag_nearby_shops_mic) // 6.0 NearByShopsListFragment AppV 4.0.7 voice search mantis 0025683
         val simpleDialogRoot = Dialog(mContext)
         simpleDialogRoot.setCancelable(true)
         simpleDialogRoot.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -626,18 +702,68 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             if (i == 0) {
                 programFab1.setImageResource(R.drawable.ic_tick_float_icon)
                 programFab1.colorNormal = mContext.resources.getColor(R.color.delivery_status_green)
-            } else if (i == 1)
+            } else if (i == 1) {
                 programFab2.setImageResource(R.drawable.ic_tick_float_icon_gray)
-            else
+                }
+            else {
                 programFab3.setImageResource(R.drawable.ic_tick_float_icon_gray)
+                }
 
         }
 
         noShopAvailable.text = "No Registered " + Pref.shopText + " Available"
         getListFromDatabase()
 
-    }
+        // 6.0 NearByShopsListFragment AppV 4.0.7 voice search mantis 0025683 start
+      /*  iv_frag_nearby_shops_mic.setOnClickListener {
+//            (mContext as DashboardActivity).searchView.setOnVoiceClickedListener(this)
+            (mContext as DashboardActivity).searchView.onVoiceClicked()
+//            startVoiceInput()
+        }*/
+//        iv_frag_nearby_shops_mic.setOnClickListener {
+//            (mContext as DashboardActivity).searchView.setOnVoiceClickedListener(OnVoiceClickedListener { startVoiceInput() })
+//
+//        }
 
+    }
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex:Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex:Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 6.0 NearByShopsListFragment AppV 4.0.7 voice search mantis 0025683 end
     private fun getListFromDatabase() {
         val allShopList = AppDatabase.getDBInstance()!!.addShopEntryDao().all
         getOwnShop(allShopList)
@@ -694,6 +820,24 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         setListVisiBility()
         tv_shop_count.text = "Total " + Pref.shopText + "(s): " + list.size
 
+
+        //Begin 9.0 NearByShopsListFragment AppV 4.0.7 Suman 26-06-2023 0026307 mantis  26437
+        try{
+            //sortAlphabatically()
+            floating_fab.close(true)
+            programFab1.colorNormal = mContext.resources.getColor(R.color.delivery_status_green)
+            programFab2.colorNormal = mContext.resources.getColor(R.color.colorAccent)
+            programFab3.colorNormal = mContext.resources.getColor(R.color.colorAccent)
+            programFab1.setImageResource(R.drawable.ic_tick_float_icon)
+            programFab2.setImageResource(R.drawable.ic_tick_float_icon_gray)
+            programFab3.setImageResource(R.drawable.ic_tick_float_icon_gray)
+            println("fab_check ok")
+        }catch (ex:Exception){
+            ex.printStackTrace()
+            println("fab_check err ${ex.message}")
+        }
+        //ENd of 9.0 NearByShopsListFragment AppV 4.0.7 Suman 26-06-2023 0026307 mantis  26437
+
         mNearByShopsListAdapter = NearByShopsListAdapter(this.mContext!!, list, object : NearByShopsListClickListener {
 
             override fun onUpdateStatusClick(obj: AddShopDBModelEntity) {
@@ -707,8 +851,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 if(status.equals("Inactive")){
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateShopStatus(obj.shop_id,"0")
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(0,obj.shop_id)
-                                    if(AppUtils.isOnline(mContext))
-                                        convertToReqAndApiCallForShopStatus(AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(obj.shop_id!!))
+                                    if(AppUtils.isOnline(mContext)) {
+                                        convertToReqAndApiCallForShopStatus(
+                                            AppDatabase.getDBInstance()!!.addShopEntryDao()
+                                                .getShopByIdN(obj.shop_id!!)
+                                        )
+                                    }
                                     else{
                                         (mContext as DashboardActivity).showSnackMessage("Status updated successfully")
                                         initAdapter()
@@ -925,10 +1073,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                 if (list[position].isUploaded) {
                     val stageList = AppDatabase.getDBInstance()?.stageDao()?.getAll() as ArrayList<StageEntity>
 
-                    if (stageList == null || stageList.isEmpty())
+                    if (stageList == null || stageList.isEmpty()) {
                         geStageApi(position)
-                    else
+                        }
+                    else {
                         showStageDialog(stageList, position)
+                    }
                 } else {
                     /*if (Pref.isReplaceShopText)
                         (mContext as DashboardActivity).showSnackMessage("Please sync this customer first.")
@@ -1010,8 +1160,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                         } catch (e: Exception) {
                                             e.printStackTrace()
                                         }
-                                    } else
+                                    } else {
                                         (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
+                                        }
                                 }
                             })
                 }
@@ -1033,8 +1184,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                    } else
+                    } else {
                         (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
+                        }
                 }
             }
 
@@ -1042,8 +1194,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                 floating_fab.close(true)
                 try {
 
-                    if (!Pref.isAddAttendence)
+                    if (!Pref.isAddAttendence) {
                         (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                    }
                     else {
                         if(Pref.IsCollectionOrderWise){
                             (mContext as DashboardActivity).loadFragment(FragType.NewOrderListFragment, true, "")
@@ -1182,10 +1335,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     }
 
                     override fun onRightClick(editableData: String, selectedTypeId: String) {
-                        if (list[position].isUploaded)
+                        if (list[position].isUploaded) {
                             updatePartyStatus(selectedTypeId, editableData, list[position])
-                        else
+                        }
+                        else {
                             (mContext as DashboardActivity).showSnackMessage("Please sync this " + Pref.shopText + " first.")
+                            }
                     }
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")
             }
@@ -1198,10 +1353,12 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     }
 
                     override fun onRightClick(accountHolder: String, accountNo: String, bankName: String, ifsc: String, upi: String) {
-                        if (list[position].isUploaded)
+                        if (list[position].isUploaded) {
                             updateBankDetails(accountHolder, accountNo, bankName, ifsc, upi, list[position])
-                        else
+                        }
+                        else {
                             (mContext as DashboardActivity).showSnackMessage("Please sync this " + Pref.shopText + " first.")
+                            }
                     }
                 }).show((mContext as DashboardActivity).supportFragmentManager, "")
 
@@ -1228,11 +1385,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     if (AppUtils.mLocation!!.accuracy <= Pref.shopLocAccuracy.toFloat()) {
                         openAddressUpdateDialog(list[position], AppUtils.mLocation!!)
                     } else {
-                        XLog.d("======Saved current location is inaccurate (Shop List)========")
+                        Timber.d("======Saved current location is inaccurate (Shop List)========")
                         getShopLatLong(position)
                     }
                 } else {
-                    XLog.d("=====Saved current location is null (Shop List)======")
+                    Timber.d("=====Saved current location is null (Shop List)======")
                     getShopLatLong(position)
                 }
             }
@@ -1836,73 +1993,73 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         isShopRegistrationInProcess = true
 
-        XLog.d("==============================SyncShop Input Params(Shop List)==============================")
-        XLog.d("shop id=======> " + addShop.shop_id)
+        Timber.d("==============================SyncShop Input Params(Shop List)==============================")
+        Timber.d("shop id=======> " + addShop.shop_id)
         val index = addShop.shop_id!!.indexOf("_")
-        XLog.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
-        XLog.d("shop added date=======> " + addShop.added_date)
-        XLog.d("shop address=======> " + addShop.address)
-        XLog.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
-        XLog.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
-        XLog.d("date aniversery=======> " + addShop.date_aniversary)
-        XLog.d("dob=======> " + addShop.dob)
-        XLog.d("shop owner phn no=======> " + addShop.owner_contact_no)
-        XLog.d("shop owner email=======> " + addShop.owner_email)
-        XLog.d("shop owner name=======> " + addShop.owner_name)
-        XLog.d("shop pincode=======> " + addShop.pin_code)
-        XLog.d("session token=======> " + addShop.session_token)
-        XLog.d("shop lat=======> " + addShop.shop_lat)
-        XLog.d("shop long=======> " + addShop.shop_long)
-        XLog.d("shop name=======> " + addShop.shop_name)
-        XLog.d("shop type=======> " + addShop.type)
-        XLog.d("user id=======> " + addShop.user_id)
-        XLog.d("amount=======> " + addShop.amount)
-        XLog.d("area id=======> " + addShop.area_id)
-        XLog.d("model id=======> " + addShop.model_id)
-        XLog.d("primary app id=======> " + addShop.primary_app_id)
-        XLog.d("secondary app id=======> " + addShop.secondary_app_id)
-        XLog.d("lead id=======> " + addShop.lead_id)
-        XLog.d("stage id=======> " + addShop.stage_id)
-        XLog.d("funnel stage id=======> " + addShop.funnel_stage_id)
-        XLog.d("booking amount=======> " + addShop.booking_amount)
-        XLog.d("type id=======> " + addShop.type_id)
+        Timber.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
+        Timber.d("shop added date=======> " + addShop.added_date)
+        Timber.d("shop address=======> " + addShop.address)
+        Timber.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
+        Timber.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
+        Timber.d("date aniversery=======> " + addShop.date_aniversary)
+        Timber.d("dob=======> " + addShop.dob)
+        Timber.d("shop owner phn no=======> " + addShop.owner_contact_no)
+        Timber.d("shop owner email=======> " + addShop.owner_email)
+        Timber.d("shop owner name=======> " + addShop.owner_name)
+        Timber.d("shop pincode=======> " + addShop.pin_code)
+        Timber.d("session token=======> " + addShop.session_token)
+        Timber.d("shop lat=======> " + addShop.shop_lat)
+        Timber.d("shop long=======> " + addShop.shop_long)
+        Timber.d("shop name=======> " + addShop.shop_name)
+        Timber.d("shop type=======> " + addShop.type)
+        Timber.d("user id=======> " + addShop.user_id)
+        Timber.d("amount=======> " + addShop.amount)
+        Timber.d("area id=======> " + addShop.area_id)
+        Timber.d("model id=======> " + addShop.model_id)
+        Timber.d("primary app id=======> " + addShop.primary_app_id)
+        Timber.d("secondary app id=======> " + addShop.secondary_app_id)
+        Timber.d("lead id=======> " + addShop.lead_id)
+        Timber.d("stage id=======> " + addShop.stage_id)
+        Timber.d("funnel stage id=======> " + addShop.funnel_stage_id)
+        Timber.d("booking amount=======> " + addShop.booking_amount)
+        Timber.d("type id=======> " + addShop.type_id)
 
         if (shop_imgPath != null)
-            XLog.d("shop image path=======> $shop_imgPath")
+            Timber.d("shop image path=======> $shop_imgPath")
 
-        XLog.d("director name=======> " + addShop.director_name)
-        XLog.d("family member dob=======> " + addShop.family_member_dob)
-        XLog.d("key person's name=======> " + addShop.key_person_name)
-        XLog.d("phone no=======> " + addShop.phone_no)
-        XLog.d("additional dob=======> " + addShop.addtional_dob)
-        XLog.d("additional doa=======> " + addShop.addtional_doa)
-        XLog.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
-        XLog.d("specialization=======> " + addShop.specialization)
-        XLog.d("average patient count per day=======> " + addShop.average_patient_per_day)
-        XLog.d("category=======> " + addShop.category)
-        XLog.d("doctor address=======> " + addShop.doc_address)
-        XLog.d("doctor pincode=======> " + addShop.doc_pincode)
-        XLog.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
-        XLog.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
-        XLog.d("chemist name=======> " + addShop.chemist_name)
-        XLog.d("chemist name=======> " + addShop.chemist_address)
-        XLog.d("chemist pincode=======> " + addShop.chemist_pincode)
-        XLog.d("assistant name=======> " + addShop.assistant_name)
-        XLog.d("assistant contact no=======> " + addShop.assistant_contact_no)
-        XLog.d("assistant dob=======> " + addShop.assistant_dob)
-        XLog.d("assistant date of anniversary=======> " + addShop.assistant_doa)
-        XLog.d("assistant family dob=======> " + addShop.assistant_family_dob)
-        XLog.d("entity id=======> " + addShop.entity_id)
-        XLog.d("party status id=======> " + addShop.party_status_id)
-        XLog.d("retailer id=======> " + addShop.retailer_id)
-        XLog.d("dealer id=======> " + addShop.dealer_id)
-        XLog.d("beat id=======> " + addShop.beat_id)
-        XLog.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
-        XLog.d("actual address=======> " + addShop.actual_address)
+        Timber.d("director name=======> " + addShop.director_name)
+        Timber.d("family member dob=======> " + addShop.family_member_dob)
+        Timber.d("key person's name=======> " + addShop.key_person_name)
+        Timber.d("phone no=======> " + addShop.phone_no)
+        Timber.d("additional dob=======> " + addShop.addtional_dob)
+        Timber.d("additional doa=======> " + addShop.addtional_doa)
+        Timber.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
+        Timber.d("specialization=======> " + addShop.specialization)
+        Timber.d("average patient count per day=======> " + addShop.average_patient_per_day)
+        Timber.d("category=======> " + addShop.category)
+        Timber.d("doctor address=======> " + addShop.doc_address)
+        Timber.d("doctor pincode=======> " + addShop.doc_pincode)
+        Timber.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
+        Timber.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
+        Timber.d("chemist name=======> " + addShop.chemist_name)
+        Timber.d("chemist name=======> " + addShop.chemist_address)
+        Timber.d("chemist pincode=======> " + addShop.chemist_pincode)
+        Timber.d("assistant name=======> " + addShop.assistant_name)
+        Timber.d("assistant contact no=======> " + addShop.assistant_contact_no)
+        Timber.d("assistant dob=======> " + addShop.assistant_dob)
+        Timber.d("assistant date of anniversary=======> " + addShop.assistant_doa)
+        Timber.d("assistant family dob=======> " + addShop.assistant_family_dob)
+        Timber.d("entity id=======> " + addShop.entity_id)
+        Timber.d("party status id=======> " + addShop.party_status_id)
+        Timber.d("retailer id=======> " + addShop.retailer_id)
+        Timber.d("dealer id=======> " + addShop.dealer_id)
+        Timber.d("beat id=======> " + addShop.beat_id)
+        Timber.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
+        Timber.d("actual address=======> " + addShop.actual_address)
 
         if (degree_imgPath != null)
-            XLog.d("doctor degree image path=======> $degree_imgPath")
-        XLog.d("=================================================================================")
+            Timber.d("doctor degree image path=======> $degree_imgPath")
+        Timber.d("=================================================================================")
 
         if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
             val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
@@ -1912,7 +2069,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val addShopResult = result as AddShopResponse
-                                XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                 if (addShopResult.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                     //(mContext as DashboardActivity).showSnackMessage("Synced successfully")
@@ -1929,7 +2086,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                     isShopRegistrationInProcess = false
 
                                 } else if (addShopResult.status == NetworkConstant.DUPLICATE_SHOP_ID) {
-                                    XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                    Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                     progress_wheel.stopSpinning()
                                     (mContext as DashboardActivity).showSnackMessage(addShopResult.message!!)
@@ -1961,7 +2118,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 (mContext as DashboardActivity).showSnackMessage("Collection added successfully")
                                 isShopRegistrationInProcess = false
                                 if (error != null)
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                                    Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                             })
             )
         }
@@ -1973,7 +2130,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val addShopResult = result as AddShopResponse
-                                XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                 if (addShopResult.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                     //(mContext as DashboardActivity).showSnackMessage("Synced successfully")
@@ -1990,7 +2147,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                     isShopRegistrationInProcess = false
 
                                 } else if (addShopResult.status == NetworkConstant.DUPLICATE_SHOP_ID) {
-                                    XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                    Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                     progress_wheel.stopSpinning()
                                     (mContext as DashboardActivity).showSnackMessage(addShopResult.message!!)
@@ -2022,7 +2179,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 (mContext as DashboardActivity).showSnackMessage("Collection added successfully")
                                 isShopRegistrationInProcess = false
                                 if (error != null)
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                                    Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                             })
             )
         }
@@ -2070,19 +2227,23 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             if (sList != null && sList.isNotEmpty())
                 shopDurationData.total_visit_count = sList[0].totalVisitCount
 
-            if (!TextUtils.isEmpty(shopActivity.feedback))
+            if (!TextUtils.isEmpty(shopActivity.feedback)) {
                 shopDurationData.feedback = shopActivity.feedback
-            else
+                }
+            else {
                 shopDurationData.feedback = ""
+                }
 
             shopDurationData.isFirstShopVisited = shopActivity.isFirstShopVisited
             shopDurationData.distanceFromHomeLoc = shopActivity.distance_from_home_loc
             shopDurationData.next_visit_date = shopActivity.next_visit_date
 
-            if (!TextUtils.isEmpty(shopActivity.early_revisit_reason))
+            if (!TextUtils.isEmpty(shopActivity.early_revisit_reason)) {
                 shopDurationData.early_revisit_reason = shopActivity.early_revisit_reason
-            else
+                }
+            else {
                 shopDurationData.early_revisit_reason = ""
+                }
 
             shopDurationData.device_model = shopActivity.device_model
             shopDurationData.android_version = shopActivity.android_version
@@ -2106,20 +2267,25 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                 shopDurationData.updated_on = ""
             }
 
-            if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+            if (!TextUtils.isEmpty(shopActivity.pros_id!!)) {
                 shopDurationData.pros_id = shopActivity.pros_id!!
-            else
+                }
+            else {
                 shopDurationData.pros_id = ""
-
-            if (!TextUtils.isEmpty(shopActivity.agency_name!!))
-                shopDurationData.agency_name =shopActivity.agency_name!!
-            else
+            }
+            if (!TextUtils.isEmpty(shopActivity.agency_name!!)) {
+                shopDurationData.agency_name = shopActivity.agency_name!!
+            }
+            else {
                 shopDurationData.agency_name = ""
-
-            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
-                shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
-            else
+            }
+            if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value)) {
+                shopDurationData.approximate_1st_billing_value =
+                    shopActivity.approximate_1st_billing_value!!
+            }
+            else {
                 shopDurationData.approximate_1st_billing_value = ""
+                }
             //duration garbage fix
             try{
                 if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
@@ -2167,19 +2333,23 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                 if (sList != null && sList.isNotEmpty())
                     shopDurationData.total_visit_count = sList[0].totalVisitCount
 
-                if (!TextUtils.isEmpty(shopActivity.feedback))
+                if (!TextUtils.isEmpty(shopActivity.feedback)) {
                     shopDurationData.feedback = shopActivity.feedback
-                else
+                    }
+                else {
                     shopDurationData.feedback = ""
+                    }
 
                 shopDurationData.isFirstShopVisited = shopActivity.isFirstShopVisited
                 shopDurationData.distanceFromHomeLoc = shopActivity.distance_from_home_loc
                 shopDurationData.next_visit_date = shopActivity.next_visit_date
 
-                if (!TextUtils.isEmpty(shopActivity.early_revisit_reason))
+                if (!TextUtils.isEmpty(shopActivity.early_revisit_reason)) {
                     shopDurationData.early_revisit_reason = shopActivity.early_revisit_reason
-                else
+                    }
+                else {
                     shopDurationData.early_revisit_reason = ""
+                }
 
                 shopDurationData.device_model = shopActivity.device_model
                 shopDurationData.android_version = shopActivity.android_version
@@ -2203,20 +2373,27 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     shopDurationData.updated_on = ""
                 }
 
-                if (!TextUtils.isEmpty(shopActivity.pros_id!!))
+                if (!TextUtils.isEmpty(shopActivity.pros_id!!)) {
                     shopDurationData.pros_id = shopActivity.pros_id!!
-                else
+                    }
+                else {
                     shopDurationData.pros_id = ""
+                    }
 
-                if (!TextUtils.isEmpty(shopActivity.agency_name!!))
-                    shopDurationData.agency_name =shopActivity.agency_name!!
-                else
+                if (!TextUtils.isEmpty(shopActivity.agency_name!!)) {
+                    shopDurationData.agency_name = shopActivity.agency_name!!
+                }
+                else {
                     shopDurationData.agency_name = ""
+                    }
 
-                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value))
-                    shopDurationData.approximate_1st_billing_value = shopActivity.approximate_1st_billing_value!!
-                else
+                if (!TextUtils.isEmpty(shopActivity.approximate_1st_billing_value)) {
+                    shopDurationData.approximate_1st_billing_value =
+                        shopActivity.approximate_1st_billing_value!!
+                }
+                else {
                     shopDurationData.approximate_1st_billing_value = ""
+                    }
                 //duration garbage fix
                 try{
                     if(shopDurationData.spent_duration!!.contains("-") || shopDurationData.spent_duration!!.length != 8)
@@ -2248,7 +2425,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            XLog.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + ", RESPONSE:" + result.message)
+                            Timber.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + ", RESPONSE:" + result.message)
                             if (result.status == NetworkConstant.SUCCESS) {
 
                             }
@@ -2256,7 +2433,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                         }, { error ->
                             error.printStackTrace()
                             if (error != null)
-                                XLog.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + error.localizedMessage)
+                                Timber.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + error.localizedMessage)
 //                                (mContext as DashboardActivity).showSnackMessage("ERROR")
                         })
         )
@@ -2317,7 +2494,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val orderList = result as BaseResponse
-                                XLog.d("addCollectionApi " + "RESPONSE : " + orderList.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+                                Timber.d("addCollectionApi " + "RESPONSE : " + orderList.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
                                 progress_wheel.stopSpinning()
                                 if (orderList.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.collectionDetailsDao().updateIsUploaded(true, order_id!!)
@@ -2328,7 +2505,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                             }, { error ->
                                 error.printStackTrace()
-                                XLog.d("addCollectionApi " + "error " + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+                                Timber.d("addCollectionApi " + "error " + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage("Collection added successfully")
                                 voiceCollectionMsg()
@@ -2344,7 +2521,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribe({ result ->
                                 val orderList = result as BaseResponse
                                 progress_wheel.stopSpinning()
-                                XLog.d("addCollectionApi withImg " + "RESPONSE : " + orderList.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+                                Timber.d("addCollectionApi withImg " + "RESPONSE : " + orderList.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
                                 if (orderList.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.collectionDetailsDao().updateIsUploaded(true, order_id!!)
                                 }
@@ -2354,7 +2531,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                             }, { error ->
                                 error.printStackTrace()
-                                XLog.d("addCollectionApi withImg " + "error " + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+                                Timber.d("addCollectionApi withImg " + "error " + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage("Collection added successfully")
                                 voiceCollectionMsg()
@@ -2418,7 +2595,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as StageListResponseModel
-                            XLog.d("GET STAGE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET STAGE DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.stage_list != null && response.stage_list!!.isNotEmpty()) {
@@ -2451,7 +2628,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET STAGE DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -2576,8 +2753,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 isAddressUpdated: Boolean, doc_degree: String?) {
 
         if (!AppUtils.isOnline(mContext)) {
-            if (isSync)
+            if (isSync) {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                }
             else {
                 if (isAddressUpdated) {
                     (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
@@ -2585,8 +2763,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     initAdapter()
                     sendNotification(addShopReqData.shop_id!!)
                 }
-                else
+                else {
                     (mContext as DashboardActivity).showSnackMessage("Stage updated successfully")
+                    }
             }
             return
         }
@@ -2596,73 +2775,73 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         BaseActivity.isApiInitiated = true
 
-        XLog.d("=====Sync EditShop Input Params (Shop List)======")
-        XLog.d("shop id====> " + addShopReqData.shop_id)
+        Timber.d("=====Sync EditShop Input Params (Shop List)======")
+        Timber.d("shop id====> " + addShopReqData.shop_id)
         val index = addShopReqData.shop_id!!.indexOf("_")
-        XLog.d("decoded shop id====> " + addShopReqData.user_id + "_" + AppUtils.getDate(addShopReqData.shop_id!!.substring(index + 1, addShopReqData.shop_id!!.length).toLong()))
-        XLog.d("shop added date====> " + addShopReqData.added_date)
-        XLog.d("shop address====> " + addShopReqData.address)
-        XLog.d("assigned to dd id====> " + addShopReqData.assigned_to_dd_id)
-        XLog.d("assigned to pp id=====> " + addShopReqData.assigned_to_pp_id)
-        XLog.d("date aniversery=====> " + addShopReqData.date_aniversary)
-        XLog.d("dob====> " + addShopReqData.dob)
-        XLog.d("shop owner phn no===> " + addShopReqData.owner_contact_no)
-        XLog.d("shop owner email====> " + addShopReqData.owner_email)
-        XLog.d("shop owner name====> " + addShopReqData.owner_name)
-        XLog.d("shop pincode====> " + addShopReqData.pin_code)
-        XLog.d("session token====> " + addShopReqData.session_token)
-        XLog.d("shop lat====> " + addShopReqData.shop_lat)
-        XLog.d("shop long===> " + addShopReqData.shop_long)
-        XLog.d("shop name====> " + addShopReqData.shop_name)
-        XLog.d("shop type===> " + addShopReqData.type)
-        XLog.d("user id====> " + addShopReqData.user_id)
-        XLog.d("amount=======> " + addShopReqData.amount)
-        XLog.d("area id=======> " + addShopReqData.area_id)
-        XLog.d("model id=======> " + addShopReqData.model_id)
-        XLog.d("primary app id=======> " + addShopReqData.primary_app_id)
-        XLog.d("secondary app id=======> " + addShopReqData.secondary_app_id)
-        XLog.d("lead id=======> " + addShopReqData.lead_id)
-        XLog.d("stage id=======> " + addShopReqData.stage_id)
-        XLog.d("funnel stage id=======> " + addShopReqData.funnel_stage_id)
-        XLog.d("booking amount=======> " + addShopReqData.booking_amount)
-        XLog.d("type id=======> " + addShopReqData.type_id)
+        Timber.d("decoded shop id====> " + addShopReqData.user_id + "_" + AppUtils.getDate(addShopReqData.shop_id!!.substring(index + 1, addShopReqData.shop_id!!.length).toLong()))
+        Timber.d("shop added date====> " + addShopReqData.added_date)
+        Timber.d("shop address====> " + addShopReqData.address)
+        Timber.d("assigned to dd id====> " + addShopReqData.assigned_to_dd_id)
+        Timber.d("assigned to pp id=====> " + addShopReqData.assigned_to_pp_id)
+        Timber.d("date aniversery=====> " + addShopReqData.date_aniversary)
+        Timber.d("dob====> " + addShopReqData.dob)
+        Timber.d("shop owner phn no===> " + addShopReqData.owner_contact_no)
+        Timber.d("shop owner email====> " + addShopReqData.owner_email)
+        Timber.d("shop owner name====> " + addShopReqData.owner_name)
+        Timber.d("shop pincode====> " + addShopReqData.pin_code)
+        Timber.d("session token====> " + addShopReqData.session_token)
+        Timber.d("shop lat====> " + addShopReqData.shop_lat)
+        Timber.d("shop long===> " + addShopReqData.shop_long)
+        Timber.d("shop name====> " + addShopReqData.shop_name)
+        Timber.d("shop type===> " + addShopReqData.type)
+        Timber.d("user id====> " + addShopReqData.user_id)
+        Timber.d("amount=======> " + addShopReqData.amount)
+        Timber.d("area id=======> " + addShopReqData.area_id)
+        Timber.d("model id=======> " + addShopReqData.model_id)
+        Timber.d("primary app id=======> " + addShopReqData.primary_app_id)
+        Timber.d("secondary app id=======> " + addShopReqData.secondary_app_id)
+        Timber.d("lead id=======> " + addShopReqData.lead_id)
+        Timber.d("stage id=======> " + addShopReqData.stage_id)
+        Timber.d("funnel stage id=======> " + addShopReqData.funnel_stage_id)
+        Timber.d("booking amount=======> " + addShopReqData.booking_amount)
+        Timber.d("type id=======> " + addShopReqData.type_id)
 
         if (shopImageLocalPath != null)
-            XLog.d("shop image path====> $shopImageLocalPath")
+            Timber.d("shop image path====> $shopImageLocalPath")
 
-        XLog.d("family member dob=======> " + addShopReqData.family_member_dob)
-        XLog.d("director name=======> " + addShopReqData.director_name)
-        XLog.d("key person's name=======> " + addShopReqData.key_person_name)
-        XLog.d("phone no=======> " + addShopReqData.phone_no)
-        XLog.d("additional dob=======> " + addShopReqData.addtional_dob)
-        XLog.d("additional doa=======> " + addShopReqData.addtional_doa)
-        XLog.d("doctor family member dob=======> " + addShopReqData.doc_family_member_dob)
-        XLog.d("specialization=======> " + addShopReqData.specialization)
-        XLog.d("average patient count per day=======> " + addShopReqData.average_patient_per_day)
-        XLog.d("category=======> " + addShopReqData.category)
-        XLog.d("doctor address=======> " + addShopReqData.doc_address)
-        XLog.d("doctor pincode=======> " + addShopReqData.doc_pincode)
-        XLog.d("chambers or hospital under same headquarter=======> " + addShopReqData.is_chamber_same_headquarter)
-        XLog.d("chamber related remarks=======> " + addShopReqData.is_chamber_same_headquarter_remarks)
-        XLog.d("chemist name=======> " + addShopReqData.chemist_name)
-        XLog.d("chemist name=======> " + addShopReqData.chemist_address)
-        XLog.d("chemist pincode=======> " + addShopReqData.chemist_pincode)
-        XLog.d("assistant name=======> " + addShopReqData.assistant_name)
-        XLog.d("assistant contact no=======> " + addShopReqData.assistant_contact_no)
-        XLog.d("assistant dob=======> " + addShopReqData.assistant_dob)
-        XLog.d("assistant date of anniversary=======> " + addShopReqData.assistant_doa)
-        XLog.d("assistant family dob=======> " + addShopReqData.assistant_family_dob)
-        XLog.d("entity id=======> " + addShopReqData.entity_id)
-        XLog.d("party status id=======> " + addShopReqData.party_status_id)
-        XLog.d("retailer id=======> " + addShopReqData.retailer_id)
-        XLog.d("dealer id=======> " + addShopReqData.dealer_id)
-        XLog.d("beat id=======> " + addShopReqData.beat_id)
-        XLog.d("actual_address=======> " + addShopReqData.actual_address)
+        Timber.d("family member dob=======> " + addShopReqData.family_member_dob)
+        Timber.d("director name=======> " + addShopReqData.director_name)
+        Timber.d("key person's name=======> " + addShopReqData.key_person_name)
+        Timber.d("phone no=======> " + addShopReqData.phone_no)
+        Timber.d("additional dob=======> " + addShopReqData.addtional_dob)
+        Timber.d("additional doa=======> " + addShopReqData.addtional_doa)
+        Timber.d("doctor family member dob=======> " + addShopReqData.doc_family_member_dob)
+        Timber.d("specialization=======> " + addShopReqData.specialization)
+        Timber.d("average patient count per day=======> " + addShopReqData.average_patient_per_day)
+        Timber.d("category=======> " + addShopReqData.category)
+        Timber.d("doctor address=======> " + addShopReqData.doc_address)
+        Timber.d("doctor pincode=======> " + addShopReqData.doc_pincode)
+        Timber.d("chambers or hospital under same headquarter=======> " + addShopReqData.is_chamber_same_headquarter)
+        Timber.d("chamber related remarks=======> " + addShopReqData.is_chamber_same_headquarter_remarks)
+        Timber.d("chemist name=======> " + addShopReqData.chemist_name)
+        Timber.d("chemist name=======> " + addShopReqData.chemist_address)
+        Timber.d("chemist pincode=======> " + addShopReqData.chemist_pincode)
+        Timber.d("assistant name=======> " + addShopReqData.assistant_name)
+        Timber.d("assistant contact no=======> " + addShopReqData.assistant_contact_no)
+        Timber.d("assistant dob=======> " + addShopReqData.assistant_dob)
+        Timber.d("assistant date of anniversary=======> " + addShopReqData.assistant_doa)
+        Timber.d("assistant family dob=======> " + addShopReqData.assistant_family_dob)
+        Timber.d("entity id=======> " + addShopReqData.entity_id)
+        Timber.d("party status id=======> " + addShopReqData.party_status_id)
+        Timber.d("retailer id=======> " + addShopReqData.retailer_id)
+        Timber.d("dealer id=======> " + addShopReqData.dealer_id)
+        Timber.d("beat id=======> " + addShopReqData.beat_id)
+        Timber.d("actual_address=======> " + addShopReqData.actual_address)
 
         if (doc_degree != null)
-            XLog.d("doctor degree image path=======> $doc_degree")
-        XLog.d("assigned to shop id=======> " + addShopReqData.assigned_to_shop_id)
-        XLog.d("==========================================")
+            Timber.d("doctor degree image path=======> $doc_degree")
+        Timber.d("assigned to shop id=======> " + addShopReqData.assigned_to_shop_id)
+        Timber.d("==========================================")
 
         progress_wheel.spin()
 
@@ -2674,20 +2853,22 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val addShopResult = result as AddShopResponse
-                                XLog.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
                                 if (addShopResult.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(1, addShopReqData.shop_id)
                                     progress_wheel.stopSpinning()
-                                    if (isSync)
+                                    if (isSync) {
                                         (mContext as DashboardActivity).showSnackMessage("Synced successfully")
+                                    }
                                     else {
                                         if (isAddressUpdated) {
                                             (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
 
                                             initAdapter()
                                             sendNotification(addShopReqData.shop_id!!)
-                                        } else
+                                        } else {
                                             (mContext as DashboardActivity).showSnackMessage("Stage updated successfully")
+                                            }
                                         //initAdapter()
                                     }
 
@@ -2709,8 +2890,9 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 } else {
                                     progress_wheel.stopSpinning()
 
-                                    if (isSync)
+                                    if (isSync) {
                                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                                        }
                                     else {
                                         if (isAddressUpdated) {
                                             (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
@@ -2728,16 +2910,18 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 BaseActivity.isApiInitiated = false
                                 progress_wheel.stopSpinning()
 
-                                if (isSync)
+                                if (isSync) {
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                                    }
                                 else {
                                     if (isAddressUpdated) {
                                         (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
 
                                         initAdapter()
                                         sendNotification(addShopReqData.shop_id!!)
-                                    } else
+                                    } else {
                                         (mContext as DashboardActivity).showSnackMessage("Stage updated successfully")
+                                    }
                                     //initAdapter()
                                 }
                             })
@@ -2751,20 +2935,22 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val addShopResult = result as AddShopResponse
-                                XLog.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
                                 if (addShopResult.status == NetworkConstant.SUCCESS) {
                                     AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(1, addShopReqData.shop_id)
                                     progress_wheel.stopSpinning()
-                                    if (isSync)
+                                    if (isSync) {
                                         (mContext as DashboardActivity).showSnackMessage("Synced successfully")
+                                        }
                                     else {
                                         if (isAddressUpdated) {
                                             (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
 
                                             initAdapter()
                                             sendNotification(addShopReqData.shop_id!!)
-                                        } else
+                                        } else {
                                             (mContext as DashboardActivity).showSnackMessage("Stage updated successfully")
+                                            }
                                         //initAdapter()
                                     }
 
@@ -2786,16 +2972,18 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 } else {
                                     progress_wheel.stopSpinning()
 
-                                    if (isSync)
+                                    if (isSync) {
                                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                                        }
                                     else {
                                         if (isAddressUpdated) {
                                             (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
 
                                             initAdapter()
                                             sendNotification(addShopReqData.shop_id!!)
-                                        } else
+                                        } else {
                                             (mContext as DashboardActivity).showSnackMessage("Stage updated successfully")
+                                            }
                                         //initAdapter()
                                     }
                                 }
@@ -2805,16 +2993,18 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 BaseActivity.isApiInitiated = false
                                 progress_wheel.stopSpinning()
 
-                                if (isSync)
+                                if (isSync) {
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
+                                    }
                                 else {
                                     if (isAddressUpdated) {
                                         (mContext as DashboardActivity).showSnackMessage("Address updated successfully")
 
                                         initAdapter()
                                         sendNotification(addShopReqData.shop_id!!)
-                                    } else
+                                    } else {
                                         (mContext as DashboardActivity).showSnackMessage("Stage updated successfully")
+                                        }
                                     //initAdapter()
                                 }
                             })
@@ -2849,7 +3039,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                         shop.pinCode = address?.pinCode
 
                         var address_ = LocationWizard.getAdressFromLatlng(mContext, address?.shopLat, address?.shopLong)
-                        XLog.e("Actual Shop address (Update address)======> $address_")
+                        Timber.e("Actual Shop address (Update address)======> $address_")
 
                         if (address_.contains("http"))
                             address_ = "Unknown"
@@ -2925,11 +3115,11 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
             isDurationCalculated = list[0].isDurationCalculated
             shopName = list[0].shop_name!!
         }
-        XLog.d("Geofence: ENTER : " + "ShopName : " + shopName + ",IS_DURATION_CALCULATED" + isDurationCalculated)
+        Timber.d("Geofence: ENTER : " + "ShopName : " + shopName + ",IS_DURATION_CALCULATED" + isDurationCalculated)
         if (isDurationCalculated)
             return
 
-        XLog.d("Geofence: NearToShop : " + "ShopName : " + shopName)
+        Timber.d("Geofence: NearToShop : " + "ShopName : " + shopName)
         // Get an instance of the Notification manager
         val notification = NotificationUtils(getString(R.string.app_name), shopName, shopId, "")
         notification.CreateNotification(mContext, shopId)
@@ -2949,78 +3139,78 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         isShopRegistrationInProcess = true
 
-        XLog.d("=============SyncShop Input Params=================")
-        XLog.d("shop id=======> " + addShop.shop_id)
+        Timber.d("=============SyncShop Input Params=================")
+        Timber.d("shop id=======> " + addShop.shop_id)
         val index = addShop.shop_id!!.indexOf("_")
-        XLog.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
-        XLog.d("shop added date=======> " + addShop.added_date)
-        XLog.d("shop address=======> " + addShop.address)
-        XLog.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
-        XLog.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
-        XLog.d("date aniversery=======> " + addShop.date_aniversary)
-        XLog.d("dob=======> " + addShop.dob)
-        XLog.d("shop owner phn no=======> " + addShop.owner_contact_no)
-        XLog.d("shop owner email=======> " + addShop.owner_email)
-        XLog.d("shop owner name=======> " + addShop.owner_name)
-        XLog.d("shop pincode=======> " + addShop.pin_code)
-        XLog.d("session token=======> " + addShop.session_token)
-        XLog.d("shop lat=======> " + addShop.shop_lat)
-        XLog.d("shop long=======> " + addShop.shop_long)
-        XLog.d("shop name=======> " + addShop.shop_name)
-        XLog.d("shop type=======> " + addShop.type)
-        XLog.d("user id=======> " + addShop.user_id)
-        XLog.d("amount=======> " + addShop.amount)
-        XLog.d("area id=======> " + addShop.area_id)
-        XLog.d("model id=======> " + addShop.model_id)
-        XLog.d("primary app id=======> " + addShop.primary_app_id)
-        XLog.d("secondary app id=======> " + addShop.secondary_app_id)
-        XLog.d("lead id=======> " + addShop.lead_id)
-        XLog.d("stage id=======> " + addShop.stage_id)
-        XLog.d("funnel stage id=======> " + addShop.funnel_stage_id)
-        XLog.d("booking amount=======> " + addShop.booking_amount)
-        XLog.d("type id=======> " + addShop.type_id)
+        Timber.d("decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(addShop.shop_id!!.substring(index + 1, addShop.shop_id!!.length).toLong()))
+        Timber.d("shop added date=======> " + addShop.added_date)
+        Timber.d("shop address=======> " + addShop.address)
+        Timber.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
+        Timber.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
+        Timber.d("date aniversery=======> " + addShop.date_aniversary)
+        Timber.d("dob=======> " + addShop.dob)
+        Timber.d("shop owner phn no=======> " + addShop.owner_contact_no)
+        Timber.d("shop owner email=======> " + addShop.owner_email)
+        Timber.d("shop owner name=======> " + addShop.owner_name)
+        Timber.d("shop pincode=======> " + addShop.pin_code)
+        Timber.d("session token=======> " + addShop.session_token)
+        Timber.d("shop lat=======> " + addShop.shop_lat)
+        Timber.d("shop long=======> " + addShop.shop_long)
+        Timber.d("shop name=======> " + addShop.shop_name)
+        Timber.d("shop type=======> " + addShop.type)
+        Timber.d("user id=======> " + addShop.user_id)
+        Timber.d("amount=======> " + addShop.amount)
+        Timber.d("area id=======> " + addShop.area_id)
+        Timber.d("model id=======> " + addShop.model_id)
+        Timber.d("primary app id=======> " + addShop.primary_app_id)
+        Timber.d("secondary app id=======> " + addShop.secondary_app_id)
+        Timber.d("lead id=======> " + addShop.lead_id)
+        Timber.d("stage id=======> " + addShop.stage_id)
+        Timber.d("funnel stage id=======> " + addShop.funnel_stage_id)
+        Timber.d("booking amount=======> " + addShop.booking_amount)
+        Timber.d("type id=======> " + addShop.type_id)
 
         if (shop_imgPath != null)
-            XLog.d("shop image path=======> $shop_imgPath")
+            Timber.d("shop image path=======> $shop_imgPath")
 
-        XLog.d("director name=======> " + addShop.director_name)
-        XLog.d("family member dob=======> " + addShop.family_member_dob)
-        XLog.d("key person's name=======> " + addShop.key_person_name)
-        XLog.d("phone no=======> " + addShop.phone_no)
-        XLog.d("additional dob=======> " + addShop.addtional_dob)
-        XLog.d("additional doa=======> " + addShop.addtional_doa)
-        XLog.d("family member dob=======> " + addShop.family_member_dob)
-        XLog.d("key person's name=======> " + addShop.key_person_name)
-        XLog.d("phone no=======> " + addShop.phone_no)
-        XLog.d("additional dob=======> " + addShop.addtional_dob)
-        XLog.d("additional doa=======> " + addShop.addtional_doa)
-        XLog.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
-        XLog.d("specialization=======> " + addShop.specialization)
-        XLog.d("average patient count per day=======> " + addShop.average_patient_per_day)
-        XLog.d("category=======> " + addShop.category)
-        XLog.d("doctor address=======> " + addShop.doc_address)
-        XLog.d("doctor pincode=======> " + addShop.doc_pincode)
-        XLog.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
-        XLog.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
-        XLog.d("chemist name=======> " + addShop.chemist_name)
-        XLog.d("chemist name=======> " + addShop.chemist_address)
-        XLog.d("chemist pincode=======> " + addShop.chemist_pincode)
-        XLog.d("assistant name=======> " + addShop.assistant_name)
-        XLog.d("assistant contact no=======> " + addShop.assistant_contact_no)
-        XLog.d("assistant dob=======> " + addShop.assistant_dob)
-        XLog.d("assistant date of anniversary=======> " + addShop.assistant_doa)
-        XLog.d("assistant family dob=======> " + addShop.assistant_family_dob)
-        XLog.d("entity id=======> " + addShop.entity_id)
-        XLog.d("party status id=======> " + addShop.party_status_id)
-        XLog.d("retailer id=======> " + addShop.retailer_id)
-        XLog.d("dealer id=======> " + addShop.dealer_id)
-        XLog.d("beat id=======> " + addShop.beat_id)
-        XLog.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
-        XLog.d("actual address=======> " + addShop.actual_address)
+        Timber.d("director name=======> " + addShop.director_name)
+        Timber.d("family member dob=======> " + addShop.family_member_dob)
+        Timber.d("key person's name=======> " + addShop.key_person_name)
+        Timber.d("phone no=======> " + addShop.phone_no)
+        Timber.d("additional dob=======> " + addShop.addtional_dob)
+        Timber.d("additional doa=======> " + addShop.addtional_doa)
+        Timber.d("family member dob=======> " + addShop.family_member_dob)
+        Timber.d("key person's name=======> " + addShop.key_person_name)
+        Timber.d("phone no=======> " + addShop.phone_no)
+        Timber.d("additional dob=======> " + addShop.addtional_dob)
+        Timber.d("additional doa=======> " + addShop.addtional_doa)
+        Timber.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
+        Timber.d("specialization=======> " + addShop.specialization)
+        Timber.d("average patient count per day=======> " + addShop.average_patient_per_day)
+        Timber.d("category=======> " + addShop.category)
+        Timber.d("doctor address=======> " + addShop.doc_address)
+        Timber.d("doctor pincode=======> " + addShop.doc_pincode)
+        Timber.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
+        Timber.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
+        Timber.d("chemist name=======> " + addShop.chemist_name)
+        Timber.d("chemist name=======> " + addShop.chemist_address)
+        Timber.d("chemist pincode=======> " + addShop.chemist_pincode)
+        Timber.d("assistant name=======> " + addShop.assistant_name)
+        Timber.d("assistant contact no=======> " + addShop.assistant_contact_no)
+        Timber.d("assistant dob=======> " + addShop.assistant_dob)
+        Timber.d("assistant date of anniversary=======> " + addShop.assistant_doa)
+        Timber.d("assistant family dob=======> " + addShop.assistant_family_dob)
+        Timber.d("entity id=======> " + addShop.entity_id)
+        Timber.d("party status id=======> " + addShop.party_status_id)
+        Timber.d("retailer id=======> " + addShop.retailer_id)
+        Timber.d("dealer id=======> " + addShop.dealer_id)
+        Timber.d("beat id=======> " + addShop.beat_id)
+        Timber.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
+        Timber.d("actual address=======> " + addShop.actual_address)
 
         if (degree_imgPath != null)
-            XLog.d("doctor degree image path=======> $degree_imgPath")
-        XLog.d("====================================================")
+            Timber.d("doctor degree image path=======> $degree_imgPath")
+        Timber.d("====================================================")
 
         if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
             val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
@@ -3030,7 +3220,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val addShopResult = result as AddShopResponse
-                                XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                 isShopRegistrationInProcess = false
 
                                 when (addShopResult.status) {
@@ -3076,7 +3266,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                                     }
                                     NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                        XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                        Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                         AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                         //progress_wheel.stopSpinning()
                                         if (isFromInitView)
@@ -3135,7 +3325,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                                 isShopRegistrationInProcess = false
                                 if (error != null)
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                                    Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                             })
             )
         }
@@ -3147,7 +3337,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val addShopResult = result as AddShopResponse
-                                XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                                Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                                 isShopRegistrationInProcess = false
 
                                 when (addShopResult.status) {
@@ -3193,7 +3383,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
                                     }
                                     NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                        XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                        Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                         AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsUploaded(true, addShop.shop_id)
                                         //progress_wheel.stopSpinning()
                                         if (isFromInitView)
@@ -3252,7 +3442,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                                 isShopRegistrationInProcess = false
                                 if (error != null)
-                                    XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                                    Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                             })
             )
         }
@@ -3262,8 +3452,16 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
     private fun getAssignedPPListApi(shop_id: String?, isFromInitView: Boolean) {
 
-        if (!isFromInitView)
-            (mContext as DashboardActivity).showSnackMessage(getString(R.string.wait_msg), 1000)
+        // start 8.0 NearByShopsListFragment AppV 4.0.7 saheli 08-06-2023 0026307 mantis  Play store console report issues
+        try{
+            if (!isFromInitView)
+                (mContext as DashboardActivity).showSnackMessage(getString(R.string.wait_msg), 1000)
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        // end 8.0 NearByShopsListFragment AppV 4.0.7 saheli 08-06-2023 0026307 mantis  Play store console report issues
+
 
         val repository = AssignToPPListRepoProvider.provideAssignPPListRepository()
         progress_wheel.spin()
@@ -3663,8 +3861,13 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
         addShopData.assigned_to_shop_id = mAddShopDBModelEntity.assigned_to_shop_id
         addShopData.actual_address = mAddShopDBModelEntity.actual_address
 
-        var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
-        addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+        try{
+            var uniqKeyObj=AppDatabase.getDBInstance()!!.shopActivityDao().getNewShopActivityKey(mAddShopDBModelEntity.shop_id,false)
+            addShopData.shop_revisit_uniqKey=uniqKeyObj?.shop_revisit_uniqKey!!
+        }catch (ex:Exception){
+            addShopData.shop_revisit_uniqKey=""
+        }
+
 
         addShopData.project_name = mAddShopDBModelEntity.project_name
         addShopData.landline_number = mAddShopDBModelEntity.landline_number
@@ -4352,65 +4555,65 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
 
         BaseActivity.isApiInitiated = true
 
-        XLog.d("=====Sync EditShop Input Params (Shop List)======")
-        XLog.d("shop id====> " + addShopReqData.shop_id)
+        Timber.d("=====Sync EditShop Input Params (Shop List)======")
+        Timber.d("shop id====> " + addShopReqData.shop_id)
         val index = addShopReqData.shop_id!!.indexOf("_")
-        XLog.d("decoded shop id====> " + addShopReqData.user_id + "_" + AppUtils.getDate(addShopReqData.shop_id!!.substring(index + 1, addShopReqData.shop_id!!.length).toLong()))
-        XLog.d("shop added date====> " + addShopReqData.added_date)
-        XLog.d("shop address====> " + addShopReqData.address)
-        XLog.d("assigned to dd id====> " + addShopReqData.assigned_to_dd_id)
-        XLog.d("assigned to pp id=====> " + addShopReqData.assigned_to_pp_id)
-        XLog.d("date aniversery=====> " + addShopReqData.date_aniversary)
-        XLog.d("dob====> " + addShopReqData.dob)
-        XLog.d("shop owner phn no===> " + addShopReqData.owner_contact_no)
-        XLog.d("shop owner email====> " + addShopReqData.owner_email)
-        XLog.d("shop owner name====> " + addShopReqData.owner_name)
-        XLog.d("shop pincode====> " + addShopReqData.pin_code)
-        XLog.d("session token====> " + addShopReqData.session_token)
-        XLog.d("shop lat====> " + addShopReqData.shop_lat)
-        XLog.d("shop long===> " + addShopReqData.shop_long)
-        XLog.d("shop name====> " + addShopReqData.shop_name)
-        XLog.d("shop type===> " + addShopReqData.type)
-        XLog.d("user id====> " + addShopReqData.user_id)
-        XLog.d("amount=======> " + addShopReqData.amount)
-        XLog.d("area id=======> " + addShopReqData.area_id)
-        XLog.d("model id=======> " + addShopReqData.model_id)
-        XLog.d("primary app id=======> " + addShopReqData.primary_app_id)
-        XLog.d("secondary app id=======> " + addShopReqData.secondary_app_id)
-        XLog.d("lead id=======> " + addShopReqData.lead_id)
-        XLog.d("stage id=======> " + addShopReqData.stage_id)
-        XLog.d("funnel stage id=======> " + addShopReqData.funnel_stage_id)
-        XLog.d("booking amount=======> " + addShopReqData.booking_amount)
-        XLog.d("type id=======> " + addShopReqData.type_id)
+        Timber.d("decoded shop id====> " + addShopReqData.user_id + "_" + AppUtils.getDate(addShopReqData.shop_id!!.substring(index + 1, addShopReqData.shop_id!!.length).toLong()))
+        Timber.d("shop added date====> " + addShopReqData.added_date)
+        Timber.d("shop address====> " + addShopReqData.address)
+        Timber.d("assigned to dd id====> " + addShopReqData.assigned_to_dd_id)
+        Timber.d("assigned to pp id=====> " + addShopReqData.assigned_to_pp_id)
+        Timber.d("date aniversery=====> " + addShopReqData.date_aniversary)
+        Timber.d("dob====> " + addShopReqData.dob)
+        Timber.d("shop owner phn no===> " + addShopReqData.owner_contact_no)
+        Timber.d("shop owner email====> " + addShopReqData.owner_email)
+        Timber.d("shop owner name====> " + addShopReqData.owner_name)
+        Timber.d("shop pincode====> " + addShopReqData.pin_code)
+        Timber.d("session token====> " + addShopReqData.session_token)
+        Timber.d("shop lat====> " + addShopReqData.shop_lat)
+        Timber.d("shop long===> " + addShopReqData.shop_long)
+        Timber.d("shop name====> " + addShopReqData.shop_name)
+        Timber.d("shop type===> " + addShopReqData.type)
+        Timber.d("user id====> " + addShopReqData.user_id)
+        Timber.d("amount=======> " + addShopReqData.amount)
+        Timber.d("area id=======> " + addShopReqData.area_id)
+        Timber.d("model id=======> " + addShopReqData.model_id)
+        Timber.d("primary app id=======> " + addShopReqData.primary_app_id)
+        Timber.d("secondary app id=======> " + addShopReqData.secondary_app_id)
+        Timber.d("lead id=======> " + addShopReqData.lead_id)
+        Timber.d("stage id=======> " + addShopReqData.stage_id)
+        Timber.d("funnel stage id=======> " + addShopReqData.funnel_stage_id)
+        Timber.d("booking amount=======> " + addShopReqData.booking_amount)
+        Timber.d("type id=======> " + addShopReqData.type_id)
 
-        XLog.d("family member dob=======> " + addShopReqData.family_member_dob)
-        XLog.d("director name=======> " + addShopReqData.director_name)
-        XLog.d("key person's name=======> " + addShopReqData.key_person_name)
-        XLog.d("phone no=======> " + addShopReqData.phone_no)
-        XLog.d("additional dob=======> " + addShopReqData.addtional_dob)
-        XLog.d("additional doa=======> " + addShopReqData.addtional_doa)
-        XLog.d("doctor family member dob=======> " + addShopReqData.doc_family_member_dob)
-        XLog.d("specialization=======> " + addShopReqData.specialization)
-        XLog.d("average patient count per day=======> " + addShopReqData.average_patient_per_day)
-        XLog.d("category=======> " + addShopReqData.category)
-        XLog.d("doctor address=======> " + addShopReqData.doc_address)
-        XLog.d("doctor pincode=======> " + addShopReqData.doc_pincode)
-        XLog.d("chambers or hospital under same headquarter=======> " + addShopReqData.is_chamber_same_headquarter)
-        XLog.d("chamber related remarks=======> " + addShopReqData.is_chamber_same_headquarter_remarks)
-        XLog.d("chemist name=======> " + addShopReqData.chemist_name)
-        XLog.d("chemist name=======> " + addShopReqData.chemist_address)
-        XLog.d("chemist pincode=======> " + addShopReqData.chemist_pincode)
-        XLog.d("assistant name=======> " + addShopReqData.assistant_name)
-        XLog.d("assistant contact no=======> " + addShopReqData.assistant_contact_no)
-        XLog.d("assistant dob=======> " + addShopReqData.assistant_dob)
-        XLog.d("assistant date of anniversary=======> " + addShopReqData.assistant_doa)
-        XLog.d("assistant family dob=======> " + addShopReqData.assistant_family_dob)
-        XLog.d("entity id=======> " + addShopReqData.entity_id)
-        XLog.d("party status id=======> " + addShopReqData.party_status_id)
-        XLog.d("retailer id=======> " + addShopReqData.retailer_id)
-        XLog.d("dealer id=======> " + addShopReqData.dealer_id)
-        XLog.d("beat id=======> " + addShopReqData.beat_id)
-        XLog.d("actual_address=======> " + addShopReqData.actual_address)
+        Timber.d("family member dob=======> " + addShopReqData.family_member_dob)
+        Timber.d("director name=======> " + addShopReqData.director_name)
+        Timber.d("key person's name=======> " + addShopReqData.key_person_name)
+        Timber.d("phone no=======> " + addShopReqData.phone_no)
+        Timber.d("additional dob=======> " + addShopReqData.addtional_dob)
+        Timber.d("additional doa=======> " + addShopReqData.addtional_doa)
+        Timber.d("doctor family member dob=======> " + addShopReqData.doc_family_member_dob)
+        Timber.d("specialization=======> " + addShopReqData.specialization)
+        Timber.d("average patient count per day=======> " + addShopReqData.average_patient_per_day)
+        Timber.d("category=======> " + addShopReqData.category)
+        Timber.d("doctor address=======> " + addShopReqData.doc_address)
+        Timber.d("doctor pincode=======> " + addShopReqData.doc_pincode)
+        Timber.d("chambers or hospital under same headquarter=======> " + addShopReqData.is_chamber_same_headquarter)
+        Timber.d("chamber related remarks=======> " + addShopReqData.is_chamber_same_headquarter_remarks)
+        Timber.d("chemist name=======> " + addShopReqData.chemist_name)
+        Timber.d("chemist name=======> " + addShopReqData.chemist_address)
+        Timber.d("chemist pincode=======> " + addShopReqData.chemist_pincode)
+        Timber.d("assistant name=======> " + addShopReqData.assistant_name)
+        Timber.d("assistant contact no=======> " + addShopReqData.assistant_contact_no)
+        Timber.d("assistant dob=======> " + addShopReqData.assistant_dob)
+        Timber.d("assistant date of anniversary=======> " + addShopReqData.assistant_doa)
+        Timber.d("assistant family dob=======> " + addShopReqData.assistant_family_dob)
+        Timber.d("entity id=======> " + addShopReqData.entity_id)
+        Timber.d("party status id=======> " + addShopReqData.party_status_id)
+        Timber.d("retailer id=======> " + addShopReqData.retailer_id)
+        Timber.d("dealer id=======> " + addShopReqData.dealer_id)
+        Timber.d("beat id=======> " + addShopReqData.beat_id)
+        Timber.d("actual_address=======> " + addShopReqData.actual_address)
 
         progress_wheel.spin()
 
@@ -4422,7 +4625,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         val addShopResult = result as AddShopResponse
-                        XLog.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
+                        Timber.d("Edit Shop : " + ", SHOP: " + addShopReqData.shop_name + ", RESPONSE:" + result.message)
                         if (addShopResult.status == NetworkConstant.SUCCESS) {
                             AppDatabase.getDBInstance()!!.addShopEntryDao().updateIsEditUploaded(1, addShopReqData.shop_id)
                             progress_wheel.stopSpinning()

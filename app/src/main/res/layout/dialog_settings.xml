@@ -99,6 +99,24 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp" />
 
+        <!-- mantis 0025783 In-app privacy policy working in menu & Login-->
+        <com.nationalplasticfsm.widgets.AppCustomTextView
+            android:id="@+id/activity_login_tvprivacypolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/selector_green_botton_bg_1"
+            android:gravity="center"
+            android:drawablePadding="@dimen/_5sdp"
+            android:drawableLeft="@drawable/ic_party_status"
+            android:drawableTint="@color/white"
+            android:paddingHorizontal="@dimen/_30sdp"
+            android:paddingVertical="@dimen/_5sdp"
+            android:text="Privacy policy"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10sdp" />
+
     </LinearLayout>
 
       </LinearLayout>

@@ -21,6 +21,10 @@ interface ShopDurationApi {
     @POST("Shopsubmission/ShopVisited")
     fun submitShopDuration(@Body shopDuration: ShopDurationRequest?): Observable<ShopDurationRequest>
 
+    @POST("Shopsubmission/ITCShopVisited")
+    fun submitShopDurationITC(@Body shopDuration: ShopDurationRequest?): Observable<ShopDurationRequest>
+
+
     @POST("Shopsubmission/MeetingVisited")
     fun submitMeetingDuration(@Body meetingDuration: MeetingDurationInputParams?): Observable<BaseResponse>
 

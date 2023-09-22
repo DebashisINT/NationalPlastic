@@ -2,6 +2,7 @@ package com.nationalplasticfsm.features.marketing.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import timber.log.Timber
 
 /**
  * Created by Pratishruti on 23-02-2018.
@@ -15,24 +16,33 @@ class MarketingDetailData() :Parcelable{
     var shop_id:String?=null
 
     override fun writeToParcel(dest: Parcel, p1: Int) {
-        dest.writeValue(this.material_name)
-        dest.writeValue(this.date)
-        dest.writeValue(this.typeid)
-        dest.writeValue(this.material_id)
-        dest.writeValue(this.shop_id)
-        dest.writeByte((if (isChecked) 1 else 0).toByte())
+        try{
+            dest.writeValue(this.material_name)
+            dest.writeValue(this.date)
+            dest.writeValue(this.typeid)
+            dest.writeValue(this.material_id)
+            dest.writeValue(this.shop_id)
+            dest.writeByte((if (isChecked) 1 else 0).toByte())
+        }catch (ex:Exception){
+            Timber.d("parcel err")
+            ex.printStackTrace()
+        }
     }
 
     override fun describeContents(): Int {
         return 0
     }
     constructor(parcel: Parcel) : this() {
-        material_name = parcel.readString()
-        date = parcel.readString()
-        shop_id = parcel.readString()
-        material_id=parcel.readInt()
-        typeid=parcel.readString()
-        isChecked = parcel.readInt() != 0
+        try{
+            material_name = parcel.readString()
+            date = parcel.readString()
+            shop_id = parcel.readString()
+            material_id=parcel.readInt()
+            typeid=parcel.readString()
+            isChecked = parcel.readInt() != 0
+        }catch (ex:Exception){
+            Timber.d("parcel errr")
+        }
     }
 
     companion object CREATOR : Parcelable.Creator<MarketingDetailData> {

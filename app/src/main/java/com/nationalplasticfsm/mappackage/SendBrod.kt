@@ -32,10 +32,20 @@ class SendBrod {
         fun stopBrod(context: Context){
             if (monitorNotiID != 0){
                 if(MonitorBroadcast.player!=null){
-                    MonitorBroadcast.player.stop()
-                    MonitorBroadcast.player=null
-                    MonitorBroadcast.vibrator.cancel()
-                    MonitorBroadcast.vibrator=null
+                    try{
+                        MonitorBroadcast.player.stop()
+                        MonitorBroadcast.player=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        MonitorBroadcast.player=null
+                    }
+                   try{
+                        MonitorBroadcast.vibrator.cancel()
+                        MonitorBroadcast.vibrator=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                         MonitorBroadcast.vibrator=null
+                    }
                 }
                 var notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.cancel(monitorNotiID)
@@ -57,8 +67,13 @@ class SendBrod {
                 if(MonitorCollPending.player!=null){
                     MonitorCollPending.player.stop()
                     MonitorCollPending.player=null
-                    MonitorCollPending.vibrator.cancel()
-                    MonitorCollPending.vibrator=null
+                    try {
+                        MonitorCollPending.vibrator.cancel()
+                        MonitorCollPending.vibrator=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        MonitorCollPending.vibrator=null
+                    }
                 }
                 var notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.cancel(monitorNotiIDColl)
@@ -77,10 +92,20 @@ class SendBrod {
         fun stopBrodZeroOrder(context: Context){
             if (monitorNotiIDZeroOrder != 0){
                 if(MonitorCollPending.player!=null){
-                    MonitorCollPending.player.stop()
-                    MonitorCollPending.player=null
-                    MonitorCollPending.vibrator.cancel()
-                    MonitorCollPending.vibrator=null
+                    try{
+                        MonitorCollPending.player.stop()
+                        MonitorCollPending.player=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        MonitorCollPending.player=null
+                    }
+                    try{
+                        MonitorCollPending.vibrator.cancel()
+                        MonitorCollPending.vibrator=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        MonitorCollPending.vibrator=null
+                    }
                 }
                 var notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.cancel(monitorNotiIDZeroOrder)
@@ -99,10 +124,20 @@ class SendBrod {
         fun stopBrodDOBDOA(context: Context){
             if (monitorNotiIDDoaDob != 0){
                 if(MonitorCollPending.player!=null){
-                    MonitorCollPending.player.stop()
-                    MonitorCollPending.player=null
-                    MonitorCollPending.vibrator.cancel()
-                    MonitorCollPending.vibrator=null
+                    try{
+                        MonitorCollPending.player.stop()
+                        MonitorCollPending.player=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        MonitorCollPending.player=null
+                    }
+                    try{
+                        MonitorCollPending.vibrator.cancel()
+                        MonitorCollPending.vibrator=null
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        MonitorCollPending.vibrator=null
+                    }
                 }
                 var notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.cancel(monitorNotiIDDoaDob)

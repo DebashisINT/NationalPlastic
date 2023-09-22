@@ -5,12 +5,14 @@ import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.features.addshop.model.AddQuestionSubmitRequestData
 import com.nationalplasticfsm.features.addshop.model.AddShopRequestData
 import com.nationalplasticfsm.features.addshop.model.AddShopResponse
+import com.nationalplasticfsm.features.addshop.model.ImagestockwiseListResponse
 import com.nationalplasticfsm.features.addshop.model.imageListResponse
 import com.nationalplasticfsm.features.addshop.presentation.ShopListSubmitResponse
 import com.nationalplasticfsm.features.addshop.presentation.multiContactRequestData
 import com.nationalplasticfsm.features.beatCustom.BeatGetStatusModel
 import com.nationalplasticfsm.features.nearbyshops.presentation.ShopModifiedListResponse
 import com.nationalplasticfsm.features.nearbyshops.presentation.ShopModifiedUpdateList
+import com.nationalplasticfsm.features.taskManagement.PriorityTaskSel
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -21,6 +23,9 @@ import retrofit2.http.*
 /**
  * Created by Pratishruti on 22-11-2017.
  */
+// Revision History
+// 1.0 AddShopApi rev mantis 26013 saheli v 4.0.8 15-05-2023
+// 2.0 AddShopApi rev mantis  26121 saheli v 4.0.8 15-05-2023
 interface AddShopApi {
 
 
@@ -58,6 +63,12 @@ interface AddShopApi {
     @POST("ShopMultipleContactMap/FetchShopMultiContact")
     fun fetchMultiContactData(@Field("user_id") user_id: String,@Field("session_token") session_token: String): Observable<ShopListSubmitResponse>
 
+    // start 2.0 rev mantis 26121 saheli v 4.0.8 15-05-2023
+    @FormUrlEncoded
+    @POST("Task/TaskPriorityList")
+    fun fetchpriorityData(@Field("session_token") session_token: String): Observable<PriorityTaskSel>
+
+    // end  2.0 rev mantis 26121 saheli v 4.0.8 15-05-2023
 
     @FormUrlEncoded
     @POST("Shoplist/ShopAttachmentImagesList")
@@ -96,6 +107,21 @@ interface AddShopApi {
     @Multipart
     @POST("ShopRegistration/ShopAttachmentImage4")
     fun UploadAttachImage4(@Query("data") addImageupload: String, @Part competitor_img: MultipartBody.Part?): Observable<BaseResponse>
+
+    // start 1.0 AddShopApi rev mantis 26013 saheli v 4.0.8 15-05-2023
+    @Multipart
+    @POST("CurrentStockImageInfo/SaveCurrentStockImage1")
+    fun UploadStockAttachImage1(@Query("data") addImageupload: String, @Part competitor_img: MultipartBody.Part?): Observable<BaseResponse>
+
+    @Multipart
+    @POST("CurrentStockImageInfo/SaveCurrentStockImage2")
+    fun UploadStockAttachImage2(@Query("data") addImageupload: String, @Part competitor_img: MultipartBody.Part?): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST("Stock/CurrentStockImageLink")
+    fun getStockWiseimagelist(@Field("stock_id") shop_id: String,@Field("user_id") user_id: String,@Field("session_token") session_token: String): Observable<ImagestockwiseListResponse>
+
+    // end 1.0 AddShopApi rev mantis 26013 saheli v 4.0.8 15-05-2023
 
     @Multipart
     @POST("ShopRegistration/RegisterShop")

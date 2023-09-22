@@ -19,3 +19,19 @@ data class CustomerLeadList (var crm_id:String,
                              var time:String,
                              var source_vend_type:String,
                              var status:String)
+
+data class TaskResponse(var status:String,var message:String ,var task_priority_name:String,
+                        var task_priority_id:String,
+                        var user_id:String,
+                                var task_dtls_list:ArrayList<TaskList>)
+
+data class TaskList (var task_id:String,
+                             var task_name:String,
+                             var task_details:String,
+                             var due_date:String,
+                             var due_time:String,
+                             var start_date:String,
+                             var start_time:String,
+                             var priority_type_name:String,
+                             var status:String,
+)

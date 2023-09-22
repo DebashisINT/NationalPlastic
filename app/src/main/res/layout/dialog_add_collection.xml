@@ -372,7 +372,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:maxLength="10"
                             android:paddingLeft="@dimen/_5sdp"
                             android:textColor="@android:color/black"

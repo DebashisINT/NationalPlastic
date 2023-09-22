@@ -2,6 +2,7 @@ package com.nationalplasticfsm.app.domain
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nationalplasticfsm.app.AppConstant
 
@@ -22,6 +23,10 @@ interface StockProductListDao {
 
     @Insert
     fun insert(vararg stockProductList: StockProductListEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @JvmSuppressWildcards
+    abstract fun insertAll(kist: List<StockProductListEntity>)
 
     @Query("DELETE FROM " + AppConstant.STOCK_PRODUCT_LIST)
     fun delete()

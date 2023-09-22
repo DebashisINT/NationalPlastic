@@ -36,11 +36,12 @@ import com.nationalplasticfsm.features.activities.model.ProductListModel
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_achievement.view.*
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -1095,31 +1096,31 @@ class EditDoctorActivityFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-        XLog.d("=====EDIT DOCTOR VISIT INPUT PARAMS (EDIT DOCTOR)======")
-        XLog.d("USER ID===> " + docVisit.user_id)
-        XLog.d("SESSION ID====> " + docVisit.session_token)
-        XLog.d("DOCTOR VISIT ID====> " + docVisit.doc_visit_id)
-        XLog.d("SHOP_ID====> " + docVisit.shop_id)
-        XLog.d("AMOUNT====> " + docVisit.amount)
-        XLog.d("NEXT VISIT DATE====> " + docVisit.next_visit_date)
-        XLog.d("VOLUME====> " + docVisit.crm_volume)
-        XLog.d("DOCTOR REMARKS====> " + docVisit.doc_remarks)
-        XLog.d("REMARKS MR====> " + docVisit.remarks_mr)
-        XLog.d("FROM DATE====> " + docVisit.from_cme_date)
-        XLog.d("TO DATE====> " + docVisit.to_crm_date)
-        XLog.d("IS GIFT====> " + docVisit.is_gift)
-        XLog.d("IS CRM====> " + docVisit.is_crm)
-        XLog.d("IS MONEY====> " + docVisit.is_money)
-        XLog.d("IS PRESCRIBER====> " + docVisit.is_prescriber)
-        XLog.d("IS QTY====> " + docVisit.is_qty)
-        XLog.d("IS SAMPLE====> " + docVisit.is_sample)
-        XLog.d("QTY VOL TEXT====> " + docVisit.qty_vol_text)
-        XLog.d("WHAT====> " + docVisit.what)
-        XLog.d("WHICH====> " + docVisit.which_kind)
-        XLog.d("PRODUCT LIST SIZE====> " + docVisit.product_list.size)
-        XLog.d("QTY PRODUCT LIST SIZE====> " + docVisit.qty_product_list.size)
-        XLog.d("SAMPLE PRODUCT LIST SIZE====> " + docVisit.sample_product_list.size)
-        XLog.d("=========================================================")
+        Timber.d("=====EDIT DOCTOR VISIT INPUT PARAMS (EDIT DOCTOR)======")
+        Timber.d("USER ID===> " + docVisit.user_id)
+        Timber.d("SESSION ID====> " + docVisit.session_token)
+        Timber.d("DOCTOR VISIT ID====> " + docVisit.doc_visit_id)
+        Timber.d("SHOP_ID====> " + docVisit.shop_id)
+        Timber.d("AMOUNT====> " + docVisit.amount)
+        Timber.d("NEXT VISIT DATE====> " + docVisit.next_visit_date)
+        Timber.d("VOLUME====> " + docVisit.crm_volume)
+        Timber.d("DOCTOR REMARKS====> " + docVisit.doc_remarks)
+        Timber.d("REMARKS MR====> " + docVisit.remarks_mr)
+        Timber.d("FROM DATE====> " + docVisit.from_cme_date)
+        Timber.d("TO DATE====> " + docVisit.to_crm_date)
+        Timber.d("IS GIFT====> " + docVisit.is_gift)
+        Timber.d("IS CRM====> " + docVisit.is_crm)
+        Timber.d("IS MONEY====> " + docVisit.is_money)
+        Timber.d("IS PRESCRIBER====> " + docVisit.is_prescriber)
+        Timber.d("IS QTY====> " + docVisit.is_qty)
+        Timber.d("IS SAMPLE====> " + docVisit.is_sample)
+        Timber.d("QTY VOL TEXT====> " + docVisit.qty_vol_text)
+        Timber.d("WHAT====> " + docVisit.what)
+        Timber.d("WHICH====> " + docVisit.which_kind)
+        Timber.d("PRODUCT LIST SIZE====> " + docVisit.product_list.size)
+        Timber.d("QTY PRODUCT LIST SIZE====> " + docVisit.qty_product_list.size)
+        Timber.d("SAMPLE PRODUCT LIST SIZE====> " + docVisit.sample_product_list.size)
+        Timber.d("=========================================================")
 
         val repository = ActivityRepoProvider.activityRepoProvider()
         progress_wheel.spin()
@@ -1131,7 +1132,7 @@ class EditDoctorActivityFragment : BaseFragment(), View.OnClickListener {
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
 
-                            XLog.d("EDIT DOCTOR VISIT DETAILS : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + response.message)
+                            Timber.d("EDIT DOCTOR VISIT DETAILS : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + response.message)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.addDocDao().updateIsUploaded(true, docVisit.doc_visit_id)
@@ -1141,7 +1142,7 @@ class EditDoctorActivityFragment : BaseFragment(), View.OnClickListener {
 
                             (mContext as DashboardActivity).onBackPressed()
                         }, { error ->
-                            XLog.d("EDIT DOCTOR VISIT DETAILS : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + error.localizedMessage)
+                            Timber.d("EDIT DOCTOR VISIT DETAILS : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + error.localizedMessage)
                             progress_wheel.stopSpinning()
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage("Doctor edited successfully")

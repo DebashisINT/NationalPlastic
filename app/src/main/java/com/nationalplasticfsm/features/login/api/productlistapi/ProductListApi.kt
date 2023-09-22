@@ -6,6 +6,7 @@ import com.nationalplasticfsm.features.login.model.productlistmodel.ProductListO
 import com.nationalplasticfsm.features.login.model.productlistmodel.ProductListOfflineResponseModelNew
 import com.nationalplasticfsm.features.login.model.productlistmodel.ProductListResponseModel
 import com.nationalplasticfsm.features.login.model.productlistmodel.ProductRateListResponseModel
+import com.nationalplasticfsm.features.viewAllOrder.orderOptimized.ProductRateOnlineListResponseModel
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -26,6 +27,11 @@ interface ProductListApi {
     @FormUrlEncoded
     @POST("ProductList/ProductRate")
     fun getProductRateList(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("shop_id") shop_id: String): Observable<ProductRateListResponseModel>
+
+    @FormUrlEncoded
+    @POST("ProductList/ProductRate")
+    fun getProductRateOnlineList(@Field("session_token") session_token: String, @Field("user_id") user_id: String, @Field("shop_id") shop_id: String): Observable<ProductRateOnlineListResponseModel>
+
 
     @FormUrlEncoded
     @POST("ProductList/OfflineProductRate")

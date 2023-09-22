@@ -42,13 +42,14 @@ import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.time.Duration
 import java.time.LocalDate
 import java.time.Period
@@ -120,10 +121,12 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
 
         openDateRangeCalendar()
 
-        if (Pref.willLeaveApprovalEnable)
+        if (Pref.willLeaveApprovalEnable) {
             tv_submit.text = getString(R.string.send_for_approval)
-        else
+        }
+        else {
             tv_submit.text = getString(R.string.submit_button_text)
+        }
     }
 
     private fun openDateRangeCalendar() {
@@ -184,10 +187,12 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                                             progress_wheel.stopSpinning()
                                         }
                                     }
-                                } else
+                                } else {
                                     progress_wheel.stopSpinning()
-                            } else
+                                }
+                            } else {
                                 progress_wheel.stopSpinning()
+                            }
                         }, { error ->
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage("ERROR")
@@ -239,12 +244,15 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
     }
 
     private fun visibilityCheck() {
-        if (TextUtils.isEmpty(leaveId))
+        if (TextUtils.isEmpty(leaveId)) {
             (mContext as DashboardActivity).showSnackMessage("Please select leave type")
-        else if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate))
+        }
+        else if (TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate)) {
             (mContext as DashboardActivity).showSnackMessage("Please select date range")
-        else if (Pref.willLeaveApprovalEnable && TextUtils.isEmpty(et_leave_reason_text.text.toString().trim()))
+        }
+        else if (Pref.willLeaveApprovalEnable && TextUtils.isEmpty(et_leave_reason_text.text.toString().trim())) {
             (mContext as DashboardActivity).showSnackMessage("Please enter reason")
+        }
         else{
             //callLeaveApprovalApi()
             calculateDaysForLeave()
@@ -309,6 +317,9 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
         addAttendenceModel.work_long=Pref.current_longitude
         addAttendenceModel.beat_id = "0"
 
+        addAttendenceModel.visit_location_id = "0"
+        addAttendenceModel.area_location_id = "0"
+
         val repository = AddAttendenceRepoProvider.addAttendenceRepo()
         progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
@@ -333,7 +344,7 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                     Log.e("ApprovalPend work attendance", "api work type")
 
                 }, { error ->
-                    XLog.d("AddAttendance Response Msg=========> " + error.message)
+                    Timber.d("AddAttendance Response Msg=========> " + error.message)
                     BaseActivity.isApiInitiated = false
                     progress_wheel.stopSpinning()
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
@@ -361,36 +372,42 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
 
         var tt=AppUtils.getCurrentDateTime()
 
-        if (TextUtils.isEmpty(Pref.current_latitude))
+        if (TextUtils.isEmpty(Pref.current_latitude)) {
             leaveApproval.leave_lat = "0.0"
-        else
+        }
+        else {
             leaveApproval.leave_lat = Pref.current_latitude
+        }
 
-        if (TextUtils.isEmpty(Pref.current_longitude))
+        if (TextUtils.isEmpty(Pref.current_longitude)) {
             leaveApproval.leave_long = "0.0"
-        else
+        }
+        else {
             leaveApproval.leave_long = Pref.current_longitude
+        }
 
-        if (TextUtils.isEmpty(Pref.current_latitude))
+        if (TextUtils.isEmpty(Pref.current_latitude)) {
             leaveApproval.leave_add = ""
-        else
+        }
+        else {
             leaveApproval.leave_add = LocationWizard.getLocationName(mContext, Pref.current_latitude.toDouble(), Pref.current_longitude.toDouble())
+        }
 
 
         if (!TextUtils.isEmpty(et_leave_reason_text.text.toString().trim()))
             leaveApproval.leave_reason = et_leave_reason_text.text.toString().trim()
 
-        XLog.d("=========Apply Leave Input Params==========")
-        XLog.d("session_token======> " + leaveApproval.session_token)
-        XLog.d("user_id========> " + leaveApproval.user_id)
-        XLog.d("leave_from_date=======> " + leaveApproval.leave_from_date)
-        XLog.d("leave_to_date=======> " + leaveApproval.leave_to_date)
-        XLog.d("leave_type========> " + leaveApproval.leave_type)
-        XLog.d("leave_lat========> " + leaveApproval.leave_lat)
-        XLog.d("leave_long========> " + leaveApproval.leave_long)
-        XLog.d("leave_add========> " + leaveApproval.leave_add)
-        XLog.d("leave_reason========> " + leaveApproval.leave_reason)
-        XLog.d("===============================================")
+        Timber.d("=========Apply Leave Input Params==========")
+        Timber.d("session_token======> " + leaveApproval.session_token)
+        Timber.d("user_id========> " + leaveApproval.user_id)
+        Timber.d("leave_from_date=======> " + leaveApproval.leave_from_date)
+        Timber.d("leave_to_date=======> " + leaveApproval.leave_to_date)
+        Timber.d("leave_type========> " + leaveApproval.leave_type)
+        Timber.d("leave_lat========> " + leaveApproval.leave_lat)
+        Timber.d("leave_long========> " + leaveApproval.leave_long)
+        Timber.d("leave_add========> " + leaveApproval.leave_add)
+        Timber.d("leave_reason========> " + leaveApproval.leave_reason)
+        Timber.d("===============================================")
 
         val repository = AddAttendenceRepoProvider.leaveApprovalRepo()
         progress_wheel.spin()
@@ -401,8 +418,8 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
-                            XLog.d("Apply Leave Response Code========> " + response.status)
-                            XLog.d("Apply Leave Response Msg=========> " + response.message)
+                            Timber.d("Apply Leave Response Code========> " + response.status)
+                            Timber.d("Apply Leave Response Msg=========> " + response.message)
                             BaseActivity.isApiInitiated = false
 
                             if (response.status == NetworkConstant.SUCCESS) {
@@ -423,7 +440,7 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                             }
 
                         }, { error ->
-                            XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                            Timber.d("Apply Leave Response ERROR=========> " + error.message)
                             BaseActivity.isApiInitiated = false
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
@@ -499,7 +516,7 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                                 }
 
                             }, { error ->
-                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                Timber.d("Apply Leave Response ERROR=========> " + error.message)
                                 BaseActivity.isApiInitiated = false
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
@@ -526,7 +543,7 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
                                 }
 
                             }, { error ->
-                                XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                                Timber.d("Apply Leave Response ERROR=========> " + error.message)
                                 BaseActivity.isApiInitiated = false
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))

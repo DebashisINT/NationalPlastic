@@ -57,29 +57,38 @@
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
-                    android:id="@+id/approx_distance_header"
+                <LinearLayout
+                    android:id="@+id/ll_approx_dist_show_root"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:padding="@dimen/_5sdp"
-                    android:text="@string/approx_distance"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_11sdp" />
+                    android:orientation="horizontal">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
-                    android:id="@+id/approx_distance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/approx_distance_header"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:text="50 mtr"
-                    android:textColor="@color/navy_blue_dot"
-                    android:textSize="@dimen/_11sdp"
-                    android:textStyle="bold"/>
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:id="@+id/approx_distance_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:text="@string/approx_distance"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                        android:id="@+id/approx_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/approx_distance_header"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:text="50 mtr"
+                        android:textColor="@color/navy_blue_dot"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
             </RelativeLayout>
 
             <RelativeLayout

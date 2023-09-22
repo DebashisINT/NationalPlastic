@@ -51,7 +51,9 @@
 
     <color name="white_50">#88ffffff</color>
     <color name="black_50">#88000000</color>
+    <color name="black_51">#A9000000</color>
     <color name="gray_50">#88888888</color>
+    <color name="gray_50_dark">#B3292929</color>
 
     <color name="white_ish">#fffefefe</color>
 
@@ -59,6 +61,9 @@
     <color name="card_custom_back">#FAF8F8</color>
     <color name="card_custom_back1">#d8d8d8</color>
     <color name="card_custom_back2">#EFE8E8</color>
+
+    <color name="custom_blue1">#1f148d</color>
+    <color name="custom_gray1">#e9eafe</color>
 
     <color name="yellow">#fdb75b</color>
     <color name="red">#fd5c63</color>
@@ -89,6 +94,7 @@
     <color name="new_floating_btn_color">#625b9f</color>
     <color name="attendance_report_header_blue">#009cc4</color>
     <color name="lightest_new_gray">#E0E0E0</color>
+    <color name="lightest_light_new_gray">#F8F8F8</color>
     <color name="stock_text_popup_color">#73b5c6</color>
     <color name="completed_green">#34ad58</color>
     <color name="link_blue">#1155cc</color>
@@ -119,4 +125,26 @@
     <color name="color_custom_white_1">#00A311</color>
     <color name="color_custom_red_1">#f8424e</color>
     <color name="color_custom_red_2">#82F8424E</color>
+
+    <color name="custom_yellow">#82F6DAA4</color>
+    <color name="custom_yellow_light">#4FF8E5C1</color>
+
+    <color name="custom_red">#82F49AA0</color>
+    <color name="custom_red_light">#4FF4C8CB</color>
+
+    <color name="custom_sky">#8289E2F6</color>
+    <color name="custom_sky_light">#4FCFF3FB</color>
+    <color name="color_light_sky">#dde7f1</color>
+    <color name="color_custom_blue">#0f4990</color>
+    <color name="color_transparent_blue">#C8F0F8FF</color>
+
+    <color name="color_1">#378c26</color>
+    <color name="color_2">#023f89</color>
+    <color name="color_3">#810a56</color>
+    <color name="color_4">#470171</color>
+    <color name="color_5">#9e6a1f</color>
+
+    <color name="color_card_back">#F3F3F3</color>
+    <color name="color_card_back_deep">#EDEDED</color>
+
 </resources>

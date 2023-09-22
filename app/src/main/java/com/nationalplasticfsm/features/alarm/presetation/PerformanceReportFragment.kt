@@ -277,17 +277,20 @@ class PerformanceReportFragment : BaseFragment(), View.OnClickListener, DatePick
                         e.printStackTrace()
                     }
                 }
-                else
+                else {
                     (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
+                }
             }
         }
     }
 
     private fun checkValidation() {
-        if (!iv_check_icon.isSelected)
+        if (!iv_check_icon.isSelected) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_check_review))
-        else
+        }
+        else {
             callConfirmReviewApi()
+        }
 
     }
 

@@ -1,7 +1,10 @@
 package com.nationalplasticfsm.features.chat.presentation
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.nationalplasticfsm.R
+import com.nationalplasticfsm.app.MaterialSearchView
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.app.SearchListener
 import com.nationalplasticfsm.app.types.FragType
@@ -23,11 +27,17 @@ import com.nationalplasticfsm.features.chat.model.GroupUserDataModel
 import com.nationalplasticfsm.features.chat.model.GroupUserResponseModel
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
+// Revision History
+// 1.0 ChatUserListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
 class ShowPeopleFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -83,8 +93,54 @@ class ShowPeopleFragment : BaseFragment() {
             }
         })
 
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
+
         return view
     }
+
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
+
 
     private fun initView(view: View) {
         view.apply {
@@ -117,7 +173,7 @@ class ShowPeopleFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as GroupUserResponseModel
-                            XLog.d("Get User List STATUS: " + response.status)
+                            Timber.d("Get User List STATUS: " + response.status)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 progress_wheel.stopSpinning()
                                 tv_no_data.visibility = View.GONE
@@ -134,7 +190,7 @@ class ShowPeopleFragment : BaseFragment() {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             if (error != null)
-                                XLog.d("Get User List ERROR: " + error.localizedMessage)
+                                Timber.d("Get User List ERROR: " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
@@ -149,7 +205,7 @@ class ShowPeopleFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as GroupUserResponseModel
-                            XLog.d("Get Group Not Selected User List STATUS: " + response.status)
+                            Timber.d("Get Group Not Selected User List STATUS: " + response.status)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 progress_wheel.stopSpinning()
                                 tv_no_data.visibility = View.GONE
@@ -176,7 +232,7 @@ class ShowPeopleFragment : BaseFragment() {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             if (error != null)
-                                XLog.d("Get Group Not Selected User List ERROR: " + error.localizedMessage)
+                                Timber.d("Get Group Not Selected User List ERROR: " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )

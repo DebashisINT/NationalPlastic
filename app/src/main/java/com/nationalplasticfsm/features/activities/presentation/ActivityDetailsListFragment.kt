@@ -26,12 +26,13 @@ import com.nationalplasticfsm.features.activities.api.ActivityRepoProvider
 import com.nationalplasticfsm.features.activities.model.*
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -282,28 +283,28 @@ class ActivityDetailsListFragment : BaseFragment(), DatePickerDialog.OnDateSetLi
                 activity.product_id!!, activity.subject!!, activity.details!!, activity.duration!!, activity.priority_id!!,
                 activity.due_date!!, activity.due_time!!)
 
-        XLog.d("==============Sync Activity Input Params (Datewise Activity List)====================")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("id=======> " + activity.activity_id)
-        XLog.d("party_id=======> " + activity.party_id)
-        XLog.d("details=======> " + activity.details)
-        XLog.d("date=======> " + activity.date)
-        XLog.d("time=======> " + activity.time)
-        XLog.d("name=======> " + activity.name)
-        XLog.d("time=======> " + activity.time)
-        XLog.d("activity_id=======> " + activity.activity_dropdown_id)
-        XLog.d("type_id=======> " + activity.type_id)
-        XLog.d("product_id=======> " + activity.product_id)
-        XLog.d("subject=======> " + activity.subject)
-        XLog.d("details=======> " + activity.details)
-        XLog.d("duration=======> " + activity.duration)
-        XLog.d("priority_id=======> " + activity.priority_id)
-        XLog.d("due_date=======> " + activity.due_date)
-        XLog.d("due_time=======> " + activity.due_time)
-        XLog.d("attachments=======> " + activity.attachments)
-        XLog.d("image=======> " + activity.image)
-        XLog.d("========================================================================")
+        Timber.d("==============Sync Activity Input Params (Datewise Activity List)====================")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("id=======> " + activity.activity_id)
+        Timber.d("party_id=======> " + activity.party_id)
+        Timber.d("details=======> " + activity.details)
+        Timber.d("date=======> " + activity.date)
+        Timber.d("time=======> " + activity.time)
+        Timber.d("name=======> " + activity.name)
+        Timber.d("time=======> " + activity.time)
+        Timber.d("activity_id=======> " + activity.activity_dropdown_id)
+        Timber.d("type_id=======> " + activity.type_id)
+        Timber.d("product_id=======> " + activity.product_id)
+        Timber.d("subject=======> " + activity.subject)
+        Timber.d("details=======> " + activity.details)
+        Timber.d("duration=======> " + activity.duration)
+        Timber.d("priority_id=======> " + activity.priority_id)
+        Timber.d("due_date=======> " + activity.due_date)
+        Timber.d("due_time=======> " + activity.due_time)
+        Timber.d("attachments=======> " + activity.attachments)
+        Timber.d("image=======> " + activity.image)
+        Timber.d("========================================================================")
 
         if (TextUtils.isEmpty(activity.attachments)) {
             val repository = ActivityRepoProvider.activityRepoProvider()

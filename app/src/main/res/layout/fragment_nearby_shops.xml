@@ -9,7 +9,6 @@
     android:background="@color/color_silver"
     android:clickable="true">
 
-
     <RelativeLayout
         android:id="@+id/wraper"
         android:layout_width="match_parent"
@@ -130,6 +129,17 @@
         android:layout_marginBottom="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_frag_nearby_shops_mic"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_17sdp"
+        android:layout_alignParentRight="true"
+        app:tint="@color/color_custom_red"
+        android:visibility="gone"
+        android:src="@drawable/ic_mic"/>
 
     <com.nationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_beat_name"

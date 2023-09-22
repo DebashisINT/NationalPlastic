@@ -120,7 +120,7 @@
                     android:layout_gravity="center"
                     android:backgroundTint="#57a518"
                     android:background="@drawable/shape_button_custom"
-                    android:textColor="@drawable/selector_text_clor_blue_white_new"
+                    android:textColor="@drawable/selector_text_color_blue_white_new1"
                     android:clickable="true"
                     android:focusable="true"
                     android:layout_marginLeft="@dimen/_1sdp"/>

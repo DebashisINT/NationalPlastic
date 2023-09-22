@@ -22,11 +22,14 @@ import com.nationalplasticfsm.features.dymanicSection.model.DynamicListDataModel
 import com.nationalplasticfsm.features.dymanicSection.model.DynamicListResponseModel
 import com.nationalplasticfsm.features.task.presentation.EditTaskFragment
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
+// Revision History
+// 1.0 ExoPlayerActivity AppV 4.0.7 Saheli    02/03/2023 Timber Log Implementation
 class DynamicListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -105,7 +108,8 @@ class DynamicListFragment : BaseFragment() {
 
                             val response = result as DynamicListResponseModel
 
-                            XLog.d("DYNAMIC ALL LIST RESPONSE=======> " + response.status)
+//                            XLog.d("DYNAMIC ALL LIST RESPONSE=======> " + response.status)
+                            Timber.d("DYNAMIC ALL LIST RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.info_list != null && response.info_list!!.size > 0) {
@@ -127,7 +131,8 @@ class DynamicListFragment : BaseFragment() {
                             progress_wheel.stopSpinning()
                             tv_no_data.visibility = View.VISIBLE
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("DYNAMIC ALL LIST ERROR=======> " + error.localizedMessage)
+//                            XLog.d("DYNAMIC ALL LIST ERROR=======> " + error.localizedMessage)
+                            Timber.d("DYNAMIC ALL LIST ERROR=======> " + error.localizedMessage)
                         })
         )
     }

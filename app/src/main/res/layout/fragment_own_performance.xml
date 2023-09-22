@@ -1,0 +1,2308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_light_sky"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/_5sdp">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cd_attendance_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_perf_attend_heading"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center|start"
+                                android:text="Attendance Insights"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_perf_attend_heading_month"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|start"
+                                android:paddingLeft="@dimen/_2sdp"
+                                android:text=" (for the last month -"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_9sdp" />
+
+                            <!-- start V 3.9.9  0026308 mantis new logo added  -->
+
+                            <!-- <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_250sdp"
+                                app:cardElevation="@dimen/_5sdp">-->
+
+
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_attenshare"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/ic_round_share"
+                                android:scaleType="fitXY" />
+
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_atteninfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY"
+
+                                />
+
+                            <!-- </androidx.cardview.widget.CardView>-->
+
+                            <!-- end V 3.9.9  0026308 mantis new logo added  -->
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_attend_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_15sdp"
+                                android:layout_weight="1.6"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_35sdp"
+                                    android:background="@drawable/border_background_simple"
+                                    android:backgroundTint="#E9F8E1"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:src="@drawable/ic_user_newscr" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:text="Present"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_frag_own_performance_present_atten"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="end"
+                                        android:layout_weight="1.6"
+                                        android:background="@drawable/border_background_small_1"
+                                        android:backgroundTint="#0019b2"
+                                        android:gravity="center"
+                                        android:text=""
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_35sdp"
+                                    android:layout_marginTop="@dimen/_10sdp"
+                                    android:background="@drawable/border_background_simple"
+                                    android:backgroundTint="#F8E4E4"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:src="@drawable/ic_user_newscr" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:text="Not Logged In"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tv_frag_own_performance_absent_atten"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="end"
+                                        android:layout_weight="1.6"
+                                        android:background="@drawable/border_background_small_1"
+                                        android:backgroundTint="#f5862c"
+                                        android:gravity="center"
+                                        android:text=""
+                                        android:textColor="@color/white"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <Space
+                                android:layout_width="@dimen/_5sdp"
+                                android:layout_height="match_parent" />
+
+
+                            <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                                android:id="@+id/aa_chart_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1">
+
+                            </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_mtd_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center|start"
+                                android:text="MTD"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_perf_mtd_heading_month"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|start"
+                                android:paddingLeft="@dimen/_2sdp"
+                                android:text="(Month To Date)"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_9sdp" />
+
+                            <!-- start V 3.9.9  0026308 mantis new logo added  -->
+
+                            <!--    <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">-->
+
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_MTDshare"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/ic_round_share"
+                                android:padding="@dimen/_5sdp"
+                                android:scaleType="fitCenter" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_MTDinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+                            <!--  </androidx.cardview.widget.CardView>-->
+                            <!-- end V 3.9.9  0026308 mantis new logo added  -->
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#CFF4E2"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_total_ordervalue_frag_own"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#D0E9FA"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_totalOrdercount_frag_own_performance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#F6E3C6"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_avg_value_frag_own_performance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#F8E0DB"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_avg_orderCount_frag_own_performance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                                android:id="@+id/aa_chart_view1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1">
+
+                            </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--Last three month comparative mantis 26267-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_last3month_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|start"
+                                android:text="Last 3 Months Comparative \n Average Order Value"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <!-- start V 3.9.9  0026308 mantis new logo added  -->
+
+                            <!-- <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                android:layout_gravity="end"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">-->
+
+
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_threemonthshare"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/ic_round_share"
+                                android:padding="@dimen/_5sdp"
+                                android:scaleType="fitCenter" />
+
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_threemonthinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+                            <!-- </androidx.cardview.widget.CardView>-->
+                            <!-- end V 3.9.9  0026308 mantis new logo added  -->
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:orientation="horizontal">
+
+                            <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                                android:id="@+id/chart_three_month_performance_report"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1">
+
+                            </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/iv_red_alert_performance_report"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_marginLeft="@dimen/_8sdp"
+                                android:src="@drawable/alert_performance" />
+
+                            <TextView
+                                android:id="@+id/iv_red_alert_performance_reportTv"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:text="Average Orders are continuously falling. Please have a look."
+                                android:textColor="@color/red"
+                                android:textSize="@dimen/_11sdp" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <!--Last 10 order(based on shop type)-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_last10order_frag_own"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center|start"
+                                android:text="Recent 10 Orders"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|start"
+                                android:text=""
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_9sdp"
+                                android:visibility="invisible" />
+                            <!-- start V 3.9.9  0026308 mantis new logo added  -->
+
+                            <!--  <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">
+-->
+                            <ImageView
+                                android:id="@+id/iv_share_last10"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/ic_round_share"
+                                android:padding="@dimen/_5sdp"
+                                android:scaleType="fitCenter" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_last10info"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY"/>
+                            <!-- </androidx.cardview.widget.CardView>-->
+                            <!-- end V 3.9.9  0026308 mantis new logo added  -->
+
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_frag_own_performnace_sel_shopType"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:background="@drawable/simple_border_rec_bg"
+                            android:drawableEnd="@drawable/ic_down_arrow"
+                            android:drawableTint="@color/black"
+                            android:gravity="center|start"
+                            android:hint="Select Shop Type"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/_11sdp" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#DDFAEC"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_total_ordervalueshopTypewise_frag_own"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="Total Order Value"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#F8EDDC"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_avgOrderValueshopTypewise_frag_own_performance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="Average Order Value"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="@dimen/_130sdp"
+                                android:layout_height="@dimen/_40sdp"
+                                android:layout_gravity="center_vertical|center_horizontal"
+                                android:layout_marginLeft="@dimen/_80sdp"
+                                android:background="@drawable/border_back_shadow"
+                                android:backgroundTint="#DAEDFA"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_totalOrdercount_shoptypewise_frag_own_performance"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="Total Order Count"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--Activity ageing-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_activityageing_frag_own"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_15sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1.9"
+                                android:gravity="center|start"
+                                android:text="Ageing Analysis"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <!-- start V 3.9.9  0026308 mantis new logo added  -->
+
+                            <!--<androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">-->
+
+                            <ImageView
+                                android:id="@+id/iv_share_activityageing"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/ic_round_share"
+                                android:padding="@dimen/_5sdp"
+                                android:scaleType="fitCenter" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_activityageinginfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+                            <!-- </androidx.cardview.widget.CardView>-->
+
+                            <!-- end V 3.9.9  0026308 mantis new logo added  -->
+
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_frag_own_performnace_sel_party"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:background="@drawable/simple_border_rec_bg"
+                            android:drawableEnd="@drawable/ic_down_arrow"
+                            android:drawableTint="@color/black"
+                            android:gravity="center|start"
+                            android:hint="Select Party"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/_11sdp" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_38sdp"
+                                android:layout_marginLeft="@dimen/_2sdp"
+                                android:layout_marginTop="@dimen/_15sdp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_background_simple"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.6"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Age Since"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_9sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Last Visit"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/tv_frag_own_performance_lastvisitbyago"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="end"
+                                    android:layout_weight="1.6"
+                                    android:background="@drawable/border_background_small_1"
+                                    android:backgroundTint="#FBC0C0"
+                                    android:gravity="center"
+                                    android:text="0 \n Days"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_38sdp"
+                                android:layout_marginLeft="@dimen/_12sdp"
+                                android:layout_marginTop="@dimen/_15sdp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_background_simple"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.6"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Age Since"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_9sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1.6"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Last Order"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                                <!-- v 4.1.6 mantis 0026315 text value set blank date 09-06-2023-->
+
+                                <TextView
+                                    android:id="@+id/tv_frag_own_performance_lastorderbyago"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="end"
+                                    android:layout_weight="1.6"
+                                    android:background="@drawable/border_background_small_1"
+                                    android:backgroundTint="#CED4F8"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_38sdp"
+                                android:layout_marginLeft="@dimen/_2sdp"
+                                android:layout_marginTop="@dimen/_15sdp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_background_simple"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.6"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Most Recent"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_9sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1.6"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Visit"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                                <!-- v 4.1.6 mantis 0026315 text value set blank date 09-06-2023-->
+
+                                <TextView
+                                    android:id="@+id/tv_frag_own_performance_lastcollectionbyago"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="end"
+                                    android:layout_weight="1.6"
+                                    android:background="@drawable/border_background_small_1"
+                                    android:backgroundTint="#D6F8F1"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_38sdp"
+                                android:layout_marginLeft="@dimen/_12sdp"
+                                android:layout_marginTop="@dimen/_15sdp"
+                                android:layout_weight="1"
+                                android:background="@drawable/border_background_simple"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.6"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Age Since"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_9sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1.6"
+                                        android:gravity="start|center"
+                                        android:paddingLeft="@dimen/_8sdp"
+                                        android:text="Last Collection"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+
+                                <!-- v 4.1.6 mantis 0026315 text value set blank date 09-06-2023-->
+
+                                <TextView
+                                    android:id="@+id/tv_frag_own_performance_loginbyago"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="end"
+                                    android:layout_weight="1.6"
+                                    android:background="@drawable/border_background_small_1"
+                                    android:backgroundTint="#FAEFDD"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--Party not Visited Last 20 days-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_partynotvisitedlast20_frag_own"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_15sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1.9"
+                                android:gravity="center|start"
+                                android:text="Party Not Visited Last 20 Days "
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">
+
+                                <ImageView
+                                    android:id="@+id/iv_share_partynotvisitedlast20days"
+                                    android:layout_width="@dimen/_18sdp"
+                                    android:layout_height="@dimen/_18sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:background="@drawable/ic_share"
+                                    android:backgroundTint="@color/white"
+                                    android:padding="@dimen/_5sdp"
+                                    android:scaleType="fitCenter"
+                                    android:visibility="gone" />
+
+                            </androidx.cardview.widget.CardView>
+
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/frag_own_performance_last20nitvisited_list_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+                        <TextView
+                            android:id="@+id/tv_no_party"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="No Party Visited"
+                            android:textSize="@dimen/_11sdp" />
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--Partywise sales-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_party_wise_sales_performance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_15sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1.9"
+                                android:gravity="center|start"
+                                android:text="Sales Breakdown by Party"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+                            <!-- start V 3.9.9  0026308 mantis new logo added  -->
+
+                            <!--<androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">-->
+
+                            <ImageView
+                                android:id="@+id/iv_share_partywisesales"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/ic_round_share"
+                                android:padding="@dimen/_5sdp"
+                                android:scaleType="fitCenter" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_partywisesalesinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY"/>
+                            <!-- </androidx.cardview.widget.CardView>-->
+
+                            <!-- end V 3.9.9  0026308 mantis new logo added  -->
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_sel_party_multiple_sel_own"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:background="@drawable/simple_border_rec_bg"
+                            android:drawableEnd="@drawable/ic_down_arrow"
+                            android:drawableTint="@color/black"
+                            android:gravity="center|start"
+                            android:hint="Select Party"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/_11sdp" />
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_5sdp"
+                            app:cardBackgroundColor="@color/white"
+                            app:cardElevation="@dimen/_2sdp">
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_35sdp"
+                                android:background="@drawable/shadow_selector_page_cus_white"
+                                android:backgroundTint="#083681"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1.5"
+                                    android:gravity="start|center"
+                                    android:paddingLeft="@dimen/_8sdp"
+                                    android:text="Party Name"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1.5"
+                                    android:gravity="start|center"
+                                    android:paddingLeft="@dimen/_8sdp"
+                                    android:text="Total Sales Value"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
+                        </androidx.cardview.widget.CardView>
+
+                        <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                            android:id="@+id/samplec"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginBottom="@dimen/_5sdp">
+
+                        </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
+
+                        <TextView
+                            android:id="@+id/no_sales_party_break"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_150sdp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Select party at top to get report on \n Sales Breakdown by Party"
+                            android:textColor="@color/black_50" />
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcv_party_wise_items_own"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_50sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:scrollbars="vertical"
+                            android:visibility="gone"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+                <!--begin start v 4.0.16. saheli 12-06-2023 mantis 26324 No order taken since last 3months-->
+
+                <!--No order taken since last 3months-->
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_frag_own_performance_noOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="@drawable/red_color_custom_round_bg"
+                            android:backgroundTint="#083681"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Order Inactivity "
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/white" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="3 Months of Non-Activity Detected"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_20sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/icon_cal_black" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_performance_headerCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textColor="@color/completed_green"
+                                android:textSize="@dimen/_16sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="(Total party count)"
+                                android:textColor="@color/gray_50_dark"
+                                android:textSize="@dimen/_8sdp" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_headerCountinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+
+                        </LinearLayout>
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginRight="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/transparent"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:background="@color/white"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp">
+
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_no_order_taken_from_last3months"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_250sdp"
+                                    android:layout_marginBottom="@dimen/_3sdp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--  Not Visited Since Last 3 Months-->
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_frag_own_performance_noVisited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="@drawable/red_color_custom_round_bg"
+                            android:backgroundTint="#083681"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Visit Inactivity"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/white" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="30 days of Non-Activity Detected"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_20sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/icon_cal_black" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_performance_headerCountNotvisited"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textColor="@color/completed_green"
+                                android:textSize="@dimen/_16sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="(Total party count)"
+                                android:textColor="@color/gray_50_dark"
+                                android:textSize="@dimen/_8sdp" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_headerCountNotvisitedinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+
+                        </LinearLayout>
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginRight="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/transparent"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:background="@color/white"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp">
+
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_no_visited_taken_from_last3months"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_200sdp"
+                                    android:layout_marginBottom="@dimen/_3sdp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!--Product Not Sold Since Last 3 Months-->
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_frag_own_performance_noproductSell"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="@drawable/red_color_custom_round_bg"
+                            android:backgroundTint="#083681"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Product Inactivity"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/white" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="3 Months of Non-Activity Detected"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_20sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/icon_cal_black" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_performance_headerCountNotproductnotsell"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textColor="@color/completed_green"
+                                android:textSize="@dimen/_16sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="(Total product count)"
+                                android:textColor="@color/gray_50_dark"
+                                android:textSize="@dimen/_8sdp" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_headerCountNotproductnotsellinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+                        </LinearLayout>
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginRight="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/white"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:background="@color/white"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp">
+
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_product_nosell_taken_from_last3months"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_200sdp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!--Not Collection Since Last 3 Months-->
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_frag_own_performance_noCollection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="@drawable/red_color_custom_round_bg"
+                            android:backgroundTint="#083681"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Collection Inactivity"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/white" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="3 Months of Non-Activity Detected"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_20sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/icon_cal_black" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_performance_headerCountNotcollection"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textColor="@color/completed_green"
+                                android:textSize="@dimen/_16sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="(Total party count)"
+                                android:textColor="@color/gray_50_dark"
+                                android:textSize="@dimen/_8sdp" />
+
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_headerCountNotcollectioninfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+                        </LinearLayout>
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginRight="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/transparent"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:background="@color/white"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp">
+
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_no_coll_taken_from_last3months"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_200sdp"
+                                    android:layout_marginBottom="@dimen/_3sdp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <!--end start v 4.0.16. saheli 12-06-2023 mantis 26324-->
+
+
+                <!--begin start v 4.0.16. saheli 16-06-2023 mantis 26349 No order taken -->
+                <!--No order taken List -->
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_frag_own_performance_noOrder_party"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="@drawable/red_color_custom_round_bg"
+                            android:backgroundTint="#083681"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Zero(0) Order Parties"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/white" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Non-Activity Detected"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_20sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/icon_cal_black" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_performance_headerCount_zeroOrder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textColor="@color/completed_green"
+                                android:textSize="@dimen/_16sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="(Total party count)"
+                                android:textColor="@color/gray_50_dark"
+                                android:textSize="@dimen/_8sdp" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_headerCount_zeroOrderinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY" />
+                        </LinearLayout>
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginRight="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/transparent"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:background="@color/white"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp">
+
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_no_order_taken"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_250sdp"
+                                    android:layout_marginBottom="@dimen/_3sdp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <!-- No Party List re Visited data-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_frag_own_performance_noVisit_party"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:background="@drawable/red_color_custom_round_bg"
+                            android:backgroundTint="#083681"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Zero(0) Visit Parties List"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/white" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Non-Activity Detected"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14sdp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_20sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/icon_cal_black" />
+
+                            <TextView
+                                android:id="@+id/tv_frag_own_performance_headerCount_noVisit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textColor="@color/completed_green"
+                                android:textSize="@dimen/_16sdp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="(Total party count)"
+                                android:textColor="@color/gray_50_dark"
+                                android:textSize="@dimen/_8sdp" />
+                            <ImageView
+                                android:id="@+id/iv_frag_performance_headerCount_noVisitinfo"
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:background="@drawable/info_icon"
+                                android:scaleType="fitXY"/>
+                        </LinearLayout>
+
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_marginRight="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/transparent"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="0dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:background="@color/white"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp">
+
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_noVisit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_250sdp"
+                                    android:layout_marginBottom="@dimen/_3sdp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!--end start v 4.0.16. saheli 16-06-2023 mantis 26349 No order taken -->
+
+                <!--Bar Chart-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_10sdp"
+                    app:cardElevation="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center|start"
+                                android:text="Attendance Report(Last Month)"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                app:cardBackgroundColor="#228ba1"
+                                app:cardCornerRadius="@dimen/_15sdp"
+                                app:cardElevation="@dimen/_5sdp">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_18sdp"
+                                    android:layout_height="@dimen/_18sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:background="@drawable/ic_share"
+                                    android:backgroundTint="@color/white"
+                                    android:padding="@dimen/_5sdp"
+                                    android:scaleType="fitCenter" />
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_150sdp"
+                            android:orientation="horizontal">
+
+                            <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                                android:id="@+id/aa_chart_view2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
+                                android:layout_weight="1">
+
+                            </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <ImageView
+            android:id="@+id/iv_loader_spin"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_background_color_set"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_transparent_blue"
+            android:visibility="gone" />
+    </FrameLayout>
+
+
+</LinearLayout>

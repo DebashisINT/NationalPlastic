@@ -80,6 +80,7 @@
     <string name="view_cart" translatable="false">View Cart</string>
     <string name="product_details" translatable="false">Product Details</string>
     <string name="search_product" translatable="false">Search Product(s)</string>
+    <string name="sel_product" translatable="false">Select Product(s)</string>
     <string name="stock_details_pp_dd" translatable="false">Stock Details - PP/DD</string>
     <string name="outstanding_details_pp_dd" translatable="false">Outstanding Details - PP/DD</string>
     <string name="outstanding_list" translatable="false">Outstanding List</string>
@@ -295,6 +296,7 @@
     <string name="price_txt" translatable="false">20.00</string>V
     <string name="total_txt" translatable="false">2000.00</string>
     <string name="total_items" translatable="false">Total item(s):</string>
+    <string name="total_qtys" translatable="false">Total Qty(s):</string>
     <string name="total_amount" translatable="false">Total Amount:</string>
     <string name="order_items" translatable="false">Order item(s):</string>
     <string name="return_items" translatable="false">Return item(s):</string>
@@ -702,6 +704,7 @@
     <string name="product_total_order_amount" translatable="false">Total Amount (\u20B9):\u0020</string>
     <string name="total_order_amount" translatable="false">Order Amount (\u20B9):\u0020</string>
     <string name="total_order_value_with_colon" translatable="false">Total Order Value (\u20B9):\u0020</string>
+    <string name="total_value_with_colon" translatable="false">Total Value (\u20B9):\u0020</string>
     <string name="total_return_value_with_colon" translatable="false">Total Return Value (\u20B9):\u0020</string>
     <string name="total_stock_value_with_colon" translatable="false">Total Stock Value (\u20B9):\u0020</string>
     <string name="total_invoice_amount" translatable="false">Invoice Amount (\u20B9):\u0020</string>
@@ -1560,15 +1563,19 @@
     <string name="project_name" translatable="false">Project Name</string>
     <string name="colors" translatable="false">Color</string>
     <string name="source" translatable="false">Source :\u0020</string>
+    <string name="prioritty" translatable="false">Priority :\u0020</string>
     <string name="times" translatable="false">Time    :\u0020</string>
+    <string name="due_times" translatable="false">Due Time    :\u0020</string>
     <string name="emails" translatable="false">Email    :\u0020</string>
     <string name="dates" translatable="false">Date :\u0020</string>
+    <string name="due_dates" translatable="false">Due Date :\u0020</string>
     <string name="contact_persons" translatable="false">Contact Person :\u0020</string>
     <string name="product_req" translatable="false">Product Req        :\u0020</string>
     <string name="qtys" translatable="false">Qty :\u0020</string>
     <string name="order_values" translatable="false">Order Values      :\u0020</string>
     <string name="uom" translatable="false">UOM                        :\u0020</string>
     <string name="enquiry_dtls" translatable="false">Enquiry details   :\u0020</string>
+    <string name="task_dtls" translatable="false">Task Details   :\u0020</string>
     <string name="statuss" translatable="false">Status                 :\u0020</string>
     <string name="camera_back" translatable="false">Back Camera :\u0020 </string>
     <string name="camera_front" translatable="false">Front Camera :\u0020 </string>

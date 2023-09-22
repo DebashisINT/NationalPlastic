@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.text.TextUtils
 import androidx.core.app.NotificationManagerCompat
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.types.FragType
@@ -34,17 +34,20 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 
 /**
  * Created by Saikat on 20-09-2018.
  */
 // MyFirebaseMessagingService V 4.0.6 saheli 27-01-2023 For new firebase update MyFirebaseInstanceIDService is obsolated and override function onNewToken introduced
+// 2.0 MyFirebaseMessagingService AppV 4.0.8 Suman    19/04/2023 thread safe for token updation 0025873
+// Rev 3.0 MyFirebaseMessagingService AppV 4.0.8 Suman    26/04/2023 mail repetation fix 25923
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private var messageDetails = ""
 
     override fun onNewToken(token: String) {
-        XLog.e("Refreshed token: $token")
+        Timber.e("Refreshed token: $token")
         println("MyFirebaseMessagingService onNewToken");
 
         doAsync {
@@ -55,8 +58,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 refreshedToken = token
             }
 
-            XLog.e("MyFirebaseInstanceIDService : \nDevice Token=====> $token")
-
+            Timber.e("MyFirebaseInstanceIDService : \nDevice Token=====> $token")
+            // 2.0 MyFirebaseMessagingService AppV 4.0.8 Suman    19/04/2023 thread safe for token updation 0025873
             uiThread {
 
                 if (!TextUtils.isEmpty(Pref.user_id)) {
@@ -83,10 +86,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
 
         println("Refreshed token onMessageReceived");
-        XLog.e("FirebaseMessageService : ============Push has come============")
+        Timber.e("FirebaseMessageService : ============Push has come============ ${AppUtils.getCurrentDateTime()}")
+
 
         if (TextUtils.isEmpty(Pref.user_id)) {
-            XLog.e("FirebaseMessageService : ============Logged out scenario============")
+            Timber.e("FirebaseMessageService : ============Logged out scenario============")
 
             if (!TextUtils.isEmpty(remoteMessage?.data?.get("type")) && remoteMessage?.data?.get("type") == "clearData") {
                 val packageName = applicationContext.packageName
@@ -102,11 +106,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val body = remoteMessage?.data?.get("body")
         val tag = remoteMessage?.data?.get("flag")
 
+        Timber.d("quto_mail FCM class tag ${remoteMessage?.data?.get("type")}")
+
         val notification = NotificationUtils(getString(R.string.app_name), "", "", "")
 
         if (!TextUtils.isEmpty(body)) {
-            XLog.e("FirebaseMessageService : \nNotification Message=====> $body")
-            //XLog.e("FirebaseMessageService : \nNotification Title=====> $title")
+            Timber.e("FirebaseMessageService : \nNotification Message=====> $body")
+            //Timber.e("FirebaseMessageService : \nNotification Title=====> $title")
             if (remoteMessage?.data?.get("type") == "clearData") {
                 Pref.isClearData = true
 
@@ -154,11 +160,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 intent.action = "FCM_ACTION_RECEIVER_LEAVE_STATUS"
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             }else if(remoteMessage?.data?.get("type").equals("flag_status_quotation_approval")){
+                Timber.d("quto_mail FCM class... ${AppUtils.getCurrentDateTime()}")
                 //notification.sendFCMNotificaitonQuotationapprova(applicationContext, remoteMessage)
                 notification.sendFCMNotificaitonQuotationapprova1(applicationContext, remoteMessage)
                 val intent = Intent()
                 intent.action = "FCM_ACTION_RECEIVER_quotation_approval"
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+            }else if(remoteMessage?.data?.get("type").equals("lead_work")){
+                notification.sendFCMNotificaitonLead(applicationContext, remoteMessage)
+                //val intent = Intent()
+                //intent.action = "FCM_ACTION_RECEIVER_LEAD"
+                //LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             }
             else {
                 notification.sendFCMNotificaiton(applicationContext, remoteMessage)
@@ -185,11 +197,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("UpdateDeviceTokenResponse : " + "\n" + "Status====> " + response.status + ", Message===> " + response.message)
+                            Timber.d("UpdateDeviceTokenResponse : " + "\n" + "Status====> " + response.status + ", Message===> " + response.message)
 
                         }, { error ->
                             error.printStackTrace()
-                            XLog.d("UpdateDeviceTokenResponse ERROR: " + error.localizedMessage + "\n" + "Username :" + Pref.user_name + ", Time :" + AppUtils.getCurrentDateTime())
+                            Timber.d("UpdateDeviceTokenResponse ERROR: " + error.localizedMessage + "\n" + "Username :" + Pref.user_name + ", Time :" + AppUtils.getCurrentDateTime())
                         })
         )
     }

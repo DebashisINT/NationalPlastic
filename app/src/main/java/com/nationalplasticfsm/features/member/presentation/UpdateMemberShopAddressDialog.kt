@@ -16,7 +16,8 @@ import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
+import timber.log.Timber
 
 /**
  * Created by Saikat on 09-Jun-20.
@@ -78,7 +79,7 @@ class UpdateMemberShopAddressDialog : DialogFragment() {
                     new_address_EDT.setText(LocationWizard.getLocationName(mContext, loc.latitude, loc.longitude))
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    XLog.e("Update Shop Address", "Address calculation error(From team shop list)=========> " + e.localizedMessage + " for shop " + shop_name)
+                    Timber.e("Update Shop Address", "Address calculation error(From team shop list)=========> " + e.localizedMessage + " for shop " + shop_name)
                     new_address_EDT.setText("Unknown")
                 }
             }
@@ -91,7 +92,7 @@ class UpdateMemberShopAddressDialog : DialogFragment() {
                     new_address_EDT.setText(LocationWizard.getLocationName(mContext, loc.latitude, loc.longitude))
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    XLog.e("Update Shop Address", "Address calculation error(From team shop list)=========> " + e.localizedMessage + " for shop " + shop_name)
+                    Timber.e("Update Shop Address", "Address calculation error(From team shop list)=========> " + e.localizedMessage + " for shop " + shop_name)
                     new_address_EDT.setText("Unknown")
                 }
             }

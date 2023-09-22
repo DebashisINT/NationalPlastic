@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.attendance
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -91,8 +92,9 @@ class AttendanceFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
 
             val list = AppDatabase.getDBInstance()!!.userAttendanceDataDao().getAllSortedList() as ArrayList<UserLoginDataEntity>
 
-            if (list != null && list.size > 0)
+            if (list != null && list.size > 0) {
                 initAdapter(list)
+            }
             else {
                 noDataText.visibility = View.VISIBLE
                 recyclerView!!.visibility = View.GONE
@@ -299,8 +301,9 @@ class AttendanceFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
             userLoginEntry.Isonleave = shoplist[i].Isonleave!!
 
             userLoginDataEntityArr.add(userLoginEntry)
-            if (!isDateRangeSelected)
+            if (!isDateRangeSelected) {
                 AppDatabase.getDBInstance()!!.userAttendanceDataDao().insertAll(userLoginEntry)
+            }
 
         }
         //initAdapter(userLoginDataEntityArr as ArrayList<UserLoginDataEntity>)
@@ -310,6 +313,7 @@ class AttendanceFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
 
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initAdapter(userLoginDataEntityArr: ArrayList<UserLoginDataEntity>) {
         recyclerView!!.visibility = View.VISIBLE
 
@@ -444,8 +448,9 @@ class AttendanceFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
                     dpd.isAutoHighlight = mAutoHighlight
                     dpd.maxDate = Calendar.getInstance(Locale.ENGLISH)
                     dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
-                } else
+                } else {
                     isChkChanged = false
+                }
             }
             R.id.attandence_radio_button_last_fifteen_days -> if (!isChkChanged) {
 //                if (adapter != null)
@@ -455,8 +460,9 @@ class AttendanceFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
 
                 val list = AppDatabase.getDBInstance()!!.userAttendanceDataDao().getAllSortedList() as ArrayList<UserLoginDataEntity>
 
-                if (list != null && list.size > 0)
+                if (list != null && list.size > 0) {
                     initAdapter(list)
+                }
                 else {
                     noDataText.visibility = View.VISIBLE
                     recyclerView!!.visibility = View.GONE
@@ -464,8 +470,9 @@ class AttendanceFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
 
                 dateRangeTv!!.visibility = View.GONE
 
-            } else
+            } else {
                 isChkChanged = false
+            }
         }
     }
 

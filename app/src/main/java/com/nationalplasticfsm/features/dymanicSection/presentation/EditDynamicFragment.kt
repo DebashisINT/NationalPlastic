@@ -32,16 +32,19 @@ import com.nationalplasticfsm.features.dymanicSection.api.DynamicRepoProvider
 import com.nationalplasticfsm.features.dymanicSection.model.*
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+// Revision History
+// 1.0 ExoPlayerActivity AppV 4.0.7 Saheli    02/03/2023 Timber Log Implementation
 class EditDynamicFragment: BaseFragment() {
 
     private lateinit var mContext: Context
@@ -164,7 +167,8 @@ class EditDynamicFragment: BaseFragment() {
 
                             val response = result as DynamicResponseModel
 
-                            XLog.d("DYNAMIC RESPONSE=======> " + response.status)
+//                            XLog.d("DYNAMIC RESPONSE=======> " + response.status)
+                            Timber.d("DYNAMIC RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.view_list != null && response.view_list!!.size > 0) {
@@ -186,7 +190,8 @@ class EditDynamicFragment: BaseFragment() {
                             progress_wheel.stopSpinning()
                             tv_no_data.visibility = View.VISIBLE
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("DYNAMIC ERROR=======> " + error.localizedMessage)
+//                            XLog.d("DYNAMIC ERROR=======> " + error.localizedMessage)
+                            Timber.d("DYNAMIC ERROR=======> " + error.localizedMessage)
                         })
         )
     }
@@ -486,6 +491,20 @@ class EditDynamicFragment: BaseFragment() {
     }
 
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 showPictureDialog()
@@ -495,7 +514,7 @@ class EditDynamicFragment: BaseFragment() {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -590,7 +609,8 @@ class EditDynamicFragment: BaseFragment() {
 
                                 val response = result as BaseResponse
 
-                                XLog.d("ADD DYNAMIC RESPONSE=======> " + response.status)
+//                                XLog.d("ADD DYNAMIC RESPONSE=======> " + response.status)
+                                Timber.d("ADD DYNAMIC RESPONSE=======> " + response.status)
 
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
                                 if (response.status == NetworkConstant.SUCCESS) {
@@ -606,7 +626,8 @@ class EditDynamicFragment: BaseFragment() {
                                 error.printStackTrace()
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                XLog.d("ADD DYNAMIC ERROR=======> " + error.localizedMessage)
+//                                XLog.d("ADD DYNAMIC ERROR=======> " + error.localizedMessage)
+                                Timber.d("ADD DYNAMIC ERROR=======> " + error.localizedMessage)
                             })
             )
         }
@@ -625,7 +646,8 @@ class EditDynamicFragment: BaseFragment() {
 
                                 val response = result as BaseResponse
 
-                                XLog.d("ADD DYNAMIC RESPONSE=======> " + response.status)
+//                                XLog.d("ADD DYNAMIC RESPONSE=======> " + response.status)
+                                Timber.d("ADD DYNAMIC RESPONSE=======> " + response.status)
 
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
                                 if (response.status == NetworkConstant.SUCCESS) {
@@ -641,7 +663,8 @@ class EditDynamicFragment: BaseFragment() {
                                 error.printStackTrace()
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                XLog.d("ADD DYNAMIC ERROR=======> " + error.localizedMessage)
+//                                XLog.d("ADD DYNAMIC ERROR=======> " + error.localizedMessage)
+                                Timber.d("ADD DYNAMIC ERROR=======> " + error.localizedMessage)
                             })
             )
         }

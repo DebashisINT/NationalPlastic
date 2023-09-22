@@ -11,9 +11,10 @@ import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 // 1.0 BeatHierarchyStatusFrag AppV 4.0.6 Suman 18-01-2023  thread updation mantis 0025587
 // 2.0 BeatHierarchyStatusFrag AppV 4.0.6 Suman 20-01-2023  design updation mantis
@@ -60,13 +61,13 @@ class BeatHierarchyStatusFrag: BaseFragment(), View.OnClickListener {
                         }
                     }, { error ->
                         error.printStackTrace()
-                        XLog.d("BeatHierarchyStatusFrag getHirerchyData() ${AppUtils.getCurrentDateTime()} error " + error.localizedMessage)
+                        Timber.d("BeatHierarchyStatusFrag getHirerchyData() ${AppUtils.getCurrentDateTime()} error " + error.localizedMessage)
                     })
             )
         }
         catch (ex:Exception){
             ex.printStackTrace()
-            XLog.d("BeatHierarchyStatusFrag getHirerchyData() ex ${AppUtils.getCurrentDateTime()} error " + ex.localizedMessage)
+            Timber.d("BeatHierarchyStatusFrag getHirerchyData() ex ${AppUtils.getCurrentDateTime()} error " + ex.localizedMessage)
         }
     }
 

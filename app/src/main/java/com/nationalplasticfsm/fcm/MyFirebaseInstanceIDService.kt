@@ -8,7 +8,7 @@ import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.fcm.api.UpdateDeviceTokenRepoProvider
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync

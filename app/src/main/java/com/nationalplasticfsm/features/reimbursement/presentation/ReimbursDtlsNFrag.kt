@@ -42,16 +42,19 @@ import com.nationalplasticfsm.features.reimbursement.model.reimbursementlist.Rei
 import com.nationalplasticfsm.features.reimbursement.model.reimbursementlist.ReimbursementListDetailsModel
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Revision History
+// 1.0 ReimbursDtlsNFrag AppV 4.0.7 Saheli    02/03/2023 Timber Log Implementation
 class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View.OnClickListener, TabLayout.OnTabSelectedListener, RadioGroup.OnCheckedChangeListener {
 
     private val visittypeArrayList: ArrayList<ReimbursementConfigVisitTypeDataModel> = ArrayList()
@@ -555,7 +558,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
         if (!TextUtils.isEmpty(Pref.profile_state))
             state_id = Pref.profile_state
 
-        XLog.d("ReimbursementConfigApi Request: \n State id====> " + state_id + ", user id====> " + Pref.user_id!!)
+//        Timber.d("ReimbursementConfigApi Request: \n State id====> " + state_id + ", user id====> " + Pref.user_id!!)
+        Timber.d("ReimbursementConfigApi Request: \n State id====> " + state_id + ", user id====> " + Pref.user_id!!)
 
         val repository = ReimbursementConfigRepoProvider.provideReimbursementConfigRepository()
         progress_wheel.spin()
@@ -566,7 +570,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                 .subscribe({ result ->
 
                     val configResponse = result as ReimbursementConfigResponseModel
-                    XLog.d("ReimbursementConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
+//                    Timber.d("ReimbursementConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
+                    Timber.d("ReimbursementConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -589,7 +594,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                     BaseActivity.isApiInitiated = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
+//                    Timber.d("ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
+                    Timber.d("ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
                 })
         )
     }
@@ -804,6 +810,21 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
     }
 
     private fun initPermissionCheck(state: Int) {
+
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 imageState = state
@@ -814,7 +835,7 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     override fun onDateItemClick(pos: Int) {
@@ -1057,14 +1078,23 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
         inputModel.travel_id = travelId
         inputModel.visittype_id = visitTypeId
 
-        XLog.d("=====Fetch ReimbursementConfigApi Request=====")
-        XLog.d("user_id===> " + inputModel.user_id)
-        XLog.d("state_id===> " + inputModel.state_id)
-        XLog.d("expense_id===> " + inputModel.expense_id)
-        XLog.d("fuel_id===> " + inputModel.fuel_id)
-        XLog.d("travel_id===> " + inputModel.travel_id)
-        XLog.d("visittype_id===> " + inputModel.visittype_id)
-        XLog.d("===============================================")
+        /*Timber.d("=====Fetch ReimbursementConfigApi Request=====")
+        Timber.d("user_id===> " + inputModel.user_id)
+        Timber.d("state_id===> " + inputModel.state_id)
+        Timber.d("expense_id===> " + inputModel.expense_id)
+        Timber.d("fuel_id===> " + inputModel.fuel_id)
+        Timber.d("travel_id===> " + inputModel.travel_id)
+        Timber.d("visittype_id===> " + inputModel.visittype_id)
+        Timber.d("===============================================")*/
+
+        Timber.d("=====Fetch ReimbursementConfigApi Request=====")
+        Timber.d("user_id===> " + inputModel.user_id)
+        Timber.d("state_id===> " + inputModel.state_id)
+        Timber.d("expense_id===> " + inputModel.expense_id)
+        Timber.d("fuel_id===> " + inputModel.fuel_id)
+        Timber.d("travel_id===> " + inputModel.travel_id)
+        Timber.d("visittype_id===> " + inputModel.visittype_id)
+        Timber.d("===============================================")
 
         val repository = ReimbursementConfigFetchRepoProvider.provideFetchReimbursementConfigRepository()
         progress_wheel.spin()
@@ -1075,7 +1105,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                 .subscribe({ result ->
 
                     val configResponse = result as ReimbursementConfigFetchResponseModel
-                    XLog.d("Fetch ReimbursementConfigApiResponse : " + "\n" + "Status===> " + configResponse.status + ", Message===> " + configResponse.message)
+//                    Timber.d("Fetch ReimbursementConfigApiResponse : " + "\n" + "Status===> " + configResponse.status + ", Message===> " + configResponse.message)
+                    Timber.d("Fetch ReimbursementConfigApiResponse : " + "\n" + "Status===> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -1107,7 +1138,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                     BaseActivity.isApiInitiated = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Fetch ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
+//                    Timber.d("Fetch ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
+                    Timber.d("Fetch ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
                 })
         )
     }
@@ -1233,7 +1265,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                 .subscribe({ result ->
 
                     val configResponse = result as BaseResponse
-                    XLog.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+//                    Timber.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+                    Timber.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -1253,7 +1286,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                     apiIsRunning = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
+//                    Timber.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
+                    Timber.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                 })
         )
@@ -1267,7 +1301,9 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     val configResponse = result as BaseResponse
-                    XLog.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+//                    Timber.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+
+                    Timber.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -1283,7 +1319,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                     apiIsRunning = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
+//                    Timber.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
+                    Timber.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                 })
         )
@@ -1308,7 +1345,7 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     val configResponse = result as BaseResponse
-                    XLog.d("Delete Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+                    Timber.d("Delete Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -1341,7 +1378,8 @@ class ReimbursDtlsNFrag: BaseFragment(), DateAdapter.onPetSelectedListener, View
                     apiIsRunning = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Delete Reimbursement Api ERROR: " + error.localizedMessage)
+//                    Timber.d("Delete Reimbursement Api ERROR: " + error.localizedMessage)
+                    Timber.d("Delete Reimbursement Api ERROR: " + error.localizedMessage)
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                 })
         )

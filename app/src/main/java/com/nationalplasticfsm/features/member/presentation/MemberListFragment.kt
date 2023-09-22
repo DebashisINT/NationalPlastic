@@ -1,7 +1,10 @@
 package com.nationalplasticfsm.features.member.presentation
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
@@ -10,12 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.nationalplasticfsm.CustomStatic
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.R
-import com.nationalplasticfsm.app.AppDatabase
-import com.nationalplasticfsm.app.NetworkConstant
-import com.nationalplasticfsm.app.Pref
-import com.nationalplasticfsm.app.SearchListener
+import com.nationalplasticfsm.app.*
 import com.nationalplasticfsm.app.domain.*
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.uiaction.IntentActionable
@@ -45,10 +45,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by Saikat on 29-01-2020.
  */
+// Revision Histroy
+// 1.0 MemberListFragment AppV 4.0.7 saheli 24-02-2023 voice search mantis 0025683
+// 2.0 MemberListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
 class MemberListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -114,10 +120,12 @@ class MemberListFragment : BaseFragment() {
 
         tv_member_no = view.findViewById(R.id.tv_member_no)
 
-        if ((mContext as DashboardActivity).isAllTeam)
+        if ((mContext as DashboardActivity).isAllTeam) {
             tv_member_no.visibility = View.VISIBLE
-        else
+        }
+        else {
             tv_member_no.visibility = View.GONE
+        }
 
         setHierarchyData()
     }
@@ -157,7 +165,51 @@ class MemberListFragment : BaseFragment() {
                 }
             }
         })
+
+        // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 end
     }
+    // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex:Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex:Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 end
 
 
     private fun getTeamList() {
@@ -176,7 +228,7 @@ class MemberListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as TeamListResponseModel
-                            XLog.d("GET TEAM DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TEAM DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -198,7 +250,7 @@ class MemberListFragment : BaseFragment() {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TEAM DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TEAM DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             tv_no_data_available.visibility = View.VISIBLE
@@ -210,6 +262,37 @@ class MemberListFragment : BaseFragment() {
         tv_no_data_available.visibility = View.GONE
         tv_member_no.text = "Total member(s): " + member_list.size
         adapter = MemberListAdapter(mContext, member_list, object : MemberListAdapter.OnClickListener {
+
+            override fun onAllPartyClick(team: TeamListDataModel) {
+                CustomStatic.BreakageViewFromTeam_Name = team.user_name
+                CustomStatic.IsTeamAllParty = true
+                //(mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, member_list[adapterPosition].user_id)
+                CommonDialog.getInstance(AppUtils.hiFirstNameText() + "!", "What you like to do?", "Show all Party", getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
+                    override fun onLeftClick() {
+                        checkTeamHierarchyList(team.user_name)
+                        if (Pref.isShowPartyInAreaWiseTeam) {
+                            (mContext as DashboardActivity).loadFragment(FragType.AreaListFragment, true, team.user_id)
+                            (mContext as DashboardActivity).isAllMemberShop = true
+                        } else {
+                            CustomStatic.ShopFeedBachHisUserId = team.user_id
+                            (mContext as DashboardActivity).loadFragment(FragType.MemberAllShopListFragment, true, team.user_id)
+                        }
+                    }
+
+                    override fun onRightClick(editableData: String) {
+                        checkTeamHierarchyList(team.user_name)
+
+                        if (Pref.isShowPartyInAreaWiseTeam) {
+                            (mContext as DashboardActivity).loadFragment(FragType.AreaListFragment, true, team.user_id)
+                            (mContext as DashboardActivity).isAllMemberShop = false
+                        } else {
+                            CustomStatic.ShopFeedBachHisUserId = team.user_id
+                            (mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, team.user_id)
+                        }
+                    }
+
+                }).show((mContext as DashboardActivity).supportFragmentManager, "")
+            }
 
             override fun onZeroOrderClick(team: TeamListDataModel) {
                 getOrderListFromZeroOrd(team.user_id, team)
@@ -246,6 +329,7 @@ class MemberListFragment : BaseFragment() {
 
             override fun onShopClick(team: TeamListDataModel) {
                 CustomStatic.BreakageViewFromTeam_Name = team.user_name
+                CustomStatic.IsTeamAllParty = false
                 //(mContext as DashboardActivity).loadFragment(FragType.MemberShopListFragment, true, member_list[adapterPosition].user_id)
                 CommonDialog.getInstance(AppUtils.hiFirstNameText() + "!", "What you like to do?", getString(R.string.total_shops), getString(R.string.new_visit_shop), false, false, true, object : CommonDialogClickListener {
                     override fun onLeftClick() {
@@ -693,92 +777,120 @@ class MemberListFragment : BaseFragment() {
             shopObj.dateOfBirth = shop_list[i].dob
             shopObj.dateOfAniversary = shop_list[i].date_aniversary
             shopObj.visitDate = AppUtils.getCurrentDate()
-            if (shop_list[i].total_visit_count == "0")
+            if (shop_list[i].total_visit_count == "0") {
                 shopObj.totalVisitCount = "1"
-            else
+            }
+            else {
                 shopObj.totalVisitCount = shop_list[i].total_visit_count
-            shopObj.address = shop_list[i].address
-            shopObj.ownerEmailId = shop_list[i].owner_email
-            shopObj.ownerContactNumber = shop_list[i].owner_contact_no
-            shopObj.pinCode = shop_list[i].pin_code
-            shopObj.isUploaded = true
-            shopObj.ownerName = shop_list[i].owner_name
-            shopObj.user_id = Pref.user_id
-            shopObj.orderValue = 0
-            shopObj.type = shop_list[i].type
-            shopObj.assigned_to_dd_id = shop_list[i].assigned_to_dd_id
-            shopObj.assigned_to_pp_id = shop_list[i].assigned_to_pp_id
-            shopObj.isAddressUpdated = shop_list[i].isAddressUpdated == "1"
-            shopObj.is_otp_verified = shop_list[i].is_otp_verified
-            shopObj.added_date = shop_list[i].added_date
+                shopObj.address = shop_list[i].address
+                shopObj.ownerEmailId = shop_list[i].owner_email
+                shopObj.ownerContactNumber = shop_list[i].owner_contact_no
+                shopObj.pinCode = shop_list[i].pin_code
+                shopObj.isUploaded = true
+                shopObj.ownerName = shop_list[i].owner_name
+                shopObj.user_id = Pref.user_id
+                shopObj.orderValue = 0
+                shopObj.type = shop_list[i].type
+                shopObj.assigned_to_dd_id = shop_list[i].assigned_to_dd_id
+                shopObj.assigned_to_pp_id = shop_list[i].assigned_to_pp_id
+                shopObj.isAddressUpdated = shop_list[i].isAddressUpdated == "1"
+                shopObj.is_otp_verified = shop_list[i].is_otp_verified
+                shopObj.added_date = shop_list[i].added_date
+            }
 
-            if (shop_list[i].amount == null || shop_list[i].amount == "0.00")
+            if (shop_list[i].amount == null || shop_list[i].amount == "0.00") {
                 shopObj.amount = ""
-            else
+            }
+            else {
                 shopObj.amount = shop_list[i].amount
+            }
 
-            if (shop_list[i].last_visit_date!!.contains("."))
+            if (shop_list[i].last_visit_date!!.contains(".")) {
                 shopObj.lastVisitedDate =
-                        AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!.split(".")[0])
-            else
+                    AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!.split(".")[0])
+            }
+            else {
                 shopObj.lastVisitedDate =
-                        AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!)
+                    AppUtils.changeAttendanceDateFormat(shop_list[i].last_visit_date!!)
+            }
 
-            if (shopObj.lastVisitedDate == AppUtils.getCurrentDateChanged())
+            if (shopObj.lastVisitedDate == AppUtils.getCurrentDateChanged()) {
                 shopObj.visited = true
-            else
+            }
+            else {
                 shopObj.visited = false
+            }
 
-            if (shop_list[i].entity_code == null)
+            if (shop_list[i].entity_code == null) {
                 shopObj.entity_code = ""
-            else
+            }
+            else {
                 shopObj.entity_code = shop_list[i].entity_code
+            }
 
 
-            if (shop_list[i].area_id == null)
+            if (shop_list[i].area_id == null) {
                 shopObj.area_id = ""
-            else
+            }
+            else {
                 shopObj.area_id = shop_list[i].area_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].model_id))
+            if (TextUtils.isEmpty(shop_list[i].model_id)) {
                 shopObj.model_id = ""
-            else
+            }
+            else {
                 shopObj.model_id = shop_list[i].model_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].primary_app_id))
+            if (TextUtils.isEmpty(shop_list[i].primary_app_id)) {
                 shopObj.primary_app_id = ""
-            else
+            }
+            else {
                 shopObj.primary_app_id = shop_list[i].primary_app_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].secondary_app_id))
+            if (TextUtils.isEmpty(shop_list[i].secondary_app_id)) {
                 shopObj.secondary_app_id = ""
-            else
+            }
+            else {
                 shopObj.secondary_app_id = shop_list[i].secondary_app_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].lead_id))
+            if (TextUtils.isEmpty(shop_list[i].lead_id)) {
                 shopObj.lead_id = ""
-            else
+            }
+            else {
                 shopObj.lead_id = shop_list[i].lead_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].stage_id))
+            if (TextUtils.isEmpty(shop_list[i].stage_id)) {
                 shopObj.stage_id = ""
-            else
+            }
+            else {
                 shopObj.stage_id = shop_list[i].stage_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].funnel_stage_id))
+            if (TextUtils.isEmpty(shop_list[i].funnel_stage_id)) {
                 shopObj.funnel_stage_id = ""
-            else
+            }
+            else {
                 shopObj.funnel_stage_id = shop_list[i].funnel_stage_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].booking_amount))
+            if (TextUtils.isEmpty(shop_list[i].booking_amount)) {
                 shopObj.booking_amount = ""
-            else
+            }
+            else {
                 shopObj.booking_amount = shop_list[i].booking_amount
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].type_id))
+            if (TextUtils.isEmpty(shop_list[i].type_id)) {
                 shopObj.type_id = ""
-            else
+            }
+            else {
                 shopObj.type_id = shop_list[i].type_id
+            }
 
             shopObj.family_member_dob = shop_list[i].family_member_dob
             shopObj.director_name = shop_list[i].director_name
@@ -805,60 +917,82 @@ class MemberListFragment : BaseFragment() {
             shopObj.assistant_doa = shop_list[i].assistant_doa
             shopObj.assistant_family_dob = shop_list[i].assistant_family_dob
 
-            if (TextUtils.isEmpty(shop_list[i].entity_id))
+            if (TextUtils.isEmpty(shop_list[i].entity_id)) {
                 shopObj.entity_id = ""
-            else
+            }
+            else {
                 shopObj.entity_id = shop_list[i].entity_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].party_status_id))
+            if (TextUtils.isEmpty(shop_list[i].party_status_id)) {
                 shopObj.party_status_id = ""
-            else
+            }
+            else {
                 shopObj.party_status_id = shop_list[i].party_status_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].retailer_id))
+            if (TextUtils.isEmpty(shop_list[i].retailer_id)) {
                 shopObj.retailer_id = ""
-            else
+            }
+            else {
                 shopObj.retailer_id = shop_list[i].retailer_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].dealer_id))
+            if (TextUtils.isEmpty(shop_list[i].dealer_id)) {
                 shopObj.dealer_id = ""
-            else
+            }
+            else {
                 shopObj.dealer_id = shop_list[i].dealer_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].beat_id))
+            if (TextUtils.isEmpty(shop_list[i].beat_id)) {
                 shopObj.beat_id = ""
-            else
+            }
+            else {
                 shopObj.beat_id = shop_list[i].beat_id
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].account_holder))
+            if (TextUtils.isEmpty(shop_list[i].account_holder)) {
                 shopObj.account_holder = ""
-            else
+            }
+            else {
                 shopObj.account_holder = shop_list[i].account_holder
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].account_no))
+            if (TextUtils.isEmpty(shop_list[i].account_no)) {
                 shopObj.account_no = ""
-            else
+            }
+            else {
                 shopObj.account_no = shop_list[i].account_no
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].bank_name))
+            if (TextUtils.isEmpty(shop_list[i].bank_name)) {
                 shopObj.bank_name = ""
-            else
+            }
+            else {
                 shopObj.bank_name = shop_list[i].bank_name
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].ifsc_code))
+            if (TextUtils.isEmpty(shop_list[i].ifsc_code)) {
                 shopObj.ifsc_code = ""
-            else
+            }
+            else {
                 shopObj.ifsc_code = shop_list[i].ifsc_code
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].upi))
+            if (TextUtils.isEmpty(shop_list[i].upi)) {
                 shopObj.upi_id = ""
-            else
+            }
+            else {
                 shopObj.upi_id = shop_list[i].upi
+            }
 
-            if (TextUtils.isEmpty(shop_list[i].assigned_to_shop_id))
+            if (TextUtils.isEmpty(shop_list[i].assigned_to_shop_id)) {
                 shopObj.assigned_to_shop_id = ""
-            else
+            }
+            else {
                 shopObj.assigned_to_shop_id = shop_list[i].assigned_to_shop_id
+            }
 
             shopObj.project_name = shop_list[i].project_name
             shopObj.landline_number = shop_list[i].landline_number

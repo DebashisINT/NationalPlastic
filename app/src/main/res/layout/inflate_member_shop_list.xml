@@ -24,7 +24,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="@dimen/_5sdp"
-            android:src="@drawable/ic_tick_select_icon"
+            android:src="@drawable/ic_tick_select_icon_maroon"
             android:visibility="visible" />
 
         <com.nationalplasticfsm.widgets.AppCustomTextView
@@ -37,7 +37,7 @@
             android:padding="@dimen/_5sdp"
             android:singleLine="true"
             android:text=""
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/color_custom_green"
             android:textSize="@dimen/_11sdp" />
     </RelativeLayout>
 
@@ -362,7 +362,7 @@
         android:paddingBottom="@dimen/_7sdp"
         android:paddingRight="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_10sdp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/shop_damage_ll"

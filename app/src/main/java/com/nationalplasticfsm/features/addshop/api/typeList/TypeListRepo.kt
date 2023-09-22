@@ -40,6 +40,10 @@ class TypeListRepo(val apiService: TypeListApi) {
         return apiService.getBeatList(Pref.session_token!!, Pref.user_id!!)
     }
 
+    fun getBeatAreaRoute(): Observable<BetAreaRouteResponseModel> {
+        return apiService.getBeatAreaRouteApi(Pref.session_token!!, Pref.user_id!!)
+    }
+
     fun beatListForTeam(usrID:String): Observable<BeatListResponseModel> {
         return apiService.getBeatList(Pref.session_token!!, usrID!!)
     }

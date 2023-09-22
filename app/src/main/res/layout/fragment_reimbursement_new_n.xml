@@ -1207,7 +1207,8 @@
         android:padding="@dimen/_8sdp"
         android:text="@string/Submit"
         android:textColor="@drawable/selector_text_clor_blue_white"
-        android:textSize="@dimen/_14sdp" />
+        android:textSize="@dimen/_14sdp"
+        android:visibility="gone"/>
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"

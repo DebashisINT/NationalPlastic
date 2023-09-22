@@ -3,6 +3,8 @@ package com.nationalplasticfsm.app.domain
 import androidx.room.*
 import com.nationalplasticfsm.app.AppConstant
 import com.nationalplasticfsm.features.login.model.productlistmodel.ProductListDataModel
+import com.nationalplasticfsm.features.viewAllOrder.orderOptimized.CommonProductCatagory
+import com.nationalplasticfsm.features.viewAllOrder.orderOptimized.CustomProductRate
 
 /**
  * Created by Saikat on 08-11-2018.
@@ -15,6 +17,90 @@ interface ProductListDao {
     
     @Query("SELECT * FROM " + AppConstant.PRODUCT_LIST_TABLE +" where id IN (SELECT id FROM product_list group by brand)")
     fun getUniqueBrandList(): List<ProductListEntity>
+
+    @Query("SELECT product_name FROM " + AppConstant.PRODUCT_LIST_TABLE)
+    fun getNameAll(): List<String>
+
+    ////nw code new
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate1 as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,0.0 as Qty_per_Unit,0.0 as Scheme_Qty,0.0 as Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_rate) as PR\n" +
+            "on PL.id = PR.product_id ")
+    fun getCustomizeProductListAll(): List<CustomProductRate>
+
+
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,PR.Qty_per_Unit,PR.Scheme_Qty,PR.Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_online_rate_temp_table) as PR\n" +
+            "on PL.id = PR.product_id ")
+    fun getCustomizeProductListAllFromOnline(): List<CustomProductRate>
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate1 as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,0.0 as Qty_per_Unit,0.0 as Scheme_Qty,0.0 as Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_rate) as PR\n" +
+            "on PL.id = PR.product_id and brand_id=:brand_id")
+    fun getCustomizeProductListByBeandID(brand_id:String): List<CustomProductRate>
+
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,PR.Qty_per_Unit,PR.Scheme_Qty,PR.Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_online_rate_temp_table) as PR\n" +
+            "on PL.id = PR.product_id and brand_id=:brand_id")
+    fun getCustomizeProductListByBeandIDFromOnlineRate(brand_id:String): List<CustomProductRate>
+
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate1 as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,0.0 as Qty_per_Unit,0.0 as Scheme_Qty,0.0 as Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_rate) as PR\n" +
+            "on PL.id = PR.product_id and brand_id=:brand_id and category_id=:category_id")
+    fun getCustomizeProductListByBeandIDCategoryID(brand_id:String, category_id: String): List<CustomProductRate>
+
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,PR.Qty_per_Unit,PR.Scheme_Qty,PR.Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_online_rate_temp_table) as PR\n" +
+            "on PL.id = PR.product_id and brand_id=:brand_id and category_id=:category_id")
+    fun getCustomizeProductListByBeandIDCategoryIDFromOnlineRate(brand_id:String, category_id: String): List<CustomProductRate>
+
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate1 as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,0.0 as Qty_per_Unit,0.0 as Scheme_Qty,0.0 as Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_rate) as PR\n" +
+            "on PL.id = PR.product_id and brand_id=:brand_id and category_id=:category_id and watt_id=:watt_id")
+    fun getCustomizeProductListByBeandIDCategoryIDWattID(brand_id:String, category_id: String,watt_id: String): List<CustomProductRate>
+
+    @Query("select PL.id as product_id,PL.product_name,PL.brand_id,PL.brand,PL.category_id,PL.category,PL.watt_id,PL.watt,PL.product_mrp_show," +
+            "PL.product_discount_show,PR.rate as rate,PR.stock_amount,PR.stock_unit,PR.isStockShow,PR.isRateShow,PR.Qty_per_Unit,PR.Scheme_Qty,PR.Effective_Rate from \n" +
+            "(select * from product_list) as PL\n" +
+            "inner JOIN\n" +
+            "(select * from product_online_rate_temp_table) as PR\n" +
+            "on PL.id = PR.product_id and brand_id=:brand_id and category_id=:category_id and watt_id=:watt_id")
+    fun getCustomizeProductListByBeandIDCategoryIDWattIDFromOnlineRate(brand_id:String, category_id: String,watt_id: String): List<CustomProductRate>
+
+    @Query("select DISTINCT  brand_id as id_sel,brand as name_sel from product_list")
+    fun getDistinctBrandList(): List<CommonProductCatagory>
+
+    @Query("select DISTINCT category_id as id_sel,category as name_sel from product_list where brand_id =:brand_id ")
+    fun getDistinctCategoryList(brand_id:String): List<CommonProductCatagory>
+
+    @Query("SELECT DISTINCT watt_id as id_sel,watt as name_sel FROM product_list where brand_id=:brand_id and category_id=:category_id ")
+    fun getDistinctWattList(brand_id:String,category_id:String): List<CommonProductCatagory>
+
+    @Query("SELECT DISTINCT watt_id as id_sel,watt as name_sel FROM product_list where brand_id=:brand_id ")
+    fun getDistinctWattList1(brand_id:String): List<CommonProductCatagory>
+    ////nw code end
+
+
+
 
     @Query("SELECT Distinct(brand) FROM " + AppConstant.PRODUCT_LIST_TABLE + " order by brand")
     fun getBrandList(): List<String>

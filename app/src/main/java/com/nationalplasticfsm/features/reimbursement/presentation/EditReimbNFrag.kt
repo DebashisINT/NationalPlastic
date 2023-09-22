@@ -54,7 +54,7 @@ import com.nationalplasticfsm.features.reimbursement.model.reimbursementlist.Rei
 import com.nationalplasticfsm.features.reimbursement.model.reimbursementlist.ReimbursementListDetailsModel
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputLayout
@@ -64,6 +64,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -688,7 +689,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
         if (!TextUtils.isEmpty(Pref.profile_state))
             state_id = Pref.profile_state
 
-        XLog.d("ReimbursementConfigApi Request: \n State id====> " + state_id + ", user id====> " + Pref.user_id!!)
+        Timber.d("ReimbursementConfigApi Request: \n State id====> " + state_id + ", user id====> " + Pref.user_id!!)
 
         val repository = ReimbursementConfigRepoProvider.provideReimbursementConfigRepository()
         progress_wheel.spin()
@@ -699,7 +700,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                 .subscribe({ result ->
 
                     val configResponse = result as ReimbursementConfigResponseModel
-                    XLog.d("ReimbursementConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
+                    Timber.d("ReimbursementConfigApiResponse : " + "\n" + "Status=====> " + configResponse.status + ", Message====> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -755,7 +756,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                     BaseActivity.isApiInitiated = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
+                    Timber.d("ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
                 })
         )
     }
@@ -839,7 +840,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
             return
         }
 
-        XLog.d("ReimbursementShopApi Request: \n  date====> $date")
+        Timber.d("ReimbursementShopApi Request: \n  date====> $date")
 
         val repository = ReimbursementShopRepoProvider.provideReimbursementConfigRepository()
         progress_wheel.spin()
@@ -850,7 +851,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                 .subscribe({ result ->
 
                     val result = result as ReimbursementShopResponseModel
-                    XLog.d("ReimbursementShopApiResponse : " + "\n" + "Status=====> " + result.status + ", Message====> " + result.message)
+                    Timber.d("ReimbursementShopApiResponse : " + "\n" + "Status=====> " + result.status + ", Message====> " + result.message)
 
                     progress_wheel.stopSpinning()
                     if (result.status == NetworkConstant.SUCCESS) {
@@ -884,7 +885,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                         setData()
 
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                    XLog.d("ReimbursementShopApiResponse ERROR: " + error.localizedMessage)
+                    Timber.d("ReimbursementShopApiResponse ERROR: " + error.localizedMessage)
                 })
         )
     }
@@ -1257,7 +1258,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
 
             uiThread {
                 if (newFile != null) {
-                    XLog.e("=========Image from new technique==========")
+                    Timber.e("=========Image from new technique==========")
                     reimbursementEditPic(newFile!!.length(), newFile?.absolutePath!!)
                 } else {
                     // Image compression
@@ -1304,6 +1305,20 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
     }
 
     private fun initPermissionCheck(state: Int) {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 imageState = state
@@ -1315,7 +1330,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -1769,14 +1784,14 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
         inputModel.travel_id = travelId
         inputModel.visittype_id = visitTypeId
 
-        XLog.d("=====Fetch ReimbursementConfigApi Request=====")
-        XLog.d("user_id===> " + inputModel.user_id)
-        XLog.d("state_id===> " + inputModel.state_id)
-        XLog.d("expense_id===> " + inputModel.expense_id)
-        XLog.d("fuel_id===> " + inputModel.fuel_id)
-        XLog.d("travel_id===> " + inputModel.travel_id)
-        XLog.d("visittype_id===> " + inputModel.visittype_id)
-        XLog.d("===============================================")
+        Timber.d("=====Fetch ReimbursementConfigApi Request=====")
+        Timber.d("user_id===> " + inputModel.user_id)
+        Timber.d("state_id===> " + inputModel.state_id)
+        Timber.d("expense_id===> " + inputModel.expense_id)
+        Timber.d("fuel_id===> " + inputModel.fuel_id)
+        Timber.d("travel_id===> " + inputModel.travel_id)
+        Timber.d("visittype_id===> " + inputModel.visittype_id)
+        Timber.d("===============================================")
 
         val repository = ReimbursementConfigFetchRepoProvider.provideFetchReimbursementConfigRepository()
         progress_wheel.spin()
@@ -1787,7 +1802,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                 .subscribe({ result ->
 
                     val configResponse = result as ReimbursementConfigFetchResponseModel
-                    XLog.d("Fetch ReimbursementConfigApiResponse : " + "\n" + "Status===> " + configResponse.status + ", Message===> " + configResponse.message)
+                    Timber.d("Fetch ReimbursementConfigApiResponse : " + "\n" + "Status===> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -1823,7 +1838,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                     BaseActivity.isApiInitiated = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Fetch ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
+                    Timber.d("Fetch ReimbursementConfigApiResponse ERROR: " + error.localizedMessage)
                     rate = ""
                 })
         )
@@ -2002,7 +2017,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                 .subscribe({ result ->
 
                     val configResponse = result as BaseResponse
-                    XLog.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+                    Timber.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -2026,7 +2041,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                     apiIsRunning = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
+                    Timber.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                 })
         )
@@ -2036,17 +2051,17 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
 
         if (!TextUtils.isEmpty(imagePath_1) && !imagePath_1.contains("http")) {
             imagePathArray.add(imagePath_1)
-            XLog.e("Reimbursement Fragment: Image link 1===> $imagePath_1")
+            Timber.e("Reimbursement Fragment: Image link 1===> $imagePath_1")
         }
 
         if (!TextUtils.isEmpty(imagePath_2) && !imagePath_2.contains("http")) {
             imagePathArray.add(imagePath_2)
-            XLog.e("Reimbursement Fragment: Image link 2===> $imagePath_2")
+            Timber.e("Reimbursement Fragment: Image link 2===> $imagePath_2")
         }
 
         if (!TextUtils.isEmpty(imagePath_3) && !imagePath_3.contains("http")) {
             imagePathArray.add(imagePath_3)
-            XLog.e("Reimbursement Fragment: Image link 3===> $imagePath_3")
+            Timber.e("Reimbursement Fragment: Image link 3===> $imagePath_3")
         }
 
         if (imagePathArray.size == 0) {
@@ -2066,7 +2081,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         val configResponse = result as BaseResponse
-                        XLog.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+                        Timber.d("Apply Reimbursement Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                         progress_wheel.stopSpinning()
                         (mContext as DashboardActivity).showSnackMessage(configResponse.message!!)
@@ -2085,7 +2100,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                         apiIsRunning = false
                         error.printStackTrace()
                         progress_wheel.stopSpinning()
-                        XLog.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
+                        Timber.d("Apply Reimbursement Api ERROR: " + error.localizedMessage)
                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                     })
             )
@@ -2213,7 +2228,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     val configResponse = result as BaseResponse
-                    XLog.d("Delete Reimbursement Image Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
+                    Timber.d("Delete Reimbursement Image Api Response : " + "\n" + "Status====> " + configResponse.status + ", Message===> " + configResponse.message)
 
                     progress_wheel.stopSpinning()
                     if (configResponse.status == NetworkConstant.SUCCESS) {
@@ -2241,7 +2256,7 @@ class EditReimbNFrag : BaseFragment(), DateAdapter.onPetSelectedListener, View.O
                     apiIsRunning = false
                     error.printStackTrace()
                     progress_wheel.stopSpinning()
-                    XLog.d("Delete Reimbursement Image Api ERROR: " + error.localizedMessage)
+                    Timber.d("Delete Reimbursement Image Api ERROR: " + error.localizedMessage)
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                 })
         )

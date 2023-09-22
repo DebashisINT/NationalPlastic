@@ -35,7 +35,7 @@ import com.nationalplasticfsm.features.orderhistory.activitiesapi.LocationFetchR
 import com.nationalplasticfsm.features.orderhistory.api.LocationUpdateRepositoryProviders
 import com.nationalplasticfsm.features.orderhistory.model.*
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.itextpdf.text.*
 import com.itextpdf.text.BaseColor
 import com.itextpdf.text.pdf.PdfPCell
@@ -47,6 +47,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.*
 import java.util.*
 
@@ -287,24 +288,28 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
 
         for (i in 0 until location_details.size) {
             val localData = UserLocationDataEntity()
-            if (location_details[i].latitude == null)
+            if (location_details[i].latitude == null) {
                 continue
-            else
+            }
+            else {
                 localData.latitude = location_details[i].latitude!!
-
-            if (location_details[i].longitude == null)
+            }
+            if (location_details[i].longitude == null) {
                 continue
-            else
+            }
+            else {
                 localData.longitude = location_details[i].longitude!!
-
-            if (location_details[i].date == null)
+            }
+            if (location_details[i].date == null) {
                 continue
+            }
             else {
                 localData.updateDate = AppUtils.changeAttendanceDateFormatToCurrent(location_details[i].date!!)
                 localData.updateDateTime = location_details[i].date!!
             }
-            if (location_details[i].last_update_time == null)
+            if (location_details[i].last_update_time == null) {
                 continue
+            }
             else {
                 val str = location_details[i].last_update_time
                 localData.time = str.split(" ")[0]
@@ -313,59 +318,69 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
             localData.isUploaded = true
             localData.minutes = "0"
             localData.hour = "0"
-            if (location_details[i].distance_covered == null)
+            if (location_details[i].distance_covered == null) {
                 continue
-            else
+            }
+            else {
                 localData.distance = location_details[i].distance_covered!!
-
-            if (location_details[i].shops_covered == null)
+            }
+            if (location_details[i].shops_covered == null) {
                 continue
-            else
+            }
+            else {
                 localData.shops = location_details[i].shops_covered!!
-            if (location_details[i].location_name == null)
+            }
+            if (location_details[i].location_name == null) {
                 continue
-            else
+            }
+            else {
                 localData.locationName = location_details[i].location_name!!
-
-            if (location_details[i].date == null)
+            }
+            if (location_details[i].date == null) {
                 continue
-            else
+            }
+            else {
                 localData.timestamp = AppUtils.getTimeStampFromDate(location_details[i].date!!)
-
-            if (location_details[i].meeting_attended == null)
+            }
+            if (location_details[i].meeting_attended == null) {
                 continue
-            else
+            }
+            else {
                 localData.meeting = location_details[i].meeting_attended!!
-
-            if (visitDistance == null)
+            }
+            if (visitDistance == null) {
                 continue
-            else
+            }
+            else {
                 localData.visit_distance = visitDistance
-
-            if (location_details[i].network_status == null)
+            }
+            if (location_details[i].network_status == null) {
                 continue
-            else
+            }
+            else {
                 localData.network_status = location_details[i].network_status
-
-            if (location_details[i].battery_percentage == null)
+            }
+            if (location_details[i].battery_percentage == null) {
                 continue
-            else
+            }
+            else {
                 localData.battery_percentage = location_details[i].battery_percentage
+            }
 
-            XLog.d("=====Current location (Activity)=======")
-            XLog.d("distance=====> " + localData.distance)
-            XLog.d("lat====> " + localData.latitude)
-            XLog.d("long=====> " + localData.longitude)
-            XLog.d("location=====> " + localData.locationName)
-            XLog.d("date time=====> " + localData.updateDateTime)
-            XLog.d("meeting_attended=====> " + localData.meeting)
-            XLog.d("visit_distance=====> " + localData.visit_distance)
-            XLog.d("network_status=====> " + localData.network_status)
-            XLog.d("battery_percentage=====> " + localData.battery_percentage)
+            Timber.d("=====Current location (Activity)=======")
+            Timber.d("distance=====> " + localData.distance)
+            Timber.d("lat====> " + localData.latitude)
+            Timber.d("long=====> " + localData.longitude)
+            Timber.d("location=====> " + localData.locationName)
+            Timber.d("date time=====> " + localData.updateDateTime)
+            Timber.d("meeting_attended=====> " + localData.meeting)
+            Timber.d("visit_distance=====> " + localData.visit_distance)
+            Timber.d("network_status=====> " + localData.network_status)
+            Timber.d("battery_percentage=====> " + localData.battery_percentage)
 
             AppDatabase.getDBInstance()!!.userLocationDataDao().insert(localData)
 
-            XLog.d("=======location added to db (Activity)======")
+            Timber.d("=======location added to db (Activity)======")
             list.add(localData)
         }
 
@@ -396,10 +411,12 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
         tv_visit_distance = view.findViewById(R.id.tv_visit_distance)
         tv_share_pdf = view.findViewById(R.id.tv_share_pdf)
 
-        if (Pref.isAttendanceDistanceShow)
+        if (Pref.isAttendanceDistanceShow) {
             ll_visit_distance.visibility = View.VISIBLE
-        else
+        }
+        else{
             ll_visit_distance.visibility = View.GONE
+        }
 
         pickDate.setOnClickListener(this)
         tv_share_logs.setOnClickListener(this)
@@ -462,10 +479,12 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
 
             R.id.tv_sync_all -> {
 
-                if (AppUtils.isOnline(mContext))
+                if (AppUtils.isOnline(mContext)) {
                     syncLocationActivity()
-                else
+                }
+                else {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                }
             }
 
 //            R.id.tv_share_pdf -> {
@@ -675,7 +694,7 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
 
     private fun syncLocationActivity() {
 
-        XLog.d("syncLocationActivity (Activity Screen) : ENTER")
+        Timber.d("syncLocationActivity (Activity Screen) : ENTER")
 
         if (Pref.user_id.isNullOrEmpty())
             return
@@ -761,8 +780,8 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
         for (i in apiLocationList.indices) {
             if (!apiLocationList[i].isUploaded) {
 
-                XLog.e("Final Home Duration (Location Fuzed Service)=================> ${apiLocationList[i].home_duration}")
-                XLog.e("Time (Location Fuzed Service)=================> ${apiLocationList[i].time} ${apiLocationList[i].meridiem}")
+                Timber.e("Final Home Duration (Location Fuzed Service)=================> ${apiLocationList[i].home_duration}")
+                Timber.e("Time (Location Fuzed Service)=================> ${apiLocationList[i].time} ${apiLocationList[i].meridiem}")
 
 
                 val locationData = LocationData()
@@ -792,7 +811,7 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
             locationUpdateReq.location_details = locationList
             val repository = LocationUpdateRepositoryProviders.provideLocationUpdareRepository()
 
-            XLog.d("syncLocationActivity (Activity Screen) : REQUEST")
+            Timber.d("syncLocationActivity (Activity Screen) : REQUEST")
 
             progress_wheel.spin()
 
@@ -803,7 +822,7 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
                             .subscribe({ result ->
                                 val updateShopActivityResponse = result as BaseResponse
 
-                                XLog.d("syncLocationActivity (Activity Screen) : RESPONSE : " + updateShopActivityResponse.status + ":" + updateShopActivityResponse.message)
+                                Timber.d("syncLocationActivity (Activity Screen) : RESPONSE : " + updateShopActivityResponse.status + ":" + updateShopActivityResponse.message)
 
                                 if (updateShopActivityResponse.status == NetworkConstant.SUCCESS) {
                                     doAsync {
@@ -814,16 +833,17 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
 
                                             if (syncList != null && syncList.isNotEmpty()) {
 
-                                                if (i == 0)
+                                                if (i == 0) {
                                                     AppDatabase.getDBInstance()!!.userLocationDataDao().updateIsUploadedFor5Items(true, syncList[syncList.size - 1].locationId.toInt(), locationListAllId[i].locationId.toInt())
-                                                else
+                                                }else {
                                                     AppDatabase.getDBInstance()!!.userLocationDataDao().updateIsUploadedFor5Items(true, locationListAllId[i - 1].locationId.toInt(), locationListAllId[i].locationId.toInt())
-
+                                                }
                                             } else {
-                                                if (i == 0)
+                                                if (i == 0) {
                                                     AppDatabase.getDBInstance()!!.userLocationDataDao().updateIsUploaded(true, locationListAllId[i].locationId.toInt())
-                                                else
+                                                }else {
                                                     AppDatabase.getDBInstance()!!.userLocationDataDao().updateIsUploadedFor5Items(true, locationListAllId[i - 1].locationId.toInt(), locationListAllId[i].locationId.toInt())
+                                                }
                                             }
                                         }
 
@@ -844,9 +864,9 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
                                 AppUtils.isLocationActivityUpdating = false
                                 progress_wheel.stopSpinning()
                                 if (error == null) {
-                                    XLog.d("syncLocationActivity (Activity Screen) : ERROR : " + "UNEXPECTED ERROR IN LOCATION ACTIVITY API")
+                                    Timber.d("syncLocationActivity (Activity Screen) : ERROR : " + "UNEXPECTED ERROR IN LOCATION ACTIVITY API")
                                 } else {
-                                    XLog.d("syncLocationActivity (Activity Screen) : ERROR : " + error.localizedMessage)
+                                    Timber.d("syncLocationActivity (Activity Screen) : ERROR : " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
 

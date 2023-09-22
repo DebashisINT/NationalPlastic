@@ -57,4 +57,12 @@ interface CollectionDetailsDao {
     @Query("select SUM(collection) from collection_list where order_id=:order_id ")
     fun getCollectSumAmtByOrdID(order_id: String): String
 
+    @Query("SELECT MAX(date) FROM collection_list  where shop_id=:shop_id")
+    fun getLastCollectionDate(shop_id: String): String
+
+    @Query("select case when date IS NULL then '' else date END as date from collection_list where shop_id = :shop_id order by id desc limit 1")
+    fun getLastCollectionDate2(shop_id: String): String
+
+
+
 }

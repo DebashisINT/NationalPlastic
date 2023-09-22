@@ -20,9 +20,10 @@ import com.nationalplasticfsm.features.alarm.presetation.AlarmRingingService
 import com.nationalplasticfsm.features.alarm.presetation.FloatingWidgetService
 import com.nationalplasticfsm.features.location.LocationFuzedService
 import com.nationalplasticfsm.features.location.LocationJobService
-import com.elvishew.xlog.XLog
+
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -78,9 +79,9 @@ class AlarmReceiver : BroadcastReceiver() {
         if (intent.hasExtra("request_code")) {
             if (intent.getIntExtra("request_code", 0) == 123) {
                 if (FTStorageUtils.isMyServiceRunning(LocationFuzedService::class.java, context)) {
-                    XLog.e("Alarm_Service: Service is running.")
+                    Timber.e("Alarm_Service: Service is running.")
                 } else {
-                    XLog.e("Alarm_Service: Service is stopped.")
+                    Timber.e("Alarm_Service: Service is stopped.")
 
                     if (Pref.user_id != null && Pref.user_id!!.isNotEmpty()) {
 
@@ -101,9 +102,9 @@ class AlarmReceiver : BroadcastReceiver() {
                             val resultCode = jobScheduler.schedule(jobInfo)
 
                             if (resultCode == JobScheduler.RESULT_SUCCESS) {
-                                XLog.d("===============================Job scheduled (Alarm Receiver)============================")
+                                Timber.d("===============================Job scheduled (Alarm Receiver)============================")
                             } else {
-                                XLog.d("=====================Job not scheduled (Alarm Receiver)====================================")
+                                Timber.d("=====================Job not scheduled (Alarm Receiver)====================================")
                             }
                         } else {
                             val serviceLauncher = Intent(context, LocationFuzedService::class.java)

@@ -55,7 +55,9 @@ class ViewCartAdapter(private val context: Context, private val selectedProductL
                 itemView.tv_category_item_scheme.text = "Sch.Qty: " + "0"
             }
             if(categoryList[adapterPosition].scheme_rate!=null){
-                itemView.tv_brand_item_scheme.text = "Sch.Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].scheme_rate?.toFloat())
+                //itemView.tv_brand_item_scheme.text = "Sch.Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].scheme_rate?.toFloat())
+                //mantis id 26274
+                itemView.tv_brand_item_scheme.text = "Sch.Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].scheme_rate?.toDouble())
             }
             else{
                 itemView.tv_brand_item_scheme.text = "Sch.Rate: ₹ " +  "0"
@@ -63,7 +65,9 @@ class ViewCartAdapter(private val context: Context, private val selectedProductL
 
 
             try {
-                val totalScPrice = String.format("%.2f", categoryList[adapterPosition].total_scheme_price?.toFloat())
+                //val totalScPrice = String.format("%.2f", categoryList[adapterPosition].total_scheme_price?.toFloat())
+                //mantis id 26274
+                val totalScPrice = String.format("%.2f", categoryList[adapterPosition].total_scheme_price?.toDouble())
                 itemView.tv_watt_item_scheme.text = "Sch.Price: ₹ $totalScPrice"  //categoryList?.get(adapterPosition)?.watt
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -83,22 +87,40 @@ class ViewCartAdapter(private val context: Context, private val selectedProductL
             itemView.tv_particular_item.text = categoryList[adapterPosition].product_name
             /*itemView.tv_brand_item.text = "Rate : ₹ " + categoryList.get(adapterPosition).rate*/ //categoryList?.get(adapterPosition)?.brand
 
-            itemView.tv_brand_item.text = "Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].rate?.toFloat())
+            //itemView.tv_brand_item.text = "Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].rate?.toFloat())
+            //mantis id 26274
+            itemView.tv_brand_item.text = "Rate: ₹ " + String.format("%.2f", categoryList[adapterPosition].rate?.toDouble())
 
 //            if (categoryList[adapterPosition].qty?.contains(".")!!)
 //                itemView.tv_category_item.text = "Quantity: " + categoryList[adapterPosition].qty?.toFloat()?.toInt() //categoryList?.get(adapterPosition)?.category
 //            else
 //                itemView.tv_category_item.text = "Quantity: " + categoryList[adapterPosition].qty
             try {
-                val qty = String.format("%.3f", categoryList[adapterPosition].qty?.toFloat())
-                itemView.tv_category_item.text = "Quantity: " + qty
+
+                var finalQty = ""
+                try {
+                    val qty = String.format("%.3f", categoryList[adapterPosition].qty!!.toDouble()).toString()
+                    val qtyDouble = qty.toDouble()
+                    val qtyInt:Int =qtyDouble.toInt()
+
+                    if((qtyDouble - qtyInt) == 0.0){
+                        finalQty =qtyInt.toString()
+                    }else{
+                        finalQty = qtyDouble.toString()
+                    }
+                }catch (ex:Exception){
+                    finalQty=""
+                }
+                itemView.tv_category_item.text = "Quantity: " + finalQty
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
             try {
                 //val totalPrice = DecimalFormat("##.##").format(categoryList[adapterPosition].total_price?.toDouble())
-                val totalPrice = String.format("%.2f", categoryList[adapterPosition].total_price?.toFloat())
+                //val totalPrice = String.format("%.2f", categoryList[adapterPosition].total_price?.toFloat())
+                //mantis id 26274
+                val totalPrice = String.format("%.2f", categoryList[adapterPosition].total_price?.toDouble())
                 itemView.tv_watt_item.text = "Total Price: ₹ $totalPrice"  //categoryList?.get(adapterPosition)?.watt
             } catch (e: Exception) {
                 e.printStackTrace()

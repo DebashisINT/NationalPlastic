@@ -61,17 +61,17 @@
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
                 <com.nationalplasticfsm.widgets.AppCustomEditText
-                        android:id="@+id/et_feedback"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/_5sdp"
-                        android:hint="@string/type_your_feedback"
-                        android:maxLength="500"
-                        android:maxLines="7"
-                        android:textSize="@dimen/_13sdp"
-                        app:theme="@style/EvoEditTextTheme" />
+                    android:id="@+id/et_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:hint="@string/type_your_feedback"
+                    android:maxLength="500"
+                    android:maxLines="7"
+                    android:textSize="@dimen/_13sdp"
+                    app:theme="@style/EvoEditTextTheme" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--//3.0  AppV 4.0.7  AddFeedbackSingleBtnDialog  Saheli    07/01/2023 mantis 25649 add feedback using voice-->
 

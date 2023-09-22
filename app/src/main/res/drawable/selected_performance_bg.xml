@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/custom_performance" android:state_pressed="true" />
+    <item android:drawable="@drawable/custom_performance" android:state_selected="true" />
+    <item android:drawable="@drawable/custom_performance" android:state_checkable="true" />
+    <item android:drawable="@drawable/deselected_peroformance_history"/>
+</selector>

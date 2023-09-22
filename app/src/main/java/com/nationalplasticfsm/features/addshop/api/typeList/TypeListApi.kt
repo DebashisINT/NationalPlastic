@@ -50,6 +50,10 @@ interface TypeListApi {
     fun getBeatList(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<BeatListResponseModel>
 
     @FormUrlEncoded
+    @POST("AreaRouteBeatRelationInfo/BeatAreaRouteList")
+    fun getBeatAreaRouteApi(@Field("session_token") session_token: String, @Field("user_id") user_id: String): Observable<BetAreaRouteResponseModel>
+
+    @FormUrlEncoded
     @POST("Bankdetails/Update")
     fun updateBankDetails(@Field("session_token") session_token: String, @Field("user_id") user_id: String,
                           @Field("shop_id") shop_id: String, @Field("account_holder") account_holder: String,

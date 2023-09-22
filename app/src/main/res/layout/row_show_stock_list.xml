@@ -46,6 +46,20 @@
             android:paddingTop="@dimen/_5sdp"
             android:paddingBottom="@dimen/_5sdp"/>
 
+        <!--start saheli v 4.0.8 12-05-2023mantis 26102-->
+        <ImageView
+            android:id="@+id/iv_attach_row_shop_stock_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:rotation="90"
+            android:src="@drawable/ic_attachment"
+            android:textSize="@dimen/_11sdp"
+            android:contentDescription="@null"/>
+
+        <!--end saheli v 4.0.8 12-05-2023mantis 26102-->
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"

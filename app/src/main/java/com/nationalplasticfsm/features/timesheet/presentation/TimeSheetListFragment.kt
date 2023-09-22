@@ -30,7 +30,7 @@ import com.nationalplasticfsm.features.timesheet.model.AddTimeSheetInputModel
 import com.nationalplasticfsm.features.timesheet.model.EditDeleteTimesheetResposneModel
 import com.nationalplasticfsm.features.timesheet.model.TimeSheetListResponseModel
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.github.jhonnyx2012.horizontalpicker.DatePickerListener
 import com.github.jhonnyx2012.horizontalpicker.HorizontalPicker
 import com.pnikosis.materialishprogress.ProgressWheel
@@ -41,6 +41,7 @@ import org.jetbrains.anko.uiThread
 import org.joda.time.DateTime
 import java.util.*
 import kotlin.collections.ArrayList
+import timber.log.Timber
 
 /**
  * Created by Saikat on 29-Apr-20.
@@ -220,7 +221,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as TimeSheetListResponseModel
-                            XLog.d("GET TIMESHEET DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TIMESHEET DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                             /*if (!TextUtils.isEmpty(response.superviser_name))
                                 tv_superviser_name.text = getString(R.string.supervisor_name) + " " + response.superviser_name
@@ -303,7 +304,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TIMESHEET DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TIMESHEET DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
 
@@ -376,19 +377,19 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
             return
         }
 
-        XLog.d("==============Sync Single Timesheet Input Params (Timesheet List)====================")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("date=======> " + timeSheet.date)
-        XLog.d("client_id=======> " + timeSheet.client_id)
-        XLog.d("project_id=======> " + timeSheet.project_id)
-        XLog.d("activity_id=======> " + timeSheet.activity_id)
-        XLog.d("product_id=======> " + timeSheet.product_id)
-        XLog.d("time=======> " + timeSheet.time)
-        XLog.d("comments=======> " + timeSheet.comments)
-        XLog.d("timesheet_id=======> " + timeSheet.timesheet_id)
-        XLog.d("image=======> " + timeSheet.image)
-        XLog.d("===================================================================================")
+        Timber.d("==============Sync Single Timesheet Input Params (Timesheet List)====================")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("date=======> " + timeSheet.date)
+        Timber.d("client_id=======> " + timeSheet.client_id)
+        Timber.d("project_id=======> " + timeSheet.project_id)
+        Timber.d("activity_id=======> " + timeSheet.activity_id)
+        Timber.d("product_id=======> " + timeSheet.product_id)
+        Timber.d("time=======> " + timeSheet.time)
+        Timber.d("comments=======> " + timeSheet.comments)
+        Timber.d("timesheet_id=======> " + timeSheet.timesheet_id)
+        Timber.d("image=======> " + timeSheet.image)
+        Timber.d("===================================================================================")
 
         val addIntput = AddTimeSheetInputModel(Pref.session_token!!, Pref.user_id!!, timeSheet.date!!, timeSheet.client_id!!,
                 timeSheet.project_id!!, timeSheet.activity_id!!, timeSheet.product_id!!, timeSheet.time!!, timeSheet.comments!!,
@@ -405,7 +406,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as BaseResponse
-                                XLog.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                Timber.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
@@ -417,7 +418,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
 
                             }, { error ->
                                 progress_wheel.stopSpinning()
-                                XLog.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             })
@@ -431,7 +432,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as BaseResponse
-                                XLog.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                Timber.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                                 progress_wheel.stopSpinning()
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
@@ -443,7 +444,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
 
                             }, { error ->
                                 progress_wheel.stopSpinning()
-                                XLog.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             })
@@ -475,11 +476,11 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
             return
         }
 
-        XLog.d("==============Delete Timesheet Input Params (Timesheet List)===============")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("timesheet_id=======> " + id)
-        XLog.d("===========================================================================")
+        Timber.d("==============Delete Timesheet Input Params (Timesheet List)===============")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("timesheet_id=======> " + id)
+        Timber.d("===========================================================================")
 
         progress_wheel.spin()
         val repository = TimeSheetRepoProvider.timeSheetRepoProvider()
@@ -489,7 +490,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as EditDeleteTimesheetResposneModel
-                            XLog.d("DELETE TIMESHEET : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("DELETE TIMESHEET : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(response.message!!)
 
@@ -502,7 +503,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                             }
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("DELETE TIMESHEET : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("DELETE TIMESHEET : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -531,19 +532,19 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
             return
         }
 
-        XLog.d("==============Sync Timesheet Input Params (Timesheet List)====================")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("date=======> " + timeSheet.date)
-        XLog.d("client_id=======> " + timeSheet.client_id)
-        XLog.d("project_id=======> " + timeSheet.project_id)
-        XLog.d("activity_id=======> " + timeSheet.activity_id)
-        XLog.d("product_id=======> " + timeSheet.product_id)
-        XLog.d("time=======> " + timeSheet.time)
-        XLog.d("comments=======> " + timeSheet.comments)
-        XLog.d("timesheet_id=======> " + timeSheet.timesheet_id)
-        XLog.d("image=======> " + timeSheet.image)
-        XLog.d("===========================================================================")
+        Timber.d("==============Sync Timesheet Input Params (Timesheet List)====================")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("date=======> " + timeSheet.date)
+        Timber.d("client_id=======> " + timeSheet.client_id)
+        Timber.d("project_id=======> " + timeSheet.project_id)
+        Timber.d("activity_id=======> " + timeSheet.activity_id)
+        Timber.d("product_id=======> " + timeSheet.product_id)
+        Timber.d("time=======> " + timeSheet.time)
+        Timber.d("comments=======> " + timeSheet.comments)
+        Timber.d("timesheet_id=======> " + timeSheet.timesheet_id)
+        Timber.d("image=======> " + timeSheet.image)
+        Timber.d("===========================================================================")
 
         val addIntput = AddTimeSheetInputModel(Pref.session_token!!, Pref.user_id!!, timeSheet.date!!, timeSheet.client_id!!,
                 timeSheet.project_id!!, timeSheet.activity_id!!, timeSheet.product_id!!, timeSheet.time!!, timeSheet.comments!!,
@@ -560,7 +561,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as BaseResponse
-                                XLog.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                Timber.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                                 progress_wheel.stopSpinning()
 
@@ -579,7 +580,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
 
                             }, { error ->
                                 progress_wheel.stopSpinning()
-                                XLog.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             })
@@ -593,7 +594,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as BaseResponse
-                                XLog.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                                Timber.d("ADD TIMESHEET: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                                 progress_wheel.stopSpinning()
 
@@ -612,7 +613,7 @@ class TimeSheetListFragment : BaseFragment(), DatePickerListener, View.OnClickLi
 
                             }, { error ->
                                 progress_wheel.stopSpinning()
-                                XLog.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                                Timber.d("ADD TIMESHEET: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                                 error.printStackTrace()
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             })

@@ -209,7 +209,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginRight="@dimen/_5sdp"
                     android:background="@color/white"
-                    android:hint="Enter Details"
+                    android:hint="Enter Feedback"
                     android:maxLength="500"
                     android:minHeight="@dimen/_40sdp"
                     android:textColor="@color/black"

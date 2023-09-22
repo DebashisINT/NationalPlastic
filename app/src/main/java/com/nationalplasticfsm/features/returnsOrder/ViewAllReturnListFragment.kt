@@ -33,11 +33,12 @@ import com.nationalplasticfsm.base.presentation.BaseFragment
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.viewAllOrder.api.addorder.AddOrderRepoProvider
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.*
 
 class ViewAllReturnListFragment: BaseFragment(), View.OnClickListener {
@@ -361,16 +362,16 @@ class ViewAllReturnListFragment: BaseFragment(), View.OnClickListener {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe({ result ->
-                                    XLog.d("Return : RESPONSE " + result.status)
+                                    Timber.d("Return : RESPONSE " + result.status)
                                     if (result.status == NetworkConstant.SUCCESS) {
                                         AppDatabase.getDBInstance()?.returnDetailsDao()?.updateIsUploaded(true, returnList.return_id!!)
                                         syncAddReturnApi()
                                     }
                                 }, { error ->
                                     if (error == null) {
-                                        XLog.d("Return : ERROR " + "UNEXPECTED ERROR IN Add Return API")
+                                        Timber.d("Return : ERROR " + "UNEXPECTED ERROR IN Add Return API")
                                     } else {
-                                        XLog.d("Return : ERROR " + error.localizedMessage)
+                                        Timber.d("Return : ERROR " + error.localizedMessage)
                                         error.printStackTrace()
                                     }
                                 })

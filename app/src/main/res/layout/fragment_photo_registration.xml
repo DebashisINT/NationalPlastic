@@ -7,6 +7,13 @@
     android:orientation="vertical"
     android:padding="@dimen/_5sdp">
 
+    <lecho.lib.hellocharts.view.PieChartView
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_250sdp"
+        android:elevation="@dimen/_20sdp"
+        android:visibility="gone"/>
+
     <com.nationalplasticfsm.widgets.AppCustomEditText
         android:id="@+id/et_attachment"
         android:layout_width="match_parent"

@@ -33,3 +33,10 @@ data class AssignedToShopListDataModel(var assigned_to_shop_id: String = "",
                                        var name: String = "",
                                        var phn_no: String = "",
                                        var type_id: String = ""): Serializable
+
+data class BetAreaRouteResponseModel(var status:String,var message:String, var user_id:String, var PLAN_ASSNBEATID:String,
+var PLAN_ASSNBEATName:String,
+var PLAN_ASSNAREAID:String,
+var PLAN_ASSNAREAName:String,
+var PLAN_ASSNROUTEID:String,
+var PLAN_ASSNROUTEName:String)

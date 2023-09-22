@@ -31,12 +31,13 @@ import com.nationalplasticfsm.features.activities.model.AddChemistVisitInputMode
 import com.nationalplasticfsm.features.activities.model.ChemistVisitResponseModel
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 
 /**
  * Created by Saikat on 07-01-2020.
@@ -299,19 +300,19 @@ class ChemistActivityListFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-        XLog.d("======SYNC CHEMIST VISIT INPUT PARAMS (ACTIVITY LIST)======")
-        XLog.d("USER ID===> " + chemistVisit.user_id)
-        XLog.d("SESSION ID====> " + chemistVisit.session_token)
-        XLog.d("CHEMIST VISIT ID====> " + chemistVisit.chemist_visit_id)
-        XLog.d("SHOP_ID====> " + chemistVisit.shop_id)
-        XLog.d("IS POB====> " + chemistVisit.isPob)
-        XLog.d("NEXT VISIT DATE====> " + chemistVisit.next_visit_date)
-        XLog.d("VOLUME====> " + chemistVisit.volume)
-        XLog.d("REMARKS====> " + chemistVisit.remarks)
-        XLog.d("REMARKS MR====> " + chemistVisit.remarks_mr)
-        XLog.d("PRODUCT LIST SIZE====> " + chemistVisit.product_list.size)
-        XLog.d("POB PRODUCT LIST SIZE====> " + chemistVisit.pob_product_list.size)
-        XLog.d("=========================================================")
+        Timber.d("======SYNC CHEMIST VISIT INPUT PARAMS (ACTIVITY LIST)======")
+        Timber.d("USER ID===> " + chemistVisit.user_id)
+        Timber.d("SESSION ID====> " + chemistVisit.session_token)
+        Timber.d("CHEMIST VISIT ID====> " + chemistVisit.chemist_visit_id)
+        Timber.d("SHOP_ID====> " + chemistVisit.shop_id)
+        Timber.d("IS POB====> " + chemistVisit.isPob)
+        Timber.d("NEXT VISIT DATE====> " + chemistVisit.next_visit_date)
+        Timber.d("VOLUME====> " + chemistVisit.volume)
+        Timber.d("REMARKS====> " + chemistVisit.remarks)
+        Timber.d("REMARKS MR====> " + chemistVisit.remarks_mr)
+        Timber.d("PRODUCT LIST SIZE====> " + chemistVisit.product_list.size)
+        Timber.d("POB PRODUCT LIST SIZE====> " + chemistVisit.pob_product_list.size)
+        Timber.d("=========================================================")
 
         val repository = ActivityRepoProvider.activityRepoProvider()
         progress_wheel.spin()
@@ -323,7 +324,7 @@ class ChemistActivityListFragment : BaseFragment(), View.OnClickListener {
                             progress_wheel.stopSpinning()
                             val response = result as BaseResponse
 
-                            XLog.d("SYNC CHEMIST VISIT DETAILS : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + response.message)
+                            Timber.d("SYNC CHEMIST VISIT DETAILS : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + response.message)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.addChemistDao().updateIsUploaded(true, chemistVisit.chemist_visit_id)
@@ -332,7 +333,7 @@ class ChemistActivityListFragment : BaseFragment(), View.OnClickListener {
                             (mContext as DashboardActivity).showSnackMessage(response.message!!)
 
                         }, { error ->
-                            XLog.d("SYNC CHEMIST VISIT DETAILS : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + error.localizedMessage)
+                            Timber.d("SYNC CHEMIST VISIT DETAILS : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + error.localizedMessage)
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync_chemist))
                             error.printStackTrace()

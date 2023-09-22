@@ -414,7 +414,9 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                         }
                     }
 
-                    val finalAmount = String.format("%.2f", amount.toFloat())
+                    //val finalAmount = String.format("%.2f", amount.toFloat())
+                    //mantis id 26274
+                    val finalAmount = String.format("%.2f", amount.toDouble())
 
                     val builder = SpannableStringBuilder()
 
@@ -431,8 +433,11 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     builder.append(str3)
 
                     var avgOrder = "0.00"
-                    if (amount.toInt() != 0)
-                        avgOrder = String.format("%.2f", (amount.toFloat() / orderList.size))
+                    if (amount.toInt() != 0){
+                        //avgOrder = String.format("%.2f", (amount.toFloat() / orderList.size))
+                        //mantis id 26274
+                        avgOrder = String.format("%.2f", (amount.toDouble() / orderList.size).toDouble())
+                    }
                     val str4 = SpannableString("₹ $avgOrder")
                     str4.setSpan(ForegroundColorSpan(Color.BLACK), 0, str4.length, 0)
                     builder.append(str4)
@@ -443,8 +448,11 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     builder.append(str5)
 
                     var maxOrder = "0.00"
-                    if (amountList.isNotEmpty())
-                        maxOrder = String.format("%.2f", amountList.maxOrNull()?.toFloat())
+                    if (amountList.isNotEmpty()){
+                        //maxOrder = String.format("%.2f", amountList.maxOrNull()?.toFloat())
+                        //mantis id 26274
+                        maxOrder = String.format("%.2f", amountList.maxOrNull()?.toDouble())
+                    }
                     val str6 = SpannableString("₹ $maxOrder")
                     str6.setSpan(ForegroundColorSpan(Color.BLACK), 0, str6.length, 0)
                     builder.append(str6)
@@ -455,8 +463,11 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     builder.append(str7)
 
                     var minOrder = "0.00"
-                    if (amountList.isNotEmpty())
-                        minOrder = String.format("%.2f", amountList.minOrNull()?.toFloat())
+                    if (amountList.isNotEmpty()){
+                        //minOrder = String.format("%.2f", amountList.minOrNull()?.toFloat())
+                        //mantis id 26274
+                        minOrder = String.format("%.2f", amountList.minOrNull()?.toDouble())
+                    }
                     val str8 = SpannableString("₹ $minOrder")
                     str8.setSpan(ForegroundColorSpan(Color.BLACK), 0, str8.length, 0)
                     builder.append(str8)
@@ -786,9 +797,15 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                 } else
                     itemView.next_visit_date_RL.visibility = View.GONE
 
+                if(Pref.ShowApproxDistanceInNearbyShopList){
+                    itemView.ll_distance.visibility = View.VISIBLE
                 val distance = LocationWizard.getDistance(list[adapterPosition].shopLat, list[adapterPosition].shopLong,
                         Pref.current_latitude.toDouble(), Pref.current_longitude.toDouble())
                 itemView.tv_distance.text = "$distance (Approx. from current location)"
+                }
+                else{
+                    itemView.ll_distance.visibility = View.GONE
+                }
 
                 itemView.iv_whatsapp.setOnClickListener {
                     listener.onWhatsAppClick(list[adapterPosition].ownerContactNumber)
@@ -908,34 +925,41 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     listener.onExtraContactClick(list[adapterPosition].shop_id)
                 }
 
+                // 3.0 Pref  AppV 4.0.7 Suman    10/03/2023 Pdf generation settings wise  mantis 25650
                 //Hardcoded for EuroBond
-                //itemView.ll_last_visit_age.visibility=View.GONE
-                //itemView.ll_average_visit_time.visibility=View.GONE
-                //itemView.ll_distance.visibility=View.GONE
-                //itemView.order_amount_tv.visibility=View.GONE
-                //itemView.highest_order_amount_tv.visibility=View.GONE
-                //itemView.avg_order_amount_tv.visibility=View.GONE
-                //itemView.lowest_order_amount_tv.visibility=View.GONE
-                //itemView.high_value_month_tv.visibility=View.GONE
-                //itemView.low_value_month_tv.visibility=View.GONE
+                if(Pref.IsShowQuotationFooterforEurobond){
+                itemView.ll_last_visit_age.visibility=View.GONE
+                itemView.ll_average_visit_time.visibility=View.GONE
+                itemView.ll_distance.visibility=View.GONE
+                itemView.order_amount_tv.visibility=View.GONE
+                itemView.highest_order_amount_tv.visibility=View.GONE
+                itemView.avg_order_amount_tv.visibility=View.GONE
+                itemView.lowest_order_amount_tv.visibility=View.GONE
+                itemView.high_value_month_tv.visibility=View.GONE
+                itemView.low_value_month_tv.visibility=View.GONE
+                }
 
+                // 3.0 Pref  AppV 4.0.7 Suman    10/03/2023 Pdf generation settings wise  mantis 25650
                 //Hardcoded for Pure chemical
-//                itemView.ll_last_visit_age.visibility=View.GONE
-//                itemView.ll_average_visit_time.visibility=View.GONE
-//                itemView.ll_distance.visibility=View.GONE
-//                itemView.order_amount_tv.visibility=View.GONE
-//                itemView.highest_order_amount_tv.visibility=View.GONE
-//                itemView.avg_order_amount_tv.visibility=View.GONE
-//                itemView.lowest_order_amount_tv.visibility=View.GONE
-//                itemView.high_value_month_tv.visibility=View.GONE
-//                itemView.low_value_month_tv.visibility=View.GONE
-//                itemView.tv_funnel_stage_header.visibility = View.GONE
-//                itemView.tv_funnel_stage.visibility = View.GONE
-//                itemView.rl_beat_type.visibility = View.GONE
-//                itemView.rl_entity_type.visibility = View.GONE
-//                itemView.rl_party_status.visibility = View.GONE
-//                itemView.next_visit_date_RL.visibility = View.GONE
-//                itemView.ll_shop_code.visibility = View.GONE
+                if(!Pref.IsShowOtherInfoinShopMaster){
+                    itemView.ll_last_visit_age.visibility=View.GONE
+                    itemView.ll_average_visit_time.visibility=View.GONE
+                    itemView.ll_distance.visibility=View.GONE
+                    itemView.order_amount_tv.visibility=View.GONE
+                    itemView.highest_order_amount_tv.visibility=View.GONE
+                    itemView.avg_order_amount_tv.visibility=View.GONE
+                    itemView.lowest_order_amount_tv.visibility=View.GONE
+                    itemView.high_value_month_tv.visibility=View.GONE
+                    itemView.low_value_month_tv.visibility=View.GONE
+                    itemView.tv_funnel_stage_header.visibility = View.GONE
+                    itemView.tv_funnel_stage.visibility = View.GONE
+                    itemView.rl_beat_type.visibility = View.GONE
+                    itemView.rl_entity_type.visibility = View.GONE
+                    itemView.rl_party_status.visibility = View.GONE
+                    itemView.next_visit_date_RL.visibility = View.GONE
+                    itemView.ll_shop_code.visibility = View.GONE
+                }
+
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -983,8 +1007,6 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                         itemView.add_multiple_ll.visibility = View.GONE
                         itemView.new_multi_view.visibility = View.GONE
                     }
-
-
 
 
 

@@ -61,6 +61,7 @@
                 android:contentDescription="@string/cd_voice_search"
                 android:paddingLeft="@dimen/search_icon_padding"
                 android:paddingRight="@dimen/search_icon_padding"
+                app:tint="@color/color_custom_red"
                 app:srcCompat="@drawable/ic_action_voice_search" />
 
             <ImageButton

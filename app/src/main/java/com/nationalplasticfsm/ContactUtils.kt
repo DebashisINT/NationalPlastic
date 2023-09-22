@@ -1,6 +1,7 @@
 package com.nationalplasticfsm
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -27,6 +28,7 @@ object ContactUtils{
         }
     }
 
+    @SuppressLint("Range")
     @RequiresPermission(Manifest.permission.READ_CONTACTS)
     @JvmOverloads
     fun Context.retrieveAllContacts(

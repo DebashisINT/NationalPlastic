@@ -8,7 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
@@ -30,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 
 /**
  * Created by Saikat on 20-01-2020.
@@ -87,7 +88,7 @@ class MeetingListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as MeetingListResponseModel
-                            XLog.d("GET MEETING DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET MEETING DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.meeting_list != null && response.meeting_list!!.size > 0) {
@@ -131,7 +132,7 @@ class MeetingListFragment : BaseFragment() {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET MEETING DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET MEETING DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             tv_no_data.visibility = View.VISIBLE
@@ -158,7 +159,7 @@ class MeetingListFragment : BaseFragment() {
             return
         }
 
-        XLog.e("IS MEETING UPDATING (MEETING LIST FRAGMENT)===========> ${BaseActivity.isMeetingUpdating}")
+        Timber.e("IS MEETING UPDATING (MEETING LIST FRAGMENT)===========> ${BaseActivity.isMeetingUpdating}")
 
         if (BaseActivity.isMeetingUpdating)
             return
@@ -187,11 +188,11 @@ class MeetingListFragment : BaseFragment() {
 
         meeting.meeting_list = meetingDataList
 
-        XLog.d("========UPLOAD MEETING DATA INPUT PARAMS (MEETING LIST)======")
-        XLog.d("USER ID======> " + meeting.user_id)
-        XLog.d("SESSION ID======> " + meeting.session_token)
-        XLog.d("MEETING LIST SIZE=========> " + meeting.meeting_list.size)
-        XLog.d("==============================================================")
+        Timber.d("========UPLOAD MEETING DATA INPUT PARAMS (MEETING LIST)======")
+        Timber.d("USER ID======> " + meeting.user_id)
+        Timber.d("SESSION ID======> " + meeting.session_token)
+        Timber.d("MEETING LIST SIZE=========> " + meeting.meeting_list.size)
+        Timber.d("==============================================================")
 
         progress_wheel.spin()
         val repository = ShopDurationRepositoryProvider.provideShopDurationRepository()
@@ -201,7 +202,7 @@ class MeetingListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("SYNC MEETING DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("SYNC MEETING DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.addMeetingDao().updateIsUploaded(true, meetingEntity.id)
                             }
@@ -214,7 +215,7 @@ class MeetingListFragment : BaseFragment() {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("SYNC MEETING DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("SYNC MEETING DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             BaseActivity.isMeetingUpdating = false
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync_meeting))

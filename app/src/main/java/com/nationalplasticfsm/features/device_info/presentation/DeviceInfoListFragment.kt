@@ -24,12 +24,13 @@ import com.nationalplasticfsm.features.location.model.AppInfoDataModel
 import com.nationalplasticfsm.features.location.model.AppInfoInputModel
 import com.nationalplasticfsm.features.location.model.AppInfoResponseModel
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -62,10 +63,12 @@ class DeviceInfoListFragment : BaseFragment() {
         selectedDate = AppUtils.getCurrentDateForShopActi()
 
         val list = AppDatabase.getDBInstance()?.batteryNetDao()?.getAll()
-        if (list != null && list.isNotEmpty())
+        if (list != null && list.isNotEmpty()) {
             initAdapter()
-        else
+        }
+        else {
             getListFromApi()
+        }
 
         return view
     }
@@ -163,7 +166,7 @@ class DeviceInfoListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as AppInfoResponseModel
-                            XLog.e("Get App Info : RESPONSE : " + response.status + ":" + response.message)
+                            Timber.e("Get App Info : RESPONSE : " + response.status + ":" + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 doAsync {
 
@@ -196,7 +199,7 @@ class DeviceInfoListFragment : BaseFragment() {
 
                         }, { error ->
                             error.printStackTrace()
-                            XLog.e("Get App Info : ERROR : " + error.localizedMessage)
+                            Timber.e("Get App Info : ERROR : " + error.localizedMessage)
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -225,11 +228,11 @@ class DeviceInfoListFragment : BaseFragment() {
 
         val appInfoInput = AppInfoInputModel(Pref.session_token!!, Pref.user_id!!, appInfoList)
 
-        XLog.d("============App Info Input(Device Info List)===========")
-        XLog.d("session_token==========> " + appInfoInput.session_token)
-        XLog.d("user_id==========> " + appInfoInput.user_id)
-        XLog.d("app_info_list.size==========> " + appInfoInput.app_info_list?.size)
-        XLog.d("==============================================================")
+        Timber.d("============App Info Input(Device Info List)===========")
+        Timber.d("session_token==========> " + appInfoInput.session_token)
+        Timber.d("user_id==========> " + appInfoInput.user_id)
+        Timber.d("app_info_list.size==========> " + appInfoInput.app_info_list?.size)
+        Timber.d("==============================================================")
 
         progress_wheel.spin()
         val repository = LocationRepoProvider.provideLocationRepository()
@@ -239,7 +242,7 @@ class DeviceInfoListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.e("App Info : RESPONSE : " + response.status + ":" + response.message)
+                            Timber.e("App Info : RESPONSE : " + response.status + ":" + response.message)
                             AppUtils.isAppInfoUpdating = false
 
                             if (response.status == NetworkConstant.SUCCESS) {
@@ -253,7 +256,7 @@ class DeviceInfoListFragment : BaseFragment() {
                         }, { error ->
                             AppUtils.isAppInfoUpdating = false
                             error.printStackTrace()
-                            XLog.e("App Info : ERROR : " + error.localizedMessage)
+                            Timber.e("App Info : ERROR : " + error.localizedMessage)
                             progress_wheel.stopSpinning()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })

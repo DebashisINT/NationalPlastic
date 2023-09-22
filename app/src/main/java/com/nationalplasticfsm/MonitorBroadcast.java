@@ -20,7 +20,9 @@ import androidx.core.app.NotificationCompat;
 import com.nationalplasticfsm.app.Pref;
 import com.nationalplasticfsm.app.utils.AppUtils;
 import com.nationalplasticfsm.features.splash.presentation.SplashActivity;
-import com.elvishew.xlog.XLog;
+
+
+import timber.log.Timber;
 
 public class MonitorBroadcast extends BroadcastReceiver {
 
@@ -33,61 +35,61 @@ public class MonitorBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        try{
+            Timber.e("MONITOR BROADCAST GPS_EVENT_STOPPED: " + "Time : " + AppUtils.Companion.getCurrentDateTime());
 
-        XLog.e("MONITOR BROADCAST GPS_EVENT_STOPPED: " + "Time : " + AppUtils.Companion.getCurrentDateTime());
+            int notiID=intent.getIntExtra("notiId",0);
+            String subject=intent.getStringExtra("fuzedLoc");
 
-        int notiID=intent.getIntExtra("notiId",0);
-        String subject=intent.getStringExtra("fuzedLoc");
+            Intent mainIntent = new Intent(context, SplashActivity.class);
+            mainIntent.putExtra("Subject",subject);
+            //PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // FLAG_IMMUTABLE update
+            PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_IMMUTABLE);
+            //PendingIntent pendingIntent = PendingIntent.getActivity(context,notiID,mainIntent,0);
 
-        Intent mainIntent = new Intent(context, SplashActivity.class);
-        mainIntent.putExtra("Subject",subject);
-        //PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        // FLAG_IMMUTABLE update
-        PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_IMMUTABLE);
-        //PendingIntent pendingIntent = PendingIntent.getActivity(context,notiID,mainIntent,0);
+            long[] pattern = {500,500,500,500,500,500,500,500,500,500,500,500,500};
+            //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.alaram_sound);
+            //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/alaram_sound.mp3");
+            Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    //.setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .build();
 
-        long[] pattern = {500,500,500,500,500,500,500,500,500,500,500,500,500};
-        //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.alaram_sound);
-        //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/alaram_sound.mp3");
-        Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                //.setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .build();
+            //String CHANNEL_ID = "Monitor";
+            String CHANNEL_ID = "201";
+            Notification notification =
+                    new NotificationCompat.Builder(context, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_logo)
+                            .setContentIntent(pendingIntent)
+                            .setContentTitle(subject)
+                            .setContentText(" :: Loc Stopped \n Turn ON GPS : Turn Off Battery Saver")
+                            .setAutoCancel(false)
+                            //.setSound(soundUri)
+                            .setChannelId(CHANNEL_ID)
+                            .setWhen(System.currentTimeMillis())
+                            //.setVibrate(pattern)
+                            .build();
 
-        //String CHANNEL_ID = "Monitor";
-        String CHANNEL_ID = "201";
-        Notification notification =
-                new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_logo)
-                        .setContentIntent(pendingIntent)
-                        .setContentTitle(subject)
-                        .setContentText(" :: Loc Stopped \n Turn ON GPS : Turn Off Battery Saver")
-                        .setAutoCancel(false)
-                        //.setSound(soundUri)
-                        .setChannelId(CHANNEL_ID)
-                        .setWhen(System.currentTimeMillis())
-                        //.setVibrate(pattern)
-                        .build();
-
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel=new NotificationChannel(CHANNEL_ID,subject,NotificationManager.IMPORTANCE_HIGH);
-            //channel.enableVibration(true);
-            //channel.setVibrationPattern(pattern);
-            //channel.setSound(soundUri,audioAttributes);
-            notificationManager.createNotificationChannel(channel);
-        }
-        notificationManager.notify(notiID,notification);
+            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                NotificationChannel channel=new NotificationChannel(CHANNEL_ID,subject,NotificationManager.IMPORTANCE_HIGH);
+                //channel.enableVibration(true);
+                //channel.setVibrationPattern(pattern);
+                //channel.setSound(soundUri,audioAttributes);
+                notificationManager.createNotificationChannel(channel);
+            }
+            notificationManager.notify(notiID,notification);
 
 
         /*Uri soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(soundUriAlarm == null){
             soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }*/
-        //Ringtone ringtone=RingtoneManager.getRingtone(context,soundUriAlarm);
-        //ringtone.play();
+            //Ringtone ringtone=RingtoneManager.getRingtone(context,soundUriAlarm);
+            //ringtone.play();
 
 
        /* VolumeShaper.Configuration config =
@@ -106,40 +108,50 @@ public class MonitorBroadcast extends BroadcastReceiver {
             player.start();
         }*/
 
-        if(player==null){
-            funcc(context);
+            if(player==null){
+                funcc(context);
+            }
+        }catch (Exception ex){
+            Timber.e("MonitorBroadcast error "+ex.getMessage());
+            ex.printStackTrace();
         }
-
     }
 
     private void funcc(Context context){
 
-        //Uri soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        Uri soundUriAlarm = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.beethoven);
-        if(soundUriAlarm == null){
-            //soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        }
+        try{
 
-        if(player!=null){
-            player.stop();
-        }
-        player = MediaPlayer.create(context, soundUriAlarm);
-        player.setLooping(true);
-        player.start();
+            //Uri soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Uri soundUriAlarm = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.beethoven);
+            if(soundUriAlarm == null){
+                //soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                soundUriAlarm= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            }
 
-        if(!isSound)
-            player.stop();
+            if(player!=null){
+                player.stop();
+            }
+            player = MediaPlayer.create(context, soundUriAlarm);
+            player.setLooping(true);
+            player.start();
+
+            if(!isSound)
+                player.stop();
 //        if(Pref.GPSAlertwithVibration)
-        if(isVibrator) {
-            vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            long[] pattern = {0, 5, 10, 20, 40, 80, 120, 100, 600, 700, 500, 500, 500};
-            vibrator.vibrate(pattern, 1);
-        }
-        else{
+            if(isVibrator) {
+                vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                long[] pattern = {0, 5, 10, 20, 40, 80, 120, 100, 600, 700, 500, 500, 500};
+                vibrator.vibrate(pattern, 1);
+            }
+            else{
 
+            }
+            //vibrator.vibrate(10*60*1000);
+        }catch (Exception ex){
+            Timber.e("MonitorBroadcast funcc error "+ex.getLocalizedMessage().toString());
+            ex.printStackTrace();
         }
-        //vibrator.vibrate(10*60*1000);
+
 
     }
 

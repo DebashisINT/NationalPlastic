@@ -203,6 +203,22 @@
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
 
+                <!--startattachment saheli v 4.0.8 12-05-2023 mantis 26101 -->
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tv_attachment_frag_update_shop_stock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Attach-\nment"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <!--end attachment saheli v 4.0.8 12-05-2023 mantis 26101 -->
+
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_sync"
                     android:layout_width="0dp"

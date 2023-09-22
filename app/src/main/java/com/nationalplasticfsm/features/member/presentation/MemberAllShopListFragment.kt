@@ -1,15 +1,20 @@
 package com.nationalplasticfsm.features.member.presentation
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
@@ -17,16 +22,14 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.MySingleton
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.nationalplasticfsm.R
-import com.nationalplasticfsm.app.AppDatabase
-import com.nationalplasticfsm.app.NetworkConstant
-import com.nationalplasticfsm.app.Pref
-import com.nationalplasticfsm.app.SearchListener
+import com.nationalplasticfsm.app.*
 import com.nationalplasticfsm.app.domain.MemberShopEntity
 import com.nationalplasticfsm.app.types.FragType
 import com.nationalplasticfsm.app.utils.AppUtils
+import com.nationalplasticfsm.app.utils.FTStorageUtils
 import com.nationalplasticfsm.app.utils.Toaster
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
@@ -34,11 +37,14 @@ import com.nationalplasticfsm.features.addAttendence.api.addattendenceapi.AddAtt
 import com.nationalplasticfsm.features.addAttendence.model.GetReportToFCMResponse
 import com.nationalplasticfsm.features.addshop.presentation.AccuracyIssueDialog
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
+import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
 import com.nationalplasticfsm.features.member.api.TeamRepoProvider
 import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
 import com.nationalplasticfsm.features.member.model.TeamShopListResponseModel
+import com.nationalplasticfsm.features.nearbyshops.api.ShopListRepositoryProvider
 import com.nationalplasticfsm.features.nearbyshops.api.updateaddress.ShopAddressUpdateRepoProvider
+import com.nationalplasticfsm.features.nearbyshops.model.ShopListResponse
 import com.nationalplasticfsm.features.nearbyshops.model.updateaddress.AddressUpdateRequest
 import com.nationalplasticfsm.features.nearbyshops.presentation.UpdateShopStatusDialog
 import com.nationalplasticfsm.widgets.AppCustomTextView
@@ -46,7 +52,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.HashMap
+import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by Saikat on 28-02-2020.
@@ -54,6 +62,8 @@ import java.util.HashMap
 //Revision History
 // 1.0 MemberAllShopListFragment  AppV 4.0.6  Saheli    11/01/2023 IsAllowShopStatusUpdate
 // 2.0 MemberAllShopListFragment  AppV 4.0.6  Saheli    13/01/2023 getTeamShopList function work for size 1
+// 3.0 MemberAllShopListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
+// 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651
 class MemberAllShopListFragment : BaseFragment() {
 
     private lateinit var mContext: Context
@@ -65,6 +75,7 @@ class MemberAllShopListFragment : BaseFragment() {
     private lateinit var tv_team_struct: AppCustomTextView
     private lateinit var tv_shop_count: AppCustomTextView
     private lateinit var tv_shop_path: AppCustomTextView
+    private lateinit var tv_view_all_shoplist: AppCustomTextView
 
     private var userId = ""
     private var shopId = ""
@@ -74,6 +85,10 @@ class MemberAllShopListFragment : BaseFragment() {
     private var adapter: MemberAllShopListAdapter? = null
     private var isAddressUpdating = false
     private var dialog: AccuracyIssueDialog? = null
+
+    private lateinit var radioG : RadioGroup
+    private lateinit var radioBtnAll:RadioButton
+    private lateinit var radioBtnNearBy:RadioButton
 
     val shopIdList: MutableList<String> by lazy {
         listOf<String>().toMutableList()
@@ -114,7 +129,11 @@ class MemberAllShopListFragment : BaseFragment() {
         CustomStatic.TeamUserSelect_user_id = userId
 
         isBackPressed = false
-        getTeamShopList()
+        if(CustomStatic.IsTeamAllParty){
+            callShopListApi(true)
+        }else{
+            getTeamShopList()
+        }
 
         (mContext as DashboardActivity).setSearchListener(object : SearchListener {
             override fun onSearchQueryListener(query: String) {
@@ -124,8 +143,9 @@ class MemberAllShopListFragment : BaseFragment() {
                     val shopType = AppDatabase.getDBInstance()?.shopTypeDao()?.getSingleType(shop_list?.get(0)?.shop_type!!)
                     if (shopType != null && !TextUtils.isEmpty(shopType.shoptype_name)) {
                         tv_shop_count.text = "Total " + shopType.shoptype_name + "(s): " + shop_list?.size
-                    } else
+                    } else {
                         tv_shop_count.text = "Total " + Pref.shopText + "(s): " + shop_list?.size
+                    }
                 } else {
                     adapter?.filter?.filter(query)
                 }
@@ -133,10 +153,58 @@ class MemberAllShopListFragment : BaseFragment() {
         })
 
 
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
+
         return view
     }
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex: java.lang.Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
 
     private fun initView(view: View) {
+        radioG = view.findViewById(R.id.radio_grp)
+        radioBtnAll= view.findViewById(R.id.rb_total_shop)
+        radioBtnNearBy= view.findViewById(R.id.rb_visit_shop)
+
         rv_team_shop_list = view.findViewById(R.id.rv_team_shop_list)
         rv_team_shop_list.layoutManager = LinearLayoutManager(mContext)
 
@@ -144,7 +212,10 @@ class MemberAllShopListFragment : BaseFragment() {
         tv_team_struct = view.findViewById(R.id.tv_team_struct)
         tv_shop_count = view.findViewById(R.id.tv_shop_count)
         tv_shop_path = view.findViewById(R.id.tv_shop_path)
-
+       // 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 start
+        tv_view_all_shoplist = view.findViewById(R.id.tv_view_all_shop)
+        tv_view_all_shoplist.visibility = View.GONE
+// 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 end
         progress_wheel = view.findViewById(R.id.progress_wheel)
         progress_wheel.stopSpinning()
 
@@ -170,6 +241,23 @@ class MemberAllShopListFragment : BaseFragment() {
 
         tv_shop_count.text = "Total " + Pref.shopText + "(s): 0"
         tv_no_data_available.text = "No " + Pref.shopText + " Available"
+      // 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 start
+        /*tv_view_all_shoplist.setOnClickListener {
+            callShopListApi(true)
+            radioBtnAll.isSelected = true
+            radioBtnAll.isChecked = true
+            radioG.visibility = View.VISIBLE
+            radioBtnNearBy.text = "Nearby"
+        }
+
+        radioBtnAll.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                callShopListApi(true)
+            }else{
+                callShopListApi(false)
+            }
+        }*/
+        // 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 end
     }
 
     private fun getTeamShopList() {
@@ -188,7 +276,7 @@ class MemberAllShopListFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as TeamShopListResponseModel
-                            XLog.d("GET TEAM SHOP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET TEAM SHOP DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
 
@@ -209,7 +297,7 @@ class MemberAllShopListFragment : BaseFragment() {
                                     }catch (ex:Exception){
                                         ex.printStackTrace()
                                     }
-                                    initAdapter(response.shop_list!!)
+                                    initAdapter(response.shop_list!!,false)
                                 } else {
                                     if (TextUtils.isEmpty(shopId))
                                         tv_no_data_available.visibility = View.VISIBLE
@@ -223,7 +311,7 @@ class MemberAllShopListFragment : BaseFragment() {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET TEAM SHOP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET TEAM SHOP DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             if (TextUtils.isEmpty(shopId))
@@ -232,8 +320,91 @@ class MemberAllShopListFragment : BaseFragment() {
         )
     }
 
+// 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 start
+    private fun callShopListApi(isAll:Boolean) {
+        println("xyz - getListFromDatabase end" + AppUtils.getCurrentDateTime());
+        val repository = ShopListRepositoryProvider.provideShopListRepository()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+            repository.getShopList(Pref.session_token!!,userId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    var shopList = result as ShopListResponse
+                    progress_wheel.stopSpinning()
+                    if (shopList.status == NetworkConstant.SUCCESS) {
+                        if (shopList.data!!.shop_list!!.isNotEmpty()) {
+                             var all_shop_list: ArrayList<TeamShopListDataModel> = ArrayList()
+
+                            shopList.data!!.shop_list!!.forEachIndexed{index, item ->
+                                val newItem: TeamShopListDataModel = TeamShopListDataModel(
+                                    item.shop_id.toString(),
+                                    item.shop_name.toString(),
+                                    item.shop_lat.toString(),item.shop_long?:"",item.address?:"",item.pin_code?:""
+                                    ,item.owner_contact_no?:"",item.total_visit_count?:"",item.last_visit_date?:"",
+                                    item.type?:"",item.director_name?:"",item.entity_code?:"",item.area_id?:"",
+                                    item.model_id?:"",item.primary_app_id?:"",item.secondary_app_id?:"",
+                                    item.lead_id?:"",item.funnel_stage_id?:"",
+                                    item.stage_id?:"",item.booking_amount?:"",
+                                    item.type_id?:"",userId,item.assigned_to_pp_id?:"",item.assigned_to_dd_id?:"",
+                                    item.owner_name?:"",item.owner_email?:"",item.dob?:"",
+                                )
+
+                                    all_shop_list.add(newItem)
+                            }
+
+                            if(isAll){
+                                initAdapter(all_shop_list,true)
+                            }else{
+                                var loc = Location("")
+                                loc.latitude = Pref.current_latitude.toDouble()
+                                loc.longitude = Pref.current_longitude.toDouble()
+                                getNearbyShopList(loc,all_shop_list)
+                            }
+
+
+
+                        } else{
+                            // No data found
+                        }
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+
+                })
+        )
+    }
+    // 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 end
+
+    private fun getNearbyShopList(location: Location, allShopList: ArrayList<TeamShopListDataModel>) {
+
+        val newShopList = ArrayList<TeamShopListDataModel>()
+
+        allShopList?.takeIf { it.size > 0 }?.let {
+            it.forEach { teamShop ->
+                val shopLat = teamShop.shop_lat.toDouble()
+                val shopLong = teamShop.shop_long.toDouble()
+                if (shopLat != null && shopLong != null) {
+                    val shopLocation = Location("")
+                    shopLocation.let {
+                        it.latitude = shopLat
+                        it.longitude = shopLong
+                        FTStorageUtils.checkShopPositionWithinRadious(location, it, LocationWizard.NEARBY_RADIUS)
+                    }.takeIf { it }?.apply {
+                        newShopList.add(teamShop)
+                    }
+                }
+            }
+        } ?: let {
+            Timber.d("====empty shop list (Local Shop List)======")
+        }
+
+        initAdapter(newShopList,true)
+    }
+
     @SuppressLint("SetTextI18n")
-    private fun initAdapter(shop_list: ArrayList<TeamShopListDataModel>) {
+    private fun initAdapter(shop_list: ArrayList<TeamShopListDataModel>,isViewAll : Boolean) {
         tv_no_data_available.visibility = View.GONE
 
         if (!isBackPressed && shopId.isNotEmpty())
@@ -250,50 +421,65 @@ class MemberAllShopListFragment : BaseFragment() {
         val shopType = AppDatabase.getDBInstance()?.shopTypeDao()?.getSingleType(shop_list[0].shop_type)
         if (shopType != null && !TextUtils.isEmpty(shopType.shoptype_name)) {
             tv_shop_count.text = "Total " + shopType.shoptype_name + "(s): " + shop_list.size
-        } else
+        } else {
             tv_shop_count.text = "Total " + Pref.shopText + "(s): " + shop_list.size
-
+        }
         if (!TextUtils.isEmpty(shopId)) {
             tv_shop_path.visibility = View.VISIBLE
 
             shopNameList.forEachIndexed { index, shopName ->
-                if (index == shopNameList.size - 1)
+                if (index == shopNameList.size - 1) {
                     tv_shop_path.text = shopName
-                else
+                }
+                else {
                     tv_shop_path.text = shopName + "-> "
+                }
             }
         } else
             tv_shop_path.visibility = View.GONE
-
-        adapter = MemberAllShopListAdapter(mContext, shop_list, { teamShop: TeamShopListDataModel ->
+// 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 start
+        adapter = MemberAllShopListAdapter(mContext, shop_list,isViewAll,
+            { teamShop: TeamShopListDataModel ->
+                if (!Pref.isAddAttendence)
+                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                else {
+                    (mContext as DashboardActivity).callDialog(teamShop)
+                }
+            },
+            { teamShop: TeamShopListDataModel ->
             shopId = teamShop.shop_id
             shopNameList.add(teamShop.shop_name)
             isBackPressed = false
             getTeamShopList()
-        }, { teamShop: TeamShopListDataModel ->
+        },
+            { teamShop: TeamShopListDataModel ->
 
             if (AppUtils.mLocation != null) {
                 if (AppUtils.mLocation!!.accuracy <= Pref.shopLocAccuracy.toFloat()) {
                     openAddressUpdateDialog(teamShop, AppUtils.mLocation!!)
                 } else {
-                    XLog.d("======Saved current location is inaccurate (Member Shop List)========")
+                    Timber.d("======Saved current location is inaccurate (Member Shop List)========")
                     getShopLatLong(teamShop)
                 }
             } else {
-                XLog.d("=====Saved current location is null (Member Shop List)======")
+                Timber.d("=====Saved current location is null (Member Shop List)======")
                 getShopLatLong(teamShop)
             }
 
-        }, { size: Int ->
+        },
+            // 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 end
+            { size: Int ->
             val shopType_ = AppDatabase.getDBInstance()?.shopTypeDao()?.getSingleType(shop_list[0].shop_type)
             if (shopType_ != null && !TextUtils.isEmpty(shopType_.shoptype_name)) {
                 tv_shop_count.text = "Total " + shopType_.shoptype_name + "(s): " + size
-            } else
+            } else {
                 tv_shop_count.text = "Total " + Pref.shopText + "(s): " + size
+            }
         },
             { teamShop: TeamShopListDataModel ->
-                if (!Pref.isAddAttendence)
+                if (!Pref.isAddAttendence) {
                     (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                }
                 else if(Pref.IsAllowBreakageTrackingunderTeam) {
                     //CustomStatic.IsBreakageViewFromTeam = true
                     //(mContext as DashboardActivity).loadFragment(FragType.ShopDamageProductListFrag, true, teamShop.shop_id+"~"+userId)
@@ -303,13 +489,15 @@ class MemberAllShopListFragment : BaseFragment() {
 
             },
         { teamShop: TeamShopListDataModel ->
-            if (!Pref.isAddAttendence)
+            if (!Pref.isAddAttendence) {
                 (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+            }
             else if(Pref.IsNewQuotationfeatureOn) {
                 (mContext as DashboardActivity).loadFragment(FragType.ViewAllQuotListFragment, true, teamShop)
         }
 
-        },{
+        },
+            {
                 if(Pref.IsFeedbackHistoryActivated){
                     if (!AppUtils.isOnline(mContext)) {
                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
@@ -384,8 +572,9 @@ class MemberAllShopListFragment : BaseFragment() {
                 if (AppUtils.isOnline(mContext)) {
                     if (mTeamShop is TeamShopListDataModel)
                         callShopAddressUpdateApi(mTeamShop)
-                } else
+                } else {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                }
 
             }).show((mContext as DashboardActivity).supportFragmentManager, "UpdateShopAddressDialog")
 
@@ -418,8 +607,9 @@ class MemberAllShopListFragment : BaseFragment() {
                             if (response.status == NetworkConstant.SUCCESS) {
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
                                 getTeamShopList()
-                            } else
+                            } else {
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
+                            }
 
                         }, { error ->
                             error.printStackTrace()
@@ -435,17 +625,21 @@ class MemberAllShopListFragment : BaseFragment() {
 
         shopIdList.also {
             it.removeAt(it.size - 1)
-            shopId = if (it.size > 0)
+            shopId = if (it.size > 0) {
                 it[it.size - 1]
-            else
+            }
+            else {
                 ""
+            }
         }
 
         shopNameList.also {
-            if (it.size > 0)
+            if (it.size > 0) {
                 it[it.size - 1]
-            else
+            }
+            else {
                 it[0]
+            }
         }
 
         getTeamShopList()
@@ -466,7 +660,7 @@ class MemberAllShopListFragment : BaseFragment() {
                         }
 
                     }, { error ->
-                        XLog.d("Apply Leave Response ERROR=========> " + error.message)
+                        Timber.d("Apply Leave Response ERROR=========> " + error.message)
                         BaseActivity.isApiInitiated = false
                         progress_wheel.stopSpinning()
                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
@@ -522,5 +716,13 @@ class MemberAllShopListFragment : BaseFragment() {
         }
 
         MySingleton.getInstance(mContext)!!.addToRequestQueue(jsonObjectRequest)
+    }
+
+    fun updateAdapter() {
+        callShopListApi(true)
+        radioBtnAll.isSelected = true
+        radioBtnAll.isChecked = true
+        radioG.visibility = View.VISIBLE
+        radioBtnNearBy.text = "Nearby"
     }
 }

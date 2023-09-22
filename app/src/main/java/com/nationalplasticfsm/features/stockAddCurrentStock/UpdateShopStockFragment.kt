@@ -27,12 +27,14 @@ import com.nationalplasticfsm.features.stockAddCurrentStock.api.ShopAddStockProv
 import com.nationalplasticfsm.features.stockAddCurrentStock.model.CurrentStockGetData
 import com.nationalplasticfsm.features.stockCompetetorStock.model.CompetetorStockGetData
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 
+//1.0 Rev UpdateShopStockFragment AppV 4.0.8 saheli    12/05/2023 mantis 26101
 class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
 
     private lateinit var mContext: Context
@@ -41,6 +43,7 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
     private lateinit var myshop_contact_TV: AppCustomTextView
     private lateinit var addShopStockLL : LinearLayout
     private lateinit var rvStockDetails : RecyclerView
+    private lateinit var  tvattachment:AppCustomTextView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -86,19 +89,37 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
         }
     }
 
-    private fun initView(view: View?){
-
-        myshop_name_TV = view!!.findViewById(R.id.myshop_name_TV)
-        myshop_addr_TV = view!!.findViewById(R.id.myshop_address_TV)
-        myshop_contact_TV = view!!.findViewById(R.id.tv_contact_number)
-        addShopStockLL = view!!.findViewById(R.id.ll_frag_update_shop_stock_add)
-        rvStockDetails = view!!.findViewById(R.id.rv_current_stock_list)
+    private fun initView(view: View){
+        myshop_name_TV = view.findViewById(R.id.myshop_name_TV)
+        myshop_addr_TV = view.findViewById(R.id.myshop_address_TV)
+        myshop_contact_TV = view.findViewById(R.id.tv_contact_number)
+        addShopStockLL = view.findViewById(R.id.ll_frag_update_shop_stock_add)
+        rvStockDetails = view.findViewById(R.id.rv_current_stock_list)
         rvStockDetails.layoutManager=LinearLayoutManager(mContext)
 
         myshop_name_TV.text = mAddShopDataObj!!.shopName
         myshop_addr_TV.text = mAddShopDataObj!!.address
         myshop_contact_TV.text = "Owner Contact Number: " +mAddShopDataObj!!.ownerContactNumber
+        //1.0 start Rev UpdateShopStockFragment AppV 4.0.8 saheli    12/05/2023 mantis 26101
+        tvattachment = view.findViewById(R.id.tv_attachment_frag_update_shop_stock)
 
+        if(Pref.isCurrentStockEnable){
+            if(Pref.IsCurrentStockApplicableforAll){
+                if(Pref.IsAttachmentAvailableForCurrentStock){
+                    tvattachment.visibility = View.VISIBLE
+                }else{
+                    tvattachment.visibility = View.GONE
+                }
+            }else{
+                tvattachment.visibility = View.GONE
+            }
+        }else{
+            tvattachment.visibility = View.GONE
+        }
+
+
+        tvattachment.setOnClickListener(this)
+        //1.0 end Rev UpdateShopStockFragment AppV 4.0.8 saheli    12/05/2023 mantis 26101
         addShopStockLL.setOnClickListener(this)
     }
 
@@ -109,6 +130,12 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
                 override fun stockListOnClick(stockID: String) {
                     (mContext as DashboardActivity).loadFragment(FragType.ViewStockDetailsFragment, true, stockID)
                 }
+
+                //1.0 start Rev UpdateShopStockFragment AppV 4.0.8 saheli    12/05/2023 mantis 26101
+                override fun stockattachment(stockID: String) {
+                    (mContext as DashboardActivity).loadFragment(FragType.MultipleImageFileUploadonStock, true, stockID)
+                }
+                //1.0 end Rev UpdateShopStockFragment AppV 4.0.8 saheli    12/05/2023 mantis 26101
             })
         }else{
             return
@@ -140,7 +167,7 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("Stock/CurrentStockList " + result.status)
+                                Timber.d("Stock/CurrentStockList " + result.status)
                                 val response = result as CurrentStockGetData
                                 if (response.status == NetworkConstant.SUCCESS){
                                     if (response.stock_list!! != null && response.stock_list!!.isNotEmpty()){
@@ -184,15 +211,15 @@ class UpdateShopStockFragment : BaseFragment(), View.OnClickListener{
                                 }
                             },{error ->
                                 if (error == null) {
-                                    XLog.d("Stock/CurrentStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
+                                    Timber.d("Stock/CurrentStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
                                 } else {
-                                    XLog.d("Stock/CurrentStockList : ERROR " + error.localizedMessage)
+                                    Timber.d("Stock/CurrentStockList : ERROR " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
                             })
             )
         }catch (ex:Exception){
-            XLog.d("Stock/CurrentStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
+            Timber.d("Stock/CurrentStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
         }
     }
 

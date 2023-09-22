@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.inflate_member_list_item.view.*
 /**
  * Created by Saikat on 03-Jul-20.
  */
+// Revision History
+//1.0  OfflineMemberAdapter AppV 4.1.5 Saheli    06/06/2023  mantis 0026301: Team Details page working
 class OfflineMemberAdapter(context: Context, val teamList: List<MemberEntity>, val listener: OnClickListener) :
         RecyclerView.Adapter<OfflineMemberAdapter.MyViewHolder>(), Filterable {
 
@@ -101,6 +103,23 @@ class OfflineMemberAdapter(context: Context, val teamList: List<MemberEntity>, v
             itemView.iv_job.setOnClickListener{
                 listener.onJobClick(teamList[adapterPosition])
             }
+
+            //start 1.0  OfflineMemberAdapter AppV 4.1.5 Saheli    06/06/2023  mantis 0026301: Team Details page working
+            if(Pref.isOfflineTeam){
+                itemView.iv_beat.visibility=View.GONE
+                itemView.iv_zero_order.visibility = View.GONE
+                itemView.iv_coll.visibility = View.GONE
+                itemView.iv_leave.visibility = View.GONE
+                itemView.iv_job.visibility = View.GONE
+            }
+            else{
+                itemView.iv_beat.visibility=View.VISIBLE
+                itemView.iv_zero_order.visibility = View.VISIBLE
+                itemView.iv_coll.visibility = View.VISIBLE
+                itemView.iv_leave.visibility = View.VISIBLE
+                itemView.iv_job.visibility = View.VISIBLE
+            }
+            //end 1.0  OfflineMemberAdapter AppV 4.1.5 Saheli    06/06/2023  mantis 0026301: Team Details page working
 
         }
     }

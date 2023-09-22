@@ -233,6 +233,14 @@ class ViewLeadFrag : BaseFragment(), View.OnClickListener{
 
         header.text = "Add Activity"
 
+        activityStatus.text="Confirmed"
+        try{
+            val listActivityTypeL = AppDatabase.getDBInstance()?.activityDropdownDao()?.getAll()
+            activityType.text=listActivityTypeL?.get(0)?.activity_name
+        }catch (ex:Exception){
+            ex.printStackTrace()
+        }
+
         if(Pref.IsAutoLeadActivityDateTime){
             tv_time.text = AppUtils.getCurrentTimes()
             tv_date_dialog.text = AppUtils.getCurrentDate_DD_MM_YYYY()
@@ -269,7 +277,7 @@ class ViewLeadFrag : BaseFragment(), View.OnClickListener{
         activityStatus.setOnClickListener {
             activityStatus.error=null
             var List:ArrayList<String> = ArrayList()
-            List.add("Confirmed ")
+            List.add("Confirmed")
             List.add("In Process")
             List.add("Not Interested")
 

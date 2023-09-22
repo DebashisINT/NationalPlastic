@@ -19,7 +19,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.NetworkConstant
@@ -50,6 +50,7 @@ import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.joda.time.DateTime
+import timber.log.Timber
 
 
 /**
@@ -257,7 +258,7 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", RESPONSE:" + result.message)
+                            Timber.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", RESPONSE:" + result.message)
                             if (result.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopId, selectedDate)
                                 OrderListAdapter.updateList(AppDatabase.getDBInstance()!!.shopActivityDao().getTotalShopVisitedForADay(selectedDate))
@@ -269,7 +270,7 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
                         }, { error ->
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
-                            XLog.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", ERROR:" + error.localizedMessage)
+                            Timber.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", ERROR:" + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
 
                         })
@@ -438,6 +439,10 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
             override fun onMultipleImageClick(shop: Any, position: Int) {
                 TODO("Not yet implemented")
             }
+
+            override fun onWhatsApiClick(shop_id: String) {
+                TODO("Not yet implemented")
+            }
         })
         layoutManager = LinearLayoutManager(mContext, LinearLayout.VERTICAL, false)
         shopList.layoutManager = layoutManager
@@ -600,7 +605,7 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", RESPONSE:" + result.message)
+                            Timber.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", RESPONSE:" + result.message)
                             if (result.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.shopActivityDao().updateisUploaded(true, shopId, selectedDate)
                                 //
@@ -621,7 +626,7 @@ class OrderListFragment : BaseFragment(), DatePickerListener, View.OnClickListen
                             progress_wheel.stopSpinning()
                             error.printStackTrace()
                             if (error != null) {
-                                XLog.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", ERROR:" + error.localizedMessage)
+                                Timber.d("ShopActivityFromAverageShop : " + "User Id" + Pref.user_id + ", Session Token" + Pref.session_token + ", SHOP_ID: " + mList[0].shopid + ", SHOP: " + mList[0].shop_name + ", ERROR:" + error.localizedMessage)
                                 (mContext as DashboardActivity).showSnackMessage(mContext.getString(R.string.unable_to_sync))
                             }
                         })

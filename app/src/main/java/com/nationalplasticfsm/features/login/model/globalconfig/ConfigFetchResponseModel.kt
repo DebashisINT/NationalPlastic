@@ -7,6 +7,10 @@ import com.nationalplasticfsm.base.BaseResponse
  */
 //Revision History
 // 1.0 ConfigFetchResponseModel AppV 4.0.6  Saheli    25/01/2023  mantis 25623
+// 2.0 ConfigFetchResponseModel AppV 4.0.8  Saheli    06/04/2023  mantis 0025780
+// 3.0 ConfigFetchResponseModel AppV 4.0.8  Saheli    20/04/2023  mantis 25860
+// 4.0 ConfigFetchResponseModel AppV 4.0.8  Saheli    20/04/2023  mantis 26023
+// 5.0 ConfigFetchResponseModel AppV 4.0.8  Saheli    12/05/2023  mantis 0026101
 class ConfigFetchResponseModel : BaseResponse() {
     var min_accuracy: String? = "200"
     var max_accuracy: String? = "1500"
@@ -124,8 +128,45 @@ class ConfigFetchResponseModel : BaseResponse() {
     var isExpenseFeatureAvailable:Boolean?=null//mantis 25607
     var IsRouteStartFromAttendance:Boolean?=null
 
+    var IsShowQuotationFooterforEurobond:Boolean?=null
+    var IsShowOtherInfoinShopMaster:Boolean?=null
+
+    var IsAllowZeroRateOrder: Boolean? = null
+
+    var ShowApproxDistanceInNearbyShopList: Boolean? = null
+    var IsAssignedDDAvailableForAllUser: Boolean? = null// mantis 0025780
+    var IsShowEmployeePerformance:Boolean?=null// mantis 25860
+
+    var IsTaskManagementAvailable:Boolean?=null// mantis 26023
+
+    var IsShowPrivacyPolicyInMenu:Boolean?=null// mantis 25912
+
+    var IsAttendanceCheckedforExpense:Boolean?=null
+    var IsShowLocalinExpense:Boolean?=null
+    var IsShowOutStationinExpense:Boolean?=null
+    var IsSingleDayTAApplyRestriction:Boolean?=null
+    var IsTAAttachment1Mandatory:Boolean?=null
+    var IsTAAttachment2Mandatory:Boolean?=null
+    var NameforConveyanceAttachment1:String = ""
+    var NameforConveyanceAttachment2:String = ""
+
+    var IsAttachmentAvailableForCurrentStock:Boolean?=null// mantis 0026101
+
+    var IsShowReimbursementTypeInAttendance:Boolean?=null// mantis 26119
+
+    var IsBeatPlanAvailable:Boolean?=null// mantis 26163
+
+    var IsUpdateVisitDataInTodayTable:Boolean?=null
 
 
+    var IsShowWhatsAppIconforVisit:Boolean?=null
+    var IsAutomatedWhatsAppSendforRevisit:Boolean?=null
 
+    var ShopSyncIntervalInMinutes:String? = ""
+
+    var IsAllowBackdatedOrderEntry:Boolean?=null
+    var Order_Past_Days:Int?=null
+
+    var Show_distributor_scheme_with_Product:Boolean?=null
 
 }

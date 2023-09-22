@@ -1,7 +1,13 @@
 package com.nationalplasticfsm.app
 
+import com.nationalplasticfsm.app.utils.AppUtils
+import okhttp3.CacheControl
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -11,64 +17,38 @@ import java.util.concurrent.TimeUnit
 class NetworkConstant {
     //Base URL
     companion object {
-        //local
-//        var BASE_URL="http://10.0.8.251:8084/API/"
-//       var ADD_SHOP_BASE_URL="http://10.0.8.251:8084/"
-
-        /*var BASE_URL = "http://10.0.14.110:8083/API/"
-        var ADD_SHOP_BASE_URL = "http://10.0.14.110:8083/"*/
-
-        /*var BASE_URL = "http://10.0.8.251:8085/API/"
-        var ADD_SHOP_BASE_URL = "http://10.0.8.251:8085/"*/
-
-        /*var BASE_URL = "http://10.0.8.251:9099/API/"
-        var ADD_SHOP_BASE_URL = "http://10.0.8.251:9099/"*/
 
 
-       var BASE_URL = "http://fts.indusnettechnologies.com:7030/API/"
+        var BASE_URL = "http://fts.indusnettechnologies.com:7030/API/"
         var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:7030/"
+//        var BASE_URL = "http://3.7.30.86:8072/API/"
+//        var ADD_SHOP_BASE_URL = "http://3.7.30.86:8072/"
 
 
-//        var BASE_URL = "http://3.7.30.86:82/API/"// face test with suman
-//        var ADD_SHOP_BASE_URL = "http://3.7.30.86:82/"
+        //var BASE_URL = "http://localhost:8081/API/"
+        //var ADD_SHOP_BASE_URL = "http://localhost:8081/"
 
-
-        //var BASE_URL = "http://3.7.30.86:8072/API/"
-        //var ADD_SHOP_BASE_URL = "http://3.7.30.86:8072/"
-
-
-
-//        var BASE_URL = "http://fts.indusnettechnologies.com:7036/API/"
-
-//
-//        var BASE_URL = "http://fts.indusnettechnologies.com:8094/API/"
-//        var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:/"
+        //var BASE_URL = "http://192.168.4.174:8081/API/"
+        //var ADD_SHOP_BASE_URL = "http://192.168.4.174:8081/"
 
 
 
-        //LIVE
 
-//        var BASE_URL = "http://fts.indusnettechnologies.com:7023/API/"
-//        var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:7023/"
-//        var BASE_URL = "http://fts.indusnettechnologies.com:7023/API/"
-//        var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:7023/"
+
+
+
+
 
         /*var BASE_URL = "http://fts.indusnettechnologies.com:8094/API/"
         var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:8094/"*/
 
-        //DEV
-        /*var BASE_URL = "http://69.10.45.146:8081/API/"
-        var ADD_SHOP_BASE_URL = "http://69.10.45.146:8081/"*/
-
-        /*var BASE_URL = "http://fts.indusnettechnologies.com:8082/API/"
-        var ADD_SHOP_BASE_URL = "http://fts.indusnettechnologies.com:8082/"*/
 
         /*var BASE_URL = "http://hrms.indusnettechnologies.com:8081/API/"
         var ADD_SHOP_BASE_URL = "http://hrms.indusnettechnologies.com:8081/"*/
 
         /*DEV Internal*/
-//         var BASE_URL="http://hrms.indusnettechnologies.com:8085/API/"
-//         var ADD_SHOP_BASE_URL="http://hrms.indusnettechnologies.com:8085"
+//         var BASE_URL="http://hrms.indusnettechnologies.com:7025/API/"
+//         var ADD_SHOP_BASE_URL="http://hrms.indusnettechnologies.com:7025"
 
         /*nationalplasticfsm INTERNAL*/
 //        var BASE_URL="http://geapl.breezeerp.in:8083/API/"
@@ -148,6 +128,8 @@ class NetworkConstant {
                     .build()
         }
     }
+
+
 
 
 }

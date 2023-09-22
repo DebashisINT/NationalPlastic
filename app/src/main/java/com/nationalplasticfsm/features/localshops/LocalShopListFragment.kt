@@ -4,11 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
@@ -22,11 +26,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import com.elvishew.xlog.XLog
+
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
+import com.nationalplasticfsm.app.MaterialSearchView
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.SearchListener
 import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
@@ -42,12 +47,15 @@ import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.location.LocationWizard.Companion.NEARBY_RADIUS
 import com.nationalplasticfsm.features.location.SingleShotLocationProvider
 import com.nationalplasticfsm.widgets.AppCustomTextView
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 
 /**
  * Created by riddhi on 2/1/18.
  */
+//Revision History
+// 1.0 LocalShopListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
 class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
 
@@ -91,8 +99,54 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                 }
             }
         })
+
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
+
         return view
     }
+
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex: java.lang.Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
 
     override fun updateUI(any: Any) {
         super.updateUI(any)
@@ -206,6 +260,20 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
     private var permissionUtils: PermissionUtils? = null
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 /*if(SDK_INT >= 30){
@@ -224,8 +292,8 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
             override fun onPermissionNotGranted() {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
-
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+// mantis id 26741 Storage permission updation Suman 22-08-2023
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     override fun onClick(v: View?) {
@@ -238,7 +306,7 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
         if (list != null && list.size > 0) {
 
-            XLog.d("Local Shop List:== selected list size=====> " + list.size)
+            Timber.d("Local Shop List:== selected list size=====> " + list.size)
 
             val newList = ArrayList<AddShopDBModelEntity>()
 
@@ -248,7 +316,7 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                     newList.add(list[i])
             }
 
-            XLog.d("Local Shop List:== new selected list size=====> " + newList.size)
+            Timber.d("Local Shop List:== new selected list size=====> " + newList.size)
 
             noShopAvailable.visibility = View.GONE
             nearByShopsList.visibility = View.VISIBLE
@@ -357,7 +425,7 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
             }
         } else {
 
-            XLog.d("=====empty selected list (Local Shop List)=======")
+            Timber.d("=====empty selected list (Local Shop List)=======")
 
             noShopAvailable.visibility = View.VISIBLE
             nearByShopsList.visibility = View.GONE
@@ -399,7 +467,7 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
             getNearyShopList(location)
         }
         else {
-            XLog.d("====================null location (Local Shop List)===================")
+            Timber.d("====================null location (Local Shop List)===================")
 
             progress_wheel.spin()
             SingleShotLocationProvider.requestSingleUpdate(mContext,
@@ -437,11 +505,11 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
             if (AppUtils.mLocation!!.accuracy <= Pref.gpsAccuracy.toInt())
                 getNearyShopList(AppUtils.mLocation!!)
             else {
-                XLog.d("=====Inaccurate current location (Local Shop List)=====")
+                Timber.d("=====Inaccurate current location (Local Shop List)=====")
                 singleLocation()
             }
         } else {
-            XLog.d("=====null location (Local Shop List)======")
+            Timber.d("=====null location (Local Shop List)======")
             singleLocation()
         }
     }
@@ -511,9 +579,10 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
 
 
         if (newList != null && newList.size > 0) {
-            XLog.d("Local Shop List: all shop list size======> " + newList.size)
-            XLog.d("======Local Shop List======")
+            Timber.d("Local Shop List: all shop list size======> " + newList.size)
+            Timber.d("======Local Shop List======")
             for (i in 0 until newList.size) {
+                println("\nnearby_count $i ${AppUtils.getCurrentDateTime()}" );
                 val shopLat: Double = newList[i].shopLat
                 val shopLong: Double = newList[i].shopLong
 
@@ -522,13 +591,13 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                     shopLocation.latitude = shopLat
                     shopLocation.longitude = shopLong
 
-                    /*XLog.d("shop_id====> " + allShopList[i].shop_id)
-                    XLog.d("shopName====> " + allShopList[i].shopName)
-                    XLog.d("shopLat====> $shopLat")
-                    XLog.d("shopLong====> $shopLong")
-                    XLog.d("lat=====> " + location.latitude)
-                    XLog.d("long=====> " + location.longitude)
-                    XLog.d("NEARBY_RADIUS====> $NEARBY_RADIUS")*/
+                    /*Timber.d("shop_id====> " + allShopList[i].shop_id)
+                    Timber.d("shopName====> " + allShopList[i].shopName)
+                    Timber.d("shopLat====> $shopLat")
+                    Timber.d("shopLong====> $shopLong")
+                    Timber.d("lat=====> " + location.latitude)
+                    Timber.d("long=====> " + location.longitude)
+                    Timber.d("NEARBY_RADIUS====> $NEARBY_RADIUS")*/
 
                     var mRadious:Int = NEARBY_RADIUS
                     if(Pref.IsRestrictNearbyGeofence){
@@ -538,35 +607,35 @@ class LocalShopListFragment : BaseFragment(), View.OnClickListener {
                     //val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, NEARBY_RADIUS)
                     val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(location, shopLocation, mRadious)
                     if (isShopNearby) {
-                        XLog.d("shop_id====> " + newList[i].shop_id+ " shopName====> " + newList[i].shopName)
-                        XLog.d("shopLat====> $shopLat"+" shopLong====> $shopLong")
-                        XLog.d("lat=====> " + location.latitude+" long=====> " + location.longitude)
-                        XLog.d("NEARBY_RADIUS====> $NEARBY_RADIUS")
-                        XLog.d("=====" + newList[i].shopName + " is nearby=====")
+                        //Timber.d("shop_id====> " + newList[i].shop_id+ " shopName====> " + newList[i].shopName)
+                        //Timber.d("shopLat====> $shopLat"+" shopLong====> $shopLong")
+                        //Timber.d("lat=====> " + location.latitude+" long=====> " + location.longitude)
+                        //Timber.d("NEARBY_RADIUS====> $NEARBY_RADIUS")
+                        //Timber.d("=====" + newList[i].shopName + " is nearby=====")
                         newList[i].visited = !shoulIBotherToUpdate(newList[i].shop_id)
                         list.add(newList[i])
                     } else {
-                        // XLog.d("=============" + allShopList[i].shopName + " is NOT nearby===============")
+                        // Timber.d("=============" + allShopList[i].shopName + " is NOT nearby===============")
                     }
 
                 } else {
-                    XLog.d("shop_id====> " + newList[i].shop_id+ " shopName===> " + newList[i].shopName)
+                    Timber.d("shop_id====> " + newList[i].shop_id+ " shopName===> " + newList[i].shopName)
 
                     if (shopLat != null)
-                        XLog.d("shopLat===> $shopLat")
+                        Timber.d("shopLat===> $shopLat")
                     else
-                        XLog.d("shopLat===> null")
+                        Timber.d("shopLat===> null")
 
                     if (shopLong != null)
-                        XLog.d("shopLong====> $shopLong")
+                        Timber.d("shopLong====> $shopLong")
                     else
-                        XLog.d("shopLong====> null")
+                        Timber.d("shopLong====> null")
                 }
             }
-            XLog.d("=============================================")
+            //Timber.d("=============================================")
 
         } else {
-            XLog.d("====empty shop list (Local Shop List)======")
+            Timber.d("====empty shop list (Local Shop List)======")
         }
 
         initAdapter()

@@ -25,6 +25,7 @@ import java.io.InputStream;
 /**
  * Created by Saikat on 25-11-2019.
  */
+// Rev 1.0 NewFileUtils AppV 4.0.8 saheli    12/05/2023 mantis 26101
 public class NewFileUtils {
 
     private static String mimeType = "";
@@ -412,4 +413,31 @@ public class NewFileUtils {
         }
         context.startActivityForResult(Intent.createChooser(intent, "ChooseFile"), requestCode);
     }
+
+    // rev NewFileUtils start 1.0 AppV 4.0.8 saheli    12/05/2023 mantis 26101
+    public static void browsePDFDocuments(Activity context, int requestCode) {
+
+        String[] mimeTypes =
+                {
+                        "application/pdf" //.pdf
+                };
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent.setType(mimeTypes.length == 1 ? mimeTypes[0] : "*/*");
+            if (mimeTypes.length > 0) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+            }
+        } else {
+            String mimeTypesStr = "";
+            for (String mimeType : mimeTypes) {
+                mimeTypesStr += mimeType + "|";
+            }
+            intent.setType(mimeTypesStr.substring(0, mimeTypesStr.length() - 1));
+        }
+        context.startActivityForResult(Intent.createChooser(intent, "ChooseFile"), requestCode);
+    }
+    // rev NewFileUtils end 1.0 AppV 4.0.8 saheli    12/05/2023 mantis 26101
 }

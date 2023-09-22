@@ -37,4 +37,9 @@ class AddAttendenceInpuModel {
     var JointVisitTeam_MemberName = ""
     var JointVisitTeam_Member_User_ID = "0"
     var isDistributorwiseNearbyShopVisit = "No"
+
+    //Begin Rev 7.0 AddAttendanceFragment AppV 4.1.3 Suman    17/05/2023 beat flow updation 26118
+    var visit_location_id = ""
+    var area_location_id = ""
+    //End of Rev 7.0 AddAttendanceFragment AppV 4.1.3 Suman    17/05/2023 beat flow updation 26118
 }

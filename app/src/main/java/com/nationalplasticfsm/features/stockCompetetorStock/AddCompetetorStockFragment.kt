@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.stockCompetetorStock
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -28,11 +29,12 @@ import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.stockCompetetorStock.api.AddCompStockProvider
 import com.nationalplasticfsm.features.stockCompetetorStock.model.CompetetorStockData
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
@@ -81,6 +83,7 @@ class AddCompetetorStockFragment: BaseFragment(), View.OnClickListener {
         return view
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view:View){
         myshop_name_TV = view!!.findViewById(R.id.myshop_name_TV)
         myshop_addr_TV = view!!.findViewById(R.id.myshop_address_TV)
@@ -397,7 +400,7 @@ class AddCompetetorStockFragment: BaseFragment(), View.OnClickListener {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("CompetitorStock/AddCompetitorStock : RESPONSE " + result.status)
+                                Timber.d("CompetitorStock/AddCompetitorStock : RESPONSE " + result.status)
                                 if (result.status == NetworkConstant.SUCCESS){
                                     AppDatabase.getDBInstance()?.competetorStockEntryDao()?.syncShopCompStocktable(currentStock.competitor_stock_id.toString())
                                     AppDatabase.getDBInstance()?.competetorStockEntryProductDao()?.syncShopCompProductable(currentStock.competitor_stock_id.toString())
@@ -405,9 +408,9 @@ class AddCompetetorStockFragment: BaseFragment(), View.OnClickListener {
                                 }
                             },{error ->
                                 if (error == null) {
-                                    XLog.d("CompetitorStock/AddCompetitorStock : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
+                                    Timber.d("CompetitorStock/AddCompetitorStock : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
                                 } else {
-                                    XLog.d("CompetitorStock/AddCompetitorStock : ERROR " + error.localizedMessage)
+                                    Timber.d("CompetitorStock/AddCompetitorStock : ERROR " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
                             })

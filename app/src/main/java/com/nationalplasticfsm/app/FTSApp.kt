@@ -10,24 +10,26 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.crashlytics.android.Crashlytics
 import com.nationalplasticfsm.app.utils.AppUtils
-import com.elvishew.xlog.LogConfiguration
-import com.elvishew.xlog.XLog
-import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor
-import com.elvishew.xlog.printer.AndroidPrinter
-import com.elvishew.xlog.printer.Printer
-import com.elvishew.xlog.printer.file.FilePrinter
-import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy2
-import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy
+import com.nationalplasticfsm.app.utils.FileLoggingTree
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
 import com.facebook.stetho.Stetho
 import com.marcinmoskala.kotlinpreferences.PreferenceHolder
 import io.fabric.sdk.android.Fabric
+import timber.log.Timber
 import java.io.File
 
 
 class FTSApp : MultiDexApplication() {
 
     lateinit var appComponent: AppComponent
-    var globalFilePrinter: Printer? = null
+    //var globalFilePrinter: Printer? = null
 
     @Suppress("INTEGER_OVERFLOW")
     private val MAX_TIME: Long = 1000 * 60 * 60 * 24 * 300
@@ -41,7 +43,8 @@ class FTSApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 //        appComponent = buildAppComponent()
-        initXlog()
+        //initXlog()
+        //initTimber()
 
         AppDatabase.initAppDatabase(this)
         Stetho.initializeWithDefaults(this)
@@ -59,10 +62,16 @@ class FTSApp : MultiDexApplication() {
                  .build()
      }*/
 
+    private fun initTimber() {
+        Timber.plant(Timber.DebugTree())
+        Timber.plant(FileLoggingTree())
+    }
+
 
     /**
      * Initialize XLog.
      */
+    /*
     private fun initXlog() {
 
 
@@ -120,6 +129,6 @@ class FTSApp : MultiDexApplication() {
         }
 
     }
-
+*/
 
 }

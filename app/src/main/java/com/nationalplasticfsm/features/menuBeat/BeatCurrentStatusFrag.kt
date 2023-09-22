@@ -22,13 +22,14 @@ import com.nationalplasticfsm.base.presentation.BaseFragment
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.dashboard.presentation.PJPClickListner
 import com.nationalplasticfsm.features.dashboard.presentation.PjpAdapter
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 //Revision History
 // 1.0 BeatCurrentStatusFrag  AppV 4.0.6  Saheli    16/01/2023 beatApi for currentTab
@@ -82,13 +83,13 @@ class BeatCurrentStatusFrag: BaseFragment(), View.OnClickListener {
                         }
                     }, { error ->
                         error.printStackTrace()
-                        XLog.d("BeatCurrentStatusFrag getCurrentTabData() ${AppUtils.getCurrentDateTime()} error " + error.localizedMessage)
+                        Timber.d("BeatCurrentStatusFrag getCurrentTabData() ${AppUtils.getCurrentDateTime()} error " + error.localizedMessage)
                     })
             )
         }
         catch (ex:Exception){
             ex.printStackTrace()
-            XLog.d("BeatCurrentStatusFrag getCurrentTabData() ex ${AppUtils.getCurrentDateTime()} error " + ex.localizedMessage)
+            Timber.d("BeatCurrentStatusFrag getCurrentTabData() ex ${AppUtils.getCurrentDateTime()} error " + ex.localizedMessage)
         }
     }
 

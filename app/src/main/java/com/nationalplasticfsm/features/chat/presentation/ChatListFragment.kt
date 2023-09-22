@@ -26,11 +26,12 @@ import com.nationalplasticfsm.features.chat.model.GroupUserDataModel
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.io.Serializable
 
 class ChatListFragment : BaseFragment(), View.OnClickListener {
@@ -107,9 +108,9 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
             loading = true
             getChatList()
         }
-        else
+        else {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
-
+        }
         return view
     }
 
@@ -221,7 +222,7 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as ChatListResponseModel
-                            XLog.d("Get Chat List STATUS: " + response.status)
+                            Timber.d("Get Chat List STATUS: " + response.status)
                             //loading = false
                             progress_wheel.stopSpinning()
                             if (response.status == NetworkConstant.SUCCESS) {
@@ -231,9 +232,9 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                                     chatAdapter?.refreshList(response.chat_list!!)
                                     //rv_chat_list.scrollToPosition(chatAdapter?.chatList!!.size - 1)
                                 }
-                                else
+                                else {
                                     chatAdapter?.refreshListForPagination(response.chat_list!!)
-
+                                }
                                 val notificationManager = mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                                 response.chat_list?.forEach {
                                     notificationManager.cancel((toID + "#" + it.id).hashCode())
@@ -252,7 +253,7 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                             /*loading = false
                             isOnPagination = false*/
                             if (error != null)
-                                XLog.d("Get Chat List ERROR: " + error.localizedMessage)
+                                Timber.d("Get Chat List ERROR: " + error.localizedMessage)
 
                             if (!isOnPagination)
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
@@ -265,10 +266,12 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
         when(v?.id) {
             R.id.tv_send_btn -> {
                 AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
-                if (TextUtils.isEmpty(et_msg.text.toString().trim()))
+                if (TextUtils.isEmpty(et_msg.text.toString().trim())) {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_enter_msg))
-                else
+                }
+                else {
                     sendChat()
+                }
             }
         }
     }
@@ -290,7 +293,7 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("Send Chat STATUS: " + response.status)
+                            Timber.d("Send Chat STATUS: " + response.status)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 (mContext as DashboardActivity).isRefreshChatUserList = true
                                 progress_wheel.stopSpinning()
@@ -308,7 +311,7 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             if (error != null)
-                                XLog.d("Send Chat ERROR: " + error.localizedMessage)
+                                Timber.d("Send Chat ERROR: " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
@@ -337,7 +340,7 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("Send Chat STATUS: " + response.status)
+                            Timber.d("Send Chat STATUS: " + response.status)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 progress_wheel.stopSpinning()
                             }
@@ -350,7 +353,7 @@ class ChatListFragment : BaseFragment(), View.OnClickListener {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             if (error != null)
-                                XLog.d("Send Chat ERROR: " + error.localizedMessage)
+                                Timber.d("Send Chat ERROR: " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )

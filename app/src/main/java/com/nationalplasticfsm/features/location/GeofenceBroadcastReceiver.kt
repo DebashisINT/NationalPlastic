@@ -4,14 +4,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.nationalplasticfsm.app.utils.AppUtils
-import com.elvishew.xlog.XLog
+
+import timber.log.Timber
 
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        XLog.d("geofencePendingIntent : onReceive   " + " , " + " Time :" + AppUtils.getCurrentDateTime() + " , onReceive ")
+        Timber.d("geofencePendingIntent : onReceive   " + " , " + " Time :" + AppUtils.getCurrentDateTime() + " , onReceive ")
 
         GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
 

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.core.content.ContextCompat
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.nationalplasticfsm.R
@@ -17,6 +18,8 @@ import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
 import com.nationalplasticfsm.app.utils.AppUtils
 import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
 import kotlinx.android.synthetic.main.inflate_member_shop_list.view.*
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.visit_TV
+import kotlinx.android.synthetic.main.inflate_nearby_shops.view.visit_icon
 
 /**
  * Created by Saikat on 31-01-2020.
@@ -97,16 +100,23 @@ class MemberShopListAdapter(private val context: Context, private val teamShopLi
                 val isPresent = AppDatabase.getDBInstance()!!.shopActivityDao().isShopActivityAvailable(teamShopList[adapterPosition].shop_id, AppUtils.getCurrentDateForShopActi())
                 if (isPresent) {
                     visit_icon.visibility = View.VISIBLE
-                    visit_TV.text = "VISITED"
+                    visit_TV.text = "Revisited Today"
+                    visit_TV.setTextColor(ContextCompat.getColor(context, R.color.maroon))
+                    visit_icon.setColorFilter(ContextCompat.getColor(context,R.color.maroon),android.graphics.PorterDuff.Mode.SRC_IN)
+
                     iconWrapper_rl.visibility = View.VISIBLE
                 } else {
                     visit_icon.visibility = View.GONE
-                    visit_TV.text = "VISIT THIS " + Pref.shopText.toUpperCase()
+
+                    visit_TV.text = "Revisit Now "
+                   visit_TV.setTextColor(ContextCompat.getColor(context, R.color.color_custom_green))
+
+
                     iconWrapper_rl.visibility = View.GONE
                 }
 
                 visit_rl.setOnClickListener {
-                    //if (!isPresent)
+                    if (!isPresent)
                         listener(teamShopList[adapterPosition])
                 }
 
@@ -260,6 +270,41 @@ class MemberShopListAdapter(private val context: Context, private val teamShopLi
                 itemView.shop_damage_ll.setOnClickListener{
                     onDamageClick(teamShopList[adapterPosition])
                 }
+
+
+                ////new code
+
+                itemView.order_view.visibility = View.GONE
+
+                if (Pref.IsAllowBreakageTrackingunderTeam ||Pref.IsFeedbackHistoryActivated ||Pref.isQuotationShow ){
+                    iconWrapper_rl.visibility = View.VISIBLE
+                }else{
+                    iconWrapper_rl.visibility = View.GONE
+                }
+
+                if (Pref.IsAllowBreakageTrackingunderTeam  ){
+                    itemView.shop_damage_ll.visibility = View.VISIBLE
+                    itemView.shop_damage_view.visibility = View.VISIBLE
+
+                }else{
+                    itemView.shop_damage_ll.visibility = View.GONE
+                }
+
+                if (Pref.IsFeedbackHistoryActivated ){
+                    itemView.history_llll.visibility = View.VISIBLE
+                    itemView.history_vvview.visibility = View.VISIBLE
+
+                }else{
+                    itemView.history_llll.visibility = View.GONE
+                }
+
+                if (Pref.isQuotationShow ){
+                    itemView.add_quot_ll.visibility = View.VISIBLE
+                }else{
+                    itemView.add_quot_ll.visibility = View.GONE
+                }
+
+
 
             }
         }

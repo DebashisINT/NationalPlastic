@@ -213,13 +213,13 @@
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:gravity="center"
                         android:orientation="vertical">
-
+                        <!--mantis 26272-->
                         <com.nationalplasticfsm.widgets.AppCustomTextView
                             android:id="@+id/n_shops_TV"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/rounded_corner_yellow_bg"
+                            android:background="@drawable/shadow_selector_page2"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="@android:color/white"
@@ -255,7 +255,7 @@
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/rounded_corner_red_bg"
+                            android:background="@drawable/shadow_selector_page1"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="@android:color/white"
@@ -291,7 +291,7 @@
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:background="@drawable/rounded_corner_green_bg"
+                            android:background="@drawable/shadow_selector_page"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="@android:color/white"
@@ -333,7 +333,7 @@
                                 android:layout_width="@dimen/_70sdp"
                                 android:layout_height="@dimen/_50sdp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/rounded_corner_daystart_bg"
+                                android:background="@drawable/shadow_selector_tab_ds"
                                 android:gravity="center"
                                 android:paddingLeft="@dimen/_10sdp"
                                 android:paddingTop="@dimen/_10sdp"
@@ -346,7 +346,6 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_day_start_new" />
 
@@ -400,7 +399,7 @@
                                 android:layout_width="@dimen/_70sdp"
                                 android:layout_height="@dimen/_50sdp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/rounded_corner_crimson_bg"
+                                android:background="@drawable/shadow_selector_page3"
                                 android:gravity="center"
                                 android:paddingLeft="@dimen/_10sdp"
                                 android:paddingTop="@dimen/_10sdp"
@@ -466,7 +465,7 @@
                                 android:layout_width="@dimen/_70sdp"
                                 android:layout_height="@dimen/_50sdp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/rounded_corner_dayend_bg"
+                                android:background="@drawable/shadow_selector_page2"
                                 android:gravity="center"
                                 android:paddingLeft="@dimen/_10sdp"
                                 android:paddingTop="@dimen/_10sdp"
@@ -530,7 +529,7 @@
                                 android:layout_width="@dimen/_70sdp"
                                 android:layout_height="@dimen/_50sdp"
                                 android:layout_centerHorizontal="true"
-                                android:background="@drawable/rounded_corner_daystart_bg"
+                                android:background="@drawable/shadow_selector_page1"
                                 android:gravity="center"
                                 android:paddingLeft="@dimen/_10sdp"
                                 android:paddingTop="@dimen/_10sdp"

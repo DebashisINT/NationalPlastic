@@ -13,7 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import com.elvishew.xlog.XLog
+import timber.log.Timber
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
@@ -717,35 +717,35 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
 
     private fun addQuotApi(quotEntity: QuotationEntity) {
 
-        XLog.d("==============Add Quot. Input Params====================")
-        XLog.d("shop id=======> " + quotEntity.shop_id)
-        XLog.d("quot. date=======> " + quotEntity.date)
-        XLog.d("quot. id=======> " + quotEntity.quo_id)
-        XLog.d("quot. no=======> " + quotEntity.quo_no)
-        XLog.d("hypothecation=======> " + quotEntity.hypothecation)
-        XLog.d("account_no=======> " + quotEntity.account_no)
-        XLog.d("model_id=======> " + quotEntity.model_id)
-        XLog.d("bs_id=======> " + quotEntity.bs_id)
-        XLog.d("gearbox=======> " + quotEntity.gearbox)
-        XLog.d("number1=======> " + quotEntity.number1)
-        XLog.d("value1=======> " + quotEntity.value1)
-        XLog.d("value2=======> " + quotEntity.value2)
-        XLog.d("tyres1=======> " + quotEntity.tyres1)
-        XLog.d("number2=======> " + quotEntity.number2)
-        XLog.d("value3=======> " + quotEntity.value3)
-        XLog.d("value4=======> " + quotEntity.value4)
-        XLog.d("tyres2=======> " + quotEntity.tyres2)
-        XLog.d("amount=======> " + quotEntity.amount)
-        XLog.d("discount=======> " + quotEntity.discount)
-        XLog.d("cgst=======> " + quotEntity.cgst)
-        XLog.d("sgst=======> " + quotEntity.sgst)
-        XLog.d("tcs=======> " + quotEntity.tcs)
-        XLog.d("insurance=======> " + quotEntity.insurance)
-        XLog.d("net_amount=======> " + quotEntity.net_amount)
-        XLog.d("remarks=======> " + quotEntity.remarks)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("============================================================")
+        Timber.d("==============Add Quot. Input Params====================")
+        Timber.d("shop id=======> " + quotEntity.shop_id)
+        Timber.d("quot. date=======> " + quotEntity.date)
+        Timber.d("quot. id=======> " + quotEntity.quo_id)
+        Timber.d("quot. no=======> " + quotEntity.quo_no)
+        Timber.d("hypothecation=======> " + quotEntity.hypothecation)
+        Timber.d("account_no=======> " + quotEntity.account_no)
+        Timber.d("model_id=======> " + quotEntity.model_id)
+        Timber.d("bs_id=======> " + quotEntity.bs_id)
+        Timber.d("gearbox=======> " + quotEntity.gearbox)
+        Timber.d("number1=======> " + quotEntity.number1)
+        Timber.d("value1=======> " + quotEntity.value1)
+        Timber.d("value2=======> " + quotEntity.value2)
+        Timber.d("tyres1=======> " + quotEntity.tyres1)
+        Timber.d("number2=======> " + quotEntity.number2)
+        Timber.d("value3=======> " + quotEntity.value3)
+        Timber.d("value4=======> " + quotEntity.value4)
+        Timber.d("tyres2=======> " + quotEntity.tyres2)
+        Timber.d("amount=======> " + quotEntity.amount)
+        Timber.d("discount=======> " + quotEntity.discount)
+        Timber.d("cgst=======> " + quotEntity.cgst)
+        Timber.d("sgst=======> " + quotEntity.sgst)
+        Timber.d("tcs=======> " + quotEntity.tcs)
+        Timber.d("insurance=======> " + quotEntity.insurance)
+        Timber.d("net_amount=======> " + quotEntity.net_amount)
+        Timber.d("remarks=======> " + quotEntity.remarks)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("============================================================")
 
         progress_wheel.spin()
         val repository = QuotationRepoProvider.provideBSListRepository()
@@ -763,7 +763,7 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("ADD QUOT. DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("ADD QUOT. DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 doAsync {
@@ -785,7 +785,7 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ADD QUOT. DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("ADD QUOT. DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage("Quotation added successfully")
                             (mContext as DashboardActivity).onBackPressed()
@@ -809,7 +809,7 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BSListResponseModel
-                            XLog.d("GET BS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET BS DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.bs_list != null && response.bs_list!!.isNotEmpty()) {
@@ -842,7 +842,7 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET BS DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET BS DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
@@ -873,7 +873,7 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
                             //val response = result as ModelListResponseModel
                             val response = result as ModelListResponse
-                            XLog.d("GET MODEL DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("GET MODEL DATA : " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
                             if (response.status == NetworkConstant.SUCCESS) {
 
                                 if (response.model_list != null && response.model_list!!.isNotEmpty()) {
@@ -908,7 +908,7 @@ class AddQuotationFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("GET MODEL DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("GET MODEL DATA : " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })

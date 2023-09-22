@@ -14,18 +14,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.MediaStore.Images.Media.getBitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.nationalplasticfsm.R
-import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
@@ -36,15 +33,10 @@ import com.nationalplasticfsm.base.BaseResponse
 import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.base.presentation.BaseFragment
 import com.nationalplasticfsm.features.addshop.api.AddShopRepositoryProvider
-import com.nationalplasticfsm.features.addshop.model.assigntopplist.AddShopUploadImg
 import com.nationalplasticfsm.features.addshop.model.assigntopplist.AddshopImageMultiReqbody1
 import com.nationalplasticfsm.features.addshop.model.imageListResponse
-import com.nationalplasticfsm.features.beatCustom.BeatGetStatusModel
-import com.nationalplasticfsm.features.beatCustom.api.GetBeatRegProvider
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
-import com.nationalplasticfsm.features.marketing.model.MarketingDetailImageData
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.squareup.picasso.Cache
 import com.squareup.picasso.MemoryPolicy
@@ -55,6 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 
@@ -228,7 +221,7 @@ class MultipleImageFragment: BaseFragment(),
             val fileSize = AppUtils.getCompressOldImage(filePath,mContext)
             uiThread {
                 if (newFile != null) {
-                    XLog.e("=========Image from new technique==========")
+                    //XLog.e("=========Image from new technique==========")
                     if(isDocDegree == 0){
                         progress_wheel.stopSpinning()
                         tv_text1.setText(newFile!!.name)
@@ -391,6 +384,19 @@ class MultipleImageFragment: BaseFragment(),
 
     private var permissionUtils: PermissionUtils? = null
     private fun initPermissionCheckOne() {
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 showPictureDialog()
@@ -400,10 +406,24 @@ class MultipleImageFragment: BaseFragment(),
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
 //                showPictureDialog()
@@ -413,7 +433,7 @@ class MultipleImageFragment: BaseFragment(),
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     fun showPictureDialog() {
@@ -434,7 +454,6 @@ class MultipleImageFragment: BaseFragment(),
         }
         pictureDialog.show()
     }
-
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         permissionUtils?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -490,7 +509,7 @@ class MultipleImageFragment: BaseFragment(),
                 }, { error ->
                     progress_wheel.stopSpinning()
                     if (error != null) {
-                        XLog.d("AddShop : Image Upload 1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
+                        Timber.d("AddShop : Image Upload 1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
                     }
                 })
         )
@@ -533,7 +552,7 @@ class MultipleImageFragment: BaseFragment(),
                     if (error != null) {
                         progress_wheel.stopSpinning()
                         openDialogPopup("Hi ${Pref.user_name} !","upload 2 attcmentment not successfully.")
-                        XLog.d("AddShop : Image Upload 1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
+                        Timber.d("AddShop : Image Upload 1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
                     }
                 })
         )}
@@ -573,7 +592,7 @@ class MultipleImageFragment: BaseFragment(),
                     if (error != null) {
                         progress_wheel.stopSpinning()
                         openDialogPopup("Hi ${Pref.user_name} !","upload 3 attcmentment not successfully.")
-                        XLog.d("AddShop : Image Upload 1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
+                        Timber.d("AddShop : Image Upload 1" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
                     }
                 })
         )
@@ -608,7 +627,7 @@ class MultipleImageFragment: BaseFragment(),
                     if (error != null) {
                         progress_wheel.stopSpinning()
                         openDialogPopup("Hi ${Pref.user_name} !","upload 4 attcmentment not successfully.")
-                        XLog.d("AddShop : Image Upload 4" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
+                        Timber.d("AddShop : Image Upload 4" + ", SHOP: " + shopId + ", ERROR: " + error.localizedMessage)
                     }
                 })
         )

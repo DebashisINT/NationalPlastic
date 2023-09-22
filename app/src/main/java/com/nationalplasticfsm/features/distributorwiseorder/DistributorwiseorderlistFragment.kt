@@ -46,6 +46,7 @@ import kotlin.collections.ArrayList
 
 // 1.0 DistributorwiseorderlistFragment AppV 4.0.6 saheli 20-01-2023 Pdf module updation mantis 25595
 // 2.0 DistributorwiseorderlistFragment AppV 4.0.6 saheli 20-01-2023 Pdf module updation mantis 25601
+// 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
 class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
     private lateinit var mContext: Context
     private lateinit var assign_to_tv: AppCustomTextView
@@ -149,9 +150,20 @@ class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
                     return
                 }
                 var unuiqPPListObj :ArrayList<AssignToPPEntity> = ArrayList()
-                for(i in 0..unuiqPPList.size-1){
-                    unuiqPPListObj.add(AppDatabase.getDBInstance()?.ppListDao()?.getSingleValue(unuiqPPList.get(i).toString())!!)
-                }
+
+                    for(i in 0..unuiqPPList.size-1){
+                        // start rev 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
+                        try {
+                            unuiqPPListObj.add(
+                                AppDatabase.getDBInstance()?.ppListDao()
+                                    ?.getSingleValue(unuiqPPList.get(i).toString())!!
+                            )
+                        }
+                        catch (ex:Exception){
+                            ex.printStackTrace()
+                        }
+                        //end rev 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
+                    }
 
                 //var assignPPList = AppDatabase.getDBInstance()?.ppListDao()?.getAll()
                 var assignPPList = unuiqPPListObj

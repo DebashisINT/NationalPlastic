@@ -71,16 +71,21 @@ class AdapterUserListAttenD(var mContext: Context, var customerList:ArrayList<Us
                 if(mList?.get(adapterPosition)!!.isFaceRegistered!!){
                     tv_row_user_list_face_attend_face_not.visibility=View.GONE
                     iv_row_face_attd_face.visibility=View.VISIBLE
-                    var picasso = Picasso.Builder(mContext)
+                    try{
+                        var picasso = Picasso.Builder(mContext)
                             .memoryCache(Cache.NONE)
                             .indicatorsEnabled(true)
                             .loggingEnabled(true)
                             .build()
-                    picasso.load(Uri.parse(mList?.get(adapterPosition)?.face_image_link))
+                        picasso.load(Uri.parse(mList?.get(adapterPosition)?.face_image_link))
                             .memoryPolicy(MemoryPolicy.NO_CACHE)
                             .networkPolicy(NetworkPolicy.NO_CACHE)
                             .resize(500, 500)
                             .into(iv_row_face_attd_face)
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                    }
+
                 }else{
                     tv_row_user_list_face_attend_face_not.visibility=View.VISIBLE
                     iv_row_face_attd_face.visibility=View.GONE

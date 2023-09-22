@@ -3,6 +3,7 @@ package com.nationalplasticfsm.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nationalplasticfsm.R;
+import com.nationalplasticfsm.app.types.FragType;
 
 import java.util.List;
 
@@ -254,10 +256,15 @@ public class MaterialSearchView extends FrameLayout {
                 }
             }
         });
-
+        // 7.0 NearByShopsListFragment AppV 4.0.7  voice search mantis 0025683 start
         // Show voice button
-//        displayVoiceButton(true);
-        displayVoiceButton(false);
+//        if(Pref.INSTANCE.getIsVoiceEnable()){
+//            displayVoiceButton(true);
+//        }else{
+//            displayVoiceButton(false);
+//        }
+        displayVoiceButton(true);
+//        displayVoiceButton(false);
         displayClearButton(true);
 
         // Initialize the search view.
@@ -628,7 +635,7 @@ public class MaterialSearchView extends FrameLayout {
     /**
      * Handles when the voice button is clicked and starts listening, then calls activity with voice search.
      */
-    private void onVoiceClicked() {
+    public void onVoiceClicked() {
         // If the user has their own OnVoiceClickedListener defined, call that. Otherwise, use
         // the library default.
         if(mOnVoiceClickedListener != null) {

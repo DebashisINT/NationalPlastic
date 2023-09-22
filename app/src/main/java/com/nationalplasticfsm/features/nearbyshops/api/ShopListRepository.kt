@@ -11,6 +11,8 @@ import io.reactivex.Observable
 /**
  * Created by Pratishruti on 28-11-2017.
  */
+// revision
+//1.0 saheli v 4.0.8 getShopTypeList parameter pass 11-04-2023
 class ShopListRepository(val apiService: ShopListApi) {
     fun getShopList(sessiontoken: String, user_id: String): Observable<ShopListResponse> {
         return apiService.getShopList(sessiontoken, user_id)
@@ -20,8 +22,9 @@ class ShopListRepository(val apiService: ShopListApi) {
         return apiService.getExtraTeamShopList(sessiontoken, user_id)
     }
 
-    fun getShopTypeList(): Observable<ShopTypeResponseModel> {
-        return apiService.getShopTypeList(Pref.session_token!!, Pref.user_id!!)
+    fun getShopTypeList(sessiontoken:String=Pref.session_token!!,user_id: String=Pref.user_id!!): Observable<ShopTypeResponseModel> {
+//        return apiService.getShopTypeList(Pref.session_token!!, Pref.user_id!!)
+        return apiService.getShopTypeList(sessiontoken,user_id)//1.0 saheli v 4.0.8 getShopTypeList parameter pass
     }
 
     fun getShopTypeStockVisibilityList(): Observable<ShopTypeStockViewResponseModel> {

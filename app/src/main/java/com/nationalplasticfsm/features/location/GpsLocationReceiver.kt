@@ -18,13 +18,15 @@ import com.nationalplasticfsm.app.utils.AppUtils.Companion.gpsOnTime
 import com.nationalplasticfsm.app.utils.AppUtils.Companion.isGpsOffCalled
 import com.nationalplasticfsm.app.utils.AppUtils.Companion.isGpsReceiverCalled
 import com.nationalplasticfsm.app.utils.AppUtils.Companion.isOnReceived
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
  * Created by Saikat on 24-10-2018.
  */
-
+// Revision History
+// 1.0 GpsLocationReceiver AppV 4.1.3 Saheli    26/04/2023 mantis 0025932 Log file update in service classes for GPS on off time.
 class GpsLocationReceiver : BroadcastReceiver() {
 
     /*private var gpsOnTime: Long = 0
@@ -33,7 +35,7 @@ class GpsLocationReceiver : BroadcastReceiver() {
     private val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     override fun onReceive(context: Context, intent: Intent) {
-
+            Timber.d("GpsLocationReceiver onReceive")
         try {
             if (intent.action!!.matches("android.location.PROVIDERS_CHANGED".toRegex())) {
                 /*Toast.makeText(context, "in android.location.PROVIDERS_CHANGED", Toast.LENGTH_SHORT).show();
@@ -49,16 +51,21 @@ class GpsLocationReceiver : BroadcastReceiver() {
                 if (!isOnReceived) {
                     isOnReceived = true
                     val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
+                    Timber.d("GpsLocationReceiver onReceive ${manager.isProviderEnabled(LocationManager.GPS_PROVIDER)}")
                     if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         //Toast.makeText(context, "GPS is disabled!", Toast.LENGTH_LONG).show()
                         if (!isGpsOffCalled) {
                             isGpsOffCalled = true
                             Log.e("GpsLocationReceiver", "=======================GPS is disabled======================")
+                            // 1.0 GpsLocationReceiver AppV 4.1.3 mantis 0025932 Log file update in service classes for GPS on off time.
+                            Timber.d("GpsLocationReceiver", "=======================GPS is disabled======================")
+                            // 1.0 end rev
                             gpsOffTime = dateFormat.parse(/*"18:14:55"*/AppUtils.getCurrentTime()).time
                             gpsDisabledTime = AppUtils.getCurrentTimeWithMeredian()
                             Log.e("GpsLocationReceiver", "gpsOffTime------------------> " + AppUtils.getTimeInHourMinuteFormat(gpsOffTime))
-
+                            // 1.0 GpsLocationReceiver AppV 4.1.3 mantis 0025932 Log file update in service classes for GPS on off time.
+                            Timber.d("GpsLocationReceiver", "gpsOffTime------------------> " + AppUtils.getTimeInHourMinuteFormat(gpsOffTime)+"gpsDisabledTime"+gpsDisabledTime)
+                            // 1.0 end rev
                             val local_intent = Intent()
                             local_intent.action = AppUtils.gpsDisabledAction
                             context.sendBroadcast(local_intent)
@@ -68,10 +75,15 @@ class GpsLocationReceiver : BroadcastReceiver() {
                         if (isGpsOffCalled) {
                             isGpsOffCalled = false
                             Log.e("GpsLocationReceiver", "=======================GPS is enabled========================")
+                            // 1.0 GpsLocationReceiver AppV 4.1.3 mantis 0025932 Log file update in service classes for GPS on off time.
+                            Timber.d("GpsLocationReceiver", "=======================GPS is enabled========================")
+                            // 1.0 end rev
                             gpsOnTime = dateFormat.parse(AppUtils.getCurrentTime()).time
                             gpsEnabledTime = AppUtils.getCurrentTimeWithMeredian()
                             Log.e("GpsLocationReceiver", "gpsOnTime---------------------> " + AppUtils.getTimeInHourMinuteFormat(gpsOnTime))
-
+                            // 1.0 GpsLocationReceiver AppV 4.1.3 mantis 0025932 Log file update in service classes for GPS on off time.
+                            Timber.d("GpsLocationReceiver", "gpsOnTime---------------------> " + AppUtils.getTimeInHourMinuteFormat(gpsOnTime)+"gpsEnabledTime"+gpsEnabledTime)
+                            // 1.0 end rev
                             val local_intent = Intent()
                             local_intent.action = AppUtils.gpsEnabledAction
                             context.sendBroadcast(local_intent)
@@ -85,6 +97,9 @@ class GpsLocationReceiver : BroadcastReceiver() {
                             performanceEntity.date = AppUtils.getCurrentDateForShopActi()
                             performanceEntity.gps_off_duration = (gpsOnTime - gpsOffTime).toString()
                             Log.e("GpsLocationReceiver", "duration----------------> " + AppUtils.getTimeInHourMinuteFormat(gpsOnTime - gpsOffTime))
+                            // 1.0 GpsLocationReceiver AppV 4.1.3 mantis 0025932 Log file update in service classes for GPS on off time.
+                            Timber.d("GpsLocationReceiver", "duration----------------> " + AppUtils.getTimeInHourMinuteFormat(gpsOnTime - gpsOffTime))
+                            // 1.0 end rev
                             AppDatabase.getDBInstance()!!.performanceDao().insert(performanceEntity)
                             saveGPSStatus((gpsOnTime - gpsOffTime).toString())
                             gpsOnTime = 0

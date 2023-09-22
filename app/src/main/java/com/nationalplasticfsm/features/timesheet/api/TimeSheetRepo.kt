@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -17,30 +18,37 @@ import java.io.File
  */
 class TimeSheetRepo(val apiService: TimeSheetApi) {
     fun timeSheetList(date: String): Observable<TimeSheetListResponseModel> {
+
         return apiService.getTimeSheetList(Pref.session_token!!, Pref.user_id!!, date)
     }
 
     fun deleteTimeSheet(id: String): Observable<EditDeleteTimesheetResposneModel> {
+        Timber.d("timesheet_api TimeSheet/DeleteTimeSheet")
         return apiService.deleteTimeSheet(Pref.session_token!!, Pref.user_id!!, id)
     }
 
     fun timeSheetConfig(isAdd: Boolean): Observable<TimeSheetConfigResponseModel> {
+        Timber.d("timesheet_api TimeSheet/GetTimeSheetConfig")
         return apiService.timeSheetConfig(Pref.session_token!!, Pref.user_id!!, isAdd)
     }
 
     fun getTimeSheetDropdown(): Observable<TimeSheetDropDownResponseModel> {
+        Timber.d("timesheet_api TimeSheet/GetDropDown")
         return apiService.getTimeSheetDropdownData(Pref.session_token!!, Pref.user_id!!)
     }
 
     fun addTimeSheet(addTimeSheet: AddTimeSheetInputModel): Observable<BaseResponse> {
+        Timber.d("timesheet_api TimeSheet/SaveTimeSheet")
         return apiService.addTimesheet(addTimeSheet)
     }
 
     fun editTimeSheet(editTimeSheet: EditTimeSheetInputModel): Observable<EditDeleteTimesheetResposneModel> {
+        Timber.d("timesheet_api TimeSheet/UpdateTimeSheet")
         return apiService.editTimesheet(editTimeSheet)
     }
 
     fun addTimesheetWithImage(timesheet: AddTimeSheetInputModel, image: String, context: Context): Observable<BaseResponse> {
+        Timber.d("timesheet_api TimeSheetImage/SaveTimeSheet")
         var profile_img_data: MultipartBody.Part? = null
 
         val profile_img_file =  File(image) //FileUtils.getFile(context, Uri.parse(image))
@@ -68,6 +76,7 @@ class TimeSheetRepo(val apiService: TimeSheetApi) {
     }
 
     fun editTimesheetWithImage(timesheet: EditTimeSheetInputModel, image: String, context: Context): Observable<EditDeleteTimesheetResposneModel> {
+        Timber.d("timesheet_api TimeSheetImage/UpdateTimeSheet")
         var profile_img_data: MultipartBody.Part? = null
 
         val profile_img_file =  File(image) //FileUtils.getFile(context, Uri.parse(image))

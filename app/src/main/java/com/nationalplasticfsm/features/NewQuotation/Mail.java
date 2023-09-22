@@ -25,7 +25,8 @@ import android.util.Log;
 
 
 
-
+// 1.0 HeaderFooterPageEvent  AppV 4.0.7  Suman 27/02/2023 footer image with text mantis 25705
+// send function overload only for mail without attachment
 public class Mail extends javax.mail.Authenticator {
     private String _user;
     private String _pass;
@@ -115,6 +116,48 @@ public class Mail extends javax.mail.Authenticator {
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(filepath);
             _multipart.addBodyPart(messageBodyPart);
+
+            // Put parts in message
+            msg.setContent(_multipart);
+
+            // send email
+            Transport.send(msg);
+            Log.v("mas", "Email was  send");
+            return true;
+        } else {
+            Log.v("mas", "Email was  not send");
+            return false;
+
+        }
+    }
+
+    // 1.0 HeaderFooterPageEvent  AppV 4.0.7  Suman 27/02/2023 footer image with text mantis 25705
+    // send function overload only for mail without attachment
+    public boolean send() throws Exception {
+        Properties props = _setProperties();
+
+        if(!_user.equals("") && !_pass.equals("") && _to.length > 0 && !_from.equals("") && !_subject.equals("") && !_body.equals("")) {
+
+            Session session = Session.getInstance(props, this);
+            DataHandler handler = new DataHandler(new ByteArrayDataSource(_body.getBytes(), "text/plain"));
+            MimeMessage msg = new MimeMessage(session);
+
+            msg.setFrom(new InternetAddress(_from));
+            msg.setDataHandler(handler);
+            InternetAddress[] addressTo = new InternetAddress[_to.length];
+            for (int i = 0; i < _to.length; i++) {
+                addressTo[i] = new InternetAddress(_to[i]);
+            }
+            msg.setRecipients(MimeMessage.RecipientType.TO, addressTo);
+
+            msg.setSubject(_subject);
+            msg.setSentDate(new Date());
+
+            // setup message body
+            BodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText(_body);
+            _multipart.addBodyPart(messageBodyPart);
+
 
             // Put parts in message
             msg.setContent(_multipart);

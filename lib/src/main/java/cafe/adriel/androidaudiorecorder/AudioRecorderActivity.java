@@ -295,6 +295,7 @@ public class AudioRecorderActivity extends AppCompatActivity
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            //recorder.setAudioSamplingRate(AudioSampleRate.HZ_100.getSampleRate());
             /*recorder.setAudioSamplingRate(sampleRate.getSampleRate());
             recorder.setAudioChannels(channel.getChannel());
             recorder.setAudioSource(source.getSource());*/

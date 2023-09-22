@@ -13,11 +13,12 @@ import com.nationalplasticfsm.base.presentation.BaseActivity
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.features.member.api.TeamRepoProvider
 import com.nationalplasticfsm.features.member.model.TeamShopListResponseModel
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 
 class MemberShopListIntentService : IntentService("") {
 
@@ -26,8 +27,8 @@ class MemberShopListIntentService : IntentService("") {
 
         if (list == null || list.isEmpty()) {
             Pref.isOfflineShopSaved = false
-            XLog.e("==============call offline member shop api(Service)==============")
-
+            Timber.e("==============call offline member shop api(Service)==============")
+            Timber.d("PJP api callMemberShopListApi MemberShopListIntentService call")
             val repository = TeamRepoProvider.teamRepoProvider()
             BaseActivity.compositeDisposable.add(
                     repository.offlineTeamShopList("")
@@ -35,7 +36,7 @@ class MemberShopListIntentService : IntentService("") {
                             //.subscribeOn(Schedulers.io())
                             .subscribe({ result ->
                                 val response = result as TeamShopListResponseModel
-                                XLog.d("OFFLINE MEMBER SHOP LIST: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + response.message)
+                                Timber.d("OFFLINE MEMBER SHOP LIST: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ", MESSAGE : " + response.message)
                                 if (response.status == NetworkConstant.SUCCESS) {
 
                                     if (response.shop_list != null && response.shop_list!!.isNotEmpty()) {
@@ -73,7 +74,7 @@ class MemberShopListIntentService : IntentService("") {
                                                     date_time = AppUtils.getCurrentISODateTime()
                                                 })
                                             }
-                                        XLog.e("==============offline member shop added to db(Service)==============")
+                                        Timber.e("==============offline member shop added to db(Service)==============")
                                         Pref.isOfflineShopSaved = true
 
                                         val intent_ = Intent()
@@ -81,7 +82,7 @@ class MemberShopListIntentService : IntentService("") {
                                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent_)
 
                                             /*uiThread {
-                                                XLog.e("==============offline member shop added to db(Service)==============")
+                                                Timber.e("==============offline member shop added to db(Service)==============")
                                             }
                                         }*/
                                     }
@@ -94,7 +95,7 @@ class MemberShopListIntentService : IntentService("") {
                             }, { error ->
                                 error.printStackTrace()
                                 Pref.isOfflineShopSaved = true
-                                XLog.d("OFFLINE MEMBER SHOP LIST: " + "ERROR : " + error.localizedMessage + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
+                                Timber.d("OFFLINE MEMBER SHOP LIST: " + "ERROR : " + error.localizedMessage + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name)
                             })
             )
         }

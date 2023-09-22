@@ -160,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_add_order_icon"
+                    android:drawableStart="@drawable/icon_home_svg"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -181,6 +181,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="Photo Registration"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
@@ -192,6 +193,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_attendance_machine"
+                    android:drawableTint="@color/white"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -240,12 +242,12 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_attendance"
+                    android:drawableTint="@color/white"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="Attendance Clear"
-                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -255,7 +257,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_bot"
+                    android:drawableStart="@drawable/ic_bot1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -274,6 +276,7 @@
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
+                    android:drawableTint="@color/white"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="Distributor Wise Order List"
                     android:textColor="@color/lightest_gray"
@@ -285,7 +288,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_changepas"
+                    android:drawableStart="@drawable/ic_changepas1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -299,7 +302,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_add_attendance_icon"
+                    android:drawableStart="@drawable/ic_add_attendance_icon_1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -313,7 +316,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_attendance_icon"
+                    android:drawableStart="@drawable/ic_view_attendance"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -327,7 +330,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_add_attendance_icon"
+                    android:drawableStart="@drawable/ic_add_attendance_icon2"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -341,7 +344,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_applyleave"
+                    android:drawableStart="@drawable/ic_applyleave1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -368,12 +371,12 @@
                     android:id="@+id/nearby_shop_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_nearby_new"
-                    android:paddingBottom="@dimen/_7sdp"
+                    android:drawablePadding="@dimen/_15sdp"
                     android:paddingLeft="@dimen/_17sdp"
-                    android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
                     android:text="@string/nearby_shops"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
@@ -384,12 +387,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_nearby_new"
+                    android:drawableStart="@drawable/ic_nearby_new1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="Beat"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/menu_market_assist_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_machine_learning"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Market Assistant"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -420,20 +438,38 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="Survey"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
+
+                <!--mantis 0026023 A new Menu named as
+                ‘Task Management’ should be implemented in the menu bar.-->
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/assigned_lead_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/_15sdp"
                     android:drawableStart="@drawable/ic_professional_skills_lead"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:text="Assigned Lead"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/task_management_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_professional_skills_lead1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
-                    android:text="Assigned Lead"
+                    android:text="Task Management"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
 
@@ -466,6 +502,7 @@
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
+                    android:drawableTint="@color/white"
                     android:gravity="center_vertical"/>
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
@@ -473,12 +510,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_order_history_icon"
+                    android:drawableStart="@drawable/ic_order_history_icon1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/history"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+                <!--Performace Menu In Menu bar 24-03-2023 by saheli-->
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/tv_performance_teamMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_performance1"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Performance Insights"
+                    android:visibility="visible"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
 
@@ -493,6 +545,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/quotation"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
 
@@ -501,7 +554,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_order_icon"
+                    android:drawableStart="@drawable/ic_order_icon1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -552,7 +605,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/_15sdp"
-                        android:drawableStart="@drawable/ic_collection"
+                        android:drawableStart="@drawable/ic_collection1"
                         android:paddingBottom="@dimen/_7sdp"
                         android:paddingLeft="@dimen/_17sdp"
                         android:paddingRight="@dimen/_17sdp"
@@ -697,7 +750,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_15sdp"
-                    android:drawableStart="@drawable/ic_reimbursement_icon"
+                    android:drawableStart="@drawable/ic_reimbursement_icon1"
                     android:paddingBottom="@dimen/_7sdp"
                     android:paddingLeft="@dimen/_17sdp"
                     android:paddingRight="@dimen/_17sdp"
@@ -719,6 +772,7 @@
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/list_of_party"
                     android:textColor="@color/lightest_gray"
+                    android:drawableTint="@color/white"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
                     android:gravity="center_vertical"/>
@@ -798,6 +852,7 @@
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible"
+                    android:drawableTint="@color/white"
                     android:gravity="center_vertical"/>
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
@@ -945,6 +1000,7 @@
                     android:text="@string/dynamic"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
+                    android:drawableTint="@color/white"
                     android:visibility="visible"
                     android:gravity="center_vertical"/>
 
@@ -959,6 +1015,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/map_view"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -974,6 +1031,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/share_log"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -989,6 +1047,7 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/share_loc"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
@@ -1036,6 +1095,7 @@
                     android:text="@string/doc_repo"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp"
+                    android:drawableTint="@color/white"
                     android:visibility="visible" />
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
@@ -1159,6 +1219,23 @@
                     android:textSize="@dimen/_12sdp"
                     android:visibility="gone" />
 
+                <!--mantis 0025783 In-app privacy policy working in menu & Login -->
+
+                <com.nationalplasticfsm.widgets.AppCustomTextView
+                    android:id="@+id/privacy_policy_tv_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_party_status"
+                    android:drawableTint="@color/white"
+                    android:paddingBottom="@dimen/_7sdp"
+                    android:paddingLeft="@dimen/_17sdp"
+                    android:paddingRight="@dimen/_17sdp"
+                    android:paddingTop="@dimen/_15sdp"
+                    android:text="Privacy policy"
+                    android:textColor="@color/lightest_gray"
+                    android:textSize="@dimen/_12sdp" />
+
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/logout_TV"
                     android:layout_width="match_parent"
@@ -1170,8 +1247,10 @@
                     android:paddingRight="@dimen/_17sdp"
                     android:paddingTop="@dimen/_15sdp"
                     android:text="@string/sync_logout"
+                    android:drawableTint="@color/white"
                     android:textColor="@color/lightest_gray"
                     android:textSize="@dimen/_12sdp" />
+
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/version_name_TV"
@@ -1185,6 +1264,8 @@
                     android:textColor="@color/color_custom_red"
                     android:textStyle="bold"
                     android:textSize="@dimen/_12sdp" />
+
+
 
             </LinearLayout>
 

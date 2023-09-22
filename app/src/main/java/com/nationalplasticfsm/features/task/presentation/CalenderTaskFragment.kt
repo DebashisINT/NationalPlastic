@@ -75,10 +75,12 @@ class CalenderTaskFragment : BaseFragment() {
 
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
             var day = ""
-            day = if (dayOfMonth.toString().length == 1)
+            day = if (dayOfMonth.toString().length == 1) {
                 "0$dayOfMonth"
-            else
+            }
+            else {
                 dayOfMonth.toString()
+            }
 
             val date = year.toString() + "-" + (month + 1).toString() + "-" + day
             val list_ = AppDatabase.getDBInstance()?.taskDao()?.getTaskDateWise(date)

@@ -20,12 +20,13 @@ import com.nationalplasticfsm.features.document.api.DocumentRepoProvider
 import com.nationalplasticfsm.features.document.model.DocumentTypeResponseModel
 import com.nationalplasticfsm.features.document.presentation.DocumentTypeAdapter
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 
 /**
  * Created by Saheli
@@ -83,7 +84,7 @@ class FromOrganizationFragment : BaseFragment() {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as DocumentTypeResponseModel
-                            XLog.d("DOCUMENT TYPE LIST RESPONSE=======> " + response.status)
+                            Timber.d("DOCUMENT TYPE LIST RESPONSE=======> " + response.status)
 
                             if (response.status == NetworkConstant.SUCCESS) {
                                 if (response.type_list != null && response.type_list!!.size > 0) {
@@ -122,7 +123,7 @@ class FromOrganizationFragment : BaseFragment() {
                             progress_wheel.stopSpinning()
                             tv_no_data_available.visibility = View.VISIBLE
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                            XLog.d("DOCUMENT TYPE LIST ERROR=======> " + error.localizedMessage)
+                            Timber.d("DOCUMENT TYPE LIST ERROR=======> " + error.localizedMessage)
                         })
         )
     }

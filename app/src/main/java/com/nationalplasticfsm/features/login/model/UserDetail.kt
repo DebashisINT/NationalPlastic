@@ -40,4 +40,9 @@ class UserDetail {
     var IsOnLeaveForToday: Boolean? = false
     var OnLeaveForTodayStatus: String? = null
 
+    var profile_latitude: String? = null
+    var profile_longitude: String? = null
+
+    var visit_location_id: String? = null
+
 }

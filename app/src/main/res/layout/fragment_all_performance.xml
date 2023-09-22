@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_light_sky"
+    android:clickable="true"
+    android:focusable="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/_4sdp">
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                       >
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_4sdp"
+                            app:cardBackgroundColor="@color/white"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                           >
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_margin="@dimen/_8sdp"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_frag_all_perf_attend_heading"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center|start"
+                                android:text="Last 90 Days Data"
+                                android:textColor="@color/black"
+                                android:layout_weight="1"
+                                android:textSize="@dimen/_10sdp" />
+
+
+                            <LinearLayout
+                                android:id="@+id/ll_row_shop_list_ma_assist1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_30sdp"
+                                android:orientation="horizontal"
+                                android:layout_gravity="end">
+
+
+                                <ImageView
+                                    android:id="@+id/iv_allperformance_list_ma_pointer"
+                                    android:layout_width="@dimen/_20sdp"
+                                    android:layout_height="@dimen/_20sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/_3sdp"
+                                    android:background="@drawable/icon_pointer_gif"
+                                    android:backgroundTint="@color/white"
+                                    android:rotation="-90" />
+
+                                <TextView
+                                    android:id="@+id/tv_allperformance_list_ma_pointer"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="@dimen/_15sdp"
+                                    android:text="show recent three months data"
+                                    android:gravity="center"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/deep_maroon"
+                                    android:textSize="@dimen/_10sdp"
+                                   />
+
+                            </LinearLayout>
+
+
+
+                        </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_summary_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_450sdp"
+                            tools:itemCount="2"
+                            tools:listitem="@layout/row_summary_emp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:layout_marginBottom="@dimen/_3sdp"/>
+
+                    </LinearLayout>
+
+
+
+
+                    </LinearLayout>
+
+
+
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <ImageView
+            android:id="@+id/iv_loader_spin"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            />
+
+        <ImageView
+            android:id="@+id/iv_background_color_set"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_transparent_blue"
+            android:visibility="gone"
+            />
+
+    </FrameLayout>
+
+</LinearLayout>

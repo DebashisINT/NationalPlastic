@@ -429,9 +429,16 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
                 itemView.order_view.visibility = View.GONE
             }
 
-            val distance = LocationWizard.getDistance(list[adapterPosition].shopLat, list[adapterPosition].shopLong,
-                    Pref.current_latitude.toDouble(), Pref.current_longitude.toDouble())
-            itemView.approx_distance.text = (distance * 1000).toString() + " mtr"
+            if(Pref.ShowApproxDistanceInNearbyShopList){
+                itemView.ll_approx_dist_show_root.visibility = View.VISIBLE
+                val distance = LocationWizard.getDistance(list[adapterPosition].shopLat, list[adapterPosition].shopLong,
+                Pref.current_latitude.toDouble(), Pref.current_longitude.toDouble())
+                itemView.approx_distance.text = (distance * 1000).toString() + " mtr"
+            }
+            else{
+               itemView.ll_approx_dist_show_root.visibility = View.GONE
+            }
+
 
             if (Pref.willShowPartyStatus)
                 itemView.rl_party.visibility = View.VISIBLE

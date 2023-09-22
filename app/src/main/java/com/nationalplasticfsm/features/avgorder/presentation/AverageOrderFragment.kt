@@ -198,6 +198,10 @@ class AverageOrderFragment : BaseFragment(), DatePickerListener {
             override fun onMultipleImageClick(shop: Any, position: Int) {
                 TODO("Not yet implemented")
             }
+
+            override fun onWhatsApiClick(shop_id: String) {
+                TODO("Not yet implemented")
+            }
         })
         layoutManager = LinearLayoutManager(mContext, LinearLayout.VERTICAL, false)
         shopList.layoutManager = layoutManager

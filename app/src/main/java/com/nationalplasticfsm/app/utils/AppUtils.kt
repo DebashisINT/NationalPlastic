@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -24,8 +25,6 @@ import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.provider.Settings
 import android.provider.Settings.SettingNotFoundException
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -35,13 +34,14 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.features.location.LocationWizard
 import com.nationalplasticfsm.features.login.model.LoginStateListDataModel
 import com.nationalplasticfsm.features.login.model.productlistmodel.ProductRateDataModel
-import com.elvishew.xlog.XLog
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.gson.Gson
@@ -49,7 +49,10 @@ import com.google.gson.reflect.TypeToken
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
+import okhttp3.CacheControl
+import okhttp3.Interceptor
 import org.apache.commons.lang3.StringEscapeUtils
+import timber.log.Timber
 import java.io.*
 import java.math.BigDecimal
 import java.sql.Timestamp
@@ -68,6 +71,8 @@ import java.util.regex.Pattern
 /**
  * Created by Pratishruti on 08-11-2017.
  */
+// Revision History
+// 1.0  LoginActivity 0026316	mantis saheli v 4.1.6 09-06-2023
 class AppUtils {
     companion object {
         var contx:Context?= null
@@ -570,6 +575,15 @@ class AppUtils {
             return formattedDate.toString()
         }
 
+        fun getCurrentDate_DD_MMM_YYYY(): String {
+            val c = Calendar.getInstance(Locale.ENGLISH)
+            System.out.println("Current time => " + c.time)
+
+            val df = SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH)
+            val formattedDate = df.format(c.time)
+            return formattedDate.toString()
+        }
+
         fun getCurrentDateyymmdd(): String {
             val c = Calendar.getInstance(Locale.ENGLISH)
             System.out.println("Current time => " + c.time)
@@ -696,11 +710,11 @@ class AppUtils {
                 sHours = "5"
             }
 
-            XLog.e("====CALCULATE DURATION (AppUtils)=====")
-            XLog.e("Hours Spent====> $sHours")
+            Timber.e("====CALCULATE DURATION (AppUtils)=====")
+            Timber.e("Hours Spent====> $sHours")
 
             val duration = "$sHours:$sMinute:$sSecond"
-            XLog.e("Duration Spent====> $duration")
+            Timber.e("Duration Spent====> $duration")
 
             return duration*/
 
@@ -765,11 +779,11 @@ class AppUtils {
                 sHours = "5"
             }
 
-            XLog.e("====CALCULATE DURATION (AppUtils)=====")
-            XLog.e("Hours Spent====> $sHours")
+            Timber.e("====CALCULATE DURATION (AppUtils)=====")
+            Timber.e("Hours Spent====> $sHours")
 
             /*try {
-                XLog.e("Minutes Spent====> $sMinute")
+                Timber.e("Minutes Spent====> $sMinute")
                 sMinute.toInt()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -777,7 +791,7 @@ class AppUtils {
             }*/
 
             val duration = "$sHours:$sMinute:$sSecond"
-            XLog.e("Duration Spent====> $duration")
+            Timber.e("Duration Spent====> $duration")
 
             return duration
         }
@@ -1117,6 +1131,9 @@ class AppUtils {
 
         }
 
+
+
+
         fun convertToBillingFormat(date: String): String {
             try {
                 val f = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
@@ -1303,22 +1320,102 @@ class AppUtils {
                 return getCurrentDate()
             }
         }
+        fun convertPartyNotVisitedFormat(date: String): String {
+            try {
+                val f = SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH)
+                val d = f.parse(date)
+                val date_ = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)//10/02/2023
+                return date_.format(d)
+//            System.out.println("Time: " + time.format(d))
+            } catch (e: ParseException) {
+                e.printStackTrace()
+                return getCurrentDate()
+            }
+        }
 
         /**
          * Purpose: internet checking
          */
         fun isOnline(mContext: Context): Boolean {
-            val cm = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            try{
+                val cm = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-            var info: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-            // test for connection for WIFI
-            if (info != null && info.isAvailable && info.isConnected) {
-                return true
+                var info: NetworkInfo? = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                // test for connection for WIFI
+                if (info != null && info.isAvailable && info.isConnected) {
+                    return true
+                }
+                info = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                // test for connection for Mobile
+                return info != null && info.isAvailable && info.isConnected
+            }catch (ex:Exception){
+                return false
             }
-            info = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-            // test for connection for Mobile
-            return info != null && info.isAvailable && info.isConnected
         }
+
+        /**
+         * Purpose: internet checking cache clear
+         */
+        // 1.0  LoginActivity start 0026316	mantis saheli v 4.1.6 09-06-2023
+        fun isOnlinecacheClear(mContext: Context): Boolean {
+            try {
+                var cacheInterceptor: Interceptor = object : Interceptor {
+                    @Throws(IOException::class)
+                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                        val cacheBuilder = CacheControl.Builder()
+                        cacheBuilder.maxAge(0, TimeUnit.SECONDS)
+                        cacheBuilder.maxStale(365, TimeUnit.DAYS)
+                        val cacheControl:CacheControl = cacheBuilder.build()
+                        var request: okhttp3.Request = chain.request()
+                        if (isOnline(mContext)) {
+                            request = request.newBuilder()
+                                .cacheControl(cacheControl)
+                                .build()
+                        }
+                        val originalResponse: okhttp3.Response = chain.proceed(request)
+                        return if (isOnline(mContext)) {
+                            val maxAge = 60 // read from cache
+                            originalResponse.newBuilder()
+                                .header("Cache-Control", "public, max-age=$maxAge")
+                                .build()
+                        } else {
+                            val maxStale = 60 * 60 * 24 * 28 // tolerate 4-weeks stale
+                            originalResponse.newBuilder()
+                                .header("Cache-Control", "public, only-if-cached, max-stale=$maxStale")
+                                .build()
+                        }
+                    }
+                }
+            }catch (ex:Exception){
+                return false
+            }
+            return true
+        }
+
+        fun deleteCache(context: Context) {
+            try {
+                val dir = context.cacheDir
+                deleteDir(dir)
+            } catch (e: java.lang.Exception) {
+            }
+        }
+        fun deleteDir(dir: File?): Boolean {
+            return if (dir != null && dir.isDirectory) {
+                val children = dir.list()
+                for (i in children.indices) {
+                    val success = deleteDir(File(dir, children[i]))
+                    if (!success) {
+                        return false
+                    }
+                }
+                dir.delete()
+            } else if (dir != null && dir.isFile) {
+                dir.delete()
+            } else {
+                false
+            }
+        }
+        // 1.0  LoginActivity end 0026316	mantis saheli v 4.1.6 09-06-2023
 
         fun endShopDuration(shopId: String,mContext: Context) {
             val shopActiList = AppDatabase.getDBInstance()!!.shopActivityDao().getShopForDay(shopId, AppUtils.getCurrentDateForShopActi())
@@ -1377,36 +1474,40 @@ class AppUtils {
 
         @SuppressLint("MissingPermission")
         fun mobNetType(context: Context): String {
-            val netType = getNetworkType(context)
-            if (TextUtils.isEmpty(netType) || netType.equals("WiFi", ignoreCase = true))
-                return ""
+            try{
+                val netType = getNetworkType(context)
+                if (TextUtils.isEmpty(netType) || netType.equals("WiFi", ignoreCase = true))
+                    return ""
 
-            val mTelephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val networkType = mTelephonyManager.networkType
-            when (networkType) {
-                TelephonyManager.NETWORK_TYPE_GPRS,
-                TelephonyManager.NETWORK_TYPE_EDGE,
-                TelephonyManager.NETWORK_TYPE_CDMA,
-                TelephonyManager.NETWORK_TYPE_1xRTT,
-                TelephonyManager.NETWORK_TYPE_IDEN,
-                TelephonyManager.NETWORK_TYPE_GSM
-                -> return "2G"
-                TelephonyManager.NETWORK_TYPE_UMTS,
-                TelephonyManager.NETWORK_TYPE_EVDO_0,
-                TelephonyManager.NETWORK_TYPE_EVDO_A,
-                TelephonyManager.NETWORK_TYPE_HSDPA,
-                TelephonyManager.NETWORK_TYPE_HSUPA,
-                TelephonyManager.NETWORK_TYPE_HSPA,
-                TelephonyManager.NETWORK_TYPE_EVDO_B,
-                TelephonyManager.NETWORK_TYPE_EHRPD,
-                TelephonyManager.NETWORK_TYPE_HSPAP,
-                TelephonyManager.NETWORK_TYPE_TD_SCDMA
-                -> return "3G"
-                TelephonyManager.NETWORK_TYPE_LTE
-                -> return "4G"
-            /*TelephonyManager.NETWORK_TYPE_NR
-            -> return "5G"*/
-                else -> return "Unknown"
+                val mTelephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                val networkType = mTelephonyManager.networkType
+                when (networkType) {
+                    TelephonyManager.NETWORK_TYPE_GPRS,
+                    TelephonyManager.NETWORK_TYPE_EDGE,
+                    TelephonyManager.NETWORK_TYPE_CDMA,
+                    TelephonyManager.NETWORK_TYPE_1xRTT,
+                    TelephonyManager.NETWORK_TYPE_IDEN,
+                    TelephonyManager.NETWORK_TYPE_GSM
+                    -> return "2G"
+                    TelephonyManager.NETWORK_TYPE_UMTS,
+                    TelephonyManager.NETWORK_TYPE_EVDO_0,
+                    TelephonyManager.NETWORK_TYPE_EVDO_A,
+                    TelephonyManager.NETWORK_TYPE_HSDPA,
+                    TelephonyManager.NETWORK_TYPE_HSUPA,
+                    TelephonyManager.NETWORK_TYPE_HSPA,
+                    TelephonyManager.NETWORK_TYPE_EVDO_B,
+                    TelephonyManager.NETWORK_TYPE_EHRPD,
+                    TelephonyManager.NETWORK_TYPE_HSPAP,
+                    TelephonyManager.NETWORK_TYPE_TD_SCDMA
+                    -> return "3G"
+                    TelephonyManager.NETWORK_TYPE_LTE
+                    -> return "4G"
+                    TelephonyManager.NETWORK_TYPE_NR
+                    -> return "5G"
+                    else -> return "Unknown"
+                }
+            }catch (ex:Exception){
+                return "Unknown"
             }
         }
 
@@ -1671,6 +1772,7 @@ class AppUtils {
             return null
         }
 
+
         fun getTimeStampFromDateOnly(dateString: String): Long {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             var convertedDate = Date()
@@ -1908,6 +2010,30 @@ class AppUtils {
             return formattedDate.toString()
         }
 
+        fun getFirstDateOfLastMonth_DD_MMM_YY(): String {
+            val aCalendar = Calendar.getInstance(Locale.ENGLISH)
+// add -1 month to current month
+            aCalendar.add(Calendar.MONTH, -1)
+// set DATE to 1, so first date of previous month
+            aCalendar.set(Calendar.DATE, 1)
+            //val df = SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH)
+            val df = SimpleDateFormat("dd-MMM-yy", Locale.ENGLISH)
+            val formattedDate = df.format(aCalendar.time)
+            return formattedDate.toString()
+        }
+
+        fun getFirstDateOfThisMonth_DD_MMM_YY(): String {
+            val aCalendar = Calendar.getInstance(Locale.ENGLISH)
+// add -1 month to current month
+            //aCalendar.add(Calendar.MONTH, 1)
+// set DATE to 1, so first date of previous month
+            aCalendar.set(Calendar.DATE, 1)
+            //val df = SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH)
+            val df = SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH)
+            val formattedDate = df.format(aCalendar.time)
+            return formattedDate.toString()
+        }
+
         fun getEndDateOflastMonth(): String {
             val aCalendar = Calendar.getInstance(Locale.ENGLISH)
 // add -1 month to current month
@@ -2066,9 +2192,9 @@ class AppUtils {
         fun getCompressImage(filePath: String): Long {
             val file = File(filePath)
 
-            //XLog.e("Dashboard", "image file size before compression=======> " + file.length())
+            //Timber.e("Dashboard", "image file size before compression=======> " + file.length())
 
-            XLog.e("Dashboard: image file size before compression=======> " + file.length())
+            Timber.e("Dashboard: image file size before compression=======> " + file.length())
 
             try {
                 val bitmapImage = BitmapFactory.decodeFile(filePath)
@@ -2088,20 +2214,20 @@ class AppUtils {
                 fos.flush()
                 fos.close()
 
-                XLog.e("Dashboard: image file path======> $filePath")
-                XLog.e("Dashboard: image file size after compression=======> " + file.length())
+                Timber.e("Dashboard: image file path======> $filePath")
+                Timber.e("Dashboard: image file size after compression=======> " + file.length())
                 return file.length()
             } catch (e: FileNotFoundException) {
                 // TODO Auto-generated catch block
                 e.printStackTrace()
-                XLog.e("Dashboard: " + e.localizedMessage)
+                Timber.e("Dashboard: " + e.localizedMessage)
             } catch (e: IOException) {
                 // TODO Auto-generated catch block
                 e.printStackTrace()
-                XLog.e("Dashboard: " + e.localizedMessage)
+                Timber.e("Dashboard: " + e.localizedMessage)
             } catch (e: Exception) {
                 e.printStackTrace()
-                XLog.e("Dashboard: " + e.localizedMessage)
+                Timber.e("Dashboard: " + e.localizedMessage)
             }
             return 0
         }
@@ -2750,7 +2876,7 @@ class AppUtils {
                 val firstName = Pref.user_name?.substring(0, Pref.user_name?.indexOf(" ")!!)
                 return "Hi $firstName"
             }catch (ex:Exception){
-                return "Hi $Pref.user_name"
+                return "Hi ${Pref.user_name}"
             }
 
         }
@@ -2855,6 +2981,91 @@ class AppUtils {
             return ""
         }
 
+        fun getScreenWidth(): Int {
+            return Resources.getSystem().displayMetrics.widthPixels
+        }
+
+        fun getScreenHeight(): Int {
+            return Resources.getSystem().displayMetrics.heightPixels
+        }
+
+        fun getPrevMonthCurrentYear_MMM_YYYY(): String {
+            val aCalendar = Calendar.getInstance(Locale.ENGLISH)
+            aCalendar.add(Calendar.MONTH, -1)
+            aCalendar.set(Calendar.DATE, 1)
+            val df = SimpleDateFormat("MMMM-yyyy", Locale.ENGLISH)
+            val formattedDate = df.format(aCalendar.time)
+            return formattedDate.toString()
+        }
+
+
+        fun getDayName(date:String):String{
+            val f = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            val d = f.parse(date)
+            val day = SimpleDateFormat("EEEE", Locale.ENGLISH).format(d)
+            return day
+        }
+
+        fun getPrevMonth2CurrentYear_MMM_YYYY(): String {
+            val aCalendar = Calendar.getInstance(Locale.ENGLISH)
+            aCalendar.add(Calendar.MONTH, -2)
+            aCalendar.set(Calendar.DATE, 1)
+            val df = SimpleDateFormat("MMMM-yyyy", Locale.ENGLISH)
+            val formattedDate = df.format(aCalendar.time)
+            return formattedDate.toString()
+        }
+
+        fun getPrevMonth3CurrentYear_MMM_YYYY(): String {
+            val aCalendar = Calendar.getInstance(Locale.ENGLISH)
+            aCalendar.add(Calendar.MONTH, -3)
+            aCalendar.set(Calendar.DATE, 1)
+            val df = SimpleDateFormat("MMMM-yyyy", Locale.ENGLISH)
+            val formattedDate = df.format(aCalendar.time)
+            return formattedDate.toString()
+        }
+
+        fun addORsubMinInTime(minUnit : Int,timeIn24:String):String{ // input like 14:20
+            val myTime = timeIn24
+            val dff = SimpleDateFormat("HH:mm")
+            val dd: Date = dff.parse(myTime)
+            val cal = Calendar.getInstance()
+            cal.setTime(dd)
+            cal.add(Calendar.MINUTE, minUnit)
+            val newTime = String.format(cal.time.toString())
+            return newTime.split(" ").get(3)
+        }
+
+        fun avgTime(timeString:String):String{
+            return try{
+                val timeInHHmmss = timeString
+                val split = timeInHHmmss.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                var sum = 0L
+
+                val sdf = SimpleDateFormat("HH:mm:ss")
+                for (i in split.indices) {
+                    sum += sdf.parse(split[i]).time
+                }
+                val avgDate = Date(sum / split.size)
+                sdf.format(avgDate)
+            }catch (ex:Exception){
+                ""
+            }
+        }
+
+        fun changeDateFormat1(date:String):String{ // convert 14-Nov-22 to dd/MM/yyyy
+            val format1 = SimpleDateFormat("dd/MM/yyyy")
+            val format2 = SimpleDateFormat("dd-MMM-yy")
+            val date = format2.parse(date)
+            return format1.format(date)
+        }
+
+        fun changeDateFormat2(date:String):String{ // convert 14-Nov-22 to yyyy/MM/dd
+            val format1 = SimpleDateFormat("yyyy/MM/dd")
+            val format2 = SimpleDateFormat("dd-MMM-yy")
+            val date = format2.parse(date)
+            return format1.format(date)
+        }
+
         /*fun getDurationFromOnlineVideoLink(link: String) : String {
             val retriever = MediaMetadataRetriever()
             retriever.setDataSource(link, HashMap<String, String>())
@@ -2878,6 +3089,35 @@ class AppUtils {
             }
         }*/
              var isFromOrderToshowSchema = false
+
+        fun getDateDiff(fromD: String,toD: String): String {
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            var  date1:Date = simpleDateFormat.parse(fromD)
+            var  date2:Date= simpleDateFormat.parse(toD)
+            val calendar1 = Calendar.getInstance()
+            calendar1.time = date1
+            val calendar2 = Calendar.getInstance()
+            calendar2.time = date2
+            val differenceInMillis = calendar2.timeInMillis - calendar1.timeInMillis
+            val differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
+            return differenceInDays.toString()
+        }
+
+        fun getPrevXMonthDate(prevMonthCount:Int):String{
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.MONTH, -prevMonthCount)
+            var agoDate = calendar.time
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            return dateFormat.format(agoDate).toString()
+        }
+
+        fun getDaysAgo(daysAgo: Int): Date {
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_YEAR, -daysAgo)
+
+            return calendar.time
+        }
+
     }
 
 }

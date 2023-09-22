@@ -3967,6 +3967,14 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <ImageView
+                            android:id="@+id/iv_frag_add_shop_mic"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_alignParentRight="true"
+                            app:tint="@color/color_custom_red"
+                            android:src="@drawable/ic_mic"/>
+
                         <com.nationalplasticfsm.widgets.AppCustomTextView
                             android:id="@+id/tv_feedback_asterisk_mark"
                             android:layout_width="wrap_content"

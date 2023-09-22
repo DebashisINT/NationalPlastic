@@ -2,9 +2,12 @@ package com.nationalplasticfsm.features.myprofile.presentation
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -66,6 +69,7 @@ import kotlin.collections.ArrayList
  * Created by Pratishruti on 12-02-2018.
  */
 // 1.0 MyProfileFragment  AppV 4.0.6  Saheli    30/12/2022
+// 2.0 MyProfileFragment AppV 4.1.6  Saheli 26/06/2023 mantis 0026422 :Profile Photo not updated in the App
 class MyProfileFragment : BaseFragment() {
     private lateinit var profilePicture: ImageView
 
@@ -479,6 +483,20 @@ class MyProfileFragment : BaseFragment() {
 
 
     private fun initPermissionCheck() {
+
+        //begin mantis id 26741 Storage permission updation Suman 22-08-2023
+        var permissionList = arrayOf<String>( Manifest.permission.CAMERA)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            permissionList += Manifest.permission.READ_MEDIA_IMAGES
+            permissionList += Manifest.permission.READ_MEDIA_AUDIO
+            permissionList += Manifest.permission.READ_MEDIA_VIDEO
+        }else{
+            permissionList += Manifest.permission.WRITE_EXTERNAL_STORAGE
+            permissionList += Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+//end mantis id 26741 Storage permission updation Suman 22-08-2023
+
         permissionUtils = PermissionUtils(mContext as Activity, object : PermissionUtils.OnPermissionListener {
             override fun onPermissionGranted() {
                 showPictureDialog()
@@ -488,7 +506,7 @@ class MyProfileFragment : BaseFragment() {
                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.accept_permission))
             }
 
-        }, arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        },permissionList)// arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     private fun getAssignedDDListApi(message: String) {
@@ -836,18 +854,53 @@ class MyProfileFragment : BaseFragment() {
     }
 
     fun showPictureDialog() {
-        val pictureDialog = AlertDialog.Builder(mContext)
+        // start 2.0 MyProfileFragment AppV 4.1.6  Saheli 26/06/2023 mantis 0026422 :Profile Photo not updated in the App
+        /*val pictureDialog = AlertDialog.Builder(mContext)
         pictureDialog.setTitle("Select Action")
         val pictureDialogItems = arrayOf("Select photo from gallery", "Capture photo from camera")
         pictureDialog.setItems(pictureDialogItems,
+            DialogInterface.OnClickListener { dialog, which ->
+                when (which) {
+                    0 -> selectImageInAlbum()
+                    1 -> launchCamera()
+                }
+            })
+        pictureDialog.show()*/
+        if(Pref.AllowProfileUpdate){
+            val pictureDialog = AlertDialog.Builder(mContext)
+            pictureDialog.setTitle("Select Action")
+            val pictureDialogItems = arrayOf("Select photo from gallery", "Capture photo from camera")
+            pictureDialog.setItems(pictureDialogItems,
                 DialogInterface.OnClickListener { dialog, which ->
                     when (which) {
                         0 -> selectImageInAlbum()
                         1 -> launchCamera()
                     }
                 })
-        pictureDialog.show()
+            pictureDialog.show()
+        }else{
+            openDialog("${AppUtils.hiFirstNameText()}","You do not have rights. Please talk to admin.")
+        }
+        // end 2.0 MyProfileFragment AppV 4.1.6  Saheli 26/06/2023 mantis 0026422 :Profile Photo not updated in the App
+
     }
+    // start 2.0 MyProfileFragment AppV 4.1.6  Saheli 26/06/2023 mantis 0026422 :Profile Photo not updated in the App
+    fun openDialog(header:String,text:String){
+        val simpleDialog = Dialog(mContext)
+        simpleDialog.setCancelable(false)
+        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        simpleDialog.setContentView(R.layout.dialog_ok_imei)
+        val dialogHeader = simpleDialog.findViewById(R.id.dialog_yes_header) as AppCustomTextView
+        val dialogBody = simpleDialog.findViewById(R.id.dialog_yes_body) as AppCustomTextView
+        dialogHeader.text = header
+        dialogBody.text = text
+        val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+        dialogYes.setOnClickListener({ view ->
+            simpleDialog.cancel()
+        })
+        simpleDialog.show()
+    }
+    // end 2.0 MyProfileFragment AppV 4.1.6  Saheli 26/06/2023 mantis 0026422 :Profile Photo not updated in the App
 
     fun onRequestPermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         permissionUtils?.onRequestPermissionsResult(requestCode, permissions, grantResults)

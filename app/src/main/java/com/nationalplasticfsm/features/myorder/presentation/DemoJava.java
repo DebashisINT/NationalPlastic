@@ -4,7 +4,7 @@ package com.nationalplasticfsm.features.myorder.presentation;
  * Created by Pratishruti on 30-10-2017.
  */
 
-public class Demo {
+public class DemoJava {
 //    private MyOrderListAdapter myOrderListAdapter;
 //    private Context context;
 //

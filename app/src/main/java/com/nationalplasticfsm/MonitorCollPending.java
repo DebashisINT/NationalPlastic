@@ -22,8 +22,10 @@ import com.nationalplasticfsm.app.utils.AppUtils;
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity;
 import com.nationalplasticfsm.features.newcollectionreport.CollectionNotiViewPagerFrag1;
 import com.nationalplasticfsm.features.splash.presentation.SplashActivity;
-import com.elvishew.xlog.XLog;
 
+import timber.log.Timber;
+
+// 1.0 MonitorCollPending  v 4.1.6 Saheli mantis 0026430 Play console report fixing 23-06-2023
 public class MonitorCollPending extends BroadcastReceiver {
     public static MediaPlayer player = null;
     public static Vibrator vibrator = null;
@@ -32,62 +34,75 @@ public class MonitorCollPending extends BroadcastReceiver {
     @SuppressLint("NewApi")
     @Override
     public void onReceive(Context context, Intent intent) {
+        // start 1.0 MonitorCollPending  v 4.1.6 Saheli mantis 0026430 Play console report fixing 23-06-2023
+        try{
+            Timber.d("MonitorCollPending onReceive entered");
+            int notiID=intent.getIntExtra("notiId",0);
+            String subject=intent.getStringExtra("coll");
+            String body = "";
+            try{        if(subject.contains("Order")){
+                body=":: No order taken fo certain shop.";
+            }else{
+                body=":: Please collect your pending amount.";
+            }
+            }catch (Exception ex){
+                ex.printStackTrace();
+                Timber.d("MonitorCollPending onReceive error "+ex.getLocalizedMessage());
+            }
 
-        int notiID=intent.getIntExtra("notiId",0);
-        String subject=intent.getStringExtra("coll");
-        String body = "";
-        if(subject.contains("Order")){
-            body=":: No order taken fo certain shop.";
-        }else{
-             body=":: Please collect your pending amount.";
+            Intent mainIntent = new Intent(context, DashboardActivity.class);
+            mainIntent.putExtra("TYPE", "ZERO_COLL_STATUS");
+            mainIntent.putExtra("Subject",subject);
+            //PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // FLAG_IMMUTABLE update
+            PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_IMMUTABLE);
+
+            //PendingIntent pendingIntent = PendingIntent.getActivity(context,notiID,mainIntent,0);
+
+            long[] pattern = {500,500,500,500,500,500,500,500,500,500,500,500,500};
+            //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.alaram_sound);
+            //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/alaram_sound.mp3");
+            Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    //.setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .build();
+
+            //String CHANNEL_ID = "Monitor";
+            String CHANNEL_ID = "202";
+            Notification notification =
+                    new NotificationCompat.Builder(context, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_logo)
+                            .setContentIntent(pendingIntent)
+                            .setContentTitle(subject)
+                            .setContentText(body)
+                            .setAutoCancel(false)
+                            //.setSound(soundUri)
+                            .setChannelId(CHANNEL_ID)
+                            .setWhen(System.currentTimeMillis())
+                            //.setVibrate(pattern)
+                            .build();
+
+            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                NotificationChannel channel=new NotificationChannel(CHANNEL_ID,subject,NotificationManager.IMPORTANCE_HIGH);
+                //channel.enableVibration(true);
+                //channel.setVibrationPattern(pattern);
+                //channel.setSound(soundUri,audioAttributes);
+                notificationManager.createNotificationChannel(channel);
+            }
+            notificationManager.notify(notiID,notification);
+
+            if(player==null){
+                funcc(context);
+            }
         }
-        Intent mainIntent = new Intent(context, DashboardActivity.class);
-        mainIntent.putExtra("TYPE", "ZERO_COLL_STATUS");
-        mainIntent.putExtra("Subject",subject);
-        //PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        // FLAG_IMMUTABLE update
-        PendingIntent pendingIntent =PendingIntent.getActivity(context, notiID, mainIntent, PendingIntent.FLAG_IMMUTABLE);
-
-        //PendingIntent pendingIntent = PendingIntent.getActivity(context,notiID,mainIntent,0);
-
-        long[] pattern = {500,500,500,500,500,500,500,500,500,500,500,500,500};
-        //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ context.getPackageName() + "/" + R.raw.alaram_sound);
-        //Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/alaram_sound.mp3");
-        Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                //.setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .build();
-
-        //String CHANNEL_ID = "Monitor";
-        String CHANNEL_ID = "202";
-        Notification notification =
-                new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_logo)
-                        .setContentIntent(pendingIntent)
-                        .setContentTitle(subject)
-                        .setContentText(body)
-                        .setAutoCancel(false)
-                        //.setSound(soundUri)
-                        .setChannelId(CHANNEL_ID)
-                        .setWhen(System.currentTimeMillis())
-                        //.setVibrate(pattern)
-                        .build();
-
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel=new NotificationChannel(CHANNEL_ID,subject,NotificationManager.IMPORTANCE_HIGH);
-            //channel.enableVibration(true);
-            //channel.setVibrationPattern(pattern);
-            //channel.setSound(soundUri,audioAttributes);
-            notificationManager.createNotificationChannel(channel);
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
-        notificationManager.notify(notiID,notification);
+        // end 1.0 MonitorCollPending   v 4.1.6 Saheli mantis 0026430 Play console report fixing 23-06-2023
 
-        if(player==null){
-            funcc(context);
-        }
 
     }
 

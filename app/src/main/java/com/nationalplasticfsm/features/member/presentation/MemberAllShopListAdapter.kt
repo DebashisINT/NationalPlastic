@@ -1,6 +1,7 @@
 package com.nationalplasticfsm.features.member.presentation
 
 import android.content.Context
+import android.location.Location
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -10,11 +11,14 @@ import android.widget.Filter
 import android.widget.Filterable
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
+import com.nationalplasticfsm.CustomStatic
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.AppDatabase
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.domain.AddShopDBModelEntity
 import com.nationalplasticfsm.app.utils.AppUtils
+import com.nationalplasticfsm.app.utils.FTStorageUtils
+import com.nationalplasticfsm.features.location.LocationWizard.Companion.NEARBY_RADIUS
 import com.nationalplasticfsm.features.member.model.TeamShopListDataModel
 import kotlinx.android.synthetic.main.inflate_avg_shop_item.view.*
 import kotlinx.android.synthetic.main.inflate_member_shop_list.view.*
@@ -45,7 +49,9 @@ import kotlinx.android.synthetic.main.inflate_member_shop_list.view.tv_stage_hea
  */
 //Revision History
 // 1.0 MemberAllShopListAdapter  AppV 4.0.6  Saheli    11/01/2023 IsAllowShopStatusUpdate
-class MemberAllShopListAdapter(private val context: Context, private val teamShopList: ArrayList<TeamShopListDataModel>,
+// 2.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651
+class MemberAllShopListAdapter(private val context: Context, private val teamShopList: ArrayList<TeamShopListDataModel>,private val isViewAll: Boolean ,
+                               private val onVisitShopClick: (TeamShopListDataModel) -> Unit,
                                private val listener: (TeamShopListDataModel) -> Unit, private val onUpdateLocClick: (TeamShopListDataModel) -> Unit,
                                private val getListSize: (Int) -> Unit,private val onDamageClick: (TeamShopListDataModel) -> Unit,private val onQuotClick: (TeamShopListDataModel) -> Unit,private val onHistoryClick: (AddShopDBModelEntity) -> Unit
 ,private val getShopStatusDtls: (TeamShopListDataModel) -> Unit) : RecyclerView.Adapter<MemberAllShopListAdapter.MyViewHolder>(),
@@ -74,7 +80,8 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindItems(context, shopList!!, listener, onUpdateLocClick,onDamageClick,onQuotClick,onHistoryClick,getShopStatusDtls)
+
+        holder.bindItems(context, shopList!!,isViewAll,onVisitShopClick, listener, onUpdateLocClick,onDamageClick,onQuotClick,onHistoryClick,getShopStatusDtls)
     }
 
     override fun getItemCount(): Int {
@@ -83,7 +90,8 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bindItems(context: Context, teamShopList: ArrayList<TeamShopListDataModel>, listener: (TeamShopListDataModel) -> Unit,
+        fun bindItems(context: Context, teamShopList: ArrayList<TeamShopListDataModel>, isViewAll: Boolean, onVisitShopClick: (TeamShopListDataModel) -> Unit,
+                      listener: (TeamShopListDataModel) -> Unit,
                       onUpdateLocClick: (TeamShopListDataModel) -> Unit,onDamageClick: (TeamShopListDataModel) -> Unit,onQuotClick: (TeamShopListDataModel) -> Unit,
                       onHistoryClick: (AddShopDBModelEntity) -> Unit,getShopStatusDtls:(TeamShopListDataModel) -> Unit) {
             itemView.apply {
@@ -107,8 +115,7 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
                 else
                     last_visited_date_TV.text = "N.A."
 
-                val drawable = TextDrawable.builder()
-                        .buildRoundRect(teamShopList[adapterPosition].shop_name.trim().toUpperCase().take(1), ColorGenerator.MATERIAL.randomColor, 120)
+                val drawable = TextDrawable.builder().buildRoundRect(teamShopList[adapterPosition].shop_name.trim().toUpperCase().take(1), ColorGenerator.MATERIAL.randomColor, 120)
 
                 shop_IV.setImageDrawable(drawable)
 
@@ -283,6 +290,33 @@ class MemberAllShopListAdapter(private val context: Context, private val teamSho
                     getShopStatusDtls(teamShopList[adapterPosition])
                 }
 
+// 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 start
+               /* val shopLocation = Location("")
+                shopLocation.latitude = teamShopList[adapterPosition].shop_lat.toDouble()
+                shopLocation.longitude = teamShopList[adapterPosition].shop_long.toDouble()
+                val myLoc = Location("")
+                myLoc.latitude  = Pref.current_latitude.toString().toDouble()
+                myLoc.longitude =Pref.current_longitude.toString().toDouble()
+                var mRadious:Int = NEARBY_RADIUS
+                val isShopNearby = FTStorageUtils.checkShopPositionWithinRadious(myLoc, shopLocation, mRadious)
+                if(isShopNearby && isViewAll){
+                    visit_rl.visibility =View.VISIBLE
+                }
+                val isPresent = AppDatabase.getDBInstance()!!.shopActivityDao().isShopActivityAvailable(teamShopList[adapterPosition].shop_id, AppUtils.getCurrentDateForShopActi())
+                if (isPresent) {
+                    visit_icon.visibility = View.VISIBLE
+                    visit_TV.text = "VISITED"
+                    iconWrapper_rl.visibility = View.VISIBLE
+                } else {
+                    visit_icon.visibility = View.GONE
+                    visit_TV.text = "VISIT THIS " + Pref.shopText.toUpperCase()
+                    iconWrapper_rl.visibility = View.GONE
+                }
+
+                visit_rl.setOnClickListener {
+                    onVisitShopClick(teamShopList[adapterPosition])
+                }*/
+                // 4.0 MemberAllShopListFragment tufan 02-08-2023 AppV 4.1.6 mantis 0026651 end
             }
 
         }

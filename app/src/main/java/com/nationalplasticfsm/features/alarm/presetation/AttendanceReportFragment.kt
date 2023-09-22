@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.alarm.presetation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -90,10 +91,12 @@ class AttendanceReportFragment : BaseFragment(), View.OnClickListener/*, DatePic
         val view = inflater.inflate(R.layout.fragment_attendance_report, container, false)
         initView(view)
 
-        if ((mContext as DashboardActivity).isAttendanceFromAlarm)
+        if ((mContext as DashboardActivity).isAttendanceFromAlarm) {
             getAttendanceReport("")
-        else
+        }
+        else {
             getAttendanceReport(AppUtils.getCurrentDateForShopActi())
+        }
 
         return view
     }
@@ -204,6 +207,7 @@ class AttendanceReportFragment : BaseFragment(), View.OnClickListener/*, DatePic
         )
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.iv_check_icon -> {
@@ -263,8 +267,9 @@ class AttendanceReportFragment : BaseFragment(), View.OnClickListener/*, DatePic
                         e.printStackTrace()
                     }
                 }
-                else
+                else {
                     (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
+                }
             }
         }
     }
@@ -313,10 +318,12 @@ class AttendanceReportFragment : BaseFragment(), View.OnClickListener/*, DatePic
     }*/
 
     private fun checkValidation() {
-        if (!iv_check_icon.isSelected)
+        if (!iv_check_icon.isSelected) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_check_review))
-        else
+        }
+        else {
             callConfirmReviewApi()
+        }
 
     }
 

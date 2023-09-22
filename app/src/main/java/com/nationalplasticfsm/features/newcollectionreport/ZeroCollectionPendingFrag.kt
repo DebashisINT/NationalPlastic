@@ -109,7 +109,7 @@ class ZeroCollectionPendingFrag: BaseFragment(), View.OnClickListener {
                         try{
                             dueAmt = (totalOrderAmt.toDouble()-totalCollectionAmt.toDouble()).toString()
                         }catch (ex:Exception){
-
+                            ex.printStackTrace()
                         }
                         if(dueAmt.contains("-")){
                             dueAmt="0"

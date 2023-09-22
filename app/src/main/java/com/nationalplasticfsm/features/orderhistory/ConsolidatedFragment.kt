@@ -1,5 +1,6 @@
 package com.nationalplasticfsm.features.orderhistory
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -200,6 +201,7 @@ class ConsolidatedFragment : BaseFragment(), CompoundButton.OnCheckedChangeListe
 
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     private fun initView(view: View?) {
         progress_wheel = view!!.findViewById(R.id.progress_wheel)
         progress_wheel.stopSpinning()

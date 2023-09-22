@@ -39,13 +39,14 @@ import com.nationalplasticfsm.features.myjobs.model.WIPImageSubmit
 import com.nationalplasticfsm.features.photoReg.api.GetUserListPhotoRegProvider
 import com.nationalplasticfsm.features.photoReg.model.*
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.themechangeapp.pickimage.PermissionHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.util.HashMap
@@ -231,7 +232,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
 
 
     private fun uploadAadhaarPic(){
-        XLog.d("PhotoRegAadhaarFragment uploadAadhaarPic initiate")
+        Timber.d("PhotoRegAadhaarFragment uploadAadhaarPic initiate")
         progress_wheel.spin()
         var obj= UserPhotoRegModel()
         obj.user_id= user_id
@@ -246,13 +247,13 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
                             val response = result as AadhaarPicRegResponse
                             if(response.status.toString() == NetworkConstant.SUCCESS){
-                                XLog.d("PhotoRegAadhaarFragment AadharImageDetection/AadharImageSave response : "+response.status+" link : "+response.aadhaar_image_link+" "+AppUtils.getCurrentDateTime().toString())
+                                Timber.d("PhotoRegAadhaarFragment AadharImageDetection/AadharImageSave response : "+response.status+" link : "+response.aadhaar_image_link+" "+AppUtils.getCurrentDateTime().toString())
                                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.face_reg_success))
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     progress_wheel.stopSpinning()
                                     CustomStatic.AadhaarPicRegUrl=response.aadhaar_image_link
                                     if(CustomStatic.FacePicRegUrl!="" && CustomStatic.AadhaarPicRegUrl!=""){
-                                        XLog.d("PhotoRegAadhaarFragment face url: "+CustomStatic.FacePicRegUrl+" aadhaar url : "+CustomStatic.AadhaarPicRegUrl+AppUtils.getCurrentDateTime().toString())
+                                        Timber.d("PhotoRegAadhaarFragment face url: "+CustomStatic.FacePicRegUrl+" aadhaar url : "+CustomStatic.AadhaarPicRegUrl+AppUtils.getCurrentDateTime().toString())
                                         faceAadhaarCompareParam(CustomStatic.FacePicRegUrl,CustomStatic.AadhaarPicRegUrl)
                                         //extractAadhaarDtls(CustomStatic.AadhaarPicRegUrl)
                                     }else{
@@ -265,7 +266,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                                 progress_wheel.stopSpinning()
                                 CustomStatic.AadhaarPicRegUrl=""
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                XLog.d("PhotoRegAadhaarFragment : AadharImageDetection/AadharImageSave : " + response.status.toString() +", : "  + ", Failed: "+AppUtils.getCurrentDateTime().toString())
+                                Timber.d("PhotoRegAadhaarFragment : AadharImageDetection/AadharImageSave : " + response.status.toString() +", : "  + ", Failed: "+AppUtils.getCurrentDateTime().toString())
                                 deletePicApi(user_id!!,"Something went wrong. Please try again later")
                             }
                         },{
@@ -274,7 +275,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                             progress_wheel.stopSpinning()
                             if (error != null) {
-                                XLog.d("PhotoRegAadhaarFragment : AadharImageDetection/AadharImageSave : " + " : "  + ", ERROR: " + error.localizedMessage)
+                                Timber.d("PhotoRegAadhaarFragment : AadharImageDetection/AadharImageSave : " + " : "  + ", ERROR: " + error.localizedMessage)
                             }
                             deletePicApi(user_id!!,"Something went wrong. Please try again later")
                         })
@@ -309,7 +310,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                         var matchScore=jObj.getDouble("match_score")
                         //(mContext as DashboardActivity).showSnackMessage(matchScore.toString())
                         progress_wheel.stopSpinning()
-                        XLog.d("face-doc-Compare : idfy response : isMatch "+isMatch.toString() + " matchScore : "+matchScore.toString() )
+                        Timber.d("face-doc-Compare : idfy response : isMatch "+isMatch.toString() + " matchScore : "+matchScore.toString() )
                         if(isMatch){
                             if(matchScore>45.00){
                                 //extractAadhaarDtls(CustomStatic.AadhaarPicRegUrl)
@@ -329,7 +330,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                     override fun onErrorResponse(error: VolleyError?) {
                         progress_wheel.stopSpinning()
                         try{
-                            XLog.d("PhotoRegAadhaarFragment faceAadhaarCompare : idfy response : "+error.toString())
+                            Timber.d("PhotoRegAadhaarFragment faceAadhaarCompare : idfy response : "+error.toString())
                         }catch (ex:java.lang.Exception){
 
                         }
@@ -413,7 +414,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                                     dob_aadhaar="1990-02-28"
                                 }
 
-                                XLog.d("PhotoRegAadhaarFragment : idfy response : user_id:"+ user_id+" name:"+name_aadhaar+" aarhaarDOB:"+dob_aadhaar+" aadhaar_no:"+aadhaar_no_aadhaar)
+                                Timber.d("PhotoRegAadhaarFragment : idfy response : user_id:"+ user_id+" name:"+name_aadhaar+" aarhaarDOB:"+dob_aadhaar+" aadhaar_no:"+aadhaar_no_aadhaar)
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     submitCheckAadhaarData(name_aadhaar,dob_aadhaar,aadhaar_no_aadhaar)
                                 }, 1000)
@@ -427,7 +428,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                         override fun onErrorResponse(error: VolleyError?) {
                             progress_wheel.stopSpinning()
                             try{
-                                XLog.d("PhotoRegAadhaarFragment extractAadhaarDtls : idfy response : "+error.toString())
+                                Timber.d("PhotoRegAadhaarFragment extractAadhaarDtls : idfy response : "+error.toString())
                             }catch (ex:java.lang.Exception){
 
                             }
@@ -462,7 +463,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
 
     private fun submitCheckAadhaarData(aadhaar_name:String,aarhaarDOB:String,aadhaar_no:String){
 
-        XLog.d("PhotoRegAadhaarFragment : submitCheckAadhaarData : user_id:"+ user_id+" name:"+aadhaar_name+" aarhaarDOB:"+aarhaarDOB+" aadhaar_no:"+aadhaar_no+" DocType ${CustomStatic.IsAadhaarForPhotoReg}")
+        Timber.d("PhotoRegAadhaarFragment : submitCheckAadhaarData : user_id:"+ user_id+" name:"+aadhaar_name+" aarhaarDOB:"+aarhaarDOB+" aadhaar_no:"+aadhaar_no+" DocType ${CustomStatic.IsAadhaarForPhotoReg}")
         progress_wheel.spin()
         var aadhaarSubmitData: AadhaarSubmitDataNew = AadhaarSubmitDataNew()
         aadhaarSubmitData.user_id= user_id!!
@@ -496,7 +497,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
 
                                 val response = result as BaseResponse
                                 responseOuter=response!!.status!!
-                                XLog.d("PhotoRegAadhaarFragment : submitCheckAadhaarData response: "+response.status)
+                                Timber.d("PhotoRegAadhaarFragment : submitCheckAadhaarData response: "+response.status)
                                 if (response.status == NetworkConstant.SUCCESS) {
                                     dialogSuccess()
                                 }
@@ -510,18 +511,18 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
 
                                 if(!responseOuter.equals("200")){
                                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                    XLog.d("PhotoRegAadhaarFragment : submitCheckAadhaarData errorr : "+error.message.toString() + " "+error.localizedMessage.toString() + " "+ error.cause.toString())
+                                    Timber.d("PhotoRegAadhaarFragment : submitCheckAadhaarData errorr : "+error.message.toString() + " "+error.localizedMessage.toString() + " "+ error.cause.toString())
                                     //deletePicApi(user_id!!,"Duplicate ID Number. Please enter Unique ID number for current person. Thanks.")
                                     deletePicApi(user_id!!,"Please try again. Error info (${error.message})")
                                 }
-                                XLog.d("PhotoRegAadhaarFragment : submitCheckAadhaarData errorr : "+error.message.toString() + " "+error.localizedMessage.toString() + " "+ error.cause.toString())
+                                Timber.d("PhotoRegAadhaarFragment : submitCheckAadhaarData errorr : "+error.message.toString() + " "+error.localizedMessage.toString() + " "+ error.cause.toString())
 
                             })
             )
         }catch (ex:Exception){
             ex.printStackTrace()
             progress_wheel.stopSpinning()
-            XLog.d("submitCheckAadhaarData ex : erro : "+ex.message)
+            Timber.d("submitCheckAadhaarData ex : erro : "+ex.message)
             deletePicApi(user_id!!,"Please try again. Error info (${ex.message})")
         }
 
@@ -545,7 +546,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                         }, { error ->
                             progress_wheel.stopSpinning()
                             error.printStackTrace()
-                            XLog.d("PhotoRegAadhaarFragment : deletePicApi error: "+error.message)
+                            Timber.d("PhotoRegAadhaarFragment : deletePicApi error: "+error.message)
 //                            (mContext as DashboardActivity).showSnackMessage("ERROR")
                         })
         )
@@ -618,7 +619,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
                             val response = result as FaceRegResponse
                             if(response.status== NetworkConstant.SUCCESS){
-                                XLog.d("Face Reg Url : "+response.face_image_link)
+                                Timber.d("Face Reg Url : "+response.face_image_link)
                                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.face_reg_success))
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     progress_wheel.stopSpinning()
@@ -630,13 +631,13 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                                     //(mContext as DashboardActivity).loadFragment(FragType.PhotoRegAadhaarFragment,true,valueData)
                                 }, 500)
 
-                                XLog.d(" RegisTerFaceFragment : FaceImageDetection/FaceImage" +response.status.toString() +", : "  + ", Success: "+AppUtils.getCurrentDateTime().toString())
+                                Timber.d(" RegisTerFaceFragment : FaceImageDetection/FaceImage" +response.status.toString() +", : "  + ", Success: "+AppUtils.getCurrentDateTime().toString())
                             }else{
                                 progress_wheel.stopSpinning()
                                 CustomStatic.FacePicRegUrl=""
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_reg_face))
                                 deletePicApi(user_id!!,"Something went wrong. Please try again later")
-                                XLog.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + response.status.toString() +", : "  + ", Failed: "+AppUtils.getCurrentDateTime().toString())
+                                Timber.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + response.status.toString() +", : "  + ", Failed: "+AppUtils.getCurrentDateTime().toString())
                             }
                         },{
                             error ->
@@ -645,7 +646,7 @@ class PhotoRegAadhaarFragment: BaseFragment(), View.OnClickListener {
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_reg_face))
                             deletePicApi(user_id!!,"Something went wrong. Please try again later")
                             if (error != null) {
-                                XLog.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + " : "  + ", ERROR: " + error.localizedMessage)
+                                Timber.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + " : "  + ", ERROR: " + error.localizedMessage)
                             }
                         })
         )

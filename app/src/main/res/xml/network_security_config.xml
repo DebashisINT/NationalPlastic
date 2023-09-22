@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rev 1.0 security config Suman 30-05-2023 mantis id 26261  >-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+<!--
+       <domain includeSubdomains="true">3.7.30.86</domain>
+-->
+        <domain includeSubdomains="true">fts.indusnettechnologies.com</domain>
+        <!--<domain includeSubdomains="true">localhost</domain>-->
+        <!--<domain includeSubdomains="true">192.168.4.174</domain>-->
+     </domain-config>
+    <!-- Begin Rev 1.0 security config Suman 30-05-2023 mantis id 26261  >-->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">api.openweathermap.org</domain>
+    </domain-config>
+    <!-- End of Rev 1.0 security config Suman 30-05-2023 mantis id 26261  >-->
+ </network-security-config>

@@ -29,11 +29,12 @@ import com.nationalplasticfsm.features.stockCompetetorStock.adapter.AdapterCompe
 import com.nationalplasticfsm.features.stockCompetetorStock.api.AddCompStockProvider
 import com.nationalplasticfsm.features.stockCompetetorStock.model.CompetetorStockGetData
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.lang.Exception
 
 class CompetetorStockFragment: BaseFragment(), View.OnClickListener {
@@ -147,7 +148,7 @@ class CompetetorStockFragment: BaseFragment(), View.OnClickListener {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe({ result ->
-                                XLog.d("CompetitorStock/CompetitorStockList : RESPONSE " + result.status)
+                                Timber.d("CompetitorStock/CompetitorStockList : RESPONSE " + result.status)
                                 val response = result as CompetetorStockGetData
                                 if (response.status == NetworkConstant.SUCCESS){
 
@@ -192,16 +193,16 @@ class CompetetorStockFragment: BaseFragment(), View.OnClickListener {
                                 }
                             },{error ->
                                 if (error == null) {
-                                    XLog.d("CompetitorStock/CompetitorStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
+                                    Timber.d("CompetitorStock/CompetitorStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
                                 } else {
-                                    XLog.d("CompetitorStock/CompetitorStockList : ERROR " + error.localizedMessage)
+                                    Timber.d("CompetitorStock/CompetitorStockList : ERROR " + error.localizedMessage)
                                     error.printStackTrace()
                                 }
                             })
             )
         }
         catch (ex:Exception){
-            XLog.d("CompetitorStock/CompetitorStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
+            Timber.d("CompetitorStock/CompetitorStockList : ERROR " + "UNEXPECTED ERROR IN Add Stock ACTIVITY API")
         }
     }
 

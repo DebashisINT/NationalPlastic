@@ -26,8 +26,9 @@ import com.nationalplasticfsm.app.utils.FTStorageUtils
 import com.nationalplasticfsm.base.presentation.BaseFragment
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.test.viewPermission.AdapterViewPermission
-import com.elvishew.xlog.XLog
+
 import kotlinx.android.synthetic.main.fragment_view_permission.*
+import timber.log.Timber
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -247,10 +248,10 @@ class ViewPermissionFragment: BaseFragment(), View.OnClickListener {
         permList = (permList + permListDenied).toMutableList()
 
         for(i in 0..permList.size-1){
-            XLog.d("Permission Name"+permList.get(i).permissionName + " Status : ")
+            Timber.d("Permission Name"+permList.get(i).permissionName + " Status : ")
         }
         for(i in 0..permListDenied.size-1){
-            XLog.d("Permission Name"+permListDenied.get(i).permissionName + " Status : ")
+            Timber.d("Permission Name"+permListDenied.get(i).permissionName + " Status : ")
         }
 
 

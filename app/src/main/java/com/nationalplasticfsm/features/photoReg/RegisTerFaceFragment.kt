@@ -46,7 +46,7 @@ import com.nationalplasticfsm.features.photoReg.model.FaceRegResponse
 import com.nationalplasticfsm.features.photoReg.model.UserListResponseModel
 import com.nationalplasticfsm.features.photoReg.model.UserPhotoRegModel
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
@@ -62,6 +62,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -301,7 +302,7 @@ class RegisTerFaceFragment: BaseFragment(), View.OnClickListener {
                         .subscribe({ result ->
                             val response = result as FaceRegResponse
                             if(response.status== NetworkConstant.SUCCESS){
-                                XLog.d("Face Reg Url : "+response.face_image_link)
+                                Timber.d("Face Reg Url : "+response.face_image_link)
                                 //(mContext as DashboardActivity).showSnackMessage(getString(R.string.face_reg_success))
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     progress_wheel.stopSpinning()
@@ -321,12 +322,12 @@ class RegisTerFaceFragment: BaseFragment(), View.OnClickListener {
                                     //(mContext as DashboardActivity).loadFragment(FragType.PhotoRegAadhaarFragment,true,valueData)
                                 }, 500)
 
-                                XLog.d(" RegisTerFaceFragment : FaceImageDetection/FaceImage" +response.status.toString() +", : "  + ", Success: "+AppUtils.getCurrentDateTime().toString())
+                                Timber.d(" RegisTerFaceFragment : FaceImageDetection/FaceImage" +response.status.toString() +", : "  + ", Success: "+AppUtils.getCurrentDateTime().toString())
                             }else{
                                 progress_wheel.stopSpinning()
                                 CustomStatic.FacePicRegUrl=""
                                 (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_reg_face))
-                                XLog.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + response.status.toString() +", : "  + ", Failed: "+AppUtils.getCurrentDateTime().toString())
+                                Timber.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + response.status.toString() +", : "  + ", Failed: "+AppUtils.getCurrentDateTime().toString())
                             }
                         },{
                             error ->
@@ -334,7 +335,7 @@ class RegisTerFaceFragment: BaseFragment(), View.OnClickListener {
                             CustomStatic.FacePicRegUrl=""
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_reg_face))
                             if (error != null) {
-                                XLog.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + " : "  + ", ERROR: " + error.localizedMessage)
+                                Timber.d("RegisTerFaceFragment : FaceImageDetection/FaceImage : " + " : "  + ", ERROR: " + error.localizedMessage)
                             }
                         })
         )

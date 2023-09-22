@@ -60,6 +60,7 @@
                     android:layout_below="@+id/logo_new"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:gravity="center|center_horizontal"
                     android:layout_gravity="center"
                     android:textStyle="bold"
@@ -67,7 +68,6 @@
                     android:textColor="#287fb2"
                     android:text="@string/name_filed_managenent_system"
                     android:textSize="@dimen/_12sdp"
-                    android:visibility="gone"
                     android:layout_marginTop="@dimen/_10sdp"/>
 
                 <com.nationalplasticfsm.widgets.AppCustomTextView
@@ -144,6 +144,8 @@
                                                     android:background="@color/transparent"
                                                     android:inputType="textEmailAddress"
                                                     android:singleLine="true"
+                                                    android:focusable="true"
+                                                    android:cursorVisible="true"
                                                     android:paddingStart="@dimen/_10sdp"
                                                     android:textSize="@dimen/_13sdp"
                                                     app:theme="@style/EvoEditTextTheme" />
@@ -197,7 +199,8 @@
                                                     android:paddingStart="@dimen/_10sdp"
                                                     android:singleLine="true"
                                                     android:textSize="@dimen/_13sdp"
-                                                    app:theme="@style/EvoEditTextTheme" />
+                                                    app:theme="@style/EvoEditTextTheme"
+                                                    android:textCursorDrawable="@drawable/custom_cursor"/>
 
                                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -407,14 +410,33 @@
         android:visibility="visible" />
 
 
-    <com.pnikosis.materialishprogress.ProgressWheel
+    <!--<com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         wheel:matProg_barColor="@color/default_text_color"
-        wheel:matProg_progressIndeterminate="true" />
+        wheel:matProg_progressIndeterminate="true" />-->
+
+    <!-- loader work 25642 mantis -->
+
+    <ImageView
+        android:id="@+id/iv_background_color_set"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_transparent_blue"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/iv_loader_spin"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/alert_snack_bar"

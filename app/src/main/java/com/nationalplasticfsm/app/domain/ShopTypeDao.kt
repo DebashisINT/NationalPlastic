@@ -14,6 +14,11 @@ interface ShopTypeDao {
     @Query("SELECT * FROM " + AppConstant.SHOP_TYPE)
     fun getAll(): List<ShopTypeEntity>
 
+    // 4.0 OwnPerformanceFragment AppV 4.1.3 Saheli   24/05/2023 0026221
+    @Query("SELECT * FROM " + AppConstant.SHOP_TYPE + " order by upper(shoptype_name)")
+    fun getOrderByalphabeticallyAll(): List<ShopTypeEntity?>?
+    // 4.0 OwnPerformanceFragment AppV 4.1.3 Saheli   24/05/2023 0026221
+
     @Query("SELECT * FROM " + AppConstant.SHOP_TYPE + " where shoptype_id=:shoptype_id")
     fun getSingleType(shoptype_id: String): ShopTypeEntity
 

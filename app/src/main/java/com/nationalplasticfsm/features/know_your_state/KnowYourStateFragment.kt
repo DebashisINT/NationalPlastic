@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import com.elvishew.xlog.XLog
+
 import com.nationalplasticfsm.R
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.utils.AppUtils
@@ -29,6 +29,7 @@ import com.nationalplasticfsm.widgets.AppCustomTextView
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 /**
  * Created by Saikat on 27-11-2019.
@@ -266,12 +267,12 @@ class KnowYourStateFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-        XLog.e("=======INPUT FOR KNOW STATE LIST========")
-        XLog.e("MONTH=====> $monthVal")
-        XLog.e("YEAR======> " + tv_year.text.toString().trim())
-        XLog.e("SESSION TOKEN======> " + Pref.session_token!!)
-        XLog.e("USER ID======> " + Pref.user_id!!)
-        XLog.e("=========================================")
+        Timber.e("=======INPUT FOR KNOW STATE LIST========")
+        Timber.e("MONTH=====> $monthVal")
+        Timber.e("YEAR======> " + tv_year.text.toString().trim())
+        Timber.e("SESSION TOKEN======> " + Pref.session_token!!)
+        Timber.e("USER ID======> " + Pref.user_id!!)
+        Timber.e("=========================================")
 
         progress_wheel.spin()
         val repository = KnowStateListRepoProvider.knowStateListRepoProvider()
@@ -285,7 +286,7 @@ class KnowYourStateFragment : BaseFragment(), View.OnClickListener {
 
                             val response = result as KnowYourStateListResponseModel
 
-                            XLog.e("RESPONSE CODE FOR KNOW STATE LIST=======> " + response.status)
+                            Timber.e("RESPONSE CODE FOR KNOW STATE LIST=======> " + response.status)
 
                             if (response.status == "200") {
 
@@ -310,7 +311,7 @@ class KnowYourStateFragment : BaseFragment(), View.OnClickListener {
                             progress_wheel.stopSpinning()
                             error.printStackTrace()
 
-                            XLog.e("RESPONSE ERROR FOR KNOW STATE LIST=======> " + error.localizedMessage)
+                            Timber.e("RESPONSE ERROR FOR KNOW STATE LIST=======> " + error.localizedMessage)
 
                             rv_know_state_list.visibility = View.GONE
                             scroll.visibility = View.VISIBLE

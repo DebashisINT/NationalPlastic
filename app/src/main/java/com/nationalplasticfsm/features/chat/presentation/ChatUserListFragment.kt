@@ -1,7 +1,10 @@
 package com.nationalplasticfsm.features.chat.presentation
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.nationalplasticfsm.R
+import com.nationalplasticfsm.app.MaterialSearchView
 import com.nationalplasticfsm.app.NetworkConstant
 import com.nationalplasticfsm.app.Pref
 import com.nationalplasticfsm.app.SearchListener
@@ -21,13 +25,19 @@ import com.nationalplasticfsm.features.chat.model.ChatUserDataModel
 import com.nationalplasticfsm.features.chat.model.ChatUserResponseModel
 import com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
+// Revision History
+// 1.0 ChatUserListFragment saheli 24-02-2032 AppV 4.0.7 mantis 0025683
 class ChatUserListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -118,8 +128,9 @@ class ChatUserListFragment : BaseFragment(), View.OnClickListener {
             if (i == 0) {
                 programFab1.setImageResource(R.drawable.ic_tick_float_icon)
                 programFab1.colorNormal = mContext.resources.getColor(R.color.delivery_status_green)
-            } else if (i == 1)
+            } else if (i == 1) {
                 programFab2.setImageResource(R.drawable.ic_tick_float_icon_gray)
+            }
         }
     }
 
@@ -133,7 +144,52 @@ class ChatUserListFragment : BaseFragment(), View.OnClickListener {
                 }
             }
         })
+
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
     }
+
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 start
+    private fun startVoiceInput() {
+        try {
+            val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+            try {
+                startActivityForResult(intent, MaterialSearchView.REQUEST_VOICE)
+            } catch (a: ActivityNotFoundException) {
+                a.printStackTrace()
+            }
+        }
+        catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == MaterialSearchView.REQUEST_VOICE){
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t= result!![0]
+                (mContext as DashboardActivity).searchView.setQuery(t,false)
+            }
+            catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+
+//            tv_search_frag_order_type_list.setText(t)
+//            tv_search_frag_order_type_list.setSelection(t.length);
+        }
+    }
+    // 1.0 MicroLearningListFragment AppV 4.0.7 mantis 0025683 end
 
     private fun getChatUserListApi() {
         if (!AppUtils.isOnline(mContext)) {
@@ -149,7 +205,7 @@ class ChatUserListFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as ChatUserResponseModel
-                            XLog.d("Get Chat User List STATUS: " + response.status)
+                            Timber.d("Get Chat User List STATUS: " + response.status)
                             if (response.status == NetworkConstant.SUCCESS) {
                                 progress_wheel.stopSpinning()
                                 tv_no_data.visibility = View.GONE
@@ -165,7 +221,7 @@ class ChatUserListFragment : BaseFragment(), View.OnClickListener {
                             error.printStackTrace()
                             progress_wheel.stopSpinning()
                             if (error != null)
-                                XLog.d("Get Chat User List ERROR: " + error.localizedMessage)
+                                Timber.d("Get Chat User List ERROR: " + error.localizedMessage)
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })
         )
@@ -177,9 +233,9 @@ class ChatUserListFragment : BaseFragment(), View.OnClickListener {
                 val name = it.name.substring(0, it.name.indexOf("("))
                 (mContext as DashboardActivity).userName = name
             }
-            else
+            else {
                 (mContext as DashboardActivity).userName = it.name
-
+            }
             (mContext as DashboardActivity).isGrp = it.isGroup
             (mContext as DashboardActivity).grpId = it.id
             (mContext as DashboardActivity).loadFragment(FragType.ChatListFragment, true, it)

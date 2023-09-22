@@ -1,8 +1,12 @@
 package com.nationalplasticfsm.features.viewAllOrder
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.text.Editable
 import android.text.TextUtils
@@ -52,7 +56,7 @@ import com.nationalplasticfsm.features.viewAllOrder.model.AddOrderInputParamsMod
 import com.nationalplasticfsm.features.viewAllOrder.model.AddOrderInputProductList
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.google.android.material.appbar.AppBarLayout
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -64,12 +68,16 @@ import java.lang.Runnable
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.system.measureTimeMillis
+import timber.log.Timber
 
 /**
  * Created by Saikat on 08-11-2018.
  */
 // 1.0 OrderTypeListFragment AppV 4.0.6 saheli 12-01-2023 multiple contact Data added on Api called
 // 2.0 OrderTypeListFragment AppV 4.0.6 saheli 20-01-2023 mrp & discount added order time mantis 25601
+// 3.0 OrderTypeListFragment AppV 4.0.7 saheli 10-02-2023 order rate issue mantis  25666
+// 4.0 OrderTypeListFragment AppV 4.0.7 saheli 20-02-2023 voice search mantis 0025683
+
 class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var mContext: Context
@@ -122,6 +130,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     private lateinit var cv_search: CardView
     private lateinit var iv_search_frag_order_type_list: ImageView
 
+    private lateinit var iv_frag_order_type_list_new_mic: ImageView // 4.0 OrderTypeListFragment AppV 4.0.7  voice search mantis 0025683
+
 
     companion object {
 
@@ -160,7 +170,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
     private fun getProductRateListOfflineApi(isFromOnAttach: Boolean) {
         val repository = ProductListRepoProvider.productListProvider()
-        progress_wheel.spin()
+        //progress_wheel.spin()
         BaseActivity.compositeDisposable.add(
             repository.getProductRateOfflineListNew()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -200,7 +210,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                     productRateListDb =
                                         AppDatabase.getDBInstance()?.productRateDao()
                                             ?.getAll() as ArrayList<ProductRateEntity>?
-                                    progress_wheel.stopSpinning()
+                                    //progress_wheel.stopSpinning()
 
                                     if (!isFromOnAttach)
                                         (mContext as DashboardActivity).showSnackMessage(
@@ -210,7 +220,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 }
                             }
                         } else {
-                            progress_wheel.stopSpinning()
+                            //progress_wheel.stopSpinning()
 
                             if (!isFromOnAttach)
                                 (mContext as DashboardActivity).showSnackMessage(
@@ -219,7 +229,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                                 )
                         }
                     } else {
-                        progress_wheel.stopSpinning()
+                        //progress_wheel.stopSpinning()
 
                         if (!isFromOnAttach)
                             (mContext as DashboardActivity).showSnackMessage(
@@ -231,7 +241,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 }, { error ->
                     error.printStackTrace()
                     BaseActivity.isApiInitiated = false
-                    progress_wheel.stopSpinning()
+                    //progress_wheel.stopSpinning()
 
                     if (!isFromOnAttach)
                         (mContext as DashboardActivity).showSnackMessage(
@@ -266,28 +276,49 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     CustomStatic.productAddedID = ArrayList()
                     if (query.isBlank()) {
                         if (productList != null && productList!!.size > 0) {
-                            productAdapter?.updateList(productList!!)
+//                            productAdapter?.updateList(productList!!)
+                            // 3.0 OrderTypeListFragment AppV 4.0.7 order rate issue mantis  25666
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                productAdapter?.updateList(productList!!)
+                            }, 2000)
                         }
                     } else {
                         if (productList != null && productList!!.size > 0)
-                            productAdapter?.filter?.filter(query)
+//                            productAdapter?.filter?.filter(query)
+                        // 3.0 OrderTypeListFragment AppV 4.0.7 order rate issue mantis  25666
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                productAdapter?.filter?.filter(query)
+                            }, 2000)
 
                     }
                 }
                 else{
                     if (query.isBlank()) {
                         if (productList != null && productList!!.size > 0) {
-                            productAdapter?.updateList(productList!!)
+                            // 3.0 OrderTypeListFragment AppV 4.0.7 order rate issue mantis  25666
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                productAdapter?.updateList(productList!!)
+                            }, 2000)
+//                            productAdapter?.updateList(productList!!)
                         }
                     } else {
                         if (productList != null && productList!!.size > 0)
-                            productAdapter?.filter?.filter(query)
+                        // 3.0 OrderTypeListFragment AppV 4.0.7 order rate issue mantis  25666
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                productAdapter?.filter?.filter(query)
+                            }, 2000)
+//                            productAdapter?.filter?.filter(query)
 
                     }
                 }
 
             }
         })
+
+        // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 start
+        (mContext as DashboardActivity).searchView.setVoiceIcon(R.drawable.ic_mic)
+        (mContext as DashboardActivity).searchView.setOnVoiceClickedListener({ startVoiceInput() })
+        // 1.0 MemberListFragment AppV 4.0.7 mantis 0025683 end
 
         return view
     }
@@ -450,6 +481,8 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun initView(view: View) {
+        progress_wheel=view.findViewById(R.id.progress_wheel)
+        iv_frag_order_type_list_new_mic = view.findViewById(R.id.iv_frag_order_type_list_new_mic)  // 4.0 OrderTypeListFragment AppV 4.0.7  voice search mantis 0025683
         iv_search_frag_order_type_list = view.findViewById(R.id.iv_search_frag_order_type_list)
         //cv_search =  view.findViewById(R.id.cv_search)
         tv_search_frag_order_type_list = view.findViewById(R.id.tv_search_frag_order_type_list)
@@ -488,6 +521,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         app_bar.visibility = View.GONE
         iv_filter.isEnabled = false
         iv_search_frag_order_type_list.setOnClickListener(this)
+        iv_frag_order_type_list_new_mic.setOnClickListener(this) // 4.0 OrderTypeListFragment AppV 4.0.7  voice search mantis 0025683
 
         val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
         scope.launch {
@@ -784,6 +818,11 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
 
         when (p0?.id) {
+            // 4.0 OrderTypeListFragment AppV 4.0.7  voice search mantis 0025683 start
+            R.id.iv_frag_order_type_list_new_mic->{
+                startVoiceInput()
+            }
+            // 4.0 OrderTypeListFragment AppV 4.0.7  voice search mantis 0025683 end
 
             R.id.iv_search_frag_order_type_list-> {
                 CustomStatic.productQtyEdi = HashMap()
@@ -792,13 +831,21 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 progress_wheel.spin()
                 if (TextUtils.isEmpty(tv_search_frag_order_type_list.text.toString().trim())) {
                     if (productList != null && productList!!.size > 0) {
-                        progress_wheel.stopSpinning()
-                        productAdapter?.updateList(productList!!)
+                        // 3.0 OrderTypeListFragment AppV 4.0.7 order rate issue mantis  25666
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            progress_wheel.stopSpinning()
+                            productAdapter?.updateList(productList!!)
+                        }, 2000)
+//                        productAdapter?.updateList(productList!!)
                     }
                 } else {
                     if (productList != null && productList!!.size > 0)
+                    // 3.0 OrderTypeListFragment AppV 4.0.7 order rate issue mantis  25666
+                    Handler(Looper.getMainLooper()).postDelayed({
                         progress_wheel.stopSpinning()
-                    productAdapter?.filter?.filter(tv_search_frag_order_type_list.text.toString().trim())
+                        productAdapter?.filter?.filter(tv_search_frag_order_type_list.text.toString().trim())
+                    }, 2000)
+//                    productAdapter?.filter?.filter(tv_search_frag_order_type_list.text.toString().trim())
                 }
             }
 
@@ -2319,10 +2366,10 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
         isShopRegistrationInProcess = true
 
-        XLog.d("=================SyncShop Input Params (Order)=====================")
-        XLog.d("shop id=======> " + addShop.shop_id)
+        Timber.d("=================SyncShop Input Params (Order)=====================")
+        Timber.d("shop id=======> " + addShop.shop_id)
         val index = addShop.shop_id!!.indexOf("_")
-        XLog.d(
+        Timber.d(
             "decoded shop id=======> " + addShop.user_id + "_" + AppUtils.getDate(
                 addShop.shop_id!!.substring(
                     index + 1,
@@ -2330,69 +2377,69 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 ).toLong()
             )
         )
-        XLog.d("shop added date=======> " + addShop.added_date)
-        XLog.d("shop address=======> " + addShop.address)
-        XLog.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
-        XLog.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
-        XLog.d("date aniversery=======> " + addShop.date_aniversary)
-        XLog.d("dob=======> " + addShop.dob)
-        XLog.d("shop owner phn no=======> " + addShop.owner_contact_no)
-        XLog.d("shop owner email=======> " + addShop.owner_email)
-        XLog.d("shop owner name=======> " + addShop.owner_name)
-        XLog.d("shop pincode=======> " + addShop.pin_code)
-        XLog.d("session token=======> " + addShop.session_token)
-        XLog.d("shop lat=======> " + addShop.shop_lat)
-        XLog.d("shop long=======> " + addShop.shop_long)
-        XLog.d("shop name=======> " + addShop.shop_name)
-        XLog.d("shop type=======> " + addShop.type)
-        XLog.d("user id=======> " + addShop.user_id)
-        XLog.d("amount=======> " + addShop.amount)
-        XLog.d("area id=======> " + addShop.area_id)
-        XLog.d("model id=======> " + addShop.model_id)
-        XLog.d("primary app id=======> " + addShop.primary_app_id)
-        XLog.d("secondary app id=======> " + addShop.secondary_app_id)
-        XLog.d("lead id=======> " + addShop.lead_id)
-        XLog.d("stage id=======> " + addShop.stage_id)
-        XLog.d("funnel stage id=======> " + addShop.funnel_stage_id)
-        XLog.d("booking amount=======> " + addShop.booking_amount)
-        XLog.d("type id=======> " + addShop.type_id)
+        Timber.d("shop added date=======> " + addShop.added_date)
+        Timber.d("shop address=======> " + addShop.address)
+        Timber.d("assigned to dd id=======> " + addShop.assigned_to_dd_id)
+        Timber.d("assigned to pp id=======> " + addShop.assigned_to_pp_id)
+        Timber.d("date aniversery=======> " + addShop.date_aniversary)
+        Timber.d("dob=======> " + addShop.dob)
+        Timber.d("shop owner phn no=======> " + addShop.owner_contact_no)
+        Timber.d("shop owner email=======> " + addShop.owner_email)
+        Timber.d("shop owner name=======> " + addShop.owner_name)
+        Timber.d("shop pincode=======> " + addShop.pin_code)
+        Timber.d("session token=======> " + addShop.session_token)
+        Timber.d("shop lat=======> " + addShop.shop_lat)
+        Timber.d("shop long=======> " + addShop.shop_long)
+        Timber.d("shop name=======> " + addShop.shop_name)
+        Timber.d("shop type=======> " + addShop.type)
+        Timber.d("user id=======> " + addShop.user_id)
+        Timber.d("amount=======> " + addShop.amount)
+        Timber.d("area id=======> " + addShop.area_id)
+        Timber.d("model id=======> " + addShop.model_id)
+        Timber.d("primary app id=======> " + addShop.primary_app_id)
+        Timber.d("secondary app id=======> " + addShop.secondary_app_id)
+        Timber.d("lead id=======> " + addShop.lead_id)
+        Timber.d("stage id=======> " + addShop.stage_id)
+        Timber.d("funnel stage id=======> " + addShop.funnel_stage_id)
+        Timber.d("booking amount=======> " + addShop.booking_amount)
+        Timber.d("type id=======> " + addShop.type_id)
 
         if (shop_imgPath != null)
-            XLog.d("shop image path=======> $shop_imgPath")
+            Timber.d("shop image path=======> $shop_imgPath")
 
-        XLog.d("director name=======> " + addShop.director_name)
-        XLog.d("family member dob=======> " + addShop.family_member_dob)
-        XLog.d("key person's name=======> " + addShop.key_person_name)
-        XLog.d("phone no=======> " + addShop.phone_no)
-        XLog.d("additional dob=======> " + addShop.addtional_dob)
-        XLog.d("additional doa=======> " + addShop.addtional_doa)
-        XLog.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
-        XLog.d("specialization=======> " + addShop.specialization)
-        XLog.d("average patient count per day=======> " + addShop.average_patient_per_day)
-        XLog.d("category=======> " + addShop.category)
-        XLog.d("doctor address=======> " + addShop.doc_address)
-        XLog.d("doctor pincode=======> " + addShop.doc_pincode)
-        XLog.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
-        XLog.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
-        XLog.d("chemist name=======> " + addShop.chemist_name)
-        XLog.d("chemist name=======> " + addShop.chemist_address)
-        XLog.d("chemist pincode=======> " + addShop.chemist_pincode)
-        XLog.d("assistant name=======> " + addShop.assistant_name)
-        XLog.d("assistant contact no=======> " + addShop.assistant_contact_no)
-        XLog.d("assistant dob=======> " + addShop.assistant_dob)
-        XLog.d("assistant date of anniversary=======> " + addShop.assistant_doa)
-        XLog.d("assistant family dob=======> " + addShop.assistant_family_dob)
-        XLog.d("entity id=======> " + addShop.entity_id)
-        XLog.d("party status id=======> " + addShop.party_status_id)
-        XLog.d("retailer id=======> " + addShop.retailer_id)
-        XLog.d("dealer id=======> " + addShop.dealer_id)
-        XLog.d("beat id=======> " + addShop.beat_id)
-        XLog.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
-        XLog.d("actual address=======> " + addShop.actual_address)
+        Timber.d("director name=======> " + addShop.director_name)
+        Timber.d("family member dob=======> " + addShop.family_member_dob)
+        Timber.d("key person's name=======> " + addShop.key_person_name)
+        Timber.d("phone no=======> " + addShop.phone_no)
+        Timber.d("additional dob=======> " + addShop.addtional_dob)
+        Timber.d("additional doa=======> " + addShop.addtional_doa)
+        Timber.d("doctor family member dob=======> " + addShop.doc_family_member_dob)
+        Timber.d("specialization=======> " + addShop.specialization)
+        Timber.d("average patient count per day=======> " + addShop.average_patient_per_day)
+        Timber.d("category=======> " + addShop.category)
+        Timber.d("doctor address=======> " + addShop.doc_address)
+        Timber.d("doctor pincode=======> " + addShop.doc_pincode)
+        Timber.d("chambers or hospital under same headquarter=======> " + addShop.is_chamber_same_headquarter)
+        Timber.d("chamber related remarks=======> " + addShop.is_chamber_same_headquarter_remarks)
+        Timber.d("chemist name=======> " + addShop.chemist_name)
+        Timber.d("chemist name=======> " + addShop.chemist_address)
+        Timber.d("chemist pincode=======> " + addShop.chemist_pincode)
+        Timber.d("assistant name=======> " + addShop.assistant_name)
+        Timber.d("assistant contact no=======> " + addShop.assistant_contact_no)
+        Timber.d("assistant dob=======> " + addShop.assistant_dob)
+        Timber.d("assistant date of anniversary=======> " + addShop.assistant_doa)
+        Timber.d("assistant family dob=======> " + addShop.assistant_family_dob)
+        Timber.d("entity id=======> " + addShop.entity_id)
+        Timber.d("party status id=======> " + addShop.party_status_id)
+        Timber.d("retailer id=======> " + addShop.retailer_id)
+        Timber.d("dealer id=======> " + addShop.dealer_id)
+        Timber.d("beat id=======> " + addShop.beat_id)
+        Timber.d("assigned to shop id=======> " + addShop.assigned_to_shop_id)
+        Timber.d("actual address=======> " + addShop.actual_address)
 
         if (degree_imgPath != null)
-            XLog.d("doctor degree image path=======> $degree_imgPath")
-        XLog.d("==================================================================")
+            Timber.d("doctor degree image path=======> $degree_imgPath")
+        Timber.d("==================================================================")
 
         if (TextUtils.isEmpty(shop_imgPath) && TextUtils.isEmpty(degree_imgPath)) {
             val repository = AddShopRepositoryProvider.provideAddShopWithoutImageRepository()
@@ -2402,7 +2449,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         val addShopResult = result as AddShopResponse
-                        XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                        Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                         when (addShopResult.status) {
                             NetworkConstant.SUCCESS -> {
                                 AppDatabase.getDBInstance()!!.addShopEntryDao()
@@ -2443,7 +2490,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                             }
                             NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                 AppDatabase.getDBInstance()!!.addShopEntryDao()
                                     .updateIsUploaded(true, addShop.shop_id)
                                 progress_wheel.stopSpinning()
@@ -2506,7 +2553,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                         isShopRegistrationInProcess = false
                         if (error != null)
-                            XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                            Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                     })
             )
         } else {
@@ -2517,7 +2564,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                     .subscribeOn(Schedulers.io())
                     .subscribe({ result ->
                         val addShopResult = result as AddShopResponse
-                        XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
+                        Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + ", RESPONSE:" + result.message)
                         when (addShopResult.status) {
                             NetworkConstant.SUCCESS -> {
                                 AppDatabase.getDBInstance()!!.addShopEntryDao()
@@ -2558,7 +2605,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
 
                             }
                             NetworkConstant.DUPLICATE_SHOP_ID -> {
-                                XLog.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
+                                Timber.d("DuplicateShop : " + ", SHOP: " + addShop.shop_name)
                                 AppDatabase.getDBInstance()!!.addShopEntryDao()
                                     .updateIsUploaded(true, addShop.shop_id)
                                 progress_wheel.stopSpinning()
@@ -2621,7 +2668,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                         (mContext as DashboardActivity).showSnackMessage(getString(R.string.unable_to_sync))
                         isShopRegistrationInProcess = false
                         if (error != null)
-                            XLog.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
+                            Timber.d("syncShopFromShopList : " + ", SHOP: " + addShop.shop_name + error.localizedMessage)
                     })
             )
         }
@@ -2865,7 +2912,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    XLog.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + ", RESPONSE:" + result.message)
+                    Timber.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + ", RESPONSE:" + result.message)
                     if (result.status == NetworkConstant.SUCCESS) {
 
                     }
@@ -2873,7 +2920,7 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
                 }, { error ->
                     error.printStackTrace()
                     if (error != null)
-                        XLog.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + error.localizedMessage)
+                        Timber.d("syncShopActivityFromShopList : " + ", SHOP: " + list[0].shop_name + error.localizedMessage)
 //                                (mContext as DashboardActivity).showSnackMessage("ERROR")
                 })
         )
@@ -2913,5 +2960,37 @@ class OrderTypeListFragment : BaseFragment(), View.OnClickListener {
         else
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
     }
+    // 4.0 OrderTypeListFragment AppV 4.0.7  voice search mantis 0025683 start
+    private fun startVoiceInput() {
+        val intent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        //intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"hi")
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.ENGLISH)
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?")
+        try {
+            startActivityForResult(intent, 7009)
+        } catch (a: ActivityNotFoundException) {
+            a.printStackTrace()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 7009) {
+            try {
+                val result = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                var t = result!![0]
+                tv_search_frag_order_type_list.setText(t)
+                tv_search_frag_order_type_list.setSelection(t.length);
+            }
+            catch (ex:Exception) {
+                ex.printStackTrace()
+            }
+        }
+    }
+    // 4.0 OrderTypeListFragment AppV 4.0.6 voice search mantis 0025683 end
 }
 

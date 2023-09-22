@@ -31,10 +31,11 @@ import com.nationalplasticfsm.features.task.api.TaskRepoProvider
 import com.nationalplasticfsm.features.task.model.AddTaskInputModel
 import com.nationalplasticfsm.widgets.AppCustomEditText
 import com.nationalplasticfsm.widgets.AppCustomTextView
-import com.elvishew.xlog.XLog
+
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -129,18 +130,22 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.tv_submit_btn -> {
-                if (TextUtils.isEmpty(selectedDate))
+                if (TextUtils.isEmpty(selectedDate)) {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_select_date))
-                else if (TextUtils.isEmpty(et_task.text.toString().trim()))
+                }
+                else if (TextUtils.isEmpty(et_task.text.toString().trim())) {
                     (mContext as DashboardActivity).showSnackMessage(getString(R.string.error_enter_task))
+                }
                 else {
                     task?.task_name = et_task.text.toString().trim()
                     task?.details = et_details.text.toString().trim()
 
-                    if (!task?.isUploaded!!)
+                    if (!task?.isUploaded!!) {
                         saveData()
-                    else
+                    }
+                    else {
                         callEdiTaskApi()
+                    }
                 }
             }
 
@@ -220,10 +225,12 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
     private fun saveData() {
         AppDatabase.getDBInstance()?.taskDao()?.updateTask(task!!)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             initPermissionCheck()
-        else
+        }
+        else {
             editEventToCalender()
+        }
 
         if (!AppUtils.isOnline(mContext)) {
             (mContext as DashboardActivity).showSnackMessage("Task edited successfully")
@@ -231,16 +238,16 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-        XLog.d("==============Add Task Input Params (Edit Task)====================")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("date=======> " + task?.date)
-        XLog.d("task_id=======> " + task?.task_id)
-        XLog.d("task_name=======> " + task?.task_name)
-        XLog.d("details=======> " + task?.details)
-        XLog.d("isCompleted=======> " + task?.isCompleted)
-        XLog.d("eventId=======> " + task?.eventId)
-        XLog.d("===================================================================")
+        Timber.d("==============Add Task Input Params (Edit Task)====================")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("date=======> " + task?.date)
+        Timber.d("task_id=======> " + task?.task_id)
+        Timber.d("task_name=======> " + task?.task_name)
+        Timber.d("details=======> " + task?.details)
+        Timber.d("isCompleted=======> " + task?.isCompleted)
+        Timber.d("eventId=======> " + task?.eventId)
+        Timber.d("===================================================================")
 
         val taskInput = AddTaskInputModel(Pref.session_token!!, Pref.user_id!!, task?.task_id!!, task?.date!!, task?.task_name!!,
                 task?.details!!, task?.isCompleted!!, task?.eventId!!)
@@ -253,7 +260,7 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("ADD TASK: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("ADD TASK: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                             progress_wheel.stopSpinning()
 
@@ -268,7 +275,7 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("ADD TASK: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("ADD TASK: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage("Task edited successfully")
                             (mContext as DashboardActivity).onBackPressed()
@@ -283,16 +290,16 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
             return
         }
 
-        XLog.d("==============Edit Task Input Params (Edit Task)====================")
-        XLog.d("user_id=======> " + Pref.user_id)
-        XLog.d("session_token=======> " + Pref.session_token)
-        XLog.d("date=======> " + task?.date)
-        XLog.d("task_id=======> " + task?.task_id)
-        XLog.d("task_name=======> " + task?.task_name)
-        XLog.d("details=======> " + task?.details)
-        XLog.d("isCompleted=======> " + task?.isCompleted)
-        XLog.d("eventId=======> " + task?.eventId)
-        XLog.d("===================================================================")
+        Timber.d("==============Edit Task Input Params (Edit Task)====================")
+        Timber.d("user_id=======> " + Pref.user_id)
+        Timber.d("session_token=======> " + Pref.session_token)
+        Timber.d("date=======> " + task?.date)
+        Timber.d("task_id=======> " + task?.task_id)
+        Timber.d("task_name=======> " + task?.task_name)
+        Timber.d("details=======> " + task?.details)
+        Timber.d("isCompleted=======> " + task?.isCompleted)
+        Timber.d("eventId=======> " + task?.eventId)
+        Timber.d("===================================================================")
 
         val taskInput = AddTaskInputModel(Pref.session_token!!, Pref.user_id!!, task?.task_id!!, task?.date!!, task?.task_name!!,
                 task?.details!!, task?.isCompleted!!, task?.eventId!!)
@@ -305,16 +312,18 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
                             val response = result as BaseResponse
-                            XLog.d("EDIT TASK: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
+                            Timber.d("EDIT TASK: " + "RESPONSE : " + response.status + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + response.message)
 
                             progress_wheel.stopSpinning()
 
                             if (response.status == NetworkConstant.SUCCESS) {
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     initPermissionCheck()
-                                else
+                                }
+                                else {
                                     editEventToCalender()
+                                }
 
                                 AppDatabase.getDBInstance()?.taskDao()?.updateTask(task!!)
                                 (mContext as DashboardActivity).showSnackMessage(response.message!!)
@@ -325,7 +334,7 @@ class EditTaskFragment : BaseFragment(), View.OnClickListener {
 
                         }, { error ->
                             progress_wheel.stopSpinning()
-                            XLog.d("EDIT TASK: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
+                            Timber.d("EDIT TASK: " + "ERROR : " + "\n" + "Time : " + AppUtils.getCurrentDateTime() + ", USER :" + Pref.user_name + ",MESSAGE : " + error.localizedMessage)
                             error.printStackTrace()
                             (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
                         })

@@ -39,6 +39,8 @@ class ApplyReimbursementRepo(val apiService: ApplyReimbursementApi) {
 
         }
 
+        var finalList = multiPartArray
+
         return apiService.applyReimbursementImage(multiPartArray)
     }
 

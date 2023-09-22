@@ -8,6 +8,19 @@ import com.marcinmoskala.kotlinpreferences.PreferenceHolder
 // Revision History
 // 1.0 Pref  AppV 4.0.6 Saheli    16/01/2023 Update beat feature
 // 2.0 Pref  AppV 4.0.6 Saheli    25/01/2023 mantis 25623
+// 3.0 Pref  AppV 4.0.7 Suman    10/03/2023 Pdf generation settings wise  mantis 25650
+// 4.0 Pref  AppV 4.0.7 Suman    23/03/2023 ShowApproxDistanceInNearbyShopList Show approx distance in nearby + shopmaster  mantis 0025742
+// 5.0 Pref  AppV 4.0.8 Saheli   06/04/2023 mantis 0025780 IsAssignedDDAvailableForAllUser Useds LoginActivity If this feature 'On' then Assigned DD [Assigned DD Table] shall be available in 'Shop Master'
+// Rev 6.0 Pref AppV 4.0.8 Suman    26/04/2023 mail repetation fix 25923
+// Rev 7.0 Pref AppV 4.0.8 Suman    02/05/2023 mantis id 25979
+//Rev 8.0 Pref AppV 4.0.8 Saheli    05/05/2023  mantis 0026023
+// Rev 9.0 Pref AppV 4.0.8 Saheli    12/05/2023  mantis 0026101
+// Rev 10.0 Pref AppV 4.0.8 Suman    16/05/2023  mantis 26119
+// Rev 11.0 Pref AppV 4.0.8 Suman    19/05/2023  mantis 26163
+// 12.0 Pref v 4.1.6 Tufan 11/07/2023 mantis 26546 revisit sync time
+// 13.0 Pref v 4.1.6 Suman 13/07/2023 mantis 26555 Usersettings
+// 14.0 Pref v 4.1.6 Tufan 11/08/2023 mantis 26655 Order Past Days
+// 15.0 Pref v 4.1.6 Tufan 22/08/2023 mantis 26649 Show distributor scheme with Product
 object Pref : PreferenceHolder() {
     var text: String? by bindToPreferenceFieldNullable()
     var num: Int by bindToPreferenceField(0, "SomeIntKey")
@@ -843,4 +856,96 @@ object Pref : PreferenceHolder() {
 
     var IsRouteStartFromAttendance: Boolean by bindToPreferenceField(false, "IsRouteStartFromAttendance")//mantis 25637
 
+    var IsShowQuotationFooterforEurobond: Boolean by bindToPreferenceField(false, "IsShowQuotationFooterforEurobond")// 3.0 Pref  AppV 4.0.7 Suman    10/03/2023 Pdf generation settings wise  mantis 25650
+    var IsShowOtherInfoinShopMaster: Boolean by bindToPreferenceField(false, "IsShowOtherInfoinShopMaster") // 3.0 Pref  AppV 4.0.7 Suman    10/03/2023 Pdf generation settings wise  mantis 25650
+
+    var IsVoiceEnable: Boolean by bindToPreferenceField(true, "IsVoiceEnable")
+
+    var IsAllowZeroRateOrder: Boolean by bindToPreferenceField(false, "IsAllowZeroRateOrder")
+
+    // 4.0 Pref  AppV 4.0.7 Suman    23/03/2023 ShowApproxDistanceInNearbyShopList Show approx distance in nearby + shopmaster  mantis 0025742
+    var ShowApproxDistanceInNearbyShopList: Boolean by bindToPreferenceField(false, "ShowApproxDistanceInNearbyShopList")
+
+    // 5.0 Pref  AppV 4.0.8 Saheli    06/04/2023 mantis 0025780 IsAssignedDDAvailableForAllUser Useds LoginActivity If this feature 'On' then Assigned DD [Assigned DD Table] shall be available in 'Shop Master'
+    var IsAssignedDDAvailableForAllUserGlobal: Boolean by bindToPreferenceField(false, "IsAssignedDDAvailableForAllUser ")
+    var IsAssignedDDAvailableForAllUser : Boolean by bindToPreferenceField(false, "IsAssignedDDAvailableForAllUser ")
+
+    //Begin Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+    var profile_latitude: String by bindToPreferenceField("", "profile_latitude")
+    var profile_longitude: String by bindToPreferenceField("", "profile_longitude")
+    //End of Rev 17 DashboardActivity AppV 4.0.8 Suman    24/04/2023 distanct+station calculation 25806
+
+    // 6.0 Pref  AppV 4.0.8 Saheli    20/04/2023 mantis 25860
+    var IsShowEmployeePerformanceGlobal: Boolean by bindToPreferenceField(false, "IsShowEmployeePerformance")
+    var IsShowEmployeePerformance : Boolean by bindToPreferenceField(false, "IsShowEmployeePerformance")
+
+    //Begin Rev 6.0 Pref AppV 4.0.8 Suman    26/04/2023 mail repetation fix 25923
+    var prevQutoNoForMail : String by bindToPreferenceField("", "prevQutoNoForMail")
+    //End Rev 6.0 Pref AppV 4.0.8 Suman    26/04/2023 mail repetation fix 25923
+
+    //Begin Rev 7.0 Pref AppV 4.0.8 Suman    02/05/2023 mantis id 25979
+    var IsAttendanceCheckedforExpense : Boolean by bindToPreferenceField(false, "IsAttendanceCheckedforExpense")
+    var IsShowLocalinExpense : Boolean by bindToPreferenceField(false, "IsShowLocalinExpense")
+    var IsShowOutStationinExpense : Boolean by bindToPreferenceField(false, "IsShowOutStationinExpense")
+    var IsSingleDayTAApplyRestriction : Boolean by bindToPreferenceField(false, "IsSingleDayTAApplyRestriction")
+    var IsTAAttachment1Mandatory : Boolean by bindToPreferenceField(false, "IsTAAttachment1Mandatory")
+    var IsTAAttachment2Mandatory : Boolean by bindToPreferenceField(false, "IsTAAttachment2Mandatory")
+
+    var NameforConveyanceAttachment1 : String by bindToPreferenceField("", "NameforConveyanceAttachment1")
+    var NameforConveyanceAttachment2 : String by bindToPreferenceField("", "NameforConveyanceAttachment2")
+
+    //End of Rev 7.0 Pref AppV 4.0.8 Suman    02/05/2023 mantis id 25979
+
+    //Begin Rev 8.0 Pref AppV 4.0.8 Saheli    05/05/2023  mantis 0026023
+    var IsTaskManagementAvailable: Boolean by bindToPreferenceField(false, "IsTaskManagementAvailable")
+    //end Rev 8.0 Pref AppV 4.0.8 Saheli    05/05/2023  mantis 0026023
+
+    var IsShowPrivacyPolicyInMenu: Boolean by bindToPreferenceField(false, "IsShowPrivacyPolicyInMenu")
+
+    //Begin Rev 9.0 Pref AppV 4.0.8 Saheli    12/05/2023  mantis 0026101
+    var IsAttachmentAvailableForCurrentStock : Boolean by bindToPreferenceField(false, "IsAttachmentAvailableForCurrentStock")
+    //end Rev 9.0 Pref AppV 4.0.8 Saheli    12/05/2023  mantis 0026101
+
+    //Begin Rev 10.0 Pref AppV 4.0.8 Suman    16/05/2023  mantis 26119
+    var IsShowReimbursementTypeInAttendance : Boolean by bindToPreferenceField(false, "IsShowReimbursementTypeInAttendance")
+    var selectedVisitStationID : String by bindToPreferenceField("", "selectedVisitStationID")
+    var selectedVisitStationName : String by bindToPreferenceField("", "selectedVisitStationName")
+    //End of Rev 10.0 Pref AppV 4.0.8 Suman    16/05/2023  mantis 26119
+
+    //Begin Rev 11.0 Pref AppV 4.0.8 Suman    19/05/2023  mantis 26163
+    var IsBeatPlanAvailable : Boolean by bindToPreferenceField(false, "IsBeatPlanAvailable")
+    //End of Rev 11.0 Pref AppV 4.0.8 Suman    19/05/2023  mantis 26163
+
+    var IsMenuShowAIMarketAssistant : Boolean by bindToPreferenceField(false, "IsMenuShowAIMarketAssistant")
+
+    var IsUpdateVisitDataInTodayTable : Boolean by bindToPreferenceField(false, "IsUpdateVisitDataInTodayTable")
+
+    //Begin Rev 12.0 Pref AppV 4.1.6 Saheli    20/06/2023  mantis 0026391
+    var isNewOptimizedStock : Boolean by bindToPreferenceField(true, "isNewOptimizedStock")
+    var savefromOrderOrStock : Boolean by bindToPreferenceField(true, "savefromOrderOrStock")
+    //end Rev 12.0 Pref AppV 4.1.6 Saheli    20/06/2023  mantis 0026391
+
+    //Begin 12.0 Pref v 4.1.6 Tufan 11/07/2023 mantis 26546 revisit sync time
+    var ShopSyncIntervalInMinutes: String by bindToPreferenceField("10", "ShopSyncIntervalInMinutes")
+    //End 12.0 Pref v 4.1.6 Tufan 11/07/2023 mantis 26546 revisit sync time
+
+    //Begin 13.0 Pref v 4.1.6 Suman 13/07/2023 mantis 26555 Usersettings
+    var IsUsbDebuggingRestricted : Boolean by bindToPreferenceField(false, "IsUsbDebuggingRestricted")
+    //End 13.0 Pref v 4.1.6 Suman 13/07/2023 mantis 26555 Usersettings
+
+    var IsShowWhatsAppIconforVisit : Boolean by bindToPreferenceField(false, "IsShowWhatsAppIconforVisit")
+    var IsAutomatedWhatsAppSendforRevisit : Boolean by bindToPreferenceField(false, "IsAutomatedWhatsAppSendforRevisit")
+
+    var UserLoginContactID : String by bindToPreferenceField("", "UserLoginContactID")
+
+    //Begin 14.0 Pref v 4.1.6 Tufan 11/08/2023 mantis 26655 Order Past Days
+    var Order_Past_Days: String by bindToPreferenceField("10", "Order_Past_Days")
+    var IsAllowBackdatedOrderEntry : Boolean by bindToPreferenceField(false, "IsAllowBackdatedOrderEntry")
+  //End 14.0 Pref v 4.1.6 Tufan 11/08/2023 mantis 26655 Order Past Days
+
+    //Begin 15.0 Pref v 4.1.6 Tufan 22/08/2023 mantis 26649 Show distributor scheme with Product
+  var Show_distributor_scheme_with_Product : Boolean by bindToPreferenceField(false, "Show_distributor_scheme_with_Product")
+    //end 15.0 Pref v 4.1.6 Tufan 22/08/2023 mantis 26649 Show distributor scheme with Product
+
 }
+
