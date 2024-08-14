@@ -61,7 +61,7 @@
     android:paddingLeft="@dimen/_7sdp"
     android:paddingRight="@dimen/_5sdp">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_plan_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -86,7 +86,7 @@
             android:textColor="@color/light_gray"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_plan_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             android:text="\u20B9 99999999.99"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -103,7 +103,7 @@
             android:textSize="@dimen/_11sdp"
             android:layout_marginLeft="@dimen/_10sdp"/>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_achv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -125,7 +125,7 @@
             android:textColor="@color/light_gray"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -141,14 +141,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/plan_remark"
             android:textColor="@color/light_gray"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_plan_remark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,14 +163,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/achv_remark"
             android:textColor="@color/light_gray"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_achv_remark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -43,7 +43,7 @@
         android:paddingBottom="@dimen/_5sdp"
         android:paddingTop="@dimen/_5sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/order_date_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
 
         </RelativeLayout>-->
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/ordered_amount_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/order_no_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

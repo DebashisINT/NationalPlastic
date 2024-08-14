@@ -17,7 +17,7 @@
         android:padding="@dimen/_7sdp"
         android:background="@color/add_item_card_color"
         >
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/order_amount_price_TV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,14 +45,14 @@
                 android:layout_marginLeft="@dimen/_5sdp"
                 android:gravity="left"
                 >
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/item_name_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/philips_led_bulb"
                     android:textColor="@color/login_txt_color"
                     android:textSize="@dimen/_14sdp" />
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/item_desc_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                     android:textColor="@color/light_gray"
                     android:textSize="@dimen/_11sdp" />
 
-                <com.nationalplasticfsm.widgets.AppCustomEditText
+                <com.breezenationalplasticfsm.widgets.AppCustomEditText
                     android:id="@+id/item_quantity_EDT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/smoke_white"
+    android:focusable="true"
+    android:clickable="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".features.contacts.SchedulerViewFrag">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <LinearLayout
+            android:id="@+id/ll_frag_sch_add_template"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="right"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_3sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_template_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minWidth="@dimen/_55sdp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="Define / ViewTemplate"
+                android:textColor="@color/black_custom_light"
+                android:textSize="@dimen/_11sdp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_frag_scheduler_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:scrollbars="vertical"
+                app:stackFromEnd="true"
+                app:reverseLayout="true"/>
+
+            <LinearLayout
+                android:id="@+id/ll_no_data_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+                <include layout="@layout/empty_page_layout1"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_gravity="center_horizontal"/>
+
+
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/progress_wheel_frag_schedule_his_list"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                wheel:matProg_barColor="@color/default_text_color"
+                wheel:matProg_progressIndeterminate="true" />
+
+            <com.breezenationalplasticfsm.app.widgets.MovableFloatingActionButton
+                android:id="@+id/fab_frag_add_schedule_in_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:background="@color/white"
+                android:src="@drawable/ic_add"
+                app:fabSize="normal"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_10sdp"/>
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+</LinearLayout>

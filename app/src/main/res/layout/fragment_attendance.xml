@@ -38,7 +38,7 @@
                 android:textColor="@color/colorAccent" />
         </RadioGroup>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_show_date_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:layout_below="@+id/attendance_header_radio_group"
         android:overScrollMode="never" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/no_attendance_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

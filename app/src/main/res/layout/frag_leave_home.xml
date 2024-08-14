@@ -21,7 +21,7 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/pendings_approval_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 android:textStyle="bold"
                 android:textColor="@drawable/selector_text_clor_blue_white_new" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/leave_status_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

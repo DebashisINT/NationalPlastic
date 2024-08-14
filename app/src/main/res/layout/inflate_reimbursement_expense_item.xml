@@ -40,7 +40,7 @@
                         android:contentDescription="@null"
                         android:src="@drawable/ic_default_reimbursement_icon" />
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:id="@+id/tv_expense_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                         android:contentDescription="@null"
                         android:src="@drawable/reimbursement_rupee_sign_selector" />
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:id="@+id/tv_food_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

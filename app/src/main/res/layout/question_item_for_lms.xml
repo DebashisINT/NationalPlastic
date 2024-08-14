@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/_10sdp"
+    android:paddingStart="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_5sdp"
+    android:padding="@dimen/_16sdp">
+
+    <TextView
+        android:id="@+id/tv_row_question_lms_no"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:text="No"
+        android:gravity="center|start"
+        android:layout_marginLeft="@dimen/_5sdp"/>
+
+    <TextView
+        android:id="@+id/header_text"
+        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_15sdp"
+        android:textColor="@color/approved_green"
+        android:textStyle="bold"
+        android:text="Question"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/question_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:textStyle="bold"
+        android:textSize="@dimen/_12sdp" />
+
+    <LinearLayout
+        android:id="@+id/ll_question_view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/back_round_corner_7"
+        android:paddingBottom="@dimen/_7sdp"
+        android:paddingTop="@dimen/_7sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_7sdp">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/answer_text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="Question 1"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:id="@+id/option_radio_button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_question_view2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/back_round_corner_7"
+        android:paddingBottom="@dimen/_7sdp"
+        android:paddingTop="@dimen/_7sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_7sdp">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/answer_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="Question 2"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:id="@+id/option_radio_button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_question_view3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/back_round_corner_7"
+        android:paddingBottom="@dimen/_7sdp"
+        android:paddingTop="@dimen/_7sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_7sdp">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/answer_text3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="Question 3"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:id="@+id/option_radio_button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_question_view4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/back_round_corner_7"
+        android:paddingBottom="@dimen/_7sdp"
+        android:paddingTop="@dimen/_7sdp"
+        android:paddingStart="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_7sdp">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/answer_text4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:text="Question 4"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:textSize="@dimen/_12sdp" />
+
+        <RadioButton
+            android:id="@+id/option_radio_button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

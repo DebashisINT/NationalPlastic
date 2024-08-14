@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.nationalplasticfsm.widgets.AppCustomEditText
+        <com.breezenationalplasticfsm.widgets.AppCustomEditText
             android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

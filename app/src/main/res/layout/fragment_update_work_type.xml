@@ -37,7 +37,7 @@
                         android:paddingBottom="@dimen/_5sdp"
                         android:paddingTop="@dimen/_5sdp">
 
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
+                        <com.breezenationalplasticfsm.widgets.AppCustomTextView
                             android:id="@+id/tv_work_type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                         android:paddingTop="@dimen/_5sdp"
                         android:paddingBottom="@dimen/_5sdp">
 
-                        <com.nationalplasticfsm.widgets.AppCustomTextView
+                        <com.breezenationalplasticfsm.widgets.AppCustomTextView
                             android:id="@+id/tv_beat_type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
                     android:orientation="vertical"
                     android:background="@drawable/shape_cursor_two">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/_10sdp"
@@ -196,7 +196,7 @@
                                     android:textColorHint="@color/light_gray"
                                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                                    <com.nationalplasticfsm.widgets.AppCustomEditText
+                                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
                                         android:id="@+id/et_dd_name"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -238,7 +238,7 @@
                                     android:textColorHint="@color/light_gray"
                                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                                    <com.nationalplasticfsm.widgets.AppCustomEditText
+                                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
                                         android:id="@+id/et_market_worked"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -273,7 +273,7 @@
                     android:paddingTop="@dimen/_5sdp"
                     android:background="@drawable/shape_cursor_two">
 
-                    <com.nationalplasticfsm.widgets.AppCustomEditText
+                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
                         android:id="@+id/et_work_type_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -293,7 +293,7 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

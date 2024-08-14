@@ -26,7 +26,7 @@
                 android:orientation="horizontal"
                 android:weightSum="4">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_collection_frag_notification_tab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                     android:textSize="@dimen/_9sdp"
                     android:textColor="@drawable/selector_text_clor_blue_white_new" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_collection_frag_pendingcollection_tab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                     android:textSize="@dimen/_9sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_zero_collection_frag_tab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                     android:textSize="@dimen/_9sdp"
                     android:textColor="@drawable/selector_text_clor_blue_white_new" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_repeat_order_frag_tab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

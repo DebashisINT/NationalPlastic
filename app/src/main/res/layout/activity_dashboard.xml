@@ -65,7 +65,14 @@
                 <include
                     layout="@layout/menu"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:visibility="visible"/>
+
+                <include
+                    layout="@layout/menu_adv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

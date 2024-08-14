@@ -7,7 +7,7 @@
     android:layout_marginRight="@dimen/_12sdp"
     android:layout_marginTop="@dimen/_3sdp">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_state_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_primary_value_plan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

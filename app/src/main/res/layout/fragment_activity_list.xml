@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content">
 
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:id="@+id/myshop_name_TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
 
                 </RelativeLayout>
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/myshop_address_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                     android:textSize="@dimen/_11sdp" />
                 <!--android:text="@string/address_txt"-->
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_contact_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
             wheel:matProg_progressIndeterminate="true" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_no_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

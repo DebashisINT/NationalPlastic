@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center|top"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:visibility="invisible"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/ic_one"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:layout_marginLeft="@dimen/_95sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_160sdp"
+                android:scaleType="fitStart"
+                android:src="@drawable/arrowlengh"
+                android:padding="@dimen/_1sdp"
+                android:rotation="-13"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/_175sdp"
+            android:layout_height="@dimen/_165sdp"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/image_empty_file"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_empty_page_msg_head"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:text="Click on Filter icon to show overall data"
+            android:textSize="@dimen/_15sdp"
+            android:textColor="@color/color_3"
+            android:gravity="center"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_empty_page_msg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:text="No Data"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/color_3"
+            android:gravity="center|top"/>
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

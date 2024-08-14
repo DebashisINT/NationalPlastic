@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/_4sdp"
+    android:layout_marginStart="@dimen/_2sdp"
+    android:orientation="vertical"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:layout_margin="@dimen/_7sdp"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/check_mark"
+            android:layout_gravity="center"
+            android:paddingStart="@dimen/_3sdp"
+            />
+
+
+        <TextView
+            android:id="@+id/shop_name_TV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#5C5B5B"
+            android:textSize="@dimen/_11sdp"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/_7sdp"/>
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/gray_501"/>
+
+
+</LinearLayout>

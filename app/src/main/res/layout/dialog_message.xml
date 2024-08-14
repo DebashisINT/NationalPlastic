@@ -15,7 +15,8 @@
         android:background="@drawable/rounded_corner_white_bg"
         android:orientation="vertical">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/dialog_message_headerTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +35,23 @@
             android:layout_marginLeft="@dimen/_7sdp"
             android:layout_marginRight="@dimen/_7sdp"/>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <LinearLayout
+            android:id="@+id/ll_dialog_msg_progress_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/pw_dialog_msg_progress"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/dialog_message_header_TV"
             android:layout_width="match_parent"
             android:minHeight="@dimen/_40sdp"
@@ -60,7 +77,7 @@
             android:layout_height="@dimen/_35sdp"
             android:orientation="horizontal">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_message_ok"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

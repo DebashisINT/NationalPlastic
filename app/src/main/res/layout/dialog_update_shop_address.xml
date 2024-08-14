@@ -14,7 +14,7 @@
         android:orientation="vertical"
         >
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/dialog_header_TV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/shop_name_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:visibility="visible"
                 app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                <com.nationalplasticfsm.widgets.AppCustomEditText
+                <com.breezenationalplasticfsm.widgets.AppCustomEditText
                     android:id="@+id/address_EDT"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:visibility="visible"
                 app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                <com.nationalplasticfsm.widgets.AppCustomEditText
+                <com.breezenationalplasticfsm.widgets.AppCustomEditText
                     android:id="@+id/new_address_EDT"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </RelativeLayout>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/update_TV"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_35sdp"

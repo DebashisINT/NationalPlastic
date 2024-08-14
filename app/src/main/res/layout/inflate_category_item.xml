@@ -5,7 +5,7 @@
     android:background="@drawable/shape_cursor_two"
     android:layout_height="wrap_content">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

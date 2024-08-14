@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_parent_question_answer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:background="@color/white"
+    android:clickable="true"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+    tools:context=".features.mylearning.LmsQuestionAnswerSet">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_frag_lms_ques_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_quest"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="#023f89"
+            android:alpha=".92"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
+                app:lottie_rawRes="@raw/anim_question_1"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_10sdp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+
+                   <androidx.cardview.widget.CardView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       app:cardBackgroundColor="#6de5fe"
+                       app:cardCornerRadius="@dimen/_10sdp"
+                       app:cardElevation="@dimen/_5sdp"
+                       android:layout_marginLeft="@dimen/_15sdp"
+                       android:layout_marginRight="@dimen/_15sdp">
+
+                       <TextView
+                           android:id="@+id/tv_qa_question"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:minHeight="@dimen/_55sdp"
+                           android:layout_gravity="center"
+                           android:gravity="center"
+                           android:text="Question"
+                           android:textColor="@color/black"
+                           android:textSize="@dimen/_14sdp"
+                           android:textStyle="bold"
+                           android:layout_marginLeft="@dimen/_5sdp"
+                           android:layout_marginRight="@dimen/_5sdp"/>
+
+                   </androidx.cardview.widget.CardView>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:layout_marginRight="@dimen/_15sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/_40sdp"
+                            android:orientation="horizontal">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/card_op1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#DCF4EC"
+                                app:cardCornerRadius="@dimen/_10sdp"
+                                app:cardElevation="@dimen/_10sdp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/letter_a"
+                                        android:gravity="center"
+                                        android:layout_marginRight="@dimen/_3sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"/>
+
+                                    <TextView
+                                        android:id="@+id/tv_qa_op1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="left|center"
+                                        android:text="Option 1"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/_40sdp"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_10sdp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/card_op2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#DCF4EC"
+                                app:cardCornerRadius="@dimen/_10sdp"
+                                app:cardElevation="@dimen/_10sdp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/letter_b"
+                                        android:gravity="center"
+                                        android:layout_marginRight="@dimen/_3sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"/>
+
+                                    <TextView
+                                        android:id="@+id/tv_qa_op2"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="left|center"
+                                        android:text="Option 2"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/_40sdp"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_10sdp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/card_op3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#DCF4EC"
+                                app:cardCornerRadius="@dimen/_10sdp"
+                                app:cardElevation="@dimen/_10sdp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/letter_c"
+                                        android:gravity="center"
+                                        android:layout_marginRight="@dimen/_3sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"/>
+
+                                    <TextView
+                                        android:id="@+id/tv_qa_op3"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="left|center"
+                                        android:text="Option 3"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/_40sdp"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_10sdp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/card_op4"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="#DCF4EC"
+                                app:cardCornerRadius="@dimen/_10sdp"
+                                app:cardElevation="@dimen/_10sdp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/letter_d"
+                                        android:gravity="center"
+                                        android:layout_marginRight="@dimen/_3sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"/>
+
+                                    <TextView
+                                        android:id="@+id/tv_qa_op4"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="left|center"
+                                        android:text="Option 4"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:cardElevation="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_55sdp"
+                android:layout_marginRight="@dimen/_55sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_5sdp">
+
+                <LinearLayout
+                    android:id="@+id/tv_save_qstn_answr_set"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:gravity="center"
+                    android:background="#C639BF">
+
+                    <TextView
+                        android:id="@+id/tv_save_qstn_answr_set_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Submit"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_18sdp" />
+
+                    <ImageView
+                        android:id="@+id/iv_save_qstn_answr_set_next"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/icon_pointer_gif"
+                        android:rotation="270"
+                        android:scaleY="-1"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/progress_wheel_frag_qa"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_160sdp"
+            wheel:matProg_barColor="@color/white"
+            wheel:matProg_progressIndeterminate="true" />
+
+    </FrameLayout>
+
+    </LinearLayout>

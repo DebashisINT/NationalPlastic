@@ -23,7 +23,7 @@
                 android:paddingTop="@dimen/_10sdp"
                 android:paddingBottom="@dimen/_10sdp">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -33,7 +33,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -44,7 +44,7 @@
                     android:textStyle="bold" />
 
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1.3"

@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content">
 
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:id="@+id/myshop_name_TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
 
                 </RelativeLayout>
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/myshop_address_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                     android:textSize="@dimen/_11sdp" />
 
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_contact_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
         android:layout_marginLeft="@dimen/_5sdp"
         android:layout_marginRight="@dimen/_5sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -159,7 +159,7 @@
             android:textStyle="bold" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_quot_no"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -187,7 +187,7 @@
             android:layout_height="match_parent" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -203,7 +203,7 @@
             android:layout_width="@dimen/_3sdp"
             android:layout_height="match_parent" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_action"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -240,7 +240,7 @@
         wheel:matProg_progressIndeterminate="true" />
 
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/no_quot_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

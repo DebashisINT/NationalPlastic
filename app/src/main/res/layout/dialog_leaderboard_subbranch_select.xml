@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/transparent"
+    app:cardBackgroundColor="@color/transparent"
+    app:cardCornerRadius="@dimen/_10sdp">
+
+    <LinearLayout
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_white_bg"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:src="@drawable/ic_logo"
+            android:layout_gravity="center|start"
+            android:layout_marginLeft="@dimen/_5sdp"/>
+
+        <TextView
+            android:id="@+id/tv_dialog_subBranch_sel_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
+            android:text="Select Branch"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_12sdp" />
+
+            <ImageView
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:id="@+id/iv_dialog_generic_list_close_icon"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_close"
+                android:layout_gravity="center|end"
+                android:tint="@color/red"/>
+
+        </FrameLayout>
+
+        <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            android:id="@+id/et_dialog_subBranch_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@drawable/rectangular_black_border_bg_new"
+            android:drawableLeft="@drawable/ic_search_black"
+            android:drawablePadding="@dimen/_5sdp"
+            android:gravity="center_vertical"
+            android:hint="Search"
+            android:paddingBottom="@dimen/_3sdp"
+            android:paddingLeft="@dimen/_3sdp"
+            android:paddingRight="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:textSize="@dimen/_12sdp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_dialog_subBranch_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:text="Select All"
+                android:gravity="center|start"
+                android:textColor="@color/blue"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_5sdp"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:text="Clear"
+                android:gravity="center|end"
+                android:textColor="@color/blue"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:visibility="visible"
+            android:id="@+id/rv_dialog_subBranch_list"
+            android:layout_width="@dimen/_250sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_weight="1"
+            app:layout_constrainedHeight="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_nodataFound"
+            android:layout_width="@dimen/_250sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/no_data_found"
+            app:layout_constrainedHeight="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            android:visibility="visible"
+            android:id="@+id/tv_dialog_subBranch_submit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_custom_border_blue_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Submit"
+            android:textColor="@drawable/selector_text_clor_blue_white"
+            android:textSize="@dimen/_12sdp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

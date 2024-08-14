@@ -28,7 +28,7 @@
                 android:layout_centerVertical="true"
                 android:clickable="false"
                 />
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/marketing_item_date_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         </RelativeLayout>
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/marketing_item_name_TV"
             android:layout_toLeftOf="@id/right_RL"
             android:layout_alignParentLeft="true"

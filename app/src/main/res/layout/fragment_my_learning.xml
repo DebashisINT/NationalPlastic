@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F0F5FB"
+    android:orientation="vertical"
+    tools:context=".features.mylearning.MyLearningFragment">
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_38sdp"
+        android:visibility="gone"
+        android:background="@drawable/back_round_corner_8"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_width="@dimen/_17sdp"
+            android:layout_height="@dimen/_17sdp"
+            android:background="@drawable/search_"
+            android:backgroundTint="@color/search_layover_bg"
+            android:layout_gravity="center"/>
+
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                android:id="@+id/et_frag_contacts_search"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:hint="Search here"
+                android:textColorHint="#A1A1A1"
+                android:textStyle="normal"
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:paddingLeft="@dimen/_10sdp" />
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:src="@drawable/google_voice"
+            android:layout_marginEnd="@dimen/_10sdp"
+            />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_lms_learner_space"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_200sdp"
+                app:cardBackgroundColor="@color/transparent"
+                android:layout_margin="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_15sdp"
+                app:cardElevation="@dimen/_15sdp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/idIVImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_200sdp"
+                        android:src="@drawable/newlearner"
+                        android:scaleType="centerCrop"/>
+
+                    <ImageView
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_gravity="center|start"
+                        android:src="@drawable/learner_space_icon"
+                        android:textColor="@color/white"
+                        android:visibility="gone"
+                        android:layout_marginTop="@dimen/_20sdp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_12sdp"
+                        android:text="Learner Space"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_22sdp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_22sdp"
+                        android:visibility="visible"
+                        android:paddingStart="@dimen/_10sdp"
+                        android:paddingEnd="@dimen/_10sdp"
+                        android:orientation="horizontal"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        android:layout_gravity="right|top"
+                        android:background="@drawable/back_round_corner_capsul"
+                        android:layout_marginEnd="@dimen/_7sdp">
+
+                        <ImageView
+                            android:layout_marginStart="@dimen/_2sdp"
+                            android:layout_gravity="center"
+                            android:layout_width="@dimen/_17sdp"
+                            android:layout_height="@dimen/_13sdp"
+                            android:src="@drawable/folder_icon"
+                            >
+
+                        </ImageView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_2sdp"
+                                android:gravity="center"
+                                android:text="0"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_12sdp"
+                                />
+
+                           <!-- <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Contents"
+                                android:textSize="@dimen/_11sdp"
+                                android:textColor="@color/white"
+
+                                />-->
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                >
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_132sdp"
+
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/ll_frag_search_mylearning_root"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_132sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:background="@color/transparent">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_132sdp"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            android:elevation="@dimen/_3sdp"
+                            app:cardBackgroundColor="@color/transparent">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/mylearningbg_n"
+                                android:scaleType="centerCrop" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:visibility="visible"
+                                android:orientation="horizontal"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
+                                android:layout_gravity="right|top"
+                                android:background="@drawable/back_round_corner_capsul"
+                                android:layout_marginEnd="@dimen/_7sdp">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_17sdp"
+                                    android:layout_height="@dimen/_13sdp"
+                                    android:layout_marginStart="@dimen/_2sdp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/folder_icon"
+                                    >
+
+                                </ImageView>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="@dimen/_5sdp"
+                                    >
+
+                                    <TextView
+                                        android:id="@+id/tv_content_learning"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:gravity="center"
+                                        android:text="0"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp"
+                                        />
+
+                                    <!-- <TextView
+                                         android:layout_width="wrap_content"
+                                         android:layout_height="wrap_content"
+                                         android:text="Contents"
+                                         android:textSize="@dimen/_11sdp"
+                                         android:textColor="@color/white"
+
+                                         />-->
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+                            <FrameLayout
+                                android:layout_gravity="bottom"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_marginStart="@dimen/_10sdp"
+                                    android:text="My Learning"
+                                    android:layout_gravity="start|bottom"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/_14sdp"
+                                    android:textColor="@color/white"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/_10sdp"/>
+
+                                <LinearLayout
+                                    android:visibility="gone"
+                                    android:orientation="horizontal"
+                                    android:layout_marginStart="@dimen/_12sdp"
+                                    android:layout_marginTop="@dimen/_12sdp"
+                                    android:layout_marginBottom="@dimen/_10sdp"
+                                    android:layout_gravity="start|bottom"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:layout_gravity="center"
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:src="@drawable/count_play_icon">
+
+                                    </ImageView>
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:text="1000"
+                                        android:layout_gravity="center"
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:textColor="@color/white"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        />
+                                </LinearLayout>
+
+                            </FrameLayout>
+
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_frag_search_knowledge_hub_root"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_132sdp"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_132sdp"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            android:elevation="@dimen/_10sdp"
+
+                            android:defaultFocusHighlightEnabled="true">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_132sdp"
+                                android:src="@drawable/knowledgehubbg_"
+                                android:scaleType="centerCrop"
+                                />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/_20sdp"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:visibility="visible"
+                                android:orientation="horizontal"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:layout_marginTop="@dimen/_7sdp"
+                                android:layout_gravity="right|top"
+
+                                android:background="@drawable/back_round_corner_capsul"
+                                android:layout_marginEnd="@dimen/_7sdp">
+
+                                <ImageView
+                                    android:layout_marginStart="@dimen/_2sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_width="@dimen/_17sdp"
+                                    android:layout_height="@dimen/_13sdp"
+                                    android:src="@drawable/folder_icon"
+                                    />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="@dimen/_5sdp"
+                                    >
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/tv_content_knowledge"
+                                        android:layout_marginStart="@dimen/_2sdp"
+                                        android:gravity="center"
+                                        android:text="0"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/_12sdp"
+                                        />
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+
+                            <FrameLayout
+                                android:layout_gravity="bottom"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_marginStart="@dimen/_10sdp"
+                                    android:text="Knowledge Hub"
+                                    android:layout_gravity="start|bottom"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/_14sdp"
+                                    android:textColor="@color/white"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/_10sdp"/>
+
+                                <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_marginStart="@dimen/_15sdp"
+                                    android:layout_marginTop="@dimen/_15sdp"
+                                    android:layout_marginBottom="@dimen/_10sdp"
+                                    android:layout_gravity="start|bottom"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:layout_gravity="center"
+                                        android:layout_width="@dimen/_15sdp"
+                                        android:layout_height="@dimen/_15sdp"
+                                        android:src="@drawable/count_play_icon">
+
+                                    </ImageView>
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:text="1000"
+                                        android:layout_gravity="center"
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:textColor="@color/white"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        />
+                                </LinearLayout>
+
+                            </FrameLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_95sdp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cv_frag_search_mylearning_root"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="@dimen/_10sdp"
+                        android:elevation="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:defaultFocusHighlightEnabled="true">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/myperformance_d"
+                            />
+
+                        <FrameLayout
+                            android:layout_gravity="bottom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_marginStart="@dimen/_10sdp"
+                                android:text="My\nPerformance"
+                                android:layout_gravity="start|bottom"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_14sdp"
+                                android:textColor="@color/white"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_10sdp"/>
+
+                        </FrameLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cv_lms_leaderboard"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="@dimen/_10sdp"
+                        android:elevation="@dimen/_10sdp"
+                        android:defaultFocusHighlightEnabled="true">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/leaderboard_d"
+                            />
+
+                        <FrameLayout
+                            android:layout_gravity="bottom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_marginStart="@dimen/_10sdp"
+                                android:text="Leaderboard"
+                                android:layout_gravity="start|bottom"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_14sdp"
+                                android:textColor="@color/white"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_10sdp"/>
+
+                        </FrameLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/idRVPhotos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include
+        layout="@layout/include_bottom_tablayoutlms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible" />
+
+   <!-- <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mbn_circleColor="#164F92"
+        app:mbn_backgroundBottomColor="#164F92"
+        app:mbn_countBackgroundColor="#ff6f00"
+        app:mbn_countTextColor="#ffffff"
+        app:mbn_defaultIconColor="@color/white"
+        app:mbn_rippleColor="#2f424242"
+        app:mbn_selectedIconColor="@color/white"
+        app:mbn_shadowColor="#1f212121"
+        />-->
+
+<!--
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#164F92"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/_3sdp">
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Performance"
+            android:textStyle="normal"
+            android:gravity="center|top"
+            android:textSize="@dimen/_10sdp"
+            android:textColor="@color/white"/>
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="My Learning"
+            android:textSize="@dimen/_10sdp"
+            android:gravity="center|top"
+            android:textStyle="normal"
+            android:textColor="@color/white"/>
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Leaderboard"
+            android:gravity="center|top"
+            android:textStyle="normal"
+            android:textSize="@dimen/_10sdp"
+            android:textColor="@color/white"/>
+        <TextView
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Knowledge Hub"
+            android:gravity="center|top"
+            android:textStyle="normal"
+            android:textSize="@dimen/_10sdp"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+-->
+
+
+</LinearLayout>

@@ -46,7 +46,7 @@
             wheel:matProg_barColor="@color/default_text_color"
             wheel:matProg_progressIndeterminate="true" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wait_for_preview"

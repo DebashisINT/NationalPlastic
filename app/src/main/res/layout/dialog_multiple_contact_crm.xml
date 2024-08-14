@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/transparent"
+    app:cardBackgroundColor="@color/transparent"
+    app:cardCornerRadius="@dimen/_10sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_white_bg"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <View
+            android:layout_width="@dimen/_280sdp"
+            android:layout_height="@dimen/_1sdp" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_header_dialog_multi_contact"
+                android:layout_width="@dimen/_250sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:text="Add Contact"
+                android:gravity="center|start"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/blue"/>
+
+            <ImageView
+                android:id="@+id/iv_dialog_multi_cont_cross"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:background="@drawable/ic_no"
+                android:layout_gravity="top|end"/>
+
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/tv_dialog_multi_contact_name_caption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/black"
+            android:text="Contact Name"
+            android:gravity="center|start|bottom"
+            android:visibility="gone"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_17sdp"
+                android:layout_height="@dimen/_17sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/ic_add_shop_owner_name"/>
+
+            <EditText
+                android:id="@+id/et_dialog_multi_contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_weight="1"
+                android:textSize="@dimen/_11sdp"
+                android:hint="Enter Contact Name"
+                android:gravity="center|start"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_3sdp" />
+
+            <TextView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="wrap_content"
+                android:text="*"
+                android:layout_gravity="top"
+                android:gravity="top"
+                android:textColor="@color/red"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_dialog_multi_contact_number_caption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/black"
+            android:text="Contact Number"
+            android:gravity="center|start|bottom"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_17sdp"
+                android:layout_height="@dimen/_17sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/ic_call_green"
+                android:backgroundTint="@color/gray"/>
+
+            <EditText
+                android:id="@+id/et_dialog_multi_contact_phno"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_weight="1"
+                android:hint="Enter Contact Number"
+                android:gravity="center|start"
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:digits="+-1234567890"
+                android:maxLength="20"/>
+
+            <TextView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="wrap_content"
+                android:text="*"
+                android:layout_gravity="top"
+                android:gravity="top"
+                android:textColor="@color/red"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_dialog_multi_contact_email_caption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/black"
+            android:text="Email"
+            android:gravity="center|start|bottom"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_17sdp"
+                android:layout_height="@dimen/_17sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/ic_email"
+                android:backgroundTint="@color/black"/>
+
+            <EditText
+                android:id="@+id/et_dialog_multi_contact_email"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:hint="Enter Email"
+                android:textSize="@dimen/_11sdp"
+                android:gravity="center|start"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_marginEnd="@dimen/_20sdp" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_dialog_multi_contact_dob_caption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/black"
+            android:text="Date of Birth"
+            android:gravity="center|start|bottom"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/tv_dialog_multi_contact_dob"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:hint="Enter Date of Birth"
+                android:gravity="center|start"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:paddingStart="@dimen/_2sdp"
+                android:drawableLeft="@drawable/ic_history_calendar_icon"
+                android:drawableTint="@color/black"
+                android:drawablePadding="@dimen/_5sdp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/gray_50"
+                android:layout_gravity="bottom"
+                android:paddingStart="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_17sdp"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_dialog_multi_contact_anniv_caption"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/black"
+            android:text="Date of Anniversary"
+            android:gravity="center|start|bottom"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/tv_dialog_multi_contact_anniv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:hint="Enter Date of Anniversary"
+                android:gravity="center|start"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_11sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:paddingStart="@dimen/_2sdp"
+                android:drawableLeft="@drawable/ic_history_calendar_icon"
+                android:drawableTint="@color/black"
+                android:drawablePadding="@dimen/_5sdp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/gray_50"
+                android:layout_gravity="bottom"
+                android:paddingStart="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_17sdp"/>
+
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_dialog_multi_contact_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:src="@drawable/ic_add"
+            app:fabSize="normal" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

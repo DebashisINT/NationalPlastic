@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/page_margin"
     android:orientation="vertical"
-    tools:context="com.nationalplasticfsm.features.wikientry.presentation.WikiEntryActivity">
+    tools:context="com.breezenationalplasticfsm.features.wikientry.presentation.WikiEntryActivity">
 
     <LinearLayout
         android:orientation="horizontal"

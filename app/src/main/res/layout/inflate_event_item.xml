@@ -7,7 +7,7 @@
     android:background="@drawable/rectangular_black_border_bg"
     android:layout_marginBottom="@dimen/_5sdp">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_event_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:layout_marginRight="@dimen/_1sdp"
         android:layout_marginTop="@dimen/_1sdp"/>
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:layout_marginLeft="@dimen/_7sdp"
         android:layout_marginTop="@dimen/_7sdp"/>
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

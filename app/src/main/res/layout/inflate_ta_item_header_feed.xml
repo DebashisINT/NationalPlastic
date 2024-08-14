@@ -12,7 +12,7 @@
         android:paddingTop="@dimen/_10sdp"
         android:paddingBottom="@dimen/_10sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:textStyle="bold" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_sync"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:textStyle="bold"
             android:visibility="visible" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

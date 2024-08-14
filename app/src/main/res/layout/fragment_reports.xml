@@ -32,7 +32,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/attendance_reports"
@@ -56,7 +56,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/performance_report"
@@ -80,7 +80,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/new_visit_report"
@@ -104,7 +104,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/team_details"
@@ -128,7 +128,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/my_timeline"
@@ -152,7 +152,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/team_shop_details"
@@ -176,7 +176,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/order_detail"
@@ -200,7 +200,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/time_spent_on_each_shop_new"
@@ -224,7 +224,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total_visit_without_colon"
@@ -248,7 +248,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/collection_report"
@@ -272,7 +272,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/party_location"
@@ -296,7 +296,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/quotation_list"
@@ -320,7 +320,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/target_achievement"
@@ -344,7 +344,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/_10sdp">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/achievement_details"

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/_5sdp">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_card_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

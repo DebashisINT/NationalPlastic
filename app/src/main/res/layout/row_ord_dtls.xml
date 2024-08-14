@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/smoke_white"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="@dimen/_5sdp"
+    android:layout_margin="@dimen/_5sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp">
+
+        <TextView
+            android:id="@+id/tv_row_ord_dtls_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_25sdp"
+            android:text="Product Name"
+            android:gravity="center|start"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_row_ord_dtls_qty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Quantity"
+                android:gravity="center|start"
+                android:textSize="@dimen/_11sdp"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:background="@color/gray_50"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"/>
+
+            <TextView
+                android:id="@+id/tv_row_ord_dtls_rate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|start"
+                android:text="Rate"
+                android:textSize="@dimen/_11sdp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_row_ord_dtls_total_price"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_weight="1"
+            android:gravity="center|start"
+            android:text="Total Price"
+            android:textSize="@dimen/_11sdp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

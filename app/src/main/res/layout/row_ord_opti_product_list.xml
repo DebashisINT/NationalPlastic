@@ -7,6 +7,7 @@
     android:layout_margin="@dimen/_7sdp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_10sdp"
+    android:focusable="false"
     app:cardElevation="@dimen/_10sdp">
 
     <LinearLayout
@@ -15,57 +16,67 @@
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
 
-        <LinearLayout
+        <HorizontalScrollView
+            android:id="@+id/horr_scroll_v"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/_25sdp"
-            android:orientation="horizontal">
+            android:layout_height="@dimen/_35sdp"
+            android:scrollbars="none">
 
-            <TextView
-                android:id="@+id/tv_row_ord_opti_product_list_brand"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:minWidth="@dimen/_55sdp"
-                android:hint="Brand"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10sdp"
-                android:background="@drawable/back_round_corner_3"
-                android:padding="@dimen/_5sdp"/>
+                android:minHeight="@dimen/_25sdp"
+                android:orientation="horizontal">
 
-            <Space
-                android:layout_width="@dimen/_5sdp"
-                android:layout_height="match_parent"/>
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="@dimen/_55sdp"
+                    android:hint="Brand"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp"
+                    android:background="@drawable/back_round_corner_3"
+                    android:padding="@dimen/_5sdp"/>
 
-            <TextView
-                android:id="@+id/tv_row_ord_opti_product_list_measure"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:minWidth="@dimen/_55sdp"
-                android:hint="Measurement"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10sdp"
-                android:background="@drawable/back_round_corner_2"
-                android:padding="@dimen/_5sdp"/>
+                <Space
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="match_parent"/>
 
-            <Space
-                android:layout_width="@dimen/_5sdp"
-                android:layout_height="match_parent"/>
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="@dimen/_55sdp"
+                    android:hint="Measurement"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp"
+                    android:background="@drawable/back_round_corner_2"
+                    android:padding="@dimen/_5sdp"/>
 
-            <TextView
-                android:id="@+id/tv_row_ord_opti_product_list_catagory"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:minWidth="@dimen/_55sdp"
-                android:hint="Category"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10sdp"
-                android:background="@drawable/back_round_corner_1"
-                android:padding="@dimen/_5sdp"/>
+                <Space
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="match_parent"/>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_catagory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="@dimen/_55sdp"
+                    android:hint="Category"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp"
+                    android:background="@drawable/back_round_corner_1"
+                    android:padding="@dimen/_5sdp"/>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+
 
 
         <TextView
@@ -522,37 +533,37 @@
                 android:layout_gravity="center"
                 app:cardElevation="@dimen/_5sdp">
 
-            <LinearLayout
-                android:id="@+id/ll_row_ord_opti_product_list_add_text_root"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
-                android:minWidth="@dimen/_60sdp"
-                android:background="@drawable/back_round_corner_4"
-                android:orientation="horizontal"
-                android:gravity="center">
+                <LinearLayout
+                    android:id="@+id/ll_row_ord_opti_product_list_add_text_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:minWidth="@dimen/_60sdp"
+                    android:background="@drawable/back_round_corner_4"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/iv_row_ord_opti_product_list_add_img"
-                    android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_15sdp"
-                    android:src="@drawable/icon_shopping"
-                    android:rotation="-20" />
+                    <ImageView
+                        android:id="@+id/iv_row_ord_opti_product_list_add_img"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:src="@drawable/icon_shopping"
+                        android:rotation="-20" />
 
-                <Space
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="match_parent"/>
+                    <Space
+                        android:layout_width="@dimen/_5sdp"
+                        android:layout_height="match_parent"/>
 
-                <TextView
-                    android:id="@+id/tv_row_ord_opti_product_list_add_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Add"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textSize="@dimen/_10sdp"
-                    android:textColor="@color/white"/>
+                    <TextView
+                        android:id="@+id/tv_row_ord_opti_product_list_add_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Add"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="@dimen/_10sdp"
+                        android:textColor="@color/white"/>
 
-            </LinearLayout>
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 

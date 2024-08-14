@@ -16,7 +16,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_patient_asterisk_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_patient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_address_asterisk_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
         android:layout_marginBottom="@dimen/_10sdp"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_phone_asterisk_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_lab_asterisk_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -207,7 +207,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_lab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -239,7 +239,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_emailaddress_asterisk_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_emailaddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -294,7 +294,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/_10sdp">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_particular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -306,7 +306,7 @@
             android:textStyle="bold" />
 
         <!--//1.0  AppV 4.0.6  CartFragment 0025623 discount is editable work-->
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_frag_new_cart_discount"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
@@ -318,7 +318,7 @@
             android:visibility="gone" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_mrp"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
@@ -330,7 +330,7 @@
             android:visibility="gone" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_brand"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
@@ -341,7 +341,7 @@
             android:textStyle="bold" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_category"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="wrap_content"
@@ -351,7 +351,7 @@
             android:textSize="@dimen/_11sdp"
             android:textStyle="bold" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_watt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -373,7 +373,7 @@
         android:padding="@dimen/_10sdp"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -389,7 +389,7 @@
             android:layout_weight="1"
             android:layout_marginTop="@dimen/_5sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -397,7 +397,7 @@
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_11sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -414,7 +414,7 @@
             android:layout_weight="1"
             android:layout_marginTop="@dimen/_5sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -422,7 +422,7 @@
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_11sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_order_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -465,7 +465,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.65">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -474,7 +474,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_order_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -490,7 +490,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_stock_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -500,7 +500,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_order_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -523,7 +523,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.65">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -532,7 +532,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_scheme_qty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -548,7 +548,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -557,7 +557,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_scheme_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -574,7 +574,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -591,7 +591,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_continue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -612,13 +612,13 @@
         android:layout_above="@+id/ll_footer"
         android:layout_below="@+id/ll_header">
 
-        <com.nationalplasticfsm.app.utils.swipemenulayout.SwipeMenuRecyclerView
+        <com.breezenationalplasticfsm.app.utils.swipemenulayout.SwipeMenuRecyclerView
             android:id="@+id/rv_cart_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/_5sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_no_data_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

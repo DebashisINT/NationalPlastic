@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_silver">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/pick_a_date_TV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/pick_a_date_TV"/>
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/no_shop_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

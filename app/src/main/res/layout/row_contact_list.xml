@@ -1,0 +1,1546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_2sdp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_10sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:orientation="vertical"
+        android:padding="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:paddingBottom="@dimen/_3sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_marginBottom="@dimen/_1sdp"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="@dimen/_250sdp"
+                app:cardElevation="@dimen/_3sdp">
+
+                <TextView
+                    android:id="@+id/tv_row_cont_list_name_initial"
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:background="@drawable/usericoncontact"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_13sdp"
+                    android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_row_cont_list_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:paddingLeft="@dimen/_9sdp"
+                android:text="Name"
+                android:textColor="@color/black_51"
+                android:textSize="@dimen/_14sdp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/iv_row_contact_share"
+                android:layout_width="@dimen/_23sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:backgroundTint="@color/black"
+                android:src="@drawable/ic_share"
+                android:tint="@color/attendance_report_header_blue"/>
+
+            <Space
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/iv_row_contact_edit"
+                android:layout_width="@dimen/_23sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:backgroundTint="@color/black"
+                android:src="@drawable/ic_edit_icon"
+                android:tint="@color/attendance_report_header_blue"/>
+
+            <Space
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/iv_row_contact_sync_unsync"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_row_contact_addr_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_2sdp"
+                app:cardBackgroundColor="@color/color_card_back_deep"
+                app:cardCornerRadius="@dimen/_20sdp"
+                app:cardElevation="@dimen/_3sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_location"
+                    android:tint="@color/colorPrimaryDark"/>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_row_cont_list_addr"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:gravity="center|start"
+                android:maxLines="2"
+                android:text="Address"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/_11sdp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/gray_50"/>
+
+        <LinearLayout
+            android:id="@+id/ll_headView"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:id="@+id/iv_row_cont_list_cont_number"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="29dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_call_black"
+                        android:tint="@color/color_custom_green"/>
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/ll_view_contact_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Contact Number"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Contact Number"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_row_cont_list_cont_number_info"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_gravity="center|top"
+                    android:src="@drawable/ic_info"
+                    android:tint="@color/attendance_report_header_blue"/>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_catagory_black" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Type"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Type"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_view_whatsapp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:id="@+id/iv_row_cont_list_cont_number_whatsapp"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="29dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/wpforcontact"
+                        />
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="WhatsApp"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_number_whatsapp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="WhatsApp"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_conatctsEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:id="@+id/iv_row_cont_list_cont_number_email"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@color/black"
+                        android:background="@drawable/ic_email" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Email"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_number_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Email"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_souce"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="29dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_doc" />
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Source"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Source"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:id="@+id/space_for_ll_source"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_stage_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_stages" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Stage"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_stage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Stage"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_assignedTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="29dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_attendance_icon1" />
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Assigned To"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_assign_to"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Assigned To"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:id="@+id/space_for_ll_assignedTo"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_status_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_registered_shop_add_order_deselect1" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Status"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_cont_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Status"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_addedDateTimeContactsForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ic_date_time_icon_2"
+                        android:backgroundTint="@color/black"/>
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Added Date Time"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_added_dt_ti"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Added Date Time"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_registered_shop_add_order_deselect1" />
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Contacts From"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_added_addition_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Contacts From"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_expected_sales_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ic_money"
+                        android:backgroundTint="@color/black"/>
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Expected sales value"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <TextView
+                        android:id="@+id/tv_row_cont_list_expctd_sales_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Expected sale value in INR"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_10sdp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_goneView"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_conatcphone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        app:cardBackgroundColor="@color/color_card_back_deep"
+                        app:cardCornerRadius="@dimen/_20sdp"
+                        app:cardElevation="@dimen/_3sdp">
+
+                        <ImageView
+                            android:id="@+id/iv_row_cont_list_cont_numberNew"
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="29dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_call_black"
+                            android:tint="@color/color_custom_green"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:id="@+id/ll_view_contact_numberNew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_10sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:singleLine="true"
+                            android:text="Contact Number"
+                            android:textColor="@color/date_bg_selected_color"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <TextView
+                            android:id="@+id/tv_row_cont_list_cont_numberNew"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:text="Contact Number"
+                            android:textColor="@color/gray_50_dark"
+                            android:textSize="@dimen/_10sdp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_row_cont_list_cont_number_infoNew"
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        android:layout_gravity="center|top"
+                        android:src="@drawable/ic_info"
+                        android:tint="@color/attendance_report_header_blue"/>
+
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:visibility="invisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        app:cardBackgroundColor="@color/color_card_back_deep"
+                        app:cardCornerRadius="@dimen/_20sdp"
+                        app:cardElevation="@dimen/_3sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_stages" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_10sdp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:singleLine="true"
+                            android:text="Stage"
+                            android:textColor="@color/date_bg_selected_color"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:text="Stage"
+                            android:textColor="@color/gray_50_dark"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_5sdp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_view_whatsappNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        app:cardBackgroundColor="@color/color_card_back_deep"
+                        app:cardCornerRadius="@dimen/_20sdp"
+                        app:cardElevation="@dimen/_3sdp">
+
+                        <ImageView
+                            android:id="@+id/iv_row_cont_list_cont_number_whatsappNew"
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="29dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/wpforcontact"
+                            />
+                    </androidx.cardview.widget.CardView>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_10sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:singleLine="true"
+                            android:text="WhatsApp"
+                            android:textColor="@color/date_bg_selected_color"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <TextView
+                            android:id="@+id/tv_row_cont_list_cont_number_whatsappNew"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:text="WhatsApp"
+                            android:textColor="@color/gray_50_dark"
+                            android:textSize="@dimen/_10sdp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:id="@+id/ll_conatctsEmailNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        app:cardBackgroundColor="@color/color_card_back_deep"
+                        app:cardCornerRadius="@dimen/_20sdp"
+                        app:cardElevation="@dimen/_3sdp">
+
+                        <ImageView
+                            android:id="@+id/iv_row_cont_list_cont_number_emailNew"
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/black"
+                            android:background="@drawable/ic_email" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_10sdp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:singleLine="true"
+                            android:text="Email"
+                            android:textColor="@color/date_bg_selected_color"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                        <TextView
+                            android:id="@+id/tv_row_cont_list_cont_number_emailNew"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:text="Email"
+                            android:textColor="@color/gray_50_dark"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_5sdp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_contacStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        app:cardBackgroundColor="@color/color_card_back_deep"
+                        app:cardCornerRadius="@dimen/_20sdp"
+                        app:cardElevation="@dimen/_3sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_registered_shop_add_order_deselect1" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_10sdp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:singleLine="true"
+                            android:text="Status"
+                            android:textColor="@color/date_bg_selected_color"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                        <TextView
+                            android:id="@+id/tv_row_cont_list_cont_statusNew"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:text="Status"
+                            android:textColor="@color/gray_50_dark"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <Space
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:id="@+id/ll_stage_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_2sdp"
+                        app:cardBackgroundColor="@color/color_card_back_deep"
+                        app:cardCornerRadius="@dimen/_20sdp"
+                        app:cardElevation="@dimen/_3sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_stages" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_10sdp">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_15sdp"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:singleLine="true"
+                            android:text="Stage"
+                            android:textColor="@color/date_bg_selected_color"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                        <TextView
+                            android:id="@+id/tv_row_cont_list_cont_stageNew"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center|start"
+                            android:text="Stage"
+                            android:textColor="@color/gray_50_dark"
+                            android:textSize="@dimen/_10sdp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_5sdp"/>
+
+
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:visibility="visible"
+            android:scrollbars="none"
+            android:layout_margin="@dimen/_3sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_row_contact_list_auto_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ic_activity_gray"
+                        android:backgroundTint="@color/black_custom_light"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Auto Activity"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_call_time"
+                        android:backgroundTint="@color/black_custom_light" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Call Log History"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+                <!--
+                opportunity
+-->
+
+                <LinearLayout
+                    android:id="@+id/ll_row_opportunity_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:background="@drawable/shape_cursor_two"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/opportunity"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:backgroundTint="@color/black_custom_light"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="opportunity"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+                <!--
+                activities
+-->
+
+                <LinearLayout
+                    android:id="@+id/ll_row_contact_list_will_activity_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:background="@drawable/shape_cursor_two"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ic_activity_gray1"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:backgroundTint="@color/black_custom_light"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Activities"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+                <!--
+                order
+-->
+
+                <LinearLayout
+                    android:id="@+id/ll_row_contact_list_order_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:background="@drawable/shape_cursor_two"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_3sdp"
+
+                    >
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/order_add"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:backgroundTint="@color/black_custom_light"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Order"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+<!--
+                update address
+-->
+                <LinearLayout
+                    android:id="@+id/ll_row_contact_list_update_addr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:background="@drawable/shape_cursor_two"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/ic_map"
+                        android:backgroundTint="@color/black"
+                        android:layout_marginTop="@dimen/_3sdp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Update Address"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+                <!--address-->
+
+                <LinearLayout
+                    android:id="@+id/ll_row_contact_list_will_direction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:background="@drawable/shape_cursor_two"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_google_map_color"
+                        android:layout_marginTop="@dimen/_3sdp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:minWidth="@dimen/_55sdp"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Address"
+                        android:textColor="@color/black_custom_light"
+                        android:textSize="@dimen/_9sdp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

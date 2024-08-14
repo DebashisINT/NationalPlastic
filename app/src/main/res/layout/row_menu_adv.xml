@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/transparent"
+    android:layout_margin="@dimen/_3sdp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_row_menu_adv_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_5sdp"
+            android:background="@drawable/border_background_simple"
+            android:backgroundTint="@color/menu_back_color">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_menu_item_image_root"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_height="@dimen/_26sdp"
+                app:cardCornerRadius="@dimen/_250sdp"
+                app:cardBackgroundColor="@color/light_white"
+                android:layout_gravity="center"
+                app:cardElevation="@dimen/_1sdp">
+
+                <ImageView
+                    android:id="@+id/iv_menu_item_image"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:src="@drawable/ic_home_adv"
+                    android:layout_gravity="center"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_menu_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Menu"
+                android:gravity="center|start"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp"
+                android:layout_marginLeft="@dimen/_10sdp"/>
+
+            <ImageView
+                android:id="@+id/iv_menu_adv_arrow"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_left_arrow_blue"
+                android:backgroundTint="@color/white"
+                android:rotation="180"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_row_menu_adv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_50sdp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height=".5dp"
+            android:background="#1FFFFFFF"
+            android:layout_marginLeft="0dp"/>
+
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>

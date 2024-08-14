@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_10sdp"
+    app:cardElevation="@dimen/_5sdp"
+    android:layout_margin="@dimen/_3sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_2sdp">
+
+        <HorizontalScrollView
+            android:id="@+id/horr_scroll_v"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_17sdp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Brand"
+                    android:gravity="center|start"
+                    android:textColor="#82025163"
+                    android:textSize="@dimen/_9sdp" />
+
+                <Space
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Measurement"
+                    android:gravity="center|start"
+                    android:textColor="#825C151A"
+                    android:textSize="@dimen/_9sdp" />
+
+                <Space
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_catagory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="Category"
+                    android:gravity="center|start"
+                    android:textColor="#A5990E"
+                    android:textSize="@dimen/_9sdp" />
+
+                <Space
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/tv_row_ord_opti_product_list_uom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="UOM"
+                    android:gravity="center|start"
+                    android:textColor="#A5990E"
+                    android:textSize="@dimen/_9sdp" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/tv_row_ord_opti_product_list_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start"
+            android:text="Product Name"
+            android:minHeight="@dimen/_18sdp"
+            android:textColor="@color/color_2"
+            android:textSize="@dimen/_12sdp"
+            android:paddingLeft="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_row_ord_pro_list_mrp_discount_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_row_ord_pro_list_mrp_root"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_3sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:background="@drawable/back_round_corner_5"
+                    android:src="@drawable/ic_mrp_icon"
+                    android:padding="@dimen/_3sdp"
+                    android:backgroundTint="@color/yellow"
+                    android:layout_gravity="center"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                    android:layout_marginLeft="@dimen/_3sdp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tv_row_ord_pro_list_mrp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|start|top"
+                        android:hint="MRP"
+                        android:enabled="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="numberDecimal"
+                        android:textSize="@dimen/_11sdp"
+                        android:textColor="@color/bill_blue" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_3sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center|start"
+                android:paddingStart="@dimen/_3sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:background="@drawable/back_round_corner_5"
+                    android:src="@drawable/ic_white_rupee_icon"
+                    android:padding="@dimen/_3sdp"
+                    android:backgroundTint="@color/green"
+                    android:layout_gravity="center"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                    android:layout_marginLeft="@dimen/_3sdp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tv_row_ord_pro_list_item_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|start|top"
+                        android:hint="Item Price"
+                        android:enabled="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="numberDecimal"
+                        android:textSize="@dimen/_11sdp"
+                        android:textColor="@color/bill_blue" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_58sdp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/curve_border_bg"
+                android:paddingStart="@dimen/_3sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:background="@drawable/back_round_corner_5"
+                    android:src="@drawable/ic_qty_icon"
+                    android:padding="@dimen/_3sdp"
+                    android:backgroundTint="@color/date_bg_selected_color"
+                    android:layout_gravity="center"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/_3sdp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tv_row_ord_opti_product_list_qty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|start|top"
+                        android:hint="Qty"
+                        android:imeOptions="actionNext"
+                        android:textSize="@dimen/_11sdp"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:textColor="@color/bill_blue" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_3sdp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/curve_border_bg"
+                android:paddingStart="@dimen/_3sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:background="@drawable/back_round_corner_5"
+                    android:src="@drawable/ic_rate_icon"
+                    android:padding="@dimen/_3sdp"
+                    android:backgroundTint="@color/color_blue_light_dark"
+                    android:layout_gravity="center"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tv_row_ord_opti_product_list_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|start|top"
+                        android:hint="Rate"
+                        android:imeOptions="actionNext"
+                        android:textSize="@dimen/_11sdp"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/bill_blue" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="@dimen/_3sdp"
+                android:layout_height="match_parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_row_ord_pro_list_shop_add_product"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_1sdp"
+                android:orientation="vertical"
+                app:cardCornerRadius="@dimen/_10sdp"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                app:cardElevation="@dimen/_5sdp">
+
+                <LinearLayout
+                    android:id="@+id/ll_row_ord_opti_product_list_add_text_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:minWidth="@dimen/_60sdp"
+                    android:background="@drawable/back_round_corner_4"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_row_ord_opti_product_list_add_img"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:src="@drawable/icon_shopping"
+                        android:rotation="-20" />
+
+                    <Space
+                        android:layout_width="@dimen/_5sdp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_row_ord_opti_product_list_add_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Add"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="@dimen/_10sdp"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

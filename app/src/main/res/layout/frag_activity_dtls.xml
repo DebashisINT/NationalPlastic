@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/tools"
+    android:background="#F1F6FD"
+    android:focusable="true"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/_5sdp"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/_10sdp"
+            android:elevation="@dimen/_5sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    app:cardBackgroundColor="@color/transparent"
+                    app:cardCornerRadius="@dimen/_250sdp"
+                    app:cardElevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:gravity="center"
+                        android:background="@drawable/usericoncontact"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_frag_ord_list_crm_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_25sdp"
+                        android:text="CRM name"
+                        android:gravity="center|start"
+                        android:textSize="@dimen/_12sdp"
+                        android:singleLine="false"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="@dimen/_3sdp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            app:cardBackgroundColor="@color/color_card_back_deep"
+                            app:cardCornerRadius="@dimen/_10sdp"
+                            app:cardElevation="@dimen/_3sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_16sdp"
+                                android:layout_height="@dimen/_16sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/icon_google_map_color" />
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:id="@+id/tv_frag_crm_addr"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/_25sdp"
+                            android:maxHeight="@dimen/_100sdp"
+                            android:text="Address"
+                            android:gravity="center|start"
+                            android:textSize="@dimen/_11sdp"
+                            android:singleLine="false"
+                            android:textColor="@color/black_50"
+                            android:layout_marginLeft="@dimen/_5sdp"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_crm_activity_phone_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_3sdp">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/_2sdp"
+                            app:cardBackgroundColor="@color/color_card_back_deep"
+                            app:cardCornerRadius="@dimen/_20sdp"
+                            app:cardElevation="@dimen/_3sdp">
+
+                            <ImageView
+                                android:id="@+id/iv_row_cont_list_cont_number"
+                                android:layout_width="@dimen/_16sdp"
+                                android:layout_height="@dimen/_16sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/icon_call_black"
+                                android:tint="@color/color_custom_green"/>
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:id="@+id/tv_frag_crm_contact_no"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_25sdp"
+                            android:text="Contact Number"
+                            android:gravity="center|start"
+                            android:textSize="@dimen/_11sdp"
+                            android:singleLine="false"
+                            android:layout_marginLeft="@dimen/_5sdp"/>
+
+                    </LinearLayout>
+
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_3sdp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_frag_activity_list_dtls"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginTop="@dimen/_3sdp"/>
+
+            <LinearLayout
+                android:id="@+id/ll_no_data_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+                <include layout="@layout/empty_page_layout"/>
+            </LinearLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_frag_ord_add_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/_10sdp"
+                android:src="@drawable/ic_add"
+                app:fabSize="normal" />
+
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/pw_frag_ord_list"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center"
+                wheel:matProg_barColor="@color/default_text_color"/>
+
+        </FrameLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

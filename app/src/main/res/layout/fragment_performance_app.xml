@@ -13,7 +13,7 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/ownPerformace_TV_frag_performace_app"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
@@ -31,7 +31,7 @@
             android:textSize="@dimen/_11sdp"
             android:textColor="@drawable/selector_text_color_white_performance" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/teamPerformace_TV_frag_performace_app"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
@@ -49,7 +49,7 @@
             android:textColor="@drawable/selector_text_color_white_performance" />
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/all_TV_frag_performace_app"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"

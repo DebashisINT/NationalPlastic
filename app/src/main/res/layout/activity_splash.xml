@@ -14,11 +14,11 @@
         android:layout_marginTop="@dimen/_170sdp"
         android:layout_centerHorizontal="true" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        android:visibility="gone"
         android:id="@+id/Logo_name_TV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_below="@+id/logo_new"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"

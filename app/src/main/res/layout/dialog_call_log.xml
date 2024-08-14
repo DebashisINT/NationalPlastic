@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_10sdp"
+    app:cardElevation="@dimen/_5sdp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginRight="@dimen/_3sdp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_call_green1"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"/>
+
+            <ImageView
+                android:id="@+id/iv_dialog_call_log_cross"
+                android:layout_width="@dimen/_23sdp"
+                android:layout_height="@dimen/_23sdp"
+                android:background="@drawable/cross_icon"
+                android:layout_gravity="end"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:text="Phone Call and Call Logs and Phone Contact"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/_14sdp"/>
+
+        <TextView
+            android:id="@+id/tv_call_log_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:text="In order to generate business report for CRM need to access call logs and to add contact into app need to access Phone Contact also
+ to make phone calls for parties.
+\n\nAllow app to get call logs,contacts and make phone calls ?"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textSize="@dimen/_11sdp"
+            android:textColor="@color/black"
+            android:gravity="center|left"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:orientation="horizontal"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_3sdp">
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_dialog_call_log_not_ok"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="No Thanks"
+                android:background="@drawable/border_background_simple"
+                android:backgroundTint="#dadada"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_dialog_call_log_ok"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Turn On"
+                android:background="@drawable/border_background_simple"
+                android:backgroundTint="@color/int_blue"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

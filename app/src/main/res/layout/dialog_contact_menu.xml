@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_10sdp"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/_10sdp"
+    app:cardBackgroundColor="@color/transparent"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:layout_width="@dimen/_180sdp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_corner_white_bg">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:background="@drawable/icon_contact_book"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_dialog_cont_add_phon_cont"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="Sync from Phone Contact"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_11sdp"
+                android:layout_marginLeft="@dimen/_3sdp"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

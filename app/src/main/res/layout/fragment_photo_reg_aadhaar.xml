@@ -28,7 +28,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginLeft="@dimen/_7sdp">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Name  : "
@@ -36,7 +36,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_frag_photo_reg_aadhaar_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -101,7 +101,7 @@
             wheel:matProg_progressIndeterminate="true"
             android:layout_gravity="center" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_internet_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -19,7 +19,7 @@
             android:gravity="center_vertical"
             android:visibility="visible">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 android:textCursorDrawable="@drawable/white_cursor_drawable"
                 android:textSize="@dimen/_10sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/avg_min_label_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             android:visibility="visible"
             android:layout_marginLeft="@dimen/_1sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomEditText
+            <com.breezenationalplasticfsm.widgets.AppCustomEditText
                 android:id="@+id/et_qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:textCursorDrawable="@drawable/white_cursor_drawable"
                 android:textSize="@dimen/_11sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avg_order_val_TV"
@@ -105,7 +105,7 @@
             android:layout_toLeftOf="@id/clock_icon_IV"
             android:padding="@dimen/_10sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_particular_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -116,12 +116,12 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/_9sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/shop_address_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/shop_name_TV"
-                android:text="@string/dashboard_nationalplasticfsm_address"
+                android:text="@string/dashboard_sample_address"
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_9sdp"
                 android:visibility="gone" />

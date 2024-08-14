@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -134,6 +135,7 @@ public class AudioRecorderActivity extends AppCompatActivity
             recordView.setColorFilter(Color.BLACK);
             playView.setColorFilter(Color.BLACK);
         }
+
     }
 
     @Override
@@ -321,7 +323,8 @@ public class AudioRecorderActivity extends AppCompatActivity
         statusView.setText(R.string.aar_paused);
         statusView.setVisibility(View.VISIBLE);
         restartView.setVisibility(View.VISIBLE);
-        playView.setVisibility(View.VISIBLE);
+        //playView.setVisibility(View.VISIBLE);
+        playView.setVisibility(View.INVISIBLE); //hardcoded change
         recordView.setImageResource(R.drawable.aar_ic_rec);
         playView.setImageResource(R.drawable.aar_ic_play);
 

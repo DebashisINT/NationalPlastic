@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    android:layout_marginTop="@dimen/_7sdp"
+    >
+<!--<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    android:layout_marginTop="@dimen/_3sdp"
+    >-->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_topic_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textStyle="normal"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="#969696"/>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            app:cardCornerRadius="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            >
+
+            <ImageView
+                android:id="@+id/perform_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                />
+
+            <!--<TextView
+                android:id="@+id/perform_video_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text=""
+                android:textColor="@color/white" />-->
+
+        </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/_7sdp"
+            android:paddingRight="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/tv_perform_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:maxLines="2"
+                />
+
+            <TextView
+                android:id="@+id/tv_perform_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:textColor="#969696"
+                android:textSize="@dimen/_9sdp" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/learning_progress_status"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                app:indicatorSize="@dimen/_80sdp"
+                app:trackThickness="@dimen/_3sdp"
+                app:trackColor="#DFDFDF"
+                app:indicatorColor="@color/toolbar_lms"
+                android:layout_gravity="center_horizontal"
+                app:trackCornerRadius="8dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/tv_progressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:textSize="@dimen/_11sdp"
+                    android:textColor="#969696"
+                    android:maxLines="1"
+                    android:layout_weight="1"
+                    android:text="15% complete"
+                    />
+                <TextView
+                    android:id="@+id/tv_progressStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:textSize="@dimen/_11sdp"
+                    android:textColor="@color/approved_green"
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:textStyle="bold"
+                    android:text=""
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        </LinearLayout>
+
+<!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/learning_progress_status"
+                    android:layout_width="@dimen/_85sdp"
+                    android:layout_height="@dimen/_85sdp"
+                    app:indicatorSize="@dimen/_80sdp"
+                    android:visibility="gone"
+                    app:trackThickness="10dp"
+                    app:trackColor="#f2f2f2"
+                    app:indicatorColor="@color/toolbar_lms"
+                    android:layout_gravity="center_horizontal"
+                    android:progress="15"
+                    app:trackCornerRadius="8dp"
+                    />
+
+            <TextView
+                android:id="@+id/tv_progressText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="15%"
+                android:visibility="gone"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20sp" />
+            </FrameLayout>
+
+        </LinearLayout>
+-->
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

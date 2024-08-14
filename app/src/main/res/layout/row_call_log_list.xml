@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_40sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="#FAF8F8"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardElevation="@dimen/_5sdp"
+    android:layout_margin="@dimen/_3sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_row_call_log_his_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Call Date"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp"/>
+
+        <TextView
+            android:id="@+id/tv_row_call_log_his_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Call Time"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp"/>
+
+
+        <TextView
+            android:id="@+id/tv_row_call_log_his_duration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Duration"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10sdp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/iv_row_call_log_his_type"
+                    android:layout_width="@dimen/_14sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:gravity="center"
+                    android:layout_gravity="center" />
+
+                <ImageView
+                    android:id="@+id/tv_row_call_log_his_sync_status"
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_row_call_log_his_call_status"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_15sdp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:text="Call"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

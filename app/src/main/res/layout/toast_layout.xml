@@ -10,7 +10,7 @@
     android:paddingBottom="@dimen/_5sdp"
     android:background="@drawable/rounded_corner_deep_blue_bg">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_toast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

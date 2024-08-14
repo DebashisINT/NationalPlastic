@@ -57,7 +57,7 @@
                     android:background="@drawable/shape_custom_border_back"
                     android:orientation="horizontal">
 
-                    <com.nationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
                         android:id="@+id/survey_from_typeSpinner"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

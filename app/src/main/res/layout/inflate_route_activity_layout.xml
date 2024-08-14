@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             >
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/login_report"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 android:drawablePadding="@dimen/_8sdp"
                 android:drawableStart="@drawable/ic_dashboard_my_order_icon_select"
                 android:gravity="center"
-                android:text="@string/nationalplasticfsm_login"
+                android:text="@string/sample_login"
                 android:visibility="gone"
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_12sdp" />
@@ -56,14 +56,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/time_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:drawablePadding="@dimen/_8sdp"
                 android:gravity="center"
-                android:text="@string/nationalplasticfsm_time"
+                android:text="@string/sample_time"
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_12sdp" />
 
@@ -97,13 +97,13 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:padding="@dimen/_7sdp"
             >
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/distance_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/_8sdp"
                 android:drawableStart="@drawable/ic_dashboard_add_shop_icon_select"
-                android:text="@string/nationalplasticfsm_location"
+                android:text="@string/sample_location"
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_12sdp" />
 
@@ -120,13 +120,13 @@
             android:visibility="gone"
             >
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/shops_log_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="@string/nationalplasticfsm_shops"
+                android:text="@string/sample_shops"
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_12sdp" />
             <View

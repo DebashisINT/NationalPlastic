@@ -18,7 +18,7 @@
         android:background="@drawable/shape_cursor_one">
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_inf_coll_pendi_list_shop_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:text="13.000"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_inf_coll_pendi_list_due_amt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

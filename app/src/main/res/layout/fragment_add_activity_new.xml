@@ -1,0 +1,929 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/tools"
+    android:background="@color/color_silver"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/party"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_party_dropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="@string/select_party"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <ImageView
+                                android:id="@+id/iv_party_dropdown_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@null"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_20sdp"
+                                android:src="@drawable/ic_gray_down_arrow_icon" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_date_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/date_and_time"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="Date"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <Space
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="match_parent"/>
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="Time"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:layout_below="@id/tv_party_dropdown"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/light_gray" />
+
+                            <Space
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="match_parent"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:layout_below="@id/tv_party_dropdown"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/light_gray" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_name_main"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:textColorHint="@color/light_gray"
+                            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                android:id="@+id/et_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/enter_contact_name"
+                                android:imeOptions="actionNext"
+                                android:inputType="text"
+                                android:singleLine="true"
+                                android:textSize="@dimen/_13sdp"
+                                app:theme="@style/EvoEditTextTheme" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/enter_activity"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_activity_dropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="@string/select_activity"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <ImageView
+                                android:id="@+id/iv_activity_dropdown_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@null"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_20sdp"
+                                android:src="@drawable/ic_gray_down_arrow_icon" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/enter_type"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_type_dropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="@string/select_type"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <ImageView
+                                android:id="@+id/iv_type_dropdown_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@null"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_20sdp"
+                                android:src="@drawable/ic_gray_down_arrow_icon" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_product"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/enter_product"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_product_dropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="@string/select_product"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <ImageView
+                                android:id="@+id/iv_product_dropdown_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@null"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_20sdp"
+                                android:src="@drawable/ic_gray_down_arrow_icon" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_subject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginRight="@dimen/_25sdp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:textColorHint="@color/light_gray"
+                                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                                <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                    android:id="@+id/et_subject"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@android:color/transparent"
+                                    android:hint="@string/subject"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/_13sdp"
+                                    app:theme="@style/EvoEditTextTheme" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginRight="@dimen/_25sdp">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:textColorHint="@color/light_gray"
+                                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                                <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                    android:id="@+id/et_details"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@android:color/transparent"
+                                    android:hint="@string/enter_details"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/_13sdp"
+                                    app:theme="@style/EvoEditTextTheme" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/duration_hh_mm"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal"
+                            android:layout_marginLeft="@dimen/_10sdp">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                android:id="@+id/et_hrs"
+                                android:layout_width="@dimen/_80sdp"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:hint="Hrs"
+                                android:maxLength="2"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:gravity="center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <Space
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="match_parent"/>
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                android:id="@+id/et_mins"
+                                android:layout_width="@dimen/_80sdp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="Mins"
+                                android:background="@android:color/transparent"
+                                android:maxLength="2"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:gravity="center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginLeft="@dimen/_10sdp">
+                            <View
+                                android:layout_width="@dimen/_80sdp"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:layout_below="@id/tv_party_dropdown"
+
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/light_gray" />
+
+                            <Space
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="match_parent"/>
+                            <View
+                                android:layout_width="@dimen/_80sdp"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:layout_below="@id/tv_party_dropdown"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/light_gray" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/priority"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_priority_dropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="@string/select_priority"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <ImageView
+                                android:id="@+id/iv_priority_dropdown_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@null"
+                                android:padding="@dimen/_3sdp"
+                                android:layout_marginRight="@dimen/_20sdp"
+                                android:src="@drawable/ic_gray_down_arrow_icon" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_frag_add_acti_due_date_time_heading"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:text="@string/due_date_time"
+                                android:gravity="start|center"
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/_12sdp" />
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_frag_add_acti_due_date_time_heading_star"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="*"
+                                android:textColor="@color/red"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:textSize="@dimen/_15sdp"
+                                android:layout_marginLeft="@dimen/_5sdp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:orientation="horizontal">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_due_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="Date"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <Space
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="match_parent"/>
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                                android:id="@+id/tv_due_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:hint="Time"
+                                android:gravity="start|center"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_13sdp" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:layout_below="@id/tv_party_dropdown"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/light_gray" />
+
+                            <Space
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="match_parent"/>
+                            <View
+                                android:id="@+id/v_due_time_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:layout_below="@id/tv_party_dropdown"
+                                android:layout_marginLeft="@dimen/_10sdp"
+                                android:layout_marginRight="@dimen/_25sdp"
+                                android:background="@color/light_gray" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:textColorHint="@color/light_gray"
+                            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                android:id="@+id/et_attachment"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/attachment"
+                                android:singleLine="true"
+                                android:editable="false"
+                                android:focusable="false"
+                                android:textSize="@dimen/_13sdp"
+                                app:theme="@style/EvoEditTextTheme" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:textColorHint="@color/light_gray"
+                            app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+
+                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                                android:id="@+id/et_photo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/photo_without_colon"
+                                android:singleLine="true"
+                                android:editable="false"
+                                android:focusable="false"
+                                android:textSize="@dimen/_13sdp"
+                                app:theme="@style/EvoEditTextTheme" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_below="@id/tv_party_dropdown"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
+                            android:background="@color/light_gray" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/submit_button_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_custom_border_blue_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/Submit"
+                android:textColor="@drawable/selector_text_clor_blue_white"
+                android:textSize="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_8sdp"/>
+
+        </LinearLayout>
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/progress_wheel"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            wheel:matProg_barColor="@color/default_text_color"
+            wheel:matProg_progressIndeterminate="true" />
+
+    </FrameLayout>
+
+
+
+</LinearLayout>

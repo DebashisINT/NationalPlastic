@@ -31,7 +31,7 @@
                 android:textSize="@dimen/_12sdp"
                 android:gravity="center"/>
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/pick_a_date_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

@@ -9,9 +9,9 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity" />
+        tools:context="com.breezenationalplasticfsm.features.dashboard.presentation.DashboardActivity" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_save_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         android:layout_margin="@dimen/_10sdp"
         android:layout_centerHorizontal="true">
 
-        <com.nationalplasticfsm.widgets.AppCustomEditText
+        <com.breezenationalplasticfsm.widgets.AppCustomEditText
             android:id="@+id/et_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:inputType="number"
             android:imeOptions="actionDone"/>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_radius_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
         android:layout_below="@+id/rl_radius"
         android:visibility="gone">
 
-        <com.nationalplasticfsm.widgets.AppCustomEditText
+        <com.breezenationalplasticfsm.widgets.AppCustomEditText
             android:id="@+id/searchLocation_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

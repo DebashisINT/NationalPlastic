@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/day_TV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,7 +12,7 @@
         android:textColor="@color/login_txt_color"
         android:textSize="@dimen/_13sdp"
         />
-    <com.nationalplasticfsm.app.widgets.AppCustomTextViewRegular
+    <com.breezenationalplasticfsm.app.widgets.AppCustomTextViewRegular
         android:id="@+id/date_TV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

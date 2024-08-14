@@ -42,7 +42,7 @@
         android:focusableInTouchMode="true"
         android:visibility="visible" />
 
-    <com.nationalplasticfsm.widgets.AppCustomEditText
+    <com.breezenationalplasticfsm.widgets.AppCustomEditText
         android:id="@+id/et_dialog_reimb_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

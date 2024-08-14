@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/ic_share"/>
 
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_total_collection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 android:layout_toLeftOf="@+id/rl_total_bar"
                 android:layout_alignParentLeft="true">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_pending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                     android:textSize="@dimen/_14sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -68,7 +68,7 @@
                     android:textColor="@color/red_dot"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_paid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
                     android:textStyle="bold"
                     android:layout_marginTop="@dimen/_10sdp"/>
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -104,7 +104,7 @@
                     android:progress="0"
                     android:progressDrawable="@drawable/progress_bar_wo_timer" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_total_percentage"
                     android:layout_width="@dimen/_55sdp"
                     android:layout_height="@dimen/_55sdp"
@@ -120,7 +120,7 @@
     </androidx.cardview.widget.CardView>
 
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_today_collection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
                 android:layout_toLeftOf="@+id/rl_today_bar"
                 android:layout_alignParentLeft="true">
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_today_pending"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                     android:textSize="@dimen/_14sdp"
                     android:textStyle="bold"/>
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -172,7 +172,7 @@
                     android:textColor="@color/red_dot"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_today_paid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
                     android:textSize="@dimen/_14sdp"
                     android:textStyle="bold" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -208,7 +208,7 @@
                     android:progress="0"
                     android:progressDrawable="@drawable/progress_bar_wo_timer" />
 
-                <com.nationalplasticfsm.widgets.AppCustomTextView
+                <com.breezenationalplasticfsm.widgets.AppCustomTextView
                     android:id="@+id/tv_today_percentage"
                     android:layout_width="@dimen/_55sdp"
                     android:layout_height="@dimen/_55sdp"

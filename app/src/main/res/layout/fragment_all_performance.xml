@@ -82,7 +82,7 @@
                                     android:id="@+id/tv_allperformance_list_ma_pointer"
                                     android:layout_width="wrap_content"
                                     android:layout_height="@dimen/_15sdp"
-                                    android:text="show recent three months data"
+                                    android:text="Show recent three months data"
                                     android:gravity="center"
                                     android:layout_gravity="center"
                                     android:textColor="@color/deep_maroon"

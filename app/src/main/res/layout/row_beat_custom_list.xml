@@ -25,7 +25,7 @@
             android:gravity="center_vertical"
             android:background="@drawable/shape_cursor_two">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_dt_row_beat_cus_list"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -36,7 +36,7 @@
                 android:textSize="@dimen/_12sdp"
                 />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_beat_name_row_beat_cus_list"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -56,7 +56,7 @@
             android:background="@drawable/shape_cursor_button"
             android:layout_marginTop="@dimen/_5sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Shop Name "
@@ -65,7 +65,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Status"
@@ -75,7 +75,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp" />
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Time"

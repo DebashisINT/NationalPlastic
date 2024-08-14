@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_2sdp"
-
         android:orientation="vertical">
 
         <LinearLayout
@@ -20,9 +19,7 @@
             android:layout_marginLeft="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_4sdp"
             android:orientation="horizontal"
-            android:paddingRight="@dimen/_3sdp"
-
-            >
+            android:paddingRight="@dimen/_3sdp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
@@ -32,7 +29,6 @@
                 android:layout_marginBottom="@dimen/_1sdp"
                 app:cardBackgroundColor="@color/transparent"
                 app:cardCornerRadius="@dimen/_250sdp"
-
                 app:cardElevation="@dimen/_3sdp">
 
                 <TextView
@@ -75,8 +71,8 @@
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_attendance_icon"
-                android:backgroundTint="@color/black" />
+                android:background="@drawable/ic_attendance_icon1"
+                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -200,8 +196,8 @@
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="@dimen/_15sdp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_new_order"
-                                app:tint="@color/black" />
+                                android:src="@drawable/ic_new_order1"
+                                 />
 
                         </androidx.cardview.widget.CardView>
 
@@ -310,7 +306,7 @@
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="29dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/visit_inactivity" />
+                                android:src="@drawable/visit_inactivity1" />
                             <!-- <ImageView
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="@dimen/_15sdp"
@@ -375,7 +371,7 @@
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="@dimen/_15sdp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/date" />
+                                android:src="@drawable/icon_cal_black" />
                             <!--
                              <ImageView
                                                             android:layout_width="@dimen/_15sdp"
@@ -461,7 +457,7 @@
                             android:layout_width="@dimen/_15sdp"
                             android:layout_height="@dimen/_15sdp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_ind_rupee" />
+                            android:src="@drawable/ic_ind_rupee1" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -521,7 +517,7 @@
                                 android:layout_width="@dimen/_15sdp"
                                 android:layout_height="@dimen/_15sdp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/date" />
+                                android:src="@drawable/icon_cal_black" />
 
                         </androidx.cardview.widget.CardView>
 

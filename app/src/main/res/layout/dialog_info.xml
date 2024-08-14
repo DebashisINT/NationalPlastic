@@ -30,7 +30,7 @@
                 android:layout_gravity="center|start"
                 android:layout_marginLeft="@dimen/_5sdp"/>
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/dialog_yes_no_headerTV"
                 android:layout_width="328dp"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             android:layout_marginRight="@dimen/_7sdp"/>-->
 
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/dialog_cancel_order_header_TV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

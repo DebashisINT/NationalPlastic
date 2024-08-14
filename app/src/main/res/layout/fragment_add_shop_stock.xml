@@ -62,7 +62,7 @@
 
             </LinearLayout>
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/tv_save_shop_stock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@color/color_silver">
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_pick_date_range"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_marginLeft="@dimen/_2sdp"
             android:layout_marginRight="@dimen/_2sdp"/>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_no_data_available"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

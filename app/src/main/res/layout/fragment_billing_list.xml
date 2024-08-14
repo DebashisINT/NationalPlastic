@@ -39,7 +39,7 @@
         app:backgroundTint="@color/new_floating_btn_color"
         app:fabSize="normal" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_no_data_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

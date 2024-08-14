@@ -20,14 +20,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_shop_nema"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/login_txt_color"
             android:textSize="@dimen/_13sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_shop_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:textSize="@dimen/_11sdp"
             android:layout_marginTop="@dimen/_3sdp"/>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_shop_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

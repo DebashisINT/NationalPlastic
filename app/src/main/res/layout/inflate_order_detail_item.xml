@@ -6,7 +6,7 @@
     android:weightSum="4"
     android:padding="@dimen/_10sdp"
     >
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/item_name_TV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:textColor="@color/login_txt_color"
         android:textSize="@dimen/_11sdp" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/quantity_TV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:textColor="@color/login_txt_color"
         android:textSize="@dimen/_11sdp" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/price_TV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:textColor="@color/login_txt_color"
         android:textSize="@dimen/_11sdp" />
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/total_TV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

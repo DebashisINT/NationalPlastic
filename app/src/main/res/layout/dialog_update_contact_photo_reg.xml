@@ -57,7 +57,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/_40sdp">
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/cancel_TV"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -73,7 +73,7 @@
                 android:backgroundTint="#f8424e"
                 android:layout_marginRight="@dimen/_1sdp"/>
 
-            <com.nationalplasticfsm.widgets.AppCustomTextView
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
                 android:id="@+id/ok_TV"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

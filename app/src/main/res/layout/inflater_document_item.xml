@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:paddingTop="@dimen/_10sdp"
-    android:paddingBottom="@dimen/_10sdp">
+    >
 
-    <LinearLayout
+<!--    <LinearLayout
         android:id="@+id/mid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_doc_file_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
             android:textSize="@dimen/_11sdp"
             android:visibility="gone" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_doc_date_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -32,7 +33,7 @@
             android:textColor="@color/login_txt_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_attachment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -121,10 +122,10 @@
             android:visibility="visible" />
 
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 
-<!--    <com.nationalplasticfsm.widgets.AppCustomTextView-->
+<!--    <com.breezenationalplasticfsm.widgets.AppCustomTextView-->
 <!--        android:id="@+id/tv_down_text"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
@@ -135,4 +136,160 @@
 <!--        android:textSize="@dimen/_11sdp"-->
 <!--        android:visibility="gone" />-->
 
-</RelativeLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardElevation="@dimen/_3sdp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/_20sdp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_doc_date_time"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text=""
+                android:textColor="#39a4be"
+                android:paddingStart="@dimen/_10sdp"
+                android:textSize="@dimen/_13sdp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                app:layout_constraintEnd_toStartOf="@+id/cons_lay_for_icon"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cons_lay_for_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/_15sdp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_doc_file_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:id="@+id/iv_edit"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/cons_lay_for_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_delete"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/edit" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_delete"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/cons_lay_for_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_download"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/delete" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:id="@+id/iv_download"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/cons_lay_for_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_share"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/download" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_share"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/cons_lay_for_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/sync_status_iv"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/share" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/sync_status_iv"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="0dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/cons_lay_for_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_down_text"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/sync_done" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/tv_down_text"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/cons_lay_for_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/view" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_doc_file_name"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_30sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text=""
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:textColor="#0e0e0e"
+                android:visibility="gone"
+                android:textSize="@dimen/_13sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_doc_date_time" />
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_attachment"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                android:text=""
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:textColor="#232163"
+                android:textSize="@dimen/_13sdp"
+                android:paddingStart="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_filetypeimage"
+                app:layout_constraintTop_toBottomOf="@+id/tv_doc_file_name" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:visibility="gone"
+                android:id="@+id/iv_filetypeimage"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_doc_file_name"
+                app:srcCompat="@drawable/ic_doc" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

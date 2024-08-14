@@ -14,7 +14,7 @@
         android:background="@drawable/rounded_corner_white_bg"
         android:orientation="vertical">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/dialog_qa_headerTV"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_40sdp"
@@ -50,7 +50,8 @@
         android:layout_marginBottom="@dimen/_2sdp"
         android:visibility="visible">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            android:visibility="gone"
             android:id="@+id/activity_login_tvappCustomAnydesk"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_30sdp"
@@ -65,7 +66,8 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            android:visibility="gone"
             android:id="@+id/activity_login_tvappCustomLogs"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_30sdp"
@@ -82,7 +84,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp" />
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/activity_login_tvappdbLogs"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_30sdp"
@@ -100,7 +102,7 @@
             android:textSize="@dimen/_10sdp" />
 
         <!-- mantis 0025783 In-app privacy policy working in menu & Login-->
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/activity_login_tvprivacypolicy"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_30sdp"

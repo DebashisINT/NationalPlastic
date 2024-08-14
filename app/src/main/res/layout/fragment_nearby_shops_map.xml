@@ -12,7 +12,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.nationalplasticfsm.features.dashboard.presentation.DashboardActivity" />
+        tools:context="com.breezenationalplasticfsm.features.dashboard.presentation.DashboardActivity" />
 
     <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progress_wheel"
@@ -29,7 +29,7 @@
         android:background="@color/white"
         android:layout_alignParentBottom="true">
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:id="@+id/tv_current_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:layout_margin="@dimen/_10sdp"
             android:layout_centerVertical="true"/>
 
-        <com.nationalplasticfsm.widgets.AppCustomTextView
+        <com.breezenationalplasticfsm.widgets.AppCustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_shop_map_pointer"

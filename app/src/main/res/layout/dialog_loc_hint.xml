@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,16 +18,64 @@
         android:textSize="@dimen/_15sdp"
         android:layout_gravity="center"/>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/_280sdp"
+        android:layout_height="@dimen/_350sdp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="@dimen/_10sdp"
+        app:cardElevation="@dimen/_5sdp"
+        app:cardBackgroundColor="#f0f0f2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_dialog_loc_hint_app_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Allow breezenationalplasticfsm-Breeze App to\n access this device's location"
+                android:gravity="center"
+                android:textSize="@dimen/_14sdp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_5sdp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/loc_hint1"/>
+
+            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                android:id="@+id/tv_ok_loc_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="end"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/ok"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
     <ImageView
         android:layout_width="@dimen/_280sdp"
         android:layout_height="@dimen/_350sdp"
         android:layout_below="@+id/tv_body"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:src="@drawable/loc_hint" />
+        android:src="@drawable/loc_hint"
+        android:visibility="gone"/>
 
 
-    <com.nationalplasticfsm.widgets.AppCustomTextView
+<!--    <com.breezenationalplasticfsm.widgets.AppCustomTextView
         android:id="@+id/tv_ok_loc_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,6 +85,6 @@
         android:text="@string/ok"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/_15sdp"
-        android:textStyle="bold" />
+        android:textStyle="bold" />-->
 
 </LinearLayout>
