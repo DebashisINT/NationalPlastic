@@ -14,7 +14,7 @@
         android:background="@drawable/rounded_corner_white_bg"
         android:orientation="vertical">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_priorty_headerTV"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
@@ -42,7 +42,7 @@
 
 
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_priorty_ok"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_35sdp"

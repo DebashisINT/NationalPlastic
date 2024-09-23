@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_doc_file_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:textSize="@dimen/_11sdp"
             android:visibility="gone" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_doc_date_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:textColor="@color/login_txt_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_attachment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
     </LinearLayout>-->
 
 
-<!--    <com.breezenationalplasticfsm.widgets.AppCustomTextView-->
+<!--    <com.breezefieldnationalplastic.widgets.AppCustomTextView-->
 <!--        android:id="@+id/tv_down_text"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
@@ -157,7 +157,7 @@
             android:layout_marginBottom="@dimen/_20sdp"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_doc_date_time"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_40sdp"
@@ -249,7 +249,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_doc_file_name"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_30sdp"
@@ -263,7 +263,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_doc_date_time" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_attachment"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_40sdp"

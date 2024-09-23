@@ -1,0 +1,147 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_grd_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="4dp"
+    app:cardBackgroundColor="#ffd9b4"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true">
+
+    <!-- Border for the CardView -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card_border_lms">
+
+        <!-- The content inside the card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@drawable/circle_lms">
+
+                <ImageView
+                    android:id="@+id/iv_gv"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:gravity="center"
+                    android:src="@drawable/topic_icon_lms"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_Search_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:maxLines="2"
+                        android:ellipsize="marquee"
+                        android:layout_marginEnd="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="bold"
+                        android:text="@string/app_name"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="normal"
+                        android:text=""
+                        android:visibility="gone"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:visibility="visible"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_parcentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:layout_marginEnd="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="normal"
+                        android:text="0"
+                        android:visibility="visible"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tv_parcentage_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:layout_marginEnd="@dimen/_7sdp"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:textSize="@dimen/_11sdp"
+                        android:textStyle="normal"
+                        android:text="Yet to Start"
+                        android:visibility="visible"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/learning_progress_status_topic"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    app:indicatorSize="@dimen/_80sdp"
+                    app:trackThickness="@dimen/_3sdp"
+                    app:trackColor="@color/white"
+                    app:indicatorColor="#164f92"
+                    android:layout_gravity="center_horizontal"
+                    app:trackCornerRadius="8dp"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:visibility="visible"
+                    />
+
+            </LinearLayout>
+
+
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/nxtlms"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10sdp"
+                />
+
+        </LinearLayout>
+    </FrameLayout>
+</androidx.cardview.widget.CardView>

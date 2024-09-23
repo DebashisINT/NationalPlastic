@@ -23,7 +23,7 @@
         android:paddingRight="@dimen/_10sdp"
         android:src="@drawable/ic_edit_icon" />
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

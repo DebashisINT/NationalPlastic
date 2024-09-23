@@ -20,7 +20,7 @@
         android:background="@drawable/searchablecolor"
         android:visibility="gone">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomEditText
+        <com.breezefieldnationalplastic.widgets.AppCustomEditText
             android:id="@+id/searchLocation_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/save_TV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

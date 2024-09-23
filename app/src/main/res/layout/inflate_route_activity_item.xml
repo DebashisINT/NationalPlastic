@@ -22,7 +22,7 @@
             android:src="@drawable/ic_dashboard_green_tick_new"
             android:visibility="visible" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/time_log"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:textColor="@color/login_txt_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/meridiem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             android:layout_marginBottom="@dimen/_10sdp"
             android:orientation="vertical">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/location_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_2sdp">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_1sdp"
@@ -108,7 +108,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_11sdp" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_battery_percentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:layout_marginLeft="@dimen/_5sdp"/>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_1sdp"
@@ -127,7 +127,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:layout_marginLeft="@dimen/_10sdp"/>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_network_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"/>
             </LinearLayout>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_lat_long"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                     android:layout_marginEnd="@dimen/_3sdp"
                     android:src="@drawable/ic_dashboard_kms_covered_icon" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/distance_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -172,7 +172,7 @@
                     android:textColor="@color/color_primary"
                     android:textSize="@dimen/_11sdp" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/distance_covered_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                     android:src="@drawable/ic_dashboard_shops_visited_icon" />
 
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/shop_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -202,7 +202,7 @@
                     android:textColor="@color/date_selector_color"
                     android:textSize="@dimen/_11sdp" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/shop_visited_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                     android:src="@drawable/ic_dashboard_shops_visited_icon" />
 
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/meeting_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:layout_alignTop="@+id/meeting_iv"/>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/meeting_visited_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

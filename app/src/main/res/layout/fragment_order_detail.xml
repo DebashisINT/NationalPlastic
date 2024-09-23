@@ -16,7 +16,7 @@
         android:padding="@dimen/_7sdp"
         android:weightSum="4">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/item_name_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:textColor="@color/default_text_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/quantity_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:textColor="@color/default_text_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/price_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:textColor="@color/default_text_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/total_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         android:gravity="end"
         android:padding="@dimen/_8sdp">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/total_price_TV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/_13sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/total_label_TV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

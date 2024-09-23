@@ -58,7 +58,7 @@
                 android:padding="@dimen/_5sdp"
                 app:cardElevation="@dimen/_5sdp">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                <com.breezefieldnationalplastic.widgets.AppCustomEditText
                     android:id="@+id/et_frag_ord_prod_search"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

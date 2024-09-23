@@ -73,7 +73,7 @@
             android:layout_marginLeft="@dimen/_3sdp"
             android:layout_marginRight="@dimen/_3sdp">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_call_log_not_ok"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="match_parent"
@@ -91,7 +91,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_call_log_ok"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="match_parent"

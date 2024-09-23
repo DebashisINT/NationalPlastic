@@ -8,7 +8,7 @@
     app:cardCornerRadius="@dimen/_5sdp"
     app:cardElevation="@dimen/_1sdp">
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_ds_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

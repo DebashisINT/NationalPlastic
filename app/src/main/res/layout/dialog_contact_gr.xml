@@ -29,7 +29,7 @@
                 android:layout_gravity="center|start"
                 android:layout_marginLeft="@dimen/_5sdp"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/dialog_contact_gr_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

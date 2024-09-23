@@ -5,7 +5,7 @@
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_silver">
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_count_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_count_no"/>
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_no_data_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

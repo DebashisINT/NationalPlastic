@@ -25,7 +25,7 @@
             android:gravity="center"
             android:padding="@dimen/_5sdp">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/total_price_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                 android:textColor="@color/login_txt_color"
                 android:textSize="@dimen/_10sdp" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/total_price_value_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
 
         </RelativeLayout>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.4"
@@ -71,7 +71,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                 android:id="@+id/shop_name_EDT"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             android:textColorHint="@color/light_gray"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                 android:id="@+id/order_date_EDT"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/add_item_TV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

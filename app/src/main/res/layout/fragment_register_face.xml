@@ -25,7 +25,7 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="@dimen/_7sdp">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Name  : "
@@ -33,7 +33,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_13sdp" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_frag_reg_face_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -65,7 +65,7 @@
                     android:src="@drawable/ic_registered_shop_call_select"
                     android:textSize="@dimen/_11sdp" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_frag_reg_face_phone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

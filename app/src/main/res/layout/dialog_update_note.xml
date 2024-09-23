@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/dialog_header_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                     android:textColorHint="@color/light_gray"
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                    <com.breezefieldnationalplastic.widgets.AppCustomEditText
                         android:id="@+id/et_note"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                 android:weightSum="2"
                 android:layout_marginTop="@dimen/_20sdp">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/cancel_TV"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -105,7 +105,7 @@
                     android:layout_width="@dimen/_2sdp"
                     android:layout_height="match_parent"/>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/ok_TV"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

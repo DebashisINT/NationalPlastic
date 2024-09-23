@@ -30,7 +30,6 @@
                 android:gravity="end"
                 android:orientation="vertical">
 
-
                 <include
                     android:id="@+id/include_toolbar"
                     layout="@layout/toolbar_layout" />
@@ -66,13 +65,13 @@
                     layout="@layout/menu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"/>
+                    android:visibility="gone"/>
 
                 <include
                     layout="@layout/menu_adv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
 
             </LinearLayout>
 

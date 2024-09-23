@@ -167,6 +167,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/icon_call_black"
                         android:tint="@color/color_custom_green"/>
+
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout

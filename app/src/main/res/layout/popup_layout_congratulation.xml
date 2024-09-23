@@ -5,6 +5,7 @@
     android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#B3000000"
     >
 
     <FrameLayout
@@ -27,11 +28,11 @@
                 android:id="@+id/popup_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_250sdp"
-                app:lottie_rawRes="@raw/leaderboard_congrats"
+                app:lottie_rawRes="@raw/leader_b"
                 android:layout_gravity="center"
                 app:lottie_autoPlay="true"
                 android:layout_marginBottom="@dimen/_40sdp"
-                app:lottie_loop="true" />
+                app:lottie_loop="false" />
 
             <TextView
                 android:id="@+id/popup_title"

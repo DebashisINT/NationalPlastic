@@ -63,7 +63,7 @@
                     app:cardCornerRadius="@dimen/_5sdp"
                     app:cardElevation="@dimen/_5sdp">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:id="@+id/tv_select_beat_team"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/frag_team_beat_date_range_display"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
 
         </LinearLayout>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_no_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
             wheel:matProg_barColor="@color/colorPrimaryDark"
             wheel:matProg_progressIndeterminate="true" />
 
-        <com.breezenationalplasticfsm.app.widgets.MovableFloatingActionButton
+        <com.breezefieldnationalplastic.app.widgets.MovableFloatingActionButton
             android:id="@+id/add_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

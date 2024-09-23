@@ -6,7 +6,7 @@
     android:padding="@dimen/_10sdp"
     android:background="@color/report_screen_bg">
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:textSize="@dimen/_12sdp"
         android:textColor="@color/colorPrimary"/>
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

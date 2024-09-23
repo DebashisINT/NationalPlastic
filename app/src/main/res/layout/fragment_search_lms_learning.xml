@@ -90,7 +90,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_42sdp"
                             android:orientation="horizontal">
-                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                                 android:id="@+id/et_frag_contacts_search"
                                 android:layout_weight="1"
                                 android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                                 android:singleLine="true"
                                 android:paddingLeft="@dimen/_10sdp" />
 
-                           &lt;!&ndash; <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                           &lt;!&ndash; <com.breezefieldnationalplastic.widgets.AppCustomEditText
                                 android:id="@+id/et_frag_contacts_search"
                                 android:layout_weight="1"
                                 android:layout_width="match_parent"
@@ -176,7 +176,7 @@
                         android:layout_height="@dimen/_42sdp"
                         android:orientation="horizontal">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                        <com.breezefieldnationalplastic.widgets.AppCustomEditText
                             android:id="@+id/et_frag_learning_search"
                             android:layout_weight="1"
                             android:layout_width="match_parent"

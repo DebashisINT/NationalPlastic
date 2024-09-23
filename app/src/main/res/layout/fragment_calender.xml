@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_no_task_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

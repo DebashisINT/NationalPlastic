@@ -207,7 +207,7 @@
             android:orientation="horizontal">
 
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_activity_yes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

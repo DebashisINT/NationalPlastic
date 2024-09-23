@@ -7,11 +7,13 @@
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/_5sdp"
-    android:background="#F0F5FB"
+    android:background="#e4f1ff"
+    android:visibility="visible"
     android:weightSum="4">
 
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -24,10 +26,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="55dp">
             <!--Home-->
 
-         <!--   <LinearLayout
+            <!--   <LinearLayout
                 android:id="@+id/ll_lms_dashboard"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -47,7 +49,7 @@
                     android:contentDescription="@null"
                     android:focusable="false" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_lms_dashboard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,72 +64,115 @@
             </LinearLayout>-->
 
             <LinearLayout
-                android:id="@+id/ll_lms_performance"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:focusable="true"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/iv_lms_performance"
-                    android:layout_width="@dimen/_22sdp"
-                    android:layout_height="@dimen/_22sdp"
-                    android:layout_centerHorizontal="true"
-                    android:backgroundTint="@color/black"
-                    android:clickable="false"
-                    android:contentDescription="@null"
-                    android:focusable="false" />
-
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
-                    android:id="@+id/tv_lms_performance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/home_IV"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:gravity="center"
-                    android:text="Performance"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_9sdp" />
-
-            </LinearLayout>
-
-            <!--Add Shop-->
-            <LinearLayout
                 android:id="@+id/ll_lms_mylearning"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/iv_lms_mylearning"
-                    android:layout_width="@dimen/_22sdp"
-                    android:layout_height="@dimen/_22sdp"
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:layout_centerHorizontal="true"
                     android:backgroundTint="@color/black"
                     android:clickable="false"
                     android:contentDescription="@null"
                     android:focusable="false" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_lms_mylearning"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/add_shop_IV"
                     android:clickable="false"
                     android:focusable="false"
+                    android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
-                    android:text="My Learning"
+                    android:text="My Topics"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_9sdp" />
+                    android:textSize="@dimen/_9sdp"
+                    android:textStyle="bold" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_lms_knowledgehub"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_lms_knowledgehub"
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:backgroundTint="@color/black"
+                    android:clickable="false"
+                    android:contentDescription="@null"
+                    android:focusable="false" />
+
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                    android:id="@+id/tv_lms_knowledgehub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/my_orders_IV"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:text="All Topics"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_lms_performance"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_lms_performance"
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerHorizontal="true"
+                    android:backgroundTint="@color/black"
+                    android:clickable="false"
+                    android:contentDescription="@null"
+                    android:focusable="false" />
+
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                    android:id="@+id/tv_lms_performance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/home_IV"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:text="Performance Insights"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_9sdp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!--Add Shop-->
+
 
             <!--Near Shops-->
 
@@ -137,10 +182,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:visibility="gone"
-                android:orientation="vertical"
                 android:focusable="true"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_lms_leaderboard"
@@ -154,7 +199,7 @@
 
                     />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_lms_leaderboard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -168,46 +213,19 @@
             </LinearLayout>
             <!--My Orders-->
 
-            <LinearLayout
-                android:id="@+id/ll_lms_knowledgehub"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/iv_lms_knowledgehub"
-                    android:layout_width="@dimen/_22sdp"
-                    android:layout_height="@dimen/_22sdp"
-                    android:layout_centerHorizontal="true"
-                    android:backgroundTint="@color/black"
-                    android:clickable="false"
-                    android:contentDescription="@null"
-                    android:focusable="false" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
-                    android:id="@+id/tv_lms_knowledgehub"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_2sdp"
-                    android:layout_below="@id/my_orders_IV"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:gravity="center"
-                    android:text="Knowledge Hub"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_9sdp" />
-            </LinearLayout>
         </LinearLayout>
-
 
 
     </LinearLayout>
 
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        android:background="@color/lightest_new_gray"/>
 
 
 </LinearLayout>

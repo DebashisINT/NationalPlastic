@@ -15,5 +15,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        tools:context="com.breezenationalplasticfsm.mappackage.MapActivity" />
+        tools:context="com.breezefieldnationalplastic.mappackage.MapActivity" />
 </RelativeLayout>

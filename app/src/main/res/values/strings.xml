@@ -1,6 +1,10 @@
 <resources>
     <!--<string name="app_name">Field Tracking System</string>-->
     <string name="app_name" translatable="false">Breeze-National Plastic</string>
+<!--
+    <string name="app_name" translatable="false">MobiLearn-INT</string>
+-->
+    <!--<string name="app_name" translatable="false">Breeze-Demo</string>-->
     <string name="blank" translatable="false"></string>
     <string name="enter_a_title" translatable="false">Enter a title</string>
     <string name="entry_details_default_text" translatable="false">Entry Details!</string>
@@ -13,7 +17,7 @@
     <!--Map Key-->
     <!--<string name="MAP_ProjectAPIKey">AIzaSyBRrqsLZFqThqM8uxw_k94pZMbv3-3h0dM</string>-->
     <!--<string name="MAP_ProjectAPIKey" translatable="false">AIzaSyCbYMZjnt8T6yivYfIa4_R9oy-L3SIYyrQ</string>-->
-    <string name="MAP_ProjectAPIKey" translatable="false">AIzaSyDbsL6dMddy2DsjsVzhr_qJe-jWoBLcdLo</string>
+    <string name="MAP_ProjectAPIKey" translatable="false">AIzaSyBAnKcPyKkoHXBvn8Efay_TaaMEbjupl5g</string>
     <string name="facebook_app_id" translatable="false">260734547001450</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb260734547001450</string>
 
@@ -439,7 +443,7 @@
     <string name="email" translatable="false">Email ID</string>
 
 
-    <!--breezenationalplasticfsm-->
+    <!--breezefieldnationalplastic-->
     <string name="sample_user_name" translatable="false">Mr. Kinsuk Roy</string>
     <string name="sample_login" translatable="false">Logged in at 10:55 AM</string>
     <string name="sample_location" translatable="false">You have covered the distance of 3 KM in last hour </string>
@@ -1505,7 +1509,7 @@
     <string name="error_enter_canceled_by" translatable="false">Please enter cancelled by</string>
 
 
-    <string name="tfe_od_app_name" translation_description="Object Detection breezenationalplasticfsm app [CHAR_LIMIT=40]">Face Recognition</string>
+    <string name="tfe_od_app_name" translation_description="Object Detection breezefieldnationalplastic app [CHAR_LIMIT=40]">Face Recognition</string>
     <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
     <string name="label_install_anydesk" translatable="false">Install Anydesk</string>
     <string name="label_open_anydesk" translatable="false">Open Anydesk</string>

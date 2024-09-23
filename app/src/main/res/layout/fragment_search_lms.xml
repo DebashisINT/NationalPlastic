@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_my_learning_topic_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -91,7 +92,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_42sdp"
                             android:orientation="horizontal">
-                            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                                 android:id="@+id/et_frag_contacts_search"
                                 android:layout_weight="1"
                                 android:layout_width="match_parent"
@@ -185,11 +186,12 @@
 
         <LinearLayout
             android:id="@+id/tv_next_afterSearch_lms"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_marginBottom="@dimen/_10sdp"
+            android:visibility="gone"
             android:background="@drawable/green_round">
 
             <ImageView

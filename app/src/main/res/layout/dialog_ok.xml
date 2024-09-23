@@ -28,7 +28,7 @@
                 android:layout_gravity="center|start"
                 android:layout_marginLeft="@dimen/_5sdp"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_ok_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             android:layout_marginLeft="@dimen/_7sdp"
             android:layout_marginRight="@dimen/_7sdp"/>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_yes_header_TV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             android:orientation="horizontal">
 
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_yes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

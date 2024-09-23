@@ -8,7 +8,7 @@
     android:background="@color/color_silver"
     android:padding="@dimen/_5sdp">
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_order_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_order_count" />
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/no_shop_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

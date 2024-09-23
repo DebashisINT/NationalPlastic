@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:background="@drawable/rounded_corner_white_bg">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_yes_header_TV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:backgroundTint="#57a518">
 
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_yes"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

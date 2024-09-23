@@ -19,7 +19,7 @@
             android:background="@drawable/rounded_corner_white_bg"
             android:orientation="vertical">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/dialog_header_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/shop_name_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                         android:visibility="visible"
                         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                        <com.breezefieldnationalplastic.widgets.AppCustomEditText
                             android:id="@+id/from_date_edt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                         android:visibility="visible"
                         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                        <com.breezefieldnationalplastic.widgets.AppCustomEditText
                             android:id="@+id/to_date_edt"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                     android:visibility="visible"
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                    <com.breezefieldnationalplastic.widgets.AppCustomEditText
                         android:id="@+id/total_amount_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                     android:visibility="visible"
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                    <com.breezefieldnationalplastic.widgets.AppCustomEditText
                         android:id="@+id/description_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
                     android:visibility="gone"
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                    <com.breezefieldnationalplastic.widgets.AppCustomEditText
                         android:id="@+id/status_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
                     android:visibility="visible"
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                    <com.breezefieldnationalplastic.widgets.AppCustomEditText
                         android:id="@+id/supervisor_email_edt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -246,7 +246,7 @@
                     android:layout_below="@+id/supervisor_email_tl"
                     android:orientation="horizontal">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:id="@+id/upload_doc_btn"
                         android:layout_width="@dimen/_100sdp"
                         android:layout_height="@dimen/_35sdp"
@@ -261,7 +261,7 @@
                         android:textColor="@drawable/selector_text_clor_blue_white"
                         android:textSize="@dimen/_13sdp" />
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:id="@+id/uploaded_doc_name_tv"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_35sdp"
@@ -278,7 +278,7 @@
             </RelativeLayout>
 
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/add_TV"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_35sdp"

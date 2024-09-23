@@ -72,7 +72,7 @@
                         android:background="@drawable/shape_custom_border_back"
                         android:orientation="horizontal">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                        <com.breezefieldnationalplastic.widgets.AppCustomTextView
                             android:id="@+id/genderSpinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
                         android:background="@drawable/shape_custom_border_back"
                         android:orientation="horizontal">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                        <com.breezefieldnationalplastic.widgets.AppCustomTextView
                             android:id="@+id/ProductSpinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -254,7 +254,7 @@
                         android:background="@drawable/shape_custom_border_back"
                         android:orientation="horizontal">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                        <com.breezefieldnationalplastic.widgets.AppCustomTextView
                             android:id="@+id/ColorSpinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -552,7 +552,7 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/_13sdp">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -575,7 +575,7 @@
             android:paddingBottom="@dimen/_5sdp"
             android:src="@drawable/ic_cart_icon" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_cart_count"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"

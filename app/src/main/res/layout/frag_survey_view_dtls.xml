@@ -67,7 +67,7 @@
             wheel:matProg_barColor="@color/default_text_color"
             wheel:matProg_progressIndeterminate="true" />
 
-        <com.breezenationalplasticfsm.app.widgets.MovableFloatingActionButton
+        <com.breezefieldnationalplastic.app.widgets.MovableFloatingActionButton
             android:id="@+id/fb_frag_survey_view_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

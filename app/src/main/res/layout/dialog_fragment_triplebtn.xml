@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/dialog_header_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/dialog_content_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 android:visibility="gone"
                 app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomEditText
+                <com.breezefieldnationalplastic.widgets.AppCustomEditText
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             android:orientation="horizontal"
             android:weightSum="3">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/cancel_TV"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -105,7 +105,7 @@
                 android:clickable="true"
                 android:focusable="true" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/ok_TV"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -118,7 +118,7 @@
                 android:clickable="true"
                 android:focusable="true" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/extra_TV"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

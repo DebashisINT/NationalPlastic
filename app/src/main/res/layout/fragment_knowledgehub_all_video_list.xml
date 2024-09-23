@@ -28,7 +28,7 @@
                 android:backgroundTint="@color/search_layover_bg"
                 android:layout_gravity="center"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                 android:id="@+id/et_frag_contacts_search"
                 android:layout_weight="1"
                 android:layout_width="match_parent"

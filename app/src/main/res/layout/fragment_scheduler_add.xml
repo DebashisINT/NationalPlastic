@@ -83,7 +83,7 @@
                 wheel:matProg_barColor="@color/default_text_color"
                 wheel:matProg_progressIndeterminate="true" />
 
-            <com.breezenationalplasticfsm.app.widgets.MovableFloatingActionButton
+            <com.breezefieldnationalplastic.app.widgets.MovableFloatingActionButton
                 android:id="@+id/fab_frag_add_schedule_in_contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

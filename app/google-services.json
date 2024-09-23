@@ -1,59 +1,21 @@
 {
   "project_info": {
-    "project_number": "1047878530000",
-    "project_id": "demofsm-fee63",
-    "storage_bucket": "demofsm-fee63.appspot.com"
+    "project_number": "530372359789",
+    "project_id": "breeze-national-plastic",
+    "storage_bucket": "breeze-national-plastic.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1047878530000:android:2b15775bd3dff2797b3fd5",
+        "mobilesdk_app_id": "1:530372359789:android:ddd9d59aa3c35b6fc77164",
         "android_client_info": {
-          "package_name": "com.breezenationalplasticfsm"
+          "package_name": "com.breezefieldnationalplastic"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBIL6r9laNOETisRZ_w88qeOXO1dAMCpmE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1047878530000:android:e7c444b181271f827b3fd5",
-        "android_client_info": {
-          "package_name": "com.demonew"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBIL6r9laNOETisRZ_w88qeOXO1dAMCpmE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1047878530000:android:08c64162a1a83eef7b3fd5",
-        "android_client_info": {
-          "package_name": "com.fsmevaluationlive"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBIL6r9laNOETisRZ_w88qeOXO1dAMCpmE"
+          "current_key": "AIzaSyAPHU-GBNB4-ywizZQczn-cZCeXXp5PXEE"
         }
       ],
       "services": {

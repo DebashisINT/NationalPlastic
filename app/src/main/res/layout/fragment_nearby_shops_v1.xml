@@ -53,7 +53,7 @@
         android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/llbreezenationalplasticfsmShoListLayout"
+            android:id="@+id/llbreezefieldnationalplasticShoListLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -73,7 +73,7 @@
         android:overScrollMode="never"
         android:visibility="gone" />
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/no_shop_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

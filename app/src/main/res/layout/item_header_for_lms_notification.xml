@@ -4,11 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="15dp"
-    android:paddingStart="@dimen/_15sdp"
-    android:paddingEnd="@dimen/_15sdp"
-    android:layout_marginTop="@dimen/_7sdp"
-    android:layout_marginStart="@dimen/_15sdp"
-    android:layout_marginEnd="@dimen/_15sdp"
+    android:paddingEnd="@dimen/_5sdp"
+    android:layout_margin="@dimen/_5sdp"
     app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
@@ -18,10 +15,11 @@
 
         <TextView
             android:layout_marginTop="@dimen/_15sdp"
-            android:id="@+id/header_text"
+            android:id="@+id/noti_header_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_17sdp"
+            android:textSize="@dimen/_15sdp"
+            android:text="Date"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_marginEnd="@dimen/_10sdp"
@@ -34,6 +32,7 @@
             android:layout_marginStart="@dimen/_15sdp"
             android:layout_marginBottom="@dimen/_15sdp"
             android:layout_marginEnd="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>

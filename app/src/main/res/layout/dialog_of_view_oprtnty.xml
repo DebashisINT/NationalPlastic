@@ -367,7 +367,7 @@
                     android:orientation="vertical"
                     >
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:paddingStart="@dimen/_10sdp"
                         android:paddingLeft="@dimen/_12sdp"
                         android:layout_width="match_parent"

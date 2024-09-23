@@ -27,7 +27,7 @@
                 android:layout_gravity="center|start"
                 android:layout_marginLeft="@dimen/_5sdp"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/dialog_yes_no_headerTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_head_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,7 +67,7 @@ Please disable USB debugging to start the FSM application."
                 android:paddingEnd="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_3sdp"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_head_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
@@ -79,7 +79,7 @@ Please disable USB debugging to start the FSM application."
                 android:paddingEnd="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_3sdp"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@ Please disable USB debugging to start the FSM application."
             android:visibility="visible" />
 
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_dialog_ok"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"

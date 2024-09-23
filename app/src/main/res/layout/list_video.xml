@@ -21,7 +21,9 @@
             app:use_controller="true"
             argType:show_next_button="false"
             argType:show_previous_button="false"
-            />
+            android:keepScreenOn="true"
+            argType:show_fastforward_button="false"
+            argType:show_rewind_button="false" />
 
 
         <com.airbnb.lottie.LottieAnimationView
@@ -76,6 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:maxLines="2"

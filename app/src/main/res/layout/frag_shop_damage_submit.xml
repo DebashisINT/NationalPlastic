@@ -134,7 +134,7 @@
                         android:background="@drawable/shape_custom_border_back"
                         android:orientation="horizontal">
 
-                        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                        <com.breezefieldnationalplastic.widgets.AppCustomTextView
                             android:id="@+id/ProductSpinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
                 android:paddingStart="@dimen/_5sdp"
                 android:maxLength="500"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/iv_frag_shop_damage_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

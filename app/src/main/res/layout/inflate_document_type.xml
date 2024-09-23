@@ -19,7 +19,7 @@
             app:srcCompat="@drawable/ic_doc" />
     </RelativeLayout>
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_type_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

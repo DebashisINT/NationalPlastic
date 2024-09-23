@@ -20,7 +20,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_cursor_one"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/survey_question_TV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

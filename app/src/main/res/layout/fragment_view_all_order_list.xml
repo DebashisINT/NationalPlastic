@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content">
 
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:id="@+id/myshop_name_TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -73,17 +73,18 @@
 
                 </RelativeLayout>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/myshop_address_TV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/sync_RL"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:textColor="@color/light_gray"
-                    android:textSize="@dimen/_11sdp" />
+                    android:textSize="@dimen/_11sdp"
+                    android:visibility="gone"/>
                 <!--android:text="@string/address_txt"-->
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_contact_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -99,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_contact_number">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:id="@+id/order_amount_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -206,7 +207,7 @@
             wheel:matProg_progressIndeterminate="true" />
 
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/no_shop_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

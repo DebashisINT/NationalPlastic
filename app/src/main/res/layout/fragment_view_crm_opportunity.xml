@@ -240,7 +240,7 @@
                 <include layout="@layout/empty_page_layout"/>
             </LinearLayout>
 
-            <com.breezenationalplasticfsm.app.widgets.MovableFloatingActionButton
+            <com.breezefieldnationalplastic.app.widgets.MovableFloatingActionButton
                 android:id="@+id/fab_frag_oppt_crm_add_oppt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

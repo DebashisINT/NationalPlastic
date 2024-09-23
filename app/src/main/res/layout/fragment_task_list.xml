@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_silver">
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_pick_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,14 +37,14 @@
             android:layout_marginLeft="@dimen/_20sdp"
             android:background="@drawable/rounded_corner_deep_green_bg">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/completed"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13sdp" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_completed_count"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
@@ -67,14 +67,14 @@
             android:layout_marginLeft="@dimen/_20sdp"
             android:background="@drawable/rounded_corner_deep_yellow_bg">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pending"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_pending_count"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
@@ -94,7 +94,7 @@
         android:layout_below="@+id/ll_pending_completed"
         android:layout_marginTop="@dimen/_10sdp" />
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_no_data_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -15,7 +15,7 @@
         android:layout_marginTop="@dimen/_5sdp"
         android:padding="@dimen/_5sdp">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/list_item_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:textColor="@color/login_txt_color"
             android:textSize="@dimen/_11sdp" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_phn_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

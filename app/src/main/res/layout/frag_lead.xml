@@ -26,7 +26,7 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_leaf_frag_pending_tab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                     android:textStyle="bold"
                     android:textColor="@drawable/selector_text_clor_blue_white_new" />
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/tv_leaf_frag_inprocess_tab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

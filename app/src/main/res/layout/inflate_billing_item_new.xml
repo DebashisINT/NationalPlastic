@@ -52,7 +52,7 @@
         android:layout_height="wrap_content" />
 </com.daimajia.swipe.SwipeLayout>-->
 
-<com.breezenationalplasticfsm.app.utils.swipemenulayout.SwipeHorizontalMenuLayout
+<com.breezefieldnationalplastic.app.utils.swipemenulayout.SwipeHorizontalMenuLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sml="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_swipe_horizontal_menu_lyt"
@@ -66,4 +66,4 @@
     <!-- <include android:id="@id/smMenuViewLeft" layout="@layout/item_simple_left_menu"/>-->
     <include android:id="@id/smMenuViewRight" layout="@layout/item_right_menu"/>
 
-</com.breezenationalplasticfsm.app.utils.swipemenulayout.SwipeHorizontalMenuLayout>
+</com.breezefieldnationalplastic.app.utils.swipemenulayout.SwipeHorizontalMenuLayout>

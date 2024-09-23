@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_adhaar_reg_adhharTV_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:background="@drawable/shape_cursor_two"/>
 
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_adhaar_reg_adhharTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:layout_marginLeft="@dimen/_7sdp"
             android:layout_marginRight="@dimen/_7sdp">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                 android:id="@+id/dialog_adhaar_reg_et_no_et_1"
                 android:layout_width="@dimen/_58sdp"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 android:inputType="number"
                 android:textCursorDrawable="@drawable/shape_cursor_white"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                 android:id="@+id/dialog_adhaar_reg_et_no_et_2"
                 android:layout_width="@dimen/_58sdp"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:inputType="number"
                 android:textCursorDrawable="@drawable/shape_cursor_white"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomEditText
+            <com.breezefieldnationalplastic.widgets.AppCustomEditText
                 android:id="@+id/dialog_adhaar_reg_et_no_et_3"
                 android:layout_width="@dimen/_58sdp"
                 android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
 
         </LinearLayout>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_adhaar_reg_AttachedTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
             android:layout_marginLeft="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_5sdp"/>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/dialog_adhaar_reg_supportTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -204,7 +204,7 @@
 
 
 
-        <com.breezenationalplasticfsm.widgets.AppCustomEditText
+        <com.breezefieldnationalplastic.widgets.AppCustomEditText
             android:id="@+id/tv_dialog_adhaar_reg_feedback"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -235,7 +235,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:orientation="horizontal">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_adhaar_reg_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -251,7 +251,7 @@
                 android:layout_marginRight="@dimen/_1sdp"
                 android:backgroundTint="#f8424e"/>
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/tv_dialog_adhaar_reg_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

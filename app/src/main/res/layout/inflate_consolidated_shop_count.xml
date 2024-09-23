@@ -26,7 +26,7 @@
                 android:paddingTop="@dimen/_8sdp"
                 android:visibility="visible">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/total_shop_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 android:paddingBottom="@dimen/_8sdp"
                 android:paddingTop="@dimen/_8sdp">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/total_shop_visited_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

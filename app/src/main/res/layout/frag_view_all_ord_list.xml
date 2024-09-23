@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/tools"
+    android:background="@color/smoke_white"
+    android:focusable="true"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <LinearLayout
+            android:id="@+id/shop_list_LL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="@dimen/_250sdp"
+                app:cardElevation="@dimen/_3sdp">
+
+                <ImageView
+                    android:id="@+id/shop_IV"
+                    android:layout_width="@dimen/_38sdp"
+                    android:layout_height="@dimen/_38sdp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                android:id="@+id/myshop_name_TV"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:singleLine="true"
+                android:text="Shop Name"
+                android:gravity="center|start"
+                android:textSize="@dimen/_16sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_10sdp"/>
+
+        </LinearLayout>
+
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
+            android:id="@+id/myshop_address_TV"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:visibility="gone"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="#88BDBCBC"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/_2sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/_3sdp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="center|top"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp"
+                    android:layout_margin="@dimen/_2sdp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/icon_call_black"
+                        android:padding="@dimen/_5sdp"
+                        app:tint="@color/color_custom_green"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Contact Number"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                        android:id="@+id/tv_contact_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Contact Number"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/_3sdp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="center|top"
+                    app:cardBackgroundColor="@color/color_card_back_deep"
+                    app:cardCornerRadius="@dimen/_20sdp"
+                    app:cardElevation="@dimen/_3sdp"
+                    android:layout_margin="@dimen/_2sdp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_order_icon"
+                        android:padding="@dimen/_5sdp"
+                        app:tint="@color/color_custom_green"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:text="Total Amount"
+                        android:textColor="@color/date_bg_selected_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                        android:id="@+id/order_amount_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text="Total Amount"
+                        android:textColor="@color/gray_50_dark"
+                        android:textSize="@dimen/_10sdp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/inflate_order_item_header_view"
+            layout="@layout/inflate_order_item_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/order_list_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                android:id="@+id/no_shop_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/no_order"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_13sdp"
+                android:textStyle="normal"
+                android:visibility="gone"/>
+
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/progress_wheel"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                wheel:matProg_barColor="@color/default_text_color"
+                wheel:matProg_progressIndeterminate="true" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_order_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:src="@drawable/ic_add"
+                app:fabSize="normal" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

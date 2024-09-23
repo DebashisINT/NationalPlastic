@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_my_performance"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -72,13 +73,274 @@
             android:layout_weight="1">
 
 
+
+            <!--Learningtimehoure-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/_15sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:orientation="horizontal"
+            >
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:gravity="left"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_14sdp"
+                    android:text="Learning Insights"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_filter"
+                android:layout_width="@dimen/_132sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginEnd="@dimen/_15sdp"
+                >
+
+                <LinearLayout
+                    android:background="@drawable/back_round_corner_7_lms"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_25sdp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/tv_filter_topic_name"
+                            android:singleLine="true"
+                            android:ellipsize="end"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/transparent"
+                            android:text="Select Topic"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12sdp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/iv_durationown"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@color/transparent">
+
+                        <ImageView
+                            android:layout_width="@dimen/_10sdp"
+                            android:layout_height="@dimen/_10sdp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_down_arrow"
+                            android:backgroundTint="@color/black"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+              <!--  <FrameLayout
+                    android:id="@+id/ll_prfmnc_lms_fltr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:src="@drawable/ic_dashboard_filter_floating_icon"
+                        android:tint="#160f53"  />
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_filter_red"
+                        android:tint="@color/color_star_leader"
+                        android:layout_marginTop="@dimen/_2sdp"/>
+                </FrameLayout>-->
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_132sdp"
+
+                >
+
+                <LinearLayout
+                    android:id="@+id/ll_frag_search_mylearning_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_132sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+
+                    >
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_132sdp"
+                        app:cardCornerRadius="@dimen/_10sdp"
+                        android:elevation="@dimen/_10sdp"
+                        android:defaultFocusHighlightEnabled="true">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_132sdp"
+                            android:src="@drawable/box_bg_o"
+                            android:scaleType="centerCrop"
+                            />
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/_50sdp"
+                                android:layout_height="@dimen/_50sdp"
+                                android:layout_marginTop="@dimen/_10sdp"
+                                android:layout_gravity="center|top"
+
+                                android:src="@drawable/clock_new"/>
+
+                            <TextView
+                                android:id="@+id/tv_hour_of_learning"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:layout_gravity="center|bottom"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_16sdp"
+                                android:textColor="@color/white"
+
+                                android:layout_marginBottom="@dimen/_30sdp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hours Of Learning"
+                                android:layout_gravity="center|bottom"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_14sdp"
+                                android:textColor="@color/white"
+
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                />
+
+                        </FrameLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_frag_search_knowledge_hub_root"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_132sdp"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_132sdp"
+                        app:cardCornerRadius="@dimen/_10sdp"
+                        android:elevation="@dimen/_10sdp"
+                        android:defaultFocusHighlightEnabled="true">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_132sdp"
+                            android:src="@drawable/box_bg_t"
+                            android:scaleType="centerCrop"
+                            />
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_marginTop="@dimen/_10sdp"
+                                android:layout_gravity="center|top"
+                                android:layout_width="@dimen/_50sdp"
+                                android:layout_height="@dimen/_50sdp"
+                                android:src="@drawable/alarm_new"/>
+
+                            <TextView
+                                android:id="@+id/avg_hr_of_lrng"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:layout_gravity="center|bottom"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_16sdp"
+                                android:textColor="@color/white"
+                                android:layout_marginBottom="@dimen/_30sdp"/>
+
+                            <TextView
+                                android:text="Avg. Learning Time"
+                                android:layout_gravity="center|bottom"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_14sdp"
+                                android:textColor="@color/white"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                />
+
+                        </FrameLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
             <!--Leaderboard-->
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/_7sdp"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/_37sdp"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_132sdp">
+                android:layout_height="@dimen/_160sdp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:text="Champions of Learning"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_14sdp"/>
 
                 <androidx.cardview.widget.CardView
                     android:visibility="gone"
@@ -134,12 +396,13 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_lms_leaderboard"
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:id="@+id/cv_lms_leaderboard"
+                    android:layout_weight="1"
                     app:cardCornerRadius="@dimen/_10sdp"
                     android:elevation="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_13sdp"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:layout_marginEnd="@dimen/_12sdp"
                     android:defaultFocusHighlightEnabled="true">
@@ -155,34 +418,53 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <ImageView
-                            android:layout_marginTop="@dimen/_10sdp"
-                            android:layout_gravity="center|top"
-                            android:layout_width="@dimen/_50sdp"
-                            android:layout_height="@dimen/_50sdp"
-                            android:src="@drawable/podium_new"/>
-
-                        <TextView
-                            android:id="@+id/tv_leader_rank"
-                            android:text="10/50"
-                            android:layout_gravity="center|bottom"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_16sdp"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_30sdp"/>
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:text="Leaderboard Rank"
-                            android:layout_gravity="center|bottom"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/_14sdp"
-                            android:textColor="@color/white"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_10sdp"
-                            />
+                            <ImageView
+                                android:layout_width="@dimen/_80sdp"
+                                android:layout_height="@dimen/_100sdp"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/podium_new"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_leader_rank"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0/0"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_gravity="center"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/_16sdp"
+                                    android:textColor="@color/white"
+                                    />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Leaderboard Rank(Own)"
+                                    android:layout_gravity="center"
+                                    android:textStyle="bold"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:textSize="@dimen/_14sdp"
+                                    android:textColor="@color/white"
+                                    />
+                            </LinearLayout>
+
+
+
+                        </LinearLayout>
+
 
                     </FrameLayout>
 
@@ -190,157 +472,89 @@
 
             </LinearLayout>
 
-            <!--Learningtimehoure-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginEnd="@dimen/_12sdp"
-            >
-            <LinearLayout
-                android:orientation="horizontal"
+<!--
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_last_vid_root"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_132sdp"
-
-                >
-
-                <LinearLayout
-                    android:id="@+id/ll_frag_search_mylearning_root"
-                    android:layout_marginEnd="@dimen/_4sdp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_132sdp"
-                    >
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_132sdp"
-                        app:cardCornerRadius="@dimen/_10sdp"
-                        android:elevation="@dimen/_10sdp"
-                        android:defaultFocusHighlightEnabled="true">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_132sdp"
-                            android:src="@drawable/box_bg_o"
-                            android:scaleType="centerCrop"
-                            />
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_gravity="center|top"
-                                android:layout_width="@dimen/_50sdp"
-                                android:layout_height="@dimen/_50sdp"
-                                android:src="@drawable/clock_new"/>
-
-                            <TextView
-                                android:text="32:19:05"
-                                android:layout_gravity="center|bottom"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/_16sdp"
-                                android:textColor="@color/white"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/_30sdp"/>
-
-                            <TextView
-                                android:text="Hours Of Learning"
-                                android:layout_gravity="center|bottom"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/_14sdp"
-                                android:textColor="@color/white"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/_10sdp"
-                                />
-
-                        </FrameLayout>
-
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginBottom="0dp"
+                app:cardBackgroundColor="#320056"
+                app:cardCornerRadius="0dp">
 
                 <LinearLayout
-                    android:id="@+id/ll_frag_search_knowledge_hub_root"
-                    android:layout_weight="1"
-                    android:layout_marginStart="@dimen/_4sdp"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_132sdp"
+                    android:layout_height="@dimen/_70sdp"
                     android:orientation="horizontal">
 
-                    <androidx.cardview.widget.CardView
+                    <ImageView
+                        android:id="@+id/iv_frag_my_learning_last_topic_img"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_132sdp"
-                        app:cardCornerRadius="@dimen/_10sdp"
-                        android:elevation="@dimen/_10sdp"
-                        android:defaultFocusHighlightEnabled="true">
+                        android:layout_height="match_parent"
+                        android:layout_weight="2.5"
+                        android:src="@drawable/ic_image"
+                        android:scaleType="fitCenter" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/_8sdp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_frag_my_learning_last_content_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:singleLine="true"
+                                android:textSize="@dimen/_12sdp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:text="Content Name"
+                                android:gravity="center|start|bottom"/>
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_10sdp"/>
+
+                            <TextView
+                                android:id="@+id/tv_frag_my_learning_last_content_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:singleLine="true"
+                                android:textSize="@dimen/_10sdp"
+                                android:textColor="@color/white"
+                                android:text="Content Description"
+                                android:gravity="center|start|top"/>
+
+                        </LinearLayout>
+
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_132sdp"
-                            android:src="@drawable/box_bg_t"
-                            android:scaleType="centerCrop"
-                            />
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:src="@drawable/ic_play_lms"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="@dimen/_10sdp"/>
 
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <ImageView
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_gravity="center|top"
-                                android:layout_width="@dimen/_50sdp"
-                                android:layout_height="@dimen/_50sdp"
-                                android:src="@drawable/alarm_new"/>
-
-                            <TextView
-                                android:text="04:10:21"
-                                android:layout_gravity="center|bottom"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/_16sdp"
-                                android:textColor="@color/white"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/_30sdp"/>
-
-                            <TextView
-                                android:text="Avg. Learning Time"
-                                android:layout_gravity="center|bottom"
-                                android:textStyle="bold"
-                                android:textSize="@dimen/_14sdp"
-                                android:textColor="@color/white"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/_10sdp"
-                                />
-
-                        </FrameLayout>
-
-                    </androidx.cardview.widget.CardView>
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
-
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+            </androidx.cardview.widget.CardView>
+-->
 
 
         </LinearLayout>
+
+
 
     </ScrollView>
 

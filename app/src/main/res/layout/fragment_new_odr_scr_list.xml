@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/sync_all_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_frag_new_odr_scr_order_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="end|bottom">
 
-            <com.breezenationalplasticfsm.app.widgets.MovableFloatingActionButton
+            <com.breezefieldnationalplastic.app.widgets.MovableFloatingActionButton
                 android:id="@+id/fab_frag_view_new_ord_scr_list_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

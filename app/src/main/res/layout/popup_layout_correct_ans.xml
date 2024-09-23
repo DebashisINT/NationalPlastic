@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#B3000000"
+    >
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/back_round_popup"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/popup_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_250sdp"
+                app:lottie_rawRes="@raw/anim_correctans"
+                android:layout_gravity="center"
+                app:lottie_autoPlay="true"
+                app:lottie_speed="0.8"
+                android:layout_marginBottom="@dimen/_1sdp"
+                app:lottie_loop="false" />
+
+            <TextView
+                android:id="@+id/popup_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Congratulations"
+                android:textSize="@dimen/_50sdp"
+                android:fontFamily="@font/remachinescript_personal_use"
+                android:textColor="#FFF740"
+                android:gravity="center"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:id="@+id/popup_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:text="You need only 310 score to reach 1st position"
+                android:textSize="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:textStyle="bold"
+                android:textColor="#FFF740"
+                android:layout_marginBottom="@dimen/_105sdp"
+                android:gravity="center"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/_25sdp">
+
+            <TextView
+                android:id="@+id/close_button"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="OK"
+                android:background="@drawable/back_round_corner_popup"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="#1814A6"
+                android:gravity="center"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+</LinearLayout>

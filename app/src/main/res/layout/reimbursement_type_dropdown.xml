@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/travel_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:layout_marginRight="@dimen/_5sdp"
             android:background="@color/popup_window_bar_color" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/hotel_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_marginRight="@dimen/_5sdp"
             android:background="@color/popup_window_bar_color" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/food_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -13,7 +13,7 @@
         android:paddingBottom="@dimen/_10sdp"
         android:paddingTop="@dimen/_10sdp">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/order_date_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:textSize="@dimen/_11sdp"
             android:text="ldsfhlkjasd"/>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/ordered_amount_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

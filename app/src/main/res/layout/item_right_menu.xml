@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:orientation="horizontal">
 
-    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+    <com.breezefieldnationalplastic.widgets.AppCustomTextView
         android:id="@+id/tv_post_list_item_delete"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_65sdp"

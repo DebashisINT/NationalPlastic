@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:padding="@dimen/_5sdp">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/item_new_order_product_sizeTv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

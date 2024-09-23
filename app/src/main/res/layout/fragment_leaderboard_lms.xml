@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_lms_leaderboard_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -97,7 +98,7 @@
                     <LinearLayout
                         android:id="@+id/ll_ldr_lms_head"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_200sdp"
+                        android:layout_height="@dimen/_230sdp"
                         android:orientation="horizontal"
                         android:background="@drawable/leaderbackground"
                         android:visibility="visible">
@@ -113,6 +114,7 @@
                                 android:layout_weight="1"
                                 android:orientation="vertical"
                                 android:gravity="center"
+                                android:layout_marginStart="@dimen/_7sdp"
                                 android:paddingTop="@dimen/_35sdp">
 
                                 <FrameLayout
@@ -124,7 +126,7 @@
                                         android:layout_width="@dimen/_65sdp"
                                         android:layout_height="@dimen/_65sdp"
                                         android:layout_gravity="center"
-                                        android:src="@drawable/ic_menu_profile_image"
+                                        android:src="@drawable/user_blank"
                                         app:civ_border_color="#00A6C5E8"
                                         app:civ_circle_background_color="#00A6C5E8"
                                         app:civ_fill_color="@color/black"
@@ -143,12 +145,15 @@
 
                                 <TextView
                                     android:id="@+id/tv_ldr_lms_scnd_pos_name"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Ritam Paul"
+                                    android:text=""
+                                    android:maxLines="2"
+                                    android:ellipsize="marquee"
+                                    android:gravity="center"
                                     android:textAllCaps="true"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/_12sdp"/>
+                                    android:textSize="@dimen/_11sdp"/>
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -162,7 +167,7 @@
                                         android:id="@+id/tv_ldr_lms_scnd_pos_pnts"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="450"
+                                        android:text=""
                                         android:layout_gravity="center"
                                         android:textColor="@color/color_star_leader"
                                         android:textSize="@dimen/_13sdp"
@@ -197,7 +202,7 @@
                                         android:layout_width="@dimen/_65sdp"
                                         android:layout_height="@dimen/_65sdp"
                                         android:layout_gravity="center"
-                                        android:src="@drawable/ic_menu_profile_image"
+                                        android:src="@drawable/user_blank"
                                         app:civ_border_color="#00A6C5E8"
                                         app:civ_circle_background_color="#00A6C5E8"
                                         app:civ_fill_color="@color/black"
@@ -210,7 +215,7 @@
                                         android:layout_height="@dimen/_90sdp"
                                         android:layout_marginTop="@dimen/_5sdp"
                                         android:layout_gravity="center"
-                                        android:src="@drawable/ic_menu_profile_image"
+                                        android:src="@drawable/user_blank"
                                         app:civ_border_color="#00A6C5E8"
                                         app:civ_circle_background_color="#00A6C5E8"
                                         app:civ_fill_color="@color/black"
@@ -223,16 +228,15 @@
                                         android:layout_width="@dimen/_35sdp"
                                         android:layout_height="@dimen/_35sdp"
                                         android:layout_gravity="bottom|center"
-                                        android:src="@drawable/first_icon"
                                         android:layout_marginTop="@dimen/_50sdp"
+                                        android:src="@drawable/first_icon"
                                         />
 
                                     <ImageView
                                         android:id="@+id/iv_ldr_lms_frst_to_thrd_pos_badge_own"
-                                        android:layout_width="@dimen/_45sdp"
+                                        android:layout_width="@dimen/_35sdp"
                                         android:layout_height="@dimen/_40sdp"
                                         android:layout_gravity="bottom|center"
-                                        android:src="@drawable/first_icon"
                                         android:layout_marginTop="@dimen/_80sdp"
                                         android:visibility="gone"
                                         />
@@ -253,12 +257,15 @@
 
                                 <TextView
                                     android:id="@+id/tv_ldr_lms_frst_to_thrd_pos_name"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="@dimen/_150sdp"
                                     android:layout_height="wrap_content"
-                                    android:text="Satyam Roy"
+                                    android:text=""
+                                    android:gravity="center"
+                                    android:maxLines="2"
+                                    android:ellipsize="marquee"
                                     android:textAllCaps="true"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/_12sdp"/>
+                                    android:textSize="@dimen/_11sdp"/>
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -272,7 +279,7 @@
                                         android:id="@+id/tv_ldr_lms_frst_to_thrd_pos_pnts"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="500"
+                                        android:text=""
                                         android:layout_gravity="center"
                                         android:textColor="@color/color_star_leader"
                                         android:textSize="@dimen/_13sdp"
@@ -289,6 +296,7 @@
                                 android:layout_weight="1"
                                 android:orientation="vertical"
                                 android:paddingTop="@dimen/_35sdp"
+                                android:layout_marginEnd="@dimen/_7sdp"
                                 android:gravity="center"
                                 >
                                 <FrameLayout
@@ -300,7 +308,7 @@
                                         android:layout_width="@dimen/_65sdp"
                                         android:layout_height="@dimen/_65sdp"
                                         android:layout_gravity="center"
-                                        android:src="@drawable/ic_menu_profile_image"
+                                        android:src="@drawable/user_blank"
                                         app:civ_border_color="#00A6C5E8"
                                         app:civ_circle_background_color="#00A6C5E8"
                                         app:civ_fill_color="@color/black"
@@ -319,12 +327,15 @@
 
                                 <TextView
                                     android:id="@+id/tv_ldr_lms_thrd_pos_name"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Nilesh Kr"
+                                    android:gravity="center"
+                                    android:maxLines="2"
+                                    android:ellipsize="marquee"
+                                    android:text=""
                                     android:textAllCaps="true"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/_12sdp"/>
+                                    android:textSize="@dimen/_11sdp"/>
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -338,7 +349,7 @@
                                         android:id="@+id/tv_ldr_lms_thrd_pos_pnts"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="400"
+                                        android:text=""
                                         android:layout_gravity="center"
                                         android:textColor="@color/color_star_leader"
                                         android:textSize="@dimen/_13sdp"
@@ -447,12 +458,57 @@
                                 android:src="@drawable/baseline_star_24" />
 
                             <TextView
+                                android:id="@+id/tv_watchpoints"
                                 android:layout_width="@dimen/_50sdp"
                                 android:layout_height="wrap_content"
-                                android:text="20"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:gravity="center" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:gravity="center|start"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_35sdp"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_7sdp"
+                            android:background="@drawable/curve_border_bg_lead">
+
+                            <ImageView
+                                android:layout_width="@dimen/_22sdp"
+                                android:layout_height="@dimen/_22sdp"
+                                android:layout_marginStart="@dimen/_10sdp"
+                                android:src="@drawable/check_b" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_7sdp"
+                                android:text="Quiz"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <Space
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/baseline_star_24" />
+
+                            <TextView
+                                android:id="@+id/tv_correctanswerpoints"
+                                android:layout_width="@dimen/_50sdp"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:gravity="center" />
+
                         </LinearLayout>
 
                         <LinearLayout
@@ -475,7 +531,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_7sdp"
-                                android:text="Like"
+                                android:text="Likes"
                                 android:textColor="@color/black"
                                 android:textSize="14sp" />
 
@@ -490,9 +546,10 @@
                                 android:src="@drawable/baseline_star_24" />
 
                             <TextView
+                                android:id="@+id/tv_likepoints"
                                 android:layout_width="@dimen/_50sdp"
                                 android:layout_height="wrap_content"
-                                android:text="20"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:gravity="center" />
@@ -518,7 +575,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_7sdp"
-                                android:text="Comment"
+                                android:text="Comments"
                                 android:textColor="@color/black"
                                 android:textSize="14sp" />
 
@@ -533,9 +590,10 @@
                                 android:src="@drawable/baseline_star_24" />
 
                             <TextView
+                                android:id="@+id/tv_commentspoints"
                                 android:layout_width="@dimen/_50sdp"
                                 android:layout_height="wrap_content"
-                                android:text="40"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:gravity="center" />
@@ -550,6 +608,7 @@
                             android:layout_marginTop="@dimen/_7sdp"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_marginEnd="@dimen/_10sdp"
+                            android:visibility="gone"
                             android:background="@drawable/curve_border_bg_lead">
 
                             <ImageView
@@ -577,9 +636,10 @@
                                 android:src="@drawable/baseline_star_24" />
 
                             <TextView
+                                android:id="@+id/tv_sharepoints"
                                 android:layout_width="@dimen/_50sdp"
                                 android:layout_height="wrap_content"
-                                android:text="80"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:gravity="center" />
@@ -587,49 +647,7 @@
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:gravity="center|start"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_35sdp"
-                            android:layout_marginStart="@dimen/_10sdp"
-                            android:layout_marginEnd="@dimen/_10sdp"
-                            android:layout_marginTop="@dimen/_7sdp"
-                            android:background="@drawable/curve_border_bg_lead">
 
-                            <ImageView
-                                android:layout_width="@dimen/_22sdp"
-                                android:layout_height="@dimen/_22sdp"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:src="@drawable/check_b" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_7sdp"
-                                android:text="Correct Answer"
-                                android:textColor="@color/black"
-                                android:textSize="14sp" />
-
-                            <Space
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1" />
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/baseline_star_24" />
-
-                            <TextView
-                                android:id="@+id/tv_totalscoreA"
-                                android:layout_width="@dimen/_50sdp"
-                                android:layout_height="wrap_content"
-                                android:text="30"
-                                android:textColor="@color/black"
-                                android:textSize="14sp"
-                                android:gravity="center" />
-
-                        </LinearLayout>
 
                         <!-- <LinearLayout
                              android:gravity="center|start"
@@ -745,7 +763,6 @@
                     android:orientation="vertical">
 
                     <include
-                        android:id="@+id/include_bottom_tab_lms"
                         layout="@layout/include_bottom_tablayoutlms"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

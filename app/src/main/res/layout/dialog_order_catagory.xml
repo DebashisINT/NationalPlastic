@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_dialog_order_catagory_list_header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,7 +40,7 @@
         android:focusableInTouchMode="true"
         android:visibility="visible" />
 
-    <com.breezenationalplasticfsm.widgets.AppCustomEditText
+    <com.breezefieldnationalplastic.widgets.AppCustomEditText
         android:id="@+id/et_dialog_order_catagory_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

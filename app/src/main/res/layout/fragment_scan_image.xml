@@ -18,7 +18,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:layout_alignParentBottom="true">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_scan"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:textStyle="bold"
             android:gravity="center"/>
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/tv_copy_scan"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

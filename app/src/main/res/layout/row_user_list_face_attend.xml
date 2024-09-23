@@ -26,7 +26,7 @@
                 android:orientation="vertical"
                 android:layout_weight="1">
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/photo_reg_user_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
@@ -37,7 +37,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:hint="Name"/>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/photo_reg_user_adhaar_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
@@ -48,7 +48,7 @@
                     android:textSize="@dimen/_11sdp"
                     android:visibility="gone"/>
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/photo_reg_sales_reg_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
@@ -65,7 +65,7 @@
                     android:minHeight="@dimen/_30sdp"
                     android:orientation="horizontal">
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/_5sdp"
@@ -74,7 +74,7 @@
                         android:textSize="@dimen/_10sdp"
                         android:text="Designation       : "/>
 
-                    <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                    <com.breezefieldnationalplastic.widgets.AppCustomTextView
                         android:id="@+id/photo_reg_designation_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
 
 
 
-                <com.breezenationalplasticfsm.widgets.AppCustomTextView
+                <com.breezefieldnationalplastic.widgets.AppCustomTextView
                     android:id="@+id/photo_reg_dd_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
@@ -149,7 +149,7 @@
             android:padding="@dimen/_1sdp"
             android:layout_marginBottom="@dimen/_5sdp">
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/click_for_photo_attd"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -167,7 +167,7 @@
                 android:layout_height="match_parent"/>
 
 
-            <com.breezenationalplasticfsm.widgets.AppCustomTextView
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
                 android:id="@+id/click_for_photo_attd_report"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

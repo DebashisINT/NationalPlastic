@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/fromOrganization_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:textColor="@drawable/selector_text_clor_blue_white_new"
             android:textStyle="bold" />
 
-        <com.breezenationalplasticfsm.widgets.AppCustomTextView
+        <com.breezefieldnationalplastic.widgets.AppCustomTextView
             android:id="@+id/ownFiles_TV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
