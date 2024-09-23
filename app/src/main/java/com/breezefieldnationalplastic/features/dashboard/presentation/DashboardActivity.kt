@@ -9218,7 +9218,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                 rl_confirm_btn.visibility = View.GONE
                 iv_list_party.visibility = View.GONE
                 iv_map.visibility = View.GONE
-                iv_settings.visibility = View.VISIBLE
+                iv_settings.visibility = View.GONE
                 ic_calendar.visibility = View.GONE
                 ic_chat_bot.visibility = View.GONE
                 iv_cancel_chat.visibility = View.GONE
