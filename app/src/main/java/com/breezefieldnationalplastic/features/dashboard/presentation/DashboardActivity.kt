@@ -362,6 +362,7 @@ import com.breezefieldnationalplastic.features.mylearning.MyLearningVideoPlay
 import com.breezefieldnationalplastic.features.mylearning.MyPerformanceFrag
 import com.breezefieldnationalplastic.features.mylearning.MyTopicsWiseContents
 import com.breezefieldnationalplastic.features.mylearning.NotificationLMSFragment
+import com.breezefieldnationalplastic.features.mylearning.RetryIncorrectQuizFrag
 import com.breezefieldnationalplastic.features.mylearning.SearchLmsFrag
 import com.breezefieldnationalplastic.features.mylearning.SearchLmsKnowledgeFrag
 import com.breezefieldnationalplastic.features.mylearning.SearchLmsLearningFrag
@@ -369,6 +370,7 @@ import com.breezefieldnationalplastic.features.mylearning.VideoPlayLMS
 import com.breezefieldnationalplastic.features.mylearning.apiCall.LMSRepoProvider
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
+import com.google.android.gms.security.ProviderInstaller
 import com.google.auth.oauth2.GoogleCredentials
 import kotlinx.android.synthetic.main.activity_login_new.login_TV
 import kotlinx.android.synthetic.main.toolbar_layout.tv_saved_count
@@ -376,6 +378,18 @@ import org.json.JSONException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
+import javax.activation.DataHandler
+import javax.activation.FileDataSource
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeBodyPart
+import javax.mail.internet.MimeMessage
+import javax.mail.internet.MimeMultipart
 
 
 /*
@@ -469,45 +483,48 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
 
         //begin Suman 21-09-2023 mantis id 0026837
         try {
-            val packageName = "com.google.android.apps.maps"
-            val appInfo: ApplicationInfo =
-                this.getPackageManager().getApplicationInfo(packageName, 0)
-            var appstatus = appInfo.enabled
+            if(Pref.IsAllowGPSTrackingInBackgroundForLMS){
+                val packageName = "com.google.android.apps.maps"
+                val appInfo: ApplicationInfo =
+                    this.getPackageManager().getApplicationInfo(packageName, 0)
+                var appstatus = appInfo.enabled
 
-            if (!appstatus && !mFragType.equals(FragType.DashboardFragment)) {
-                val simpleDialog = Dialog(mContext)
-                simpleDialog.setCancelable(false)
-                simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                simpleDialog.setContentView(R.layout.dialog_ok)
+                if (!appstatus && !mFragType.equals(FragType.DashboardFragment)) {
+                    val simpleDialog = Dialog(mContext)
+                    simpleDialog.setCancelable(false)
+                    simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    simpleDialog.setContentView(R.layout.dialog_ok)
 
-                try {
-                    simpleDialog.setCancelable(true)
-                    simpleDialog.setCanceledOnTouchOutside(false)
-                    val dialogName =
-                        simpleDialog.findViewById(R.id.tv_dialog_ok_name) as AppCustomTextView
-                    val dialogCross =
-                        simpleDialog.findViewById(R.id.tv_dialog_ok_cancel) as ImageView
-                    dialogName.text = AppUtils.hiFirstNameText()
-                    dialogCross.setOnClickListener {
-                        simpleDialog.cancel()
+                    try {
+                        simpleDialog.setCancelable(true)
+                        simpleDialog.setCanceledOnTouchOutside(false)
+                        val dialogName =
+                            simpleDialog.findViewById(R.id.tv_dialog_ok_name) as AppCustomTextView
+                        val dialogCross =
+                            simpleDialog.findViewById(R.id.tv_dialog_ok_cancel) as ImageView
+                        dialogName.text = AppUtils.hiFirstNameText()
+                        dialogCross.setOnClickListener {
+                            simpleDialog.cancel()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
 
-                val dialogHeader =
-                    simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
-                dialogHeader.text =
-                    "Location will be inappropriate as Google map is disabled. Please go to settings of your phone and Enable Google Map. Thank you."
-                val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
-                dialogYes.setOnClickListener({ view ->
-                    simpleDialog.cancel()
-                })
-                simpleDialog.show()
-                return
-            } else {
-                println("load_frag " + " gmap app enable")
+                    val dialogHeader =
+                        simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+                    dialogHeader.text =
+                        "Location will be inappropriate as Google map is disabled. Please go to settings of your phone and Enable Google Map. Thank you."
+                    val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+                    dialogYes.setOnClickListener({ view ->
+                        simpleDialog.cancel()
+                    })
+                    simpleDialog.show()
+                    return
+                } else {
+                    println("load_frag " + " gmap app enable")
+                }
             }
+
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -533,10 +550,11 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
         //Pref.IsShowCRMOpportunity = true
         //Pref.IsEditEnableforOpportunity = true
         //Pref.IsDeleteEnableforOpportunity = true
-        //Pref.IsUsbDebuggingRestricted = false
+        Pref.IsUsbDebuggingRestricted = false
+        Pref.isShowTimeline = true
         //getFCMtoken()
         showToolbar()
-        println("load_frag " + mFragType.toString() + " " + Pref.user_id.toString() + " " + Pref.QuestionAfterNoOfContentForLMS)
+        println("load_frag " + mFragType.toString() + " " + Pref.user_id.toString() + " " + Pref.loginID)
 
         //  val notification = NotificationUtils(getString(R.string.app_name), "", "", "")
 
@@ -1061,7 +1079,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                 }, 1000)
             } else {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                if (mFragType == FragType.MyLearningFragment || mFragType == FragType.SearchLmsFrag || mFragType == FragType.VideoPlayLMS || mFragType == FragType.LeaderboardLmsFrag || mFragType == FragType.SearchLmsLearningFrag || mFragType == FragType.SearchLmsKnowledgeFrag || mFragType == FragType.MyLearningAllVideoList || mFragType == FragType.KnowledgeHubAllVideoList || mFragType == FragType.MyPerformanceFrag || mFragType == FragType.NotificationLMSFragment || mFragType == FragType.LmsQuestionAnswerSet || mFragType == FragType.MyLearningVideoPlay || mFragType == FragType.MyLearningTopicList || mFragType == FragType.BookmarkFrag || mFragType == FragType.BookmarkPlayFrag || mFragType == FragType.PerformanceInsightPage || mFragType == FragType.MyTopicsWiseContents || mFragType == FragType.AllTopicsWiseContents) {
+                if (mFragType == FragType.MyLearningFragment || mFragType == FragType.SearchLmsFrag || mFragType == FragType.VideoPlayLMS || mFragType == FragType.LeaderboardLmsFrag || mFragType == FragType.SearchLmsLearningFrag || mFragType == FragType.SearchLmsKnowledgeFrag || mFragType == FragType.MyLearningAllVideoList || mFragType == FragType.KnowledgeHubAllVideoList || mFragType == FragType.MyPerformanceFrag || mFragType == FragType.NotificationLMSFragment || mFragType == FragType.LmsQuestionAnswerSet || mFragType == FragType.MyLearningVideoPlay || mFragType == FragType.MyLearningTopicList || mFragType == FragType.BookmarkFrag || mFragType == FragType.BookmarkPlayFrag || mFragType == FragType.PerformanceInsightPage || mFragType == FragType.MyTopicsWiseContents || mFragType == FragType.AllTopicsWiseContents || mFragType == FragType.RetryIncorrectQuizFrag) {
                     window.setStatusBarColor(resources.getColor(R.color.toolbar_lms))
                     toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_lms))
                 } else {
@@ -2479,48 +2497,51 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
 
         //begin Suman 21-09-2023 mantis id 0026837
         try {
-            val packageName = "com.google.android.apps.maps"
-            val appInfo: ApplicationInfo =
-                this.getPackageManager().getApplicationInfo(packageName, 0)
-            var appstatus = appInfo.enabled
+            if(Pref.IsAllowGPSTrackingInBackgroundForLMS){
+                val packageName = "com.google.android.apps.maps"
+                val appInfo: ApplicationInfo =
+                    this.getPackageManager().getApplicationInfo(packageName, 0)
+                var appstatus = appInfo.enabled
 
-            if (!appstatus) {
-                val simpleDialog = Dialog(mContext)
-                simpleDialog.setCancelable(false)
-                simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                simpleDialog.setContentView(R.layout.dialog_ok)
+                if (!appstatus) {
+                    val simpleDialog = Dialog(mContext)
+                    simpleDialog.setCancelable(false)
+                    simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    simpleDialog.setContentView(R.layout.dialog_ok)
 
-                try {
-                    simpleDialog.setCancelable(true)
-                    simpleDialog.setCanceledOnTouchOutside(false)
-                    val dialogName =
-                        simpleDialog.findViewById(R.id.tv_dialog_ok_name) as AppCustomTextView
-                    val dialogCross =
-                        simpleDialog.findViewById(R.id.tv_dialog_ok_cancel) as ImageView
-                    dialogName.text = AppUtils.hiFirstNameText()
-                    dialogCross.setOnClickListener {
-                        simpleDialog.cancel()
+                    try {
+                        simpleDialog.setCancelable(true)
+                        simpleDialog.setCanceledOnTouchOutside(false)
+                        val dialogName =
+                            simpleDialog.findViewById(R.id.tv_dialog_ok_name) as AppCustomTextView
+                        val dialogCross =
+                            simpleDialog.findViewById(R.id.tv_dialog_ok_cancel) as ImageView
+                        dialogName.text = AppUtils.hiFirstNameText()
+                        dialogCross.setOnClickListener {
+                            simpleDialog.cancel()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+
+                    val dialogHeader =
+                        simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
+                    dialogHeader.text =
+                        "Location will be inappropriate as Google map is disabled. Please go to settings of your phone and Enable Google Map. Thank you."
+                    val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
+                    dialogYes.setOnClickListener({ view ->
+                        simpleDialog.cancel()
+                    })
+                    simpleDialog.show()
+                    return
+                } else {
+                    println("load_frag " + " gmap app enable")
                 }
 
-                val dialogHeader =
-                    simpleDialog.findViewById(R.id.dialog_yes_header_TV) as AppCustomTextView
-                dialogHeader.text =
-                    "Location will be inappropriate as Google map is disabled. Please go to settings of your phone and Enable Google Map. Thank you."
-                val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes) as AppCustomTextView
-                dialogYes.setOnClickListener({ view ->
-                    simpleDialog.cancel()
-                })
-                simpleDialog.show()
-                return
-            } else {
-                println("load_frag " + " gmap app enable")
+                //val pInfo = this.packageManager.getPackageInfo("com.google.android.apps.maps", PackageManager.GET_PERMISSIONS)
+                //val version = pInfo.versionName
             }
 
-            //val pInfo = this.packageManager.getPackageInfo("com.google.android.apps.maps", PackageManager.GET_PERMISSIONS)
-            //val version = pInfo.versionName
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -3335,8 +3356,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                 Glide.with(mContext)
                     .load(Pref.profile_img)
                     .apply(
-                        RequestOptions.placeholderOf(R.drawable.ic_menu_profile_image)
-                            .error(R.drawable.ic_menu_profile_image)
+                        RequestOptions.placeholderOf(R.drawable.app_user_img_new)
+                            .error(R.drawable.app_user_img_new)
                     )
                     .into(profilePicture_adv)
             } catch (ex: Exception) {
@@ -3344,7 +3365,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
             }
 
         } else {
-            profilePicture.setImageResource(R.drawable.ic_menu_profile_image)
+            profilePicture.setImageResource(R.drawable.app_user_img_new)
         }
 
         login_time_am_tv.text = Pref.merediam
@@ -4184,9 +4205,11 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                         loadFragment(FragType.SearchLmsKnowledgeFrag, false, "")
                     }
                     if (obj.name.equals("Leaderboard", ignoreCase = true) && obj.icon == 0) {
+                        CustomStatic.LMSLeaderboardFromMenu = true
                         loadFragment(FragType.LeaderboardLmsFrag, false, "")
                     }
                     if (obj.name.equals("My Performance", ignoreCase = true) && obj.icon == 0) {
+                        CustomStatic.LMSMyPerformanceFromMenu = true
                         loadFragment(FragType.MyPerformanceFrag, false, "")
                     }
                     if (obj.name.equals("Privacy Policy", ignoreCase = true)) {
@@ -4718,8 +4741,8 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                     Glide.with(mContext)
                         .load(Pref.profile_img)
                         .apply(
-                            RequestOptions.placeholderOf(R.drawable.ic_menu_profile_image)
-                                .error(R.drawable.ic_menu_profile_image)
+                            RequestOptions.placeholderOf(R.drawable.app_user_img_new)
+                                .error(R.drawable.app_user_img_new)
                         )
                         .into(profilePicture_adv)
                 } catch (e: Exception) {
@@ -5020,6 +5043,14 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
             //14.0 DashboardActivity AppV 4.0.8 mantis 0025783 In-app privacy policy working in menu & Login
             R.id.privacy_policy_tv_menu -> {
                 loadFragment(FragType.PrivacypolicyWebviewFrag, false, "")
+
+                if (Pref.IsUserWiseLMSFeatureOnly){
+                    window.setStatusBarColor(resources.getColor(R.color.toolbar_lms))
+                    toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_lms))
+                } else {
+                    window.setStatusBarColor(resources.getColor(R.color.colorPrimary))
+                    toolbar.setBackgroundResource(R.drawable.custom_toolbar_back)
+                }
             }
 
             /*28-12-2022*/
@@ -5482,6 +5513,13 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
 
             R.id.iv_profile_picture, R.id.iv_profile_picture_menu_adv -> {
                 loadFragment(FragType.MyProfileFragment, false, "")
+                if (Pref.IsUserWiseLMSFeatureOnly){
+                    window.setStatusBarColor(resources.getColor(R.color.toolbar_lms))
+                    toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_lms))
+                } else {
+                    window.setStatusBarColor(resources.getColor(R.color.colorPrimary))
+                    toolbar.setBackgroundResource(R.drawable.custom_toolbar_back)
+                }
             }
 
             R.id.maps_TV -> {
@@ -8211,6 +8249,15 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                 setTopBarTitle("My Topics")
                 setTopBarVisibility(TopBarConfig.LMS_SEARCH)
             }
+
+            FragType.RetryIncorrectQuizFrag -> {
+                if (enableFragGeneration) {
+                    mFragment = RetryIncorrectQuizFrag.getInstance(initializeObject)
+                }
+                setTopBarTitle("Retry Incorrect Quiz")
+                setTopBarVisibility(TopBarConfig.LMS_SEARCH)
+            }
+
 
             FragType.AllTopicsWiseContents -> {
                 if (enableFragGeneration) {
@@ -11040,6 +11087,10 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
             }
         }
 
+        if(Pref.loginID.equals("breezefsm",ignoreCase = true)){
+            iv_map.visibility = View.GONE
+        }
+
 
     }
 
@@ -11081,7 +11132,17 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
         println("tag_kali begin ${getFragment()}")
         if (getFragment() != null && getFragment() is NotificationLMSFragment) {
             loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
-        } else if (getFragment() != null && getFragment() is MyLearningFragment && Pref.IsUserWiseLMSFeatureOnly == true) {
+        }
+
+        else if (getFragment() != null && getFragment() is MyProfileFragment && Pref.IsUserWiseLMSFeatureOnly == true) {
+            loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
+        }
+
+        else if (getFragment() != null && getFragment() is PrivacypolicyWebviewFrag && Pref.IsUserWiseLMSFeatureOnly == true) {
+            println("PrivacypolicyWebviewFrag++")
+            loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
+        }
+        else if (getFragment() != null && getFragment() is MyLearningFragment && Pref.IsUserWiseLMSFeatureOnly == true) {
             println("tag_kali hinning for MyLearningFragment")
             if (backpressed + 2000 > System.currentTimeMillis()) {
                 finish()
@@ -11964,6 +12025,33 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                     loadFragment(FragType.MyTopicsWiseContents, false, "")
                 }
             }
+
+            /*else if (LeaderboardLmsFrag.loadedFrom.equals("MyPerformanceFrag")) {
+
+                try {
+                    if (getFragment() != null && getFragment() is LeaderboardLmsFrag) {
+                    loadFragment(FragType.MyPerformanceFrag, false, "")
+                    }
+                } catch (e: Exception) {
+                    loadFragment(FragType.MyPerformanceFrag, false, "")
+                }
+            }
+
+            else if (LeaderboardLmsFrag.loadedFrom.equals("PerformanceInsightPage")) {
+                try {
+                    loadFragment(
+                        FragType.PerformanceInsightPage,
+                        false,""
+                    )
+                } catch (e: Exception) {
+                    loadFragment(FragType.PerformanceInsightPage, false, "")
+                }
+            }*/
+
+            else if (getFragment() != null && getFragment() is PerformanceInsightPage) {
+                loadFragment(FragType.MyLearningTopicList, false, "")
+            }
+
             else if (VideoPlayLMS.loadedFrom.equals("LMSDASHBOARD")) {
                 loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
             } else {
@@ -11978,6 +12066,12 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
         }
         else if (getFragment() != null && getFragment() is AllTopicsWiseContents) {
             loadFragment(FragType.SearchLmsKnowledgeFrag, false, "")
+        }
+        else if (getFragment() != null && getFragment() is LeaderboardLmsFrag && CustomStatic.LMSLeaderboardFromMenu) {
+            loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
+        }
+        else if (getFragment() != null && getFragment() is MyPerformanceFrag && CustomStatic.LMSLeaderboardFromMenu) {
+            loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
         }
 
         /*else if(getFragment() != null && getFragment() is VideoPlayLMS){
@@ -12061,7 +12155,7 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
 
 
                 getFragment() is SearchLmsFrag || getFragment() is SearchLmsKnowledgeFrag ||
-                        getFragment() is MyPerformanceFrag || getFragment() is LeaderboardLmsFrag || getFragment() is MyLearningTopicList -> {
+                        /*getFragment() is MyPerformanceFrag || getFragment() is LeaderboardLmsFrag ||*/ getFragment() is MyLearningTopicList -> {
                     loadFragment(FragType.MyLearningFragment, false, DashboardType.Home)
                 }
 
@@ -18595,7 +18689,75 @@ class DashboardActivity : BaseActivity(), View.OnClickListener, BaseNavigation,
                         )
                         //m.send()
                         val fileUrl = Uri.parse(sendingPath)
-                        m.send(fileUrl.path)
+                        //m.send(fileUrl.path)
+
+                        try{
+                            var emailRecpL = Pref.recipient_email_ids.split(",")
+                            var toArr = arrayOf("")
+                            toArr = Array<String>(emailRecpL.size){""}
+                            for(i in 0..emailRecpL.size-1){
+                                toArr[i]=emailRecpL[i]
+                            }
+
+                            val props = Properties().apply {
+                                put("mail.smtp.host", "smtp.gmail.com")  // SMTP server host
+                                put("mail.smtp.port", "587")                      // SMTP port
+                                put("mail.smtp.auth", "true")
+                                put("mail.smtp.starttls.enable", "true")          // Enable STARTTLS
+                                put("mail.smtp.ssl.protocols", "TLSv1.2")         // Specify TLS version
+                                put("mail.smtp.ssl.trust", "smtp.gmail.com")  // Trust the server
+                            }
+                            if (Build.VERSION.SDK_INT < 21) {
+                                try {
+                                    ProviderInstaller.installIfNeeded(mContext)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                            val session = Session.getInstance(props, object : Authenticator() {
+                                override fun getPasswordAuthentication(): PasswordAuthentication {
+                                    return PasswordAuthentication("eurobondacp02@gmail.com", "nuqfrpmdjyckkukl")
+                                }
+                            })
+                            try {
+                                val message = MimeMessage(session).apply {
+                                    setFrom(InternetAddress("eurobondacp02@gmail.com"))            // Sender's email
+                                    //setRecipients(Message.RecipientType.TO, InternetAddress.parse("sumanbacharofc@gmail.com"))  // Recipient's email
+                                    setRecipients(Message.RecipientType.TO, InternetAddress.parse(Pref.recipient_email_ids))  // Recipient's email
+                                    subject = "Quotation for ${ViewAllQuotListFragment.shop_name} created on dated ${addQuotEditResult.save_date_time!!.split(" ").get(0)}."                                    // Email subject
+                                    //setText("Quotation Generated by  ${Pref.user_name} dated  ${AppUtils.getCurrentDate_DD_MM_YYYY()}.")  // Email body
+                                }
+
+                                val textPart = MimeBodyPart().apply {
+                                    setText("Hello Team,  \n Please find attached Quotation No. ${addQuotEditResult.quotation_number} Dated ${addQuotEditResult.save_date_time!!.split(" ").get(0)} for ${ViewAllQuotListFragment.shop_name} \n\n\n Regards \n${Pref.user_name}.")
+                                }
+                                val file = File(fileUrl.path)
+                                // Create the attachment part
+                                val attachmentPart = MimeBodyPart().apply {
+                                    val source = FileDataSource(File(fileUrl.path)) // Load the file from the file path
+                                    dataHandler = DataHandler(source)           // Attach the file
+                                    //fileName = File(fileUrl.path).name              // Set the file name
+                                    fileName = file.name              // Set the file name
+                                }
+
+                                attachmentPart.fileName = file.name
+
+                                // Combine the parts into a multipart
+                                val multipart = MimeMultipart().apply {
+                                    addBodyPart(textPart)        // Add the text part
+                                    addBodyPart(attachmentPart)  // Add the file attachment part
+                                }
+                                message.setContent(multipart)
+                                // Send the message
+                                Transport.send(message)
+                                println("Email sent successfully!")
+                            } catch (e: MessagingException) {
+                                e.printStackTrace()
+                                println("Failed to send email: ${e.message}")
+                            }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
                     }
 
 

@@ -436,7 +436,11 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
         tv_visit_distance = view.findViewById(R.id.tv_visit_distance)
         tv_share_pdf = view.findViewById(R.id.tv_share_pdf)
 
-        if (Pref.isAttendanceDistanceShow) {
+        if(Pref.loginID.equals("breezefsm",ignoreCase = true)) {
+            tv_share_pdf.visibility = View.GONE
+        }
+
+            if (Pref.isAttendanceDistanceShow) {
             ll_visit_distance.visibility = View.VISIBLE
         }
         else{
@@ -490,6 +494,15 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
 
         val finalDistance = String.format("%.2f", totalDistance)
         tv_total_distance.text = "$finalDistance Km(s)"
+
+        try {
+            val dist = AppDatabase.getDBInstance()!!.userLocationDataDao().getTotalDistForDay(AppUtils.getCurrentDateForShopActi()).toString().toDouble()
+            println("tag_dist ${String.format("%.2f", dist)}")
+            tv_total_distance.text = "${String.format("%.2f", dist)} Km(s)"
+        }catch (ex:Exception){
+            ex.printStackTrace()
+            tv_total_distance.text = "$finalDistance Km(s)"
+        }
 
         (mContext as DashboardActivity).activityLocationList = list
 

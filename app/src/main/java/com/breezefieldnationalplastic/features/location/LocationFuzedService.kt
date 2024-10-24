@@ -1216,6 +1216,14 @@ class LocationFuzedService : Service(), GoogleApiClient.ConnectionCallbacks, Goo
                             if (logoutResponse.status == NetworkConstant.SUCCESS) {
                                 AppDatabase.getDBInstance()!!.shopAudioDao().updateIsUploaded(true, obj.shop_id,obj.datetime)
                                 //syncAudioDataNew()
+
+                                try {
+                                    var fileName = obj.audio_path.split("/").last()
+                                    var audFile = File("/data/user/0/com.breezefieldnationalplastic/files", fileName)
+                                    audFile.delete()
+                                }catch (ex:Exception){
+                                    ex.printStackTrace()
+                                }
                             } else {
 
                             }

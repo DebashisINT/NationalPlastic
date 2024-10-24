@@ -629,6 +629,11 @@ class LocalShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>, 
                 itemView.myshop_gstin_TV.text =  "GSTIN : "+"N.A"
                 itemView.myshop_pancard_TV.text = "PAN     : "+"N.A"
             }
+
+            if(Pref.loginID.equals("breezefsm",ignoreCase = true)){
+                itemView.myshop_pancard_TV.visibility = View.GONE
+                itemView.myshop_gstin_TV.visibility = View.GONE
+            }
             }
     }
 

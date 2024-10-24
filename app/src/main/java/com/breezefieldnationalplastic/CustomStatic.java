@@ -102,4 +102,8 @@ public class CustomStatic {
 
     public static Integer MyLearningTopicCount = 0;
 
+    public static Boolean LMSLeaderboardFromMenu = false;
+
+    public static Boolean LMSMyPerformanceFromMenu = false;
+
 }

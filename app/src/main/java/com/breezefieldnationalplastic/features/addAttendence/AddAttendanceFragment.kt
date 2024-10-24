@@ -92,6 +92,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
@@ -112,9 +115,11 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 /**
@@ -1673,7 +1678,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                     //fab_add_work_type.visibility = View.GONE
                 }
 
-                val now = Calendar.getInstance(Locale.ENGLISH)
+                /*val now = Calendar.getInstance(Locale.ENGLISH)
                 val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                         this,
                         now.get(Calendar.YEAR),
@@ -1682,7 +1687,26 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                 )
                 dpd.isAutoHighlight = true
                 dpd.minDate = Calendar.getInstance(Locale.ENGLISH)
-                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
+                val today = MaterialDatePicker.todayInUtcMilliseconds()
+                val tomorrow = today
+                val constraintsBuilder = CalendarConstraints.Builder()
+                    .setStart(today)
+                    .setValidator(DateValidatorPointForward.from(tomorrow))
+
+                DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager,constraintsBuilder){ startDate, endDate ->
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val startTime = dateFormat.parse(startDate).time
+                    val endTime = dateFormat.parse(endDate).time
+
+                    val diffInMillis = endTime - startTime
+                    val date = "Leave: From "+AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                        tv_show_date_range.visibility = View.VISIBLE
+                        tv_show_date_range.text = date
+
+                        this.startDate = startDate
+                        this.endDate = endDate
+                }
 
                 if (Pref.willLeaveApprovalEnable)
                     tv_attendance_submit.text = getString(R.string.send_for_approval)
@@ -1845,7 +1869,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
             }
 
             R.id.tv_show_date_range -> {
-                val now = Calendar.getInstance(Locale.ENGLISH)
+                /*val now = Calendar.getInstance(Locale.ENGLISH)
                 val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                         this,
                         now.get(Calendar.YEAR),
@@ -1854,7 +1878,7 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
                 )
                 dpd.isAutoHighlight = true
                 dpd.minDate = Calendar.getInstance(Locale.ENGLISH)
-                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
             }
 
             R.id.et_from_loc -> {
@@ -1926,7 +1950,6 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
 
     }
 
-
     private fun showBeatListDialog(list: ArrayList<BeatEntity>) {
         BeatListCustomDialog.newInstance(list as ArrayList<BeatEntity>) {
             tv_beat_type.text = it.name
@@ -1953,7 +1976,6 @@ class AddAttendanceFragment : Fragment(), View.OnClickListener, DatePickerDialog
         }.show((mContext as DashboardActivity).supportFragmentManager, "")
 
     }
-
 
     @SuppressLint("UseRequireInsteadOfGet")
     private fun showAreaDialog(isFromLoc: Boolean) {

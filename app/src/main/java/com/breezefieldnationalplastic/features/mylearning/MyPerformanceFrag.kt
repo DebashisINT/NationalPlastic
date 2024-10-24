@@ -296,37 +296,37 @@ class MyPerformanceFrag : BaseFragment(), View.OnClickListener {
         ll_lms_leaderboard.setOnClickListener(this)
         ll_lms_knowledgehub.setOnClickListener(this)
         cv_lms_leaderboard.setOnClickListener(this)
-        ll_filter
-            .setOnClickListener(this)
+        ll_filter.setOnClickListener(this)
+        if (!tv_leader_rank.text.toString().equals("")) {
+            val fullText = tv_leader_rank.text.toString()
+            val parts = fullText.split("/")
 
-        val fullText = tv_leader_rank.text.toString()
-        val parts = fullText.split("/")
-
-        val largeText = parts[0]
-        val smallText = parts[1]
-        val spannableString = SpannableString(fullText)
-        // Set the size of "1000"
-        spannableString.setSpan(
-            RelativeSizeSpan(1.3f), // 4 times the default size
-            0,
-            largeText.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        // Make "1000" bold
-        spannableString.setSpan(
-            StyleSpan(Typeface.BOLD),
-            0,
-            largeText.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        // Set the size of "Contents"
-        spannableString.setSpan(
-            RelativeSizeSpan(1.0f), // default size
-            largeText.length,
-            smallText.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        tv_leader_rank.text = spannableString
+            val largeText = parts[0]
+            val smallText = parts[1]
+            val spannableString = SpannableString(fullText)
+            // Set the size of "1000"
+            spannableString.setSpan(
+                RelativeSizeSpan(1.3f), // 4 times the default size
+                0,
+                largeText.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // Make "1000" bold
+            spannableString.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                largeText.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // Set the size of "Contents"
+            spannableString.setSpan(
+                RelativeSizeSpan(1.0f), // default size
+                largeText.length,
+                smallText.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            tv_leader_rank.text = spannableString
+        }
 
         if (AppUtils.isOnline(mContext)) {
             ll_my_performance.visibility =View.VISIBLE
@@ -346,8 +346,13 @@ class MyPerformanceFrag : BaseFragment(), View.OnClickListener {
                 .subscribe({ result ->
                     if(result.status == NetworkConstant.SUCCESS){
                         // Get sublist starting from index 3 to the end of the list
-                        val ownObj = result.user_list.filter { it.user_id == Pref.user_id!!.toInt() }.first()
-                        tv_leader_rank.text = ownObj.position.toString()+"/"+result.user_list.size
+                        if (result.user_list.size!=null || result.user_list.size > 0) {
+                            val ownObj =
+                                result.user_list.filter { it.user_id == Pref.user_id!!.toInt() }
+                                    .first()
+                            tv_leader_rank.text =
+                                ownObj.position.toString() + "/" + result.user_list.size
+                        }
                     }else{
                         (mContext as DashboardActivity).showSnackMessage(result.message.toString())
                     }
@@ -392,6 +397,8 @@ class MyPerformanceFrag : BaseFragment(), View.OnClickListener {
             }
             //LMS leaderboard page redirection mantis - 0027571
             cv_lms_leaderboard.id -> {
+                LeaderboardLmsFrag.loadedFrom = "MyPerformanceFrag"
+                CustomStatic.LMSLeaderboardFromMenu = false
                 (mContext as DashboardActivity).loadFragment(FragType.LeaderboardLmsFrag, true, "")
             }
             //Filter functionality

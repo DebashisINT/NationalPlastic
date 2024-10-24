@@ -87,7 +87,7 @@ class ServiceHistoryFragment: BaseFragment(), DatePickerDialog.OnDateSetListener
 
         tv_pick_date.text = AppUtils.getFormattedDateFromDate(AppUtils.getCurrentDateForShopActi()) + " To " + AppUtils.getFormattedDateFromDate(AppUtils.getCurrentDateForShopActi())
 
-        tv_pick_date.setOnClickListener {
+        tv_pick_date.setOnClickListener {/*
             val now = Calendar.getInstance(Locale.ENGLISH)
             now.add(Calendar.DAY_OF_MONTH, 1)
             val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
@@ -101,7 +101,7 @@ class ServiceHistoryFragment: BaseFragment(), DatePickerDialog.OnDateSetListener
             val cal = Calendar.getInstance(Locale.ENGLISH)
             cal.timeInMillis = tomorrowsDateLong
             //dpd.minDate = cal
-            dpd.show((mContext as DashboardActivity).fragmentManager, "Datepickerdialog")
+            dpd.show((mContext as DashboardActivity).fragmentManager, "Datepickerdialog")*/
         }
     }
 

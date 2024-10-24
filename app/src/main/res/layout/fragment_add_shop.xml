@@ -111,31 +111,36 @@
                             android:textSize="@dimen/_12sdp"
                             android:background="@color/transparent"/>
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:id="@+id/shop_type_RL"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="true"
+                            android:orientation="vertical"
                             android:layout_marginTop="@dimen/_5sdp">
 
-                            <ImageView
-                                android:id="@+id/category_IV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginTop="@dimen/_5sdp"
-                                android:layout_marginRight="@dimen/_5sdp"
-                                android:src="@drawable/ic_add_shop_category_icon" />
-
-                            <RelativeLayout
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_toRightOf="@id/category_IV">
+                                android:layout_toRightOf="@id/category_IV"
+                                android:orientation="horizontal"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/category_IV"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_marginRight="@dimen/_5sdp"
+                                    android:src="@drawable/ic_add_shop_category_icon" />
 
                                 <com.breezefieldnationalplastic.widgets.AppCustomTextView
                                     android:id="@+id/type_TV"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/_35sdp"
+                                    android:layout_weight="1"
+                                    android:gravity="center|start|bottom"
                                     android:padding="@dimen/_5sdp"
                                     android:text="@string/shop_type"
                                     android:textSize="@dimen/_13sdp" />
@@ -146,7 +151,7 @@
                                     android:layout_centerVertical="true"
                                     android:layout_marginRight="@dimen/_3sdp"
                                     android:layout_toLeftOf="@+id/iv_drop_down"
-                                    android:paddingTop="@dimen/_2sdp"
+                                    android:paddingTop="@dimen/_6sdp"
                                     android:text="@string/mandatory_mark"
                                     android:textColor="@color/red"
                                     android:textSize="@dimen/_15sdp" />
@@ -160,15 +165,6 @@
                                     android:padding="@dimen/_2sdp"
                                     android:src="@drawable/ic_gray_down_arrow_icon" />
 
-                                <View
-                                    android:id="@+id/type_VV1"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_1sdp"
-                                    android:layout_below="@id/type_TV"
-                                    android:layout_marginLeft="@dimen/_2sdp"
-                                    android:layout_marginRight="@dimen/_2sdp"
-                                    android:background="@color/light_gray" />
-
                                 <com.breezefieldnationalplastic.widgets.AppCustomTextView
                                     android:id="@+id/hint_TV"
                                     android:layout_width="wrap_content"
@@ -181,9 +177,18 @@
                                     android:visibility="gone" />
 
 
-                            </RelativeLayout>
+                            </LinearLayout>
 
-                        </RelativeLayout>
+                            <View
+                                android:id="@+id/type_VV1"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:layout_below="@id/type_TV"
+                                android:layout_marginLeft="@dimen/_25sdp"
+                                android:layout_marginRight="@dimen/_2sdp"
+                                android:background="@color/light_gray" />
+
+                        </LinearLayout>
 
                         <RelativeLayout
                             android:id="@+id/assign_to_rl"
@@ -616,6 +621,7 @@
                                     android:id="@+id/shop_name_EDT"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:minHeight="@dimen/_30sdp"
                                     android:background="@android:color/transparent"
                                     android:hint="@string/shop_name"
                                     android:imeOptions="actionNext"
@@ -959,6 +965,7 @@
                                     android:layout_height="wrap_content"
                                     android:background="@android:color/transparent"
                                     android:hint="@string/address"
+                                    android:minHeight="@dimen/_30sdp"
                                     android:imeOptions="actionNext"
                                     android:inputType="text"
                                     android:singleLine="true"
@@ -1023,6 +1030,7 @@
                                     android:imeOptions="actionNext"
                                     android:inputType="number"
                                     android:singleLine="true"
+                                    android:minHeight="@dimen/_30sdp"
                                     android:textSize="@dimen/_13sdp"
                                     app:theme="@style/EvoEditTextTheme" />
                             </com.google.android.material.textfield.TextInputLayout>
@@ -1498,6 +1506,7 @@
                                 android:id="@+id/ownername_EDT"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_30sdp"
                                 android:background="@android:color/transparent"
                                 android:hint="@string/owner_name1"
                                 android:imeOptions="actionNext"
@@ -1560,6 +1569,7 @@
                                 android:id="@+id/ownernumber_EDT"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:minHeight="@dimen/_30sdp"
                                 android:background="@android:color/transparent"
                                 android:hint="@string/owner_contact_number1"
                                 android:imeOptions="actionNext"
@@ -1909,6 +1919,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_other_info_root"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -4562,7 +4573,8 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginRight="@dimen/_60sdp"
                     android:background="@drawable/shape_cursor_button"
-                    android:textColor="@color/login_txt_color"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="@color/white"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"

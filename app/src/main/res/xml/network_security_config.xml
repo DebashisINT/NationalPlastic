@@ -3,20 +3,13 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
 
-
-
 <!--
        <domain includeSubdomains="true">3.7.30.86</domain>
 -->
 
-<!--
-       <domain includeSubdomains="true">3.7.30.86</domain>
--->
-
-
-        <domain includeSubdomains="true">fts.indusnettechnologies.com</domain>
         <!--<domain includeSubdomains="true">fts1.indusnettechnologies.com</domain>-->
 
+        <domain includeSubdomains="true">fts.indusnettechnologies.com</domain>
 
         <!--<domain includeSubdomains="true">localhost</domain>-->
         <!--<domain includeSubdomains="true">192.168.4.174</domain>-->

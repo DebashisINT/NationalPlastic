@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.AppDatabase
 import com.breezefieldnationalplastic.app.Pref
+import com.breezefieldnationalplastic.app.domain.StockAllEntity
+import com.breezefieldnationalplastic.app.domain.StockTransEntity
 import com.breezefieldnationalplastic.app.utils.*
 import com.breezefieldnationalplastic.features.DecimalDigitsInputFilter
+import com.breezefieldnationalplastic.features.contacts.ProductDtls
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.customnotification.view.*
 import kotlinx.android.synthetic.main.row_ord_opti_cart_list.view.*
@@ -133,6 +136,46 @@ class AdapterOrdProductOptimized(val mContext: Context,var proList : ArrayList<P
                     ToasterMiddle.msgShort(mContext,"Please enter valid quantity.")
                     return@setOnClickListener
                 }
+                //stock data prepare
+                var objStock : StockAllEntity = StockAllEntity()
+                if(Pref.IsStockCheckFeatureOn && Pref.StockCheckOnOrder1OrInvioce0){
+                    try {
+                        var stock :ArrayList<StockAllEntity> = ArrayList()
+                        if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                            stock = AppDatabase.getDBInstance()!!.stockAllDao().getStockDtlsForDD(prooductList.get(adapterPosition).product_id,shopID  ) as ArrayList<StockAllEntity>
+                        }else{
+                            stock = AppDatabase.getDBInstance()!!.stockAllDao().getStockDtls(prooductList.get(adapterPosition).product_id,shopID  ) as ArrayList<StockAllEntity>
+                        }
+                        if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                            if (stock.size>0){
+                                objStock = stock.first()
+                                var enteringQty = if(itemView.tv_row_ord_opti_product_list_qty.text.toString().equals("")) "0" else itemView.tv_row_ord_opti_product_list_qty.text.toString()
+                                if(objStock.stock_productbalqty.toDouble() < enteringQty.toDouble() && Pref.IsAllowNegativeStock == false){
+                                    AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+                                    ToasterCustom.msgShort(mContext,"Stock not available.")
+                                    return@setOnClickListener
+                                }
+                            }else{
+                                AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+                                ToasterCustom.msgShort(mContext,"Stock not available.")
+                                return@setOnClickListener
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                    if((OrderProductCartFrag.stockTransL.map { it.stock_productid} as ArrayList<String>).contains(prooductList.get(adapterPosition).product_id)){
+                        for(k in 0..OrderProductCartFrag.stockTransL.size-1){
+                            if(OrderProductCartFrag.stockTransL.get(k).stock_productid == prooductList.get(adapterPosition).product_id){
+                                OrderProductCartFrag.stockTransL.get(k).stock_productOrderqty = itemView.tv_row_ord_opti_product_list_qty.text.toString()
+                                break
+                            }
+                        }
+                    }
+                }
+
+
                 if(!Pref.IsAllowZeroRateOrder){
                     if(itemView.tv_row_ord_opti_product_list_rate.text.toString().length==0 || itemView.tv_row_ord_opti_product_list_rate.text.toString().toDouble() == 0.0){
                         itemView.tv_row_ord_opti_product_list_rate.setError("Please enter valid rate.")
@@ -162,6 +205,7 @@ class AdapterOrdProductOptimized(val mContext: Context,var proList : ArrayList<P
                     if(Pref.IsViewMRPInOrder && Pref.IsDiscountInOrder){
                         finalOrderDataList.filter { it.product_id.equals(prooductList.get(adapterPosition).product_id)}.first().product_discount_show=changingDisc
                     }
+
                     ToasterMiddle.msgShort(mContext,"Product updated.")
                     //notifyDataSetChanged()
                 }
@@ -191,6 +235,28 @@ class AdapterOrdProductOptimized(val mContext: Context,var proList : ArrayList<P
 
                     itemView.tv_row_ord_opti_product_list_add_text.text = "Added"
                     itemView.ll_row_ord_opti_product_list_add_text_root.background.setTint(mContext.getResources().getColor(R.color.color_custom_green))
+
+                    //stock trans save
+                    try {
+                        if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                            var stockTrans = StockTransEntity()
+                            if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                                stockTrans.stock_shopcode = AppDatabase.getDBInstance()!!.addShopEntryDao().getShopByIdN(shopID).assigned_to_dd_id
+                            }else{
+                                stockTrans.stock_shopcode = shopID
+                            }
+
+                            stockTrans.stock_productid = obj.product_id
+                            stockTrans.stock_productqty = objStock.stock_productqty
+                            stockTrans.stock_productbalqty = objStock.stock_productbalqty
+                            stockTrans.stock_productOrderqty = obj.qty
+                            stockTrans.isUploaded = false
+
+                            OrderProductCartFrag.stockTransL.add(stockTrans)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
                     ToasterMiddle.msgShort(mContext,prooductList.get(adapterPosition).product_name + " added.")
                     //notifyDataSetChanged()
@@ -301,6 +367,29 @@ class AdapterOrdProductOptimized(val mContext: Context,var proList : ArrayList<P
 
 //End  Rev 2.0  v 4.1.6 Tufan 22/08/2023 mantis 26649 Show distributor scheme with Product
 
+            // show stock
+            if(Pref.IsStockCheckFeatureOn){
+                itemView.ll_all_stock.visibility = View.VISIBLE
+                try {
+                    var stock :ArrayList<StockAllEntity> = ArrayList()
+                    if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                        stock = AppDatabase.getDBInstance()!!.stockAllDao().getStockDtlsForDD(prooductList.get(adapterPosition).product_id,shopID  ) as ArrayList<StockAllEntity>
+                    }else{
+                        stock = AppDatabase.getDBInstance()!!.stockAllDao().getStockDtls(prooductList.get(adapterPosition).product_id,shopID  ) as ArrayList<StockAllEntity>
+                    }
+                     if (stock.size>0){
+                        var objStock = stock.first()
+                        itemView.tv_all_stock_data.text = "Stock Qty\n${objStock.stock_productbalqty}"
+                    }else{
+                        itemView.tv_all_stock_data.hint = "Stock Qty\n0"
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }else{
+                itemView.ll_all_stock.visibility = View.GONE
+            }
         }
     }
 

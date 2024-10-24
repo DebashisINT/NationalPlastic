@@ -57,7 +57,6 @@ import com.breezefieldnationalplastic.widgets.AppCustomEditText
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.pnikosis.materialishprogress.ProgressWheel
 import de.hdodenhof.circleimageview.CircleImageView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -69,7 +68,6 @@ import java.util.Locale
 class LeaderboardLmsFrag : BaseFragment(), View.OnClickListener {
     private lateinit var popupWindow: PopupWindow
     private lateinit var mContext:Context
-    private lateinit var bottomNavigation: MeowBottomNavigation
     private lateinit var ll_ldr_lms_top_stick_bar: LinearLayout
     private lateinit var ll_ldr_lms_ovrown: LinearLayout
     private lateinit var tv_ldr_lms_ovr: TextView
@@ -484,6 +482,7 @@ class LeaderboardLmsFrag : BaseFragment(), View.OnClickListener {
             private const val KEY_START_TIME = "startTime"
             private const val KEY_ACCUMULATED_TIME = "accumulatedTime"
             private const val KEY_LAST_DATE = "lastDate"
+            var loadedFrom:String = ""
 
         fun getInstance(objects: Any): LeaderboardLmsFrag {
             val fragment = LeaderboardLmsFrag()
@@ -662,28 +661,32 @@ class LeaderboardLmsFrag : BaseFragment(), View.OnClickListener {
                         mFilterbranchData.clear()
                         mFilterbranchData = respBranchData.branch_list.clone() as ArrayList<BranchData>
                         if(mFilterbranchData.size>0){
-                            var headBranchAll = respBranchData.branch_list.filter { it.branch_head.equals("All",ignoreCase = true) }.first()
-                            subBranchList =(mFilterbranchData.filter { it.branch_head_id == headBranchAll.branch_head_id }).first().sub_branch as ArrayList<BranchData>
-                            subBranch_list =headBranchAll.sub_branch
+                            try {
+                                var headBranchAll = respBranchData.branch_list.filter { it.branch_head.equals("All",ignoreCase = true) }.first()
+                                subBranchList =(mFilterbranchData.filter { it.branch_head_id == headBranchAll.branch_head_id }).first().sub_branch as ArrayList<BranchData>
+                                subBranch_list =headBranchAll.sub_branch
 
-                            var genericL : ArrayList<CustomData> = ArrayList()
-                            for(i in 0..mFilterbranchData.size-1){
-                                genericL.add(CustomData(mFilterbranchData.get(i).branch_head_id.toString(),mFilterbranchData.get(i).branch_head))
-                            }
-                            GenericDialog.newInstance("Head Branch",genericL as ArrayList<CustomData>){
-                                str_filterBranchID = it.id
-                                tv_headbranch.setText(it.name)
-                                subBranchList =mFilterbranchData.filter { it.branch_head_id == str_filterBranchID.toInt() } as ArrayList<BranchData>
-                                for(i in 0..subBranchList.size-1){
-                                    subBranch_list = subBranchList.get(i).sub_branch
-                                    if (subBranch_list.size > 0) {
-                                        tv_subBranch.text = subBranch_list.get(0).value
-                                    }else{
-                                        tv_subBranch.text = ""
-                                        str_filterSubBranchID=""
-                                    }
+                                var genericL : ArrayList<CustomData> = ArrayList()
+                                for(i in 0..mFilterbranchData.size-1){
+                                    genericL.add(CustomData(mFilterbranchData.get(i).branch_head_id.toString(),mFilterbranchData.get(i).branch_head))
                                 }
+                                GenericDialog.newInstance("Head Branch",genericL as ArrayList<CustomData>){
+                                    str_filterBranchID = it.id
+                                    tv_headbranch.setText(it.name)
+                                    subBranchList =mFilterbranchData.filter { it.branch_head_id == str_filterBranchID.toInt() } as ArrayList<BranchData>
+                                    for(i in 0..subBranchList.size-1){
+                                        subBranch_list = subBranchList.get(i).sub_branch
+                                        if (subBranch_list.size > 0) {
+                                            tv_subBranch.text = subBranch_list.get(0).value
+                                        }else{
+                                            tv_subBranch.text = ""
+                                            str_filterSubBranchID=""
+                                        }
+                                    }
 
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
                         }else{
                             Toaster.msgShort(mContext, "No Branch Found")

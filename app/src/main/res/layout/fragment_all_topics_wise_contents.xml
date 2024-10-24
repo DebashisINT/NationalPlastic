@@ -189,7 +189,7 @@
                             android:singleLine="true"
                             android:paddingLeft="@dimen/_10sdp" />
 
-                        <!-- <com.breezebppoddar.widgets.AppCustomEditText
+                        <!-- <com.breezefieldnationalplastic.widgets.AppCustomEditText
                              android:id="@+id/et_frag_contacts_search"
                              android:layout_weight="1"
                              android:layout_width="match_parent"
@@ -244,19 +244,27 @@
                 android:layout_height="wrap_content"
                 android:gravity="center|start"
                 android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_5sdp">
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal">
                 <ImageView
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:src="@drawable/book_n"/>
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_14sdp"
+                    android:layout_weight="1"
                     android:textStyle="bold"
                     android:text="Continue Learning"/>
+
+                <Switch
+                    android:id="@+id/toggle_view"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
@@ -272,6 +280,18 @@
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/_2sdp"
                     android:layout_height="match_parent"/>
+
+                <!--on below line we are creating a grid view-->
+                <GridView
+                    android:id="@+id/gv_topic_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:horizontalSpacing="6dp"
+                    android:numColumns="2"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:verticalSpacing="6dp" />
 
                 <LinearLayout
                     android:id="@+id/ll_no_data"

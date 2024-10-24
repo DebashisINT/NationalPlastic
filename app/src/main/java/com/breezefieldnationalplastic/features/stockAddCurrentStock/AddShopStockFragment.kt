@@ -67,7 +67,7 @@ class AddShopStockFragment: BaseFragment(), View.OnClickListener {
     private  var qtyList:ArrayList<Double> = ArrayList()
     private  var idList:ArrayList<Int> = ArrayList()
     private var total:Double = 0.0
-    private lateinit var saveStock:AppCustomTextView
+    private lateinit var saveStock:LinearLayout
 
 
 

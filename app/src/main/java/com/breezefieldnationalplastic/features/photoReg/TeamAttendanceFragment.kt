@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.AppDatabase
 import com.breezefieldnationalplastic.app.NetworkConstant
@@ -49,7 +50,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class TeamAttendanceFragment: BaseFragment(), CompoundButton.OnCheckedChangeListener, DatePickerDialog.OnDateSetListener, View.OnClickListener {
@@ -371,7 +374,7 @@ class TeamAttendanceFragment: BaseFragment(), CompoundButton.OnCheckedChangeList
         when (buttonView.id) {
             R.id.attendance_header_radio_button_date_range_picker -> {
 
-                if (isChecked) {
+                /*if (isChecked) {
                     isChkChanged = true
                     val now = Calendar.getInstance(Locale.ENGLISH)
                     val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
@@ -383,7 +386,7 @@ class TeamAttendanceFragment: BaseFragment(), CompoundButton.OnCheckedChangeList
                     dpd.isAutoHighlight = mAutoHighlight
                     dpd.maxDate = Calendar.getInstance(Locale.ENGLISH)
                     dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
-                }
+                }*/
             }
             R.id.attandence_radio_button_last_fifteen_days -> if (isChecked) {
 //                if (adapter != null)
@@ -470,7 +473,32 @@ class TeamAttendanceFragment: BaseFragment(), CompoundButton.OnCheckedChangeList
                 }
 
                 if (!isChkChanged) {
-                    val now = Calendar.getInstance(Locale.ENGLISH)
+                    DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager){ startDate, endDate ->
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        val startTime = dateFormat.parse(startDate).time
+                        val endTime = dateFormat.parse(endDate).time
+
+                        val diffInMillis = endTime - startTime
+                        val date = "Visit: From " +AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                        dateRangeTv!!.visibility = View.VISIBLE
+                        dateRangeTv!!.text = date
+                        isDateRangeSelected = true
+
+                        if (AppUtils.isOnline(mContext)) {
+                            val attendanceReq = AttendanceRequest()
+                            attendanceReq.user_id = Pref.user_id
+                            attendanceReq.session_token = Pref.session_token
+                            attendanceReq.start_date = startDate.replace("-","/")
+                            attendanceReq.end_date = endDate.replace("-","/")
+                            getDaystartDayendList(attendanceReq)
+                        } else {
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+                        }
+                    }
+
+
+
+                   /* val now = Calendar.getInstance(Locale.ENGLISH)
                     val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                             this,
                             now.get(Calendar.YEAR),
@@ -479,7 +507,7 @@ class TeamAttendanceFragment: BaseFragment(), CompoundButton.OnCheckedChangeList
                     )
                     dpd.isAutoHighlight = mAutoHighlight
                     dpd.maxDate = Calendar.getInstance(Locale.ENGLISH)
-                    dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                    dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
                 } else
                     isChkChanged = false
             }

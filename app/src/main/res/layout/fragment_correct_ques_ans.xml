@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F0F5FB"
+    android:focusable="true"
+    android:clickable="true"
+    android:orientation="vertical"
+    tools:context=".CorrectQuesAnsFrag">
+
+<!--<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+        <ImageView
+            android:id="@+id/iv_frag_lms_ques_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_quest"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="#023f89"
+            android:alpha=".92"
+            android:scaleType="centerCrop" /-->>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_correct_answer_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+<!--</FrameLayout>-->
+
+
+</LinearLayout>

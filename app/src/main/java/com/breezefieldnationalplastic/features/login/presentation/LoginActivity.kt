@@ -33,6 +33,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.FileProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -282,7 +283,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
     private lateinit var iv_shopImage: ImageView
     private var checkFingerPrint: CheckFingerPrint? = null
     private lateinit var tv_internet_info: AppCustomTextView
-    private lateinit var cb_remember_me: CheckBox
+    private lateinit var cb_remember_me: AppCompatCheckBox
     private lateinit var share_log_login_TV: AppCustomTextView
 
     private lateinit var tvappCustomAnydeskInfo: AppCustomTextView
@@ -935,6 +936,30 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                 //Suman 18-09-2024 mantis 27700
                                 if (configResponse.IsRetailOrderStatusRequired != null)
                                     Pref.IsRetailOrderStatusRequired = configResponse.IsRetailOrderStatusRequired!!
+
+                                //Puja 07-10-2024 mantis 0027717
+                                if (configResponse.IsVideoAutoPlayInLMS != null)
+                                    Pref.IsVideoAutoPlayInLMS = configResponse.IsVideoAutoPlayInLMS!!
+
+                                //Puja 17-10-2024 mantis 0027772
+                                if (configResponse.ShowRetryIncorrectQuiz != null)
+                                    Pref.ShowRetryIncorrectQuiz = configResponse.ShowRetryIncorrectQuiz!!
+
+                                if (configResponse.IsStockCheckFeatureOn != null)
+                                    Pref.IsStockCheckFeatureOn = configResponse.IsStockCheckFeatureOn!!
+                                if (configResponse.IsShowDistributorWiseCurrentStockInOrder != null)
+                                    Pref.IsShowDistributorWiseCurrentStockInOrder = configResponse.IsShowDistributorWiseCurrentStockInOrder!!
+                                if (configResponse.IsAllowNegativeStock != null)
+                                    Pref.IsAllowNegativeStock = configResponse.IsAllowNegativeStock!!
+                                if (configResponse.StockCheckOnOrder1OrInvioce0 != null)
+                                    Pref.StockCheckOnOrder1OrInvioce0 = configResponse.StockCheckOnOrder1OrInvioce0!!
+
+                                if (configResponse.AllowedCreditDays != null)
+                                    Pref.AllowedCreditDays = configResponse.AllowedCreditDays!!
+                                if (configResponse.WillCreditDaysFollow != null)
+                                    Pref.WillCreditDaysFollow = configResponse.WillCreditDaysFollow!!
+                                if (configResponse.AllowOrderOnOutstandingAndClosingStockDifference != null)
+                                    Pref.AllowOrderOnOutstandingAndClosingStockDifference = configResponse.AllowOrderOnOutstandingAndClosingStockDifference!!
                             }
                             isApiInitiated = false
                             /*API_Optimization 02-03-2022*/
@@ -4120,7 +4145,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
         }*/
 
 
-
         if (Pref.isRememberMe) {
             username_EDT.setText(Pref.PhnNo)
             password_EDT.setText(Pref.pwd)
@@ -5033,6 +5057,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
             Pref.PhnNo = ""
             Pref.pwd = ""
         }
+        Pref.loginID = username
 
         Pref.logId = username
         Pref.loginPassword = password
@@ -7359,6 +7384,17 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                                     Pref.IsUserWiseRecordAudioEnableForVisitRevisit = response.getconfigure?.get(i)?.Value == "1"
                                                 }
                                             }
+                                            else if (response.getconfigure?.get(i)?.Key.equals("WillCreditDaysFollowUserWise", ignoreCase = true)) {
+                                                Pref.WillCreditDaysFollowUserWise = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.WillCreditDaysFollowUserWise = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }else if (response.getconfigure?.get(i)?.Key.equals("AllowOrderOnOutstandingAndClosingStockDifferenceUserWise", ignoreCase = true)) {
+                                                Pref.AllowOrderOnOutstandingAndClosingStockDifferenceUserWise = response.getconfigure!![i].Value == "1"
+                                                if (!TextUtils.isEmpty(response.getconfigure?.get(i)?.Value)) {
+                                                    Pref.AllowOrderOnOutstandingAndClosingStockDifferenceUserWise = response.getconfigure?.get(i)?.Value == "1"
+                                                }
+                                            }
                                             /*else if (response.getconfigure?.get(i)?.Key.equals("isFingerPrintMandatoryForAttendance", ignoreCase = true)) {
                                                 if (!TextUtilsDash.isEmpty(response.getconfigure?.get(i)?.Value)) {
                                                     Pref.isFingerPrintMandatoryForAttendance = response.getconfigure?.get(i)?.Value == "1"
@@ -8739,12 +8775,42 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LocationListener {
                                         }
                                     } catch (e: Exception) {
                                         e.printStackTrace()
-                                        gotoHomeActivity()
+                                        getAllStock()
                                     }
                                     uiThread {
-                                        gotoHomeActivity()
+                                        getAllStock()
                                     }
                                 }
+                            } else {
+                                getAllStock()
+                            }
+                        } else {
+                            getAllStock()
+                        }
+                    }, { error ->
+                        getAllStock()
+                    })
+            )
+        }else{
+            getAllStock()
+        }
+    }
+
+    fun getAllStock(){
+        if(Pref.IsStockCheckFeatureOn){
+            val repository = OpportunityRepoProvider.opportunityListRepo()
+            BaseActivity.compositeDisposable.add(
+                repository.getAllStock(Pref.user_id!!)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as StockAllResponse
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            var stock_list = response.stock_list
+                            if (stock_list != null && stock_list.isNotEmpty()) {
+                                AppDatabase.getDBInstance()?.stockAllDao()?.deleteAll()
+                                AppDatabase.getDBInstance()?.stockAllDao()?.insertAll(stock_list)
+                                gotoHomeActivity()
                             } else {
                                 gotoHomeActivity()
                             }

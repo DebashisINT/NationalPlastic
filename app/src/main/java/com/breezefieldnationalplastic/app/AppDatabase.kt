@@ -76,7 +76,7 @@ import com.breezefieldnationalplastic.features.taskManagement.model.TaskManagmen
     ContactActivityEntity::class,ScheduleTemplateEntity::class,ModeTemplateEntity::class,RuleTemplateEntity::class,SchedulerMasterEntity::class,
     SchedulerDateTimeEntity::class,SchedulerContactEntity::class,TeamAllListEntity::class,PhoneContactEntity::class,PhoneContact1Entity::class,
     NewProductListEntity::class, NewRateListEntity::class, NewOrderDataEntity::class,NewOrderProductDataEntity::class,OpportunityStatusEntity::class,OpportunityAddEntity::class,OpportunityProductEntity::class,LmsUserInfoEntity::class,
-    ShopAudioEntity::class,LMSNotiEntity::class),
+    ShopAudioEntity::class,LMSNotiEntity::class,StockAllEntity::class,StockTransEntity::class),
         version = 1, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -247,6 +247,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun lmsUserInfoDao(): LmsUserInfoDao
     abstract fun shopAudioDao(): ShopAudioDao
     abstract fun lmsNotiDao(): LMSNotiDao
+    abstract fun stockAllDao(): StockAllDao
+    abstract fun stockTransDao(): StockTransDao
 
 
     companion object {

@@ -78,4 +78,9 @@ interface UserLocationDataDao {
     @Query("SELECT * FROM " + AppConstant.LOCATION_TABLE + " where updateDate=:date order by locationId desc")
     fun getListAccordingDate(date: String): List<UserLocationDataEntity>
 
+    @Query("select sum(distance) as totalD from location_db where updateDate = :date")
+    fun getTotalDistForDay(date: String): String
+
+    @Query("select * from location_db where updateDate = :date order by locationId desc limit 1")
+    fun getLastOfDate(date: String): UserLocationDataEntity
 }

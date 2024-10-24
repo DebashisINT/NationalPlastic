@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.AppDatabase
 import com.breezefieldnationalplastic.app.NetworkConstant
@@ -35,6 +36,7 @@ import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -95,17 +97,27 @@ class DateWiseActivityListFragment : BaseFragment(), DatePickerDialog.OnDateSetL
         specifiedToDate = AppUtils.getCurrentDateForShopActi()
 
         tv_pick_date.setOnClickListener {
-//            val datePicker = android.app.DatePickerDialog(mContext, R.style.DatePickerTheme, date, myCalendar.get(Calendar.YEAR),
-//                    myCalendar.get(Calendar.MONTH),
-//                    myCalendar.get(Calendar.DAY_OF_MONTH))
-//            /*datePicker.datePicker.maxDate = Calendar.getInstance().timeInMillis
-//            val cal = Calendar.getInstance()
-//            cal.add(Calendar.DATE, -7)
-//            datePicker.datePicker.minDate = cal.timeInMillis*/
-//            datePicker.show()
+            DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager){ startDate, endDate ->
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val startTime = dateFormat.parse(startDate).time
+                val endTime = dateFormat.parse(endDate).time
 
+                val diffInMillis = endTime - startTime
+                if (TimeUnit.MILLISECONDS.toDays(diffInMillis) > 120) {
+                    (mContext as DashboardActivity).showSnackMessage("Leave list must be generated for 3 months")
+                }else{
+                    val date = AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                    tv_pick_date.text = date
 
-            val now = Calendar.getInstance(Locale.ENGLISH)
+                    specifiedDate = startDate
+                    specifiedToDate = endDate
+
+                    initAdapter()
+                }
+
+            }
+
+            /*val now = Calendar.getInstance(Locale.ENGLISH)
             val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                     this,
                     now.get(Calendar.YEAR),
@@ -113,7 +125,7 @@ class DateWiseActivityListFragment : BaseFragment(), DatePickerDialog.OnDateSetL
                     now.get(Calendar.DAY_OF_MONTH)
             )
             dpd.isAutoHighlight = false
-            dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+            dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
         }
         rl_datewise_activity_main.setOnClickListener(null)
     }

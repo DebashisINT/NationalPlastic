@@ -3,6 +3,7 @@ package com.breezefieldnationalplastic.features.login.api.opportunity
 import com.breezefieldnationalplastic.app.NetworkConstant
 import com.breezefieldnationalplastic.base.BaseResponse
 import com.breezefieldnationalplastic.features.addshop.model.AudioFetchDataCLass
+import com.breezefieldnationalplastic.features.addshop.model.StockAllResponse
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.login.model.opportunitymodel.OpportunityStatusListResponseModel
 import com.breezefieldnationalplastic.features.login.model.productlistmodel.ProductListResponseModel
@@ -47,6 +48,11 @@ interface OpportunityListApi {
 
     @POST("LMSInfoDetails/UserWiseLMSModulesInfo")
     fun saveLMSModuleInfoApi(@Body obj: DashboardActivity.LMSModule): Observable<BaseResponse>
+
+    @FormUrlEncoded
+    @POST("OrderWithStockMgmtDetails/ListForProductStock")
+    fun getAllStockApi(@Field("user_id") user_id: String): Observable<StockAllResponse>
+
     /**
      * Companion object to create the GithubApiService
      */

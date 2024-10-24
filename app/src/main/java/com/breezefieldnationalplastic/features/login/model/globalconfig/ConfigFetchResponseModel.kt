@@ -227,4 +227,17 @@ class ConfigFetchResponseModel : BaseResponse() {
     var IsAllowGPSTrackingInBackgroundForLMS:Boolean? = false
     var IsRetailOrderStatusRequired:Boolean? = false
 
+    var IsStockCheckFeatureOn:Boolean? = false
+    var IsShowDistributorWiseCurrentStockInOrder:Boolean? = false
+    var IsAllowNegativeStock:Boolean? = false
+    var StockCheckOnOrder1OrInvioce0:Boolean? = true
+
+    var AllowedCreditDays:String? = ""
+    var WillCreditDaysFollow:Boolean? = false
+    var AllowOrderOnOutstandingAndClosingStockDifference:Boolean? = false
+
+    var IsVideoAutoPlayInLMS:Boolean? = true
+
+    var ShowRetryIncorrectQuiz:Boolean? = false
+
 }

@@ -7,6 +7,7 @@ import com.breezefieldnationalplastic.features.returnsOrder.ReturnRequest
 import com.breezefieldnationalplastic.features.timesheet.model.AddTimeSheetInputModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.AddOrderInputParamsModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.NewOrderSaveApiModel
+import com.breezefieldnationalplastic.features.viewAllOrder.model.NewStockSync
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.reactivex.Observable
 import okhttp3.MediaType
@@ -28,6 +29,10 @@ class AddOrderRepo(val apiService: AddOrderApi) {
 
     fun addNewOrder(addOrder: AddOrderInputParamsModel): Observable<BaseResponse> {
         return apiService.addNewOrder(addOrder)
+    }
+
+    fun addNewStock(syncObj: NewStockSync): Observable<BaseResponse> {
+        return apiService.addNewStock(syncObj)
     }
 
     fun addNewOrder(addOrder: AddOrderInputParamsModel, image: String, context: Context): Observable<BaseResponse> {

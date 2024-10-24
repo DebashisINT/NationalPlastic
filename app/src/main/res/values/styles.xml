@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -12,6 +12,11 @@
         <item name="android:splitMotionEvents">false</item>
         <item name="android:windowEnableSplitTouch">false</item>
         <!--<item name="android:fitsSystemWindows">true</item>-->
+    </style>
+
+    <style name="CustomHintTextAppearance" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">11sp</item> <!-- Adjust text size to reduce space -->
+        <item name="android:paddingTop">0dp</item>  <!-- Reduce the space above the hint -->
     </style>
 
     <style name="CircularProgressBar" parent="android:Widget.ProgressBar.Horizontal">
@@ -130,11 +135,19 @@
 
 
     <!--    &lt;!&ndash; The beef: background color for Action Bar overflow menu &ndash;&gt;-->
-<!--    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">-->
-<!--        <item name="android:popupBackground">@drawable/menu_dropdown_panel</item>-->
-<!--    </style>-->
+    <!--    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">-->
+    <!--        <item name="android:popupBackground">@drawable/menu_dropdown_panel</item>-->
+    <!--    </style>-->
 
     <!-- Bonus: if you want to style whole Action Bar, not just the menu -->
+
+    <style name="ThemeOverlay.App.DatePickerDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.App.DatePicker</item>
+    </style>
+
+    <style name="ThemeOverlay.App.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:windowIsFloating">false</item>
+    </style>
 
 
 </resources>

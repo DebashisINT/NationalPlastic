@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/_245sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="@dimen/_6sdp"
+    android:background="#FFFFFF">
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <LinearLayout
+                android:id="@+id/ll_frag_search_knowledge_hub_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/purple_round_corner"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:orientation="vertical"
+                >
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:minHeight="@dimen/_65sdp"
+                    android:background="@drawable/border_background_small_1_lms"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/question_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_50sdp"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        android:gravity="start|center"
+                        android:paddingStart="@dimen/_10sdp"
+                        android:paddingEnd="@dimen/_10sdp"
+                        android:text=""
+                        android:textStyle="bold"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_11sdp"/>
+
+                </LinearLayout>
+
+                <!-- Question 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_14sdp"
+                    >
+
+                    <!-- Options as TextViews -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_op1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:minHeight="@dimen/_26sdp"
+                        android:background="@drawable/back_round_corner_crrct_qstn"
+                        >
+                        <TextView
+                            android:id="@+id/option1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/_8sdp"
+                            android:paddingEnd="@dimen/_4sdp"
+                            android:text=""
+                            android:gravity="start|center"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_11sdp"
+                            android:paddingTop="@dimen/_4sdp"
+                            android:paddingBottom="@dimen/_4sdp"/>
+
+                        <ImageView
+                            android:id="@+id/iv_correct_tick_op1"
+                            android:visibility="gone"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="@dimen/_14sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:src="@drawable/check_icon"/>
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_op2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_26sdp"
+                        android:background="@drawable/back_round_corner_crrct_qstn"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        >
+
+                        <TextView
+                            android:id="@+id/option2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/_8sdp"
+                            android:paddingEnd="@dimen/_4sdp"
+                            android:text=""
+                            android:layout_weight="1"
+                            android:gravity="start|center"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_11sdp"
+                            android:paddingTop="@dimen/_4sdp"
+                            android:paddingBottom="@dimen/_4sdp"/>
+
+                        <ImageView
+                            android:id="@+id/iv_correct_tick_op2"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="@dimen/_14sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:visibility="gone"
+                            android:src="@drawable/check_icon"/>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_op3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:minHeight="@dimen/_26sdp"
+                        android:background="@drawable/back_round_corner_crrct_qstn"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        >
+
+                    <TextView
+                        android:id="@+id/option3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_8sdp"
+                        android:paddingEnd="@dimen/_4sdp"
+                        android:text=""
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:gravity="start|center"
+                        android:textSize="@dimen/_11sdp"
+                        android:paddingTop="@dimen/_4sdp"
+                        android:paddingBottom="@dimen/_4sdp"/>
+
+                        <ImageView
+                            android:id="@+id/iv_correct_tick_op3"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="@dimen/_14sdp"
+                            android:visibility="gone"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:src="@drawable/check_icon"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_op4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/back_round_corner_crrct_qstn"
+                        android:gravity="center"
+                        android:minHeight="@dimen/_26sdp"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        >
+
+
+                    <TextView
+                        android:id="@+id/option4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_8sdp"
+                        android:paddingEnd="@dimen/_4sdp"
+                        android:text=""
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:gravity="start|center"
+                        android:textSize="@dimen/_11sdp"
+                        android:paddingTop="@dimen/_4sdp"
+                        android:paddingBottom="@dimen/_4sdp"/>
+
+                        <ImageView
+                            android:id="@+id/iv_correct_tick_op4"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="@dimen/_14sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:visibility="gone"
+                            android:src="@drawable/check_icon"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_3sdp"
+                android:paddingTop="@dimen/_3sdp"
+                android:paddingStart="@dimen/_16sdp"
+                android:paddingEnd="@dimen/_16sdp"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/purple_round_corner">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:src="@drawable/question_icon"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_qstn_nmbr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:paddingBottom="@dimen/_2sdp"
+                    android:text="Question">
+
+                </TextView>
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>

@@ -198,6 +198,8 @@ public interface AppConstant {
     //Suman 29-07-2024 mantis id 27647
     String SHOP_AUDIO = "shop_audio";
     String LMS_NOTIFICATION = "lms_notification";
+    String STOCK_ALL = "stock_all";
+    String STOCK_TRANS = "stock_trans";
 
 
 }

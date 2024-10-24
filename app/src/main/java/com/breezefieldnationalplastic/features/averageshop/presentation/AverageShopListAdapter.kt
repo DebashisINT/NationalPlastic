@@ -644,6 +644,11 @@ class AverageShopListAdapter(context: Context, userLocationDataEntity: List<Shop
             }else{
                 itemView.iv_inflate_avg_shop_audio.visibility = View.GONE
             }
+
+            if(Pref.loginID.equals("breezefsm",ignoreCase = true)){
+                itemView.myshop_pancard_TV.visibility = View.GONE
+                itemView.myshop_gstin_TV.visibility = View.GONE
+            }
         }
     }
 

@@ -499,7 +499,9 @@ class AddFeedbackSingleBtnDialog : DialogFragment(), View.OnClickListener {
             audioRecRoot.id,et_audioNW.id ->{
                 AppUtils.isRevisit = true
                 val folderPath = FTStorageUtils.getFolderPath(mContext)
-                audioFileNW = File("$folderPath/" + System.currentTimeMillis() + ".mp3")
+                //audioFileNW = File("$folderPath/" + System.currentTimeMillis() + ".mp3")
+                audioFileNW = File("/data/user/0/com.breezefieldnationalplastic/files", "recorded_audio${System.currentTimeMillis()}.mp3")
+
 
                 AndroidAudioRecorder.with(mContext as DashboardActivity)
                     // Required

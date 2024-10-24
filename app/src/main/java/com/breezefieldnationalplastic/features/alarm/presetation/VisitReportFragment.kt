@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.NetworkConstant
@@ -35,6 +36,7 @@ import com.breezefieldnationalplastic.features.login.presentation.LoginActivity
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -203,7 +205,22 @@ class VisitReportFragment : BaseFragment(), View.OnClickListener, DatePickerDial
             }
 
             R.id.tv_pick_date_range -> {
-                val now = Calendar.getInstance(Locale.ENGLISH)
+                DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager) { startDate, endDate ->
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val startTime = dateFormat.parse(startDate).time
+                    val endTime = dateFormat.parse(endDate).time
+
+                    val diffInMillis = endTime - startTime
+
+                    val date = AppUtils.getFormatedD(startDate)
+                        .toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                    tv_pick_date_range.text = date
+
+                    getVisitReport(startDate, endDate)
+
+                }
+
+                /*val now = Calendar.getInstance(Locale.ENGLISH)
                 val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                         this,
                         now.get(Calendar.YEAR),
@@ -212,7 +229,7 @@ class VisitReportFragment : BaseFragment(), View.OnClickListener, DatePickerDial
                 )
                 dpd.isAutoHighlight = false
                 //dpd.maxDate = Calendar.getInstance()
-                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
             }
         }
     }

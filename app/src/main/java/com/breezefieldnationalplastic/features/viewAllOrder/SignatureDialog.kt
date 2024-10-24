@@ -16,7 +16,6 @@ import com.breezefieldnationalplastic.app.Pref
 import com.breezefieldnationalplastic.app.utils.FTStorageUtils
 import com.breezefieldnationalplastic.app.utils.Toaster
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
-import com.github.gcacace.signaturepad.views.SignaturePad
 import java.io.File
 
 class SignatureDialog : DialogFragment(), View.OnClickListener {
@@ -24,7 +23,7 @@ class SignatureDialog : DialogFragment(), View.OnClickListener {
     private lateinit var mContext: Context
 
     private lateinit var iv_close_icon: AppCompatImageView
-    private lateinit var signature_pad: SignaturePad
+    //private lateinit var signature_pad: SignaturePad
     private lateinit var cancel_TV: AppCustomTextView
     private lateinit var ok_TV: AppCustomTextView
 
@@ -60,7 +59,7 @@ class SignatureDialog : DialogFragment(), View.OnClickListener {
     }
     private fun initView(v: View) {
         v.apply {
-            signature_pad = findViewById(R.id.signature_pad)
+            //signature_pad = findViewById(R.id.signature_pad)
             iv_close_icon = findViewById(R.id.iv_close_icon)
             cancel_TV = findViewById(R.id.cancel_TV)
             ok_TV = findViewById(R.id.ok_TV)
@@ -68,7 +67,7 @@ class SignatureDialog : DialogFragment(), View.OnClickListener {
 
         ok_TV.isSelected = true
 
-        signature_pad.setOnSignedListener(object : SignaturePad.OnSignedListener{
+        /*signature_pad.setOnSignedListener(object : SignaturePad.OnSignedListener{
             override fun onStartSigning() {
             }
 
@@ -77,7 +76,7 @@ class SignatureDialog : DialogFragment(), View.OnClickListener {
 
             override fun onSigned() {
             }
-        })
+        })*/
     }
 
     private fun initClickListener() {
@@ -93,7 +92,7 @@ class SignatureDialog : DialogFragment(), View.OnClickListener {
             }
 
             R.id.ok_TV -> {
-                if (signature_pad.isEmpty)
+               /* if (signature_pad.isEmpty)
                     Toaster.msgShort(mContext, "Please enter signature")
                 else {
                     val bitmap = signature_pad.signatureBitmap
@@ -102,11 +101,11 @@ class SignatureDialog : DialogFragment(), View.OnClickListener {
                     FTStorageUtils.saveBitmapToJPG(bitmap, file)
                     onOkClick(file.absolutePath)
                     dismiss()
-                }
+                }*/
             }
 
             R.id.cancel_TV -> {
-                signature_pad.clear()
+                //signature_pad.clear()
             }
         }
     }

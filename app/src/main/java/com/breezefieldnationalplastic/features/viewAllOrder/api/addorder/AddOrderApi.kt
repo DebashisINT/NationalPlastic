@@ -7,6 +7,7 @@ import com.breezefieldnationalplastic.features.timesheet.api.TimeSheetApi
 import com.breezefieldnationalplastic.features.timesheet.model.EditDeleteTimesheetResposneModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.AddOrderInputParamsModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.NewOrderSaveApiModel
+import com.breezefieldnationalplastic.features.viewAllOrder.model.NewStockSync
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -33,6 +34,9 @@ interface AddOrderApi {
 
     @POST("Order/AddOrder")
     fun addNewOrder(@Body addOrder: AddOrderInputParamsModel): Observable<BaseResponse>
+
+    @POST("OrderWithStockMgmtDetails/UpdateProductBalStock")
+    fun addNewStock(@Body obj: NewStockSync): Observable<BaseResponse>
 
     @Multipart
     @POST("FileUpload/OrderSignature")

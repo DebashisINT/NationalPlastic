@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.mylearning.RetryIncorrectQuizFrag"
+    android:background="#F0F5FB"
+    android:focusable="true"
+    android:clickable="true"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/selector_tab_LL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                android:id="@+id/tv_correct_tab"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:textSize="@dimen/_12sdp"
+                android:text="@string/correct"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins_medium"
+                />
+
+            <com.breezefieldnationalplastic.widgets.AppCustomTextView
+                android:id="@+id/tv_incorrect_tab"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/incorrect"
+                android:textStyle="bold"
+                android:textSize="@dimen/_12sdp"
+                android:fontFamily="@font/poppins_medium"
+                />
+
+        </LinearLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/tab_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/selector_tab_LL" />
+
+</LinearLayout>

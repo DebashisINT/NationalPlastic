@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/total_shop_visited_CV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        app:cardElevation="1dp"
         android:layout_marginBottom="@dimen/_4sdp"
         android:layout_marginTop="@dimen/_5sdp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_cursor_one">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/total_shop_RL"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/shape_custom_border_blue_button"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/_8sdp"
                 android:paddingTop="@dimen/_8sdp"
@@ -36,7 +37,7 @@
                     android:paddingRight="@dimen/_5sdp"
                     android:paddingTop="@dimen/_6sdp"
                     android:text="151515"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp" />
 
             </RelativeLayout>

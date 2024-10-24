@@ -42,10 +42,10 @@ class AdapterProductList(val context: Context, val productList: ArrayList<Produc
       }
 
 
-      if (position % 2 == 0)
-         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.report_screen_bg))
-      else
-         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+      //if (position % 2 == 0)
+         //holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.report_screen_bg))
+      //else
+         //holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
 
       holder.tv_product_name.text=productList!!.get(position).product_name
       holder.tv_brand.text="Brand: "+productList.get(position).brand

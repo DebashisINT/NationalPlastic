@@ -85,12 +85,12 @@ class NetworkConstant {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
             return OkHttpClient().newBuilder()
-                    .connectTimeout(60 * 10, TimeUnit.SECONDS)
-                    .readTimeout(60 * 10, TimeUnit.SECONDS)
-                    .writeTimeout(60 * 10, TimeUnit.SECONDS)
-                    .addInterceptor(loggingInterceptor)
-                    .retryOnConnectionFailure(false)
-                    .build()
+                .connectTimeout(60 * 10, TimeUnit.SECONDS)
+                .readTimeout(60 * 10, TimeUnit.SECONDS)
+                .writeTimeout(60 * 10, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
+                .retryOnConnectionFailure(false)
+                .build()
         }
 
         fun setTimeOutNoRetry(): OkHttpClient {
@@ -99,12 +99,12 @@ class NetworkConstant {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
             return OkHttpClient().newBuilder()
-                    .connectTimeout(60 * 1, TimeUnit.SECONDS)
-                    .readTimeout(60 * 1, TimeUnit.SECONDS)
-                    .writeTimeout(60 * 1, TimeUnit.SECONDS)
-                    .addInterceptor(loggingInterceptor)
-                    .retryOnConnectionFailure(false)
-                    .build()
+                .connectTimeout(60 * 1, TimeUnit.SECONDS)
+                .readTimeout(60 * 1, TimeUnit.SECONDS)
+                .writeTimeout(60 * 1, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
+                .retryOnConnectionFailure(false)
+                .build()
         }
 
         fun setNewTimeOut(): OkHttpClient {
@@ -113,12 +113,12 @@ class NetworkConstant {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
             return OkHttpClient().newBuilder()
-                    .connectTimeout(60 * 4, TimeUnit.SECONDS)
-                    .readTimeout(60 * 4, TimeUnit.SECONDS)
-                    .writeTimeout(60 * 4, TimeUnit.SECONDS)
-                    .addInterceptor(loggingInterceptor)
-                    .retryOnConnectionFailure(false)
-                    .build()
+                .connectTimeout(60 * 4, TimeUnit.SECONDS)
+                .readTimeout(60 * 4, TimeUnit.SECONDS)
+                .writeTimeout(60 * 4, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
+                .retryOnConnectionFailure(false)
+                .build()
         }
 
         fun setConfigTimeOut(): OkHttpClient {
@@ -127,15 +127,15 @@ class NetworkConstant {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
             return OkHttpClient().newBuilder()
-                    .connectTimeout(30, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS)
-                    /*.addInterceptor {
-                        it.proceed(it.request()?.newBuilder()?.addHeader("version_name", "v2")?.build())
-                    }*/
-                    .addInterceptor(loggingInterceptor)
-                    .retryOnConnectionFailure(false)
-                    .build()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                /*.addInterceptor {
+                    it.proceed(it.request()?.newBuilder()?.addHeader("version_name", "v2")?.build())
+                }*/
+                .addInterceptor(loggingInterceptor)
+                .retryOnConnectionFailure(false)
+                .build()
         }
     }
 

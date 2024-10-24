@@ -1,6 +1,7 @@
 package com.breezefieldnationalplastic.features.orderList
 
 import android.content.Context
+import android.text.Html
 import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -198,6 +199,40 @@ class NewDateWiseOrderListAdapter(context: Context, userLocationDataEntity: Arra
                     onCreateQRClick(userLocationDataEntity[adapterPosition])
                 }
 
+                try {
+                    if(Pref.IsRetailOrderStatusRequired){
+                        itemView.tv_ord_status_list.visibility = View.VISIBLE
+
+                        if(userLocationDataEntity.get(adapterPosition).orderStatus != null){
+                            var text = ""
+                            if(userLocationDataEntity.get(adapterPosition).orderStatus.equals("Ordered",ignoreCase = true)){
+                                text = "<font color=" + context.getColor(R.color.dark_gray) + ">Status : </font> <font color="+
+                                        context.getColor(R.color.lms_inprgs) + ">" + userLocationDataEntity[adapterPosition].orderStatus + "</font>";
+                            }else if(userLocationDataEntity.get(adapterPosition).orderStatus.equals("Invoiced",ignoreCase = true)){
+                                text = "<font color=" + context.getColor(R.color.dark_gray) + ">Status : </font> <font color="+
+                                        context.getColor(R.color.report_blue) + ">" + userLocationDataEntity[adapterPosition].orderStatus + "</font>";
+                            }else if(userLocationDataEntity.get(adapterPosition).orderStatus.equals("Ready To Dispatch",ignoreCase = true)){
+                                text = "<font color=" + context.getColor(R.color.dark_gray) + ">Status : </font> <font color="+
+                                        context.getColor(R.color.schdlrblue) + ">" + userLocationDataEntity[adapterPosition].orderStatus + "</font>";
+                            }else if(userLocationDataEntity.get(adapterPosition).orderStatus.equals("Dispatched",ignoreCase = true)){
+                                text = "<font color=" + context.getColor(R.color.dark_gray) + ">Status : </font> <font color="+
+                                        context.getColor(R.color.bill_green) + ">" + userLocationDataEntity[adapterPosition].orderStatus + "</font>";
+                            }else if(userLocationDataEntity.get(adapterPosition).orderStatus.equals("Delivered",ignoreCase = true)){
+                                text = "<font color=" + context.getColor(R.color.dark_gray) + ">Status : </font> <font color="+
+                                        context.getColor(R.color.navy_blue) + ">" + userLocationDataEntity[adapterPosition].orderStatus + "</font>";
+                            }
+
+                            itemView.tv_ord_status_list.setText(Html.fromHtml(text));
+                            itemView.tv_ord_status_list.setTextSize(17F);
+                        }else{
+                            itemView.tv_ord_status_list.visibility = View.GONE
+                        }
+                    }else{
+                        itemView.tv_ord_status_list.visibility = View.GONE
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

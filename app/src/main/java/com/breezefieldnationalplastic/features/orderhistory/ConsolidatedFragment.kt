@@ -262,7 +262,7 @@ class ConsolidatedFragment : BaseFragment(), CompoundButton.OnCheckedChangeListe
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.date_range -> {
-                if (!isChkChanged) {
+                /*if (!isChkChanged) {
                     /*for (item in radioList) {
                         if (item != v) {
                             item.isChecked = false
@@ -289,7 +289,7 @@ class ConsolidatedFragment : BaseFragment(), CompoundButton.OnCheckedChangeListe
                     dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
                 } else {
                     isChkChanged = false
-                }
+                }*/
             }
 
             R.id.this_week -> {

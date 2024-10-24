@@ -24,6 +24,26 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_11sdp" />
 
+        <LinearLayout
+            android:id="@+id/ll_all_stock"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_38sdp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/tv_all_stock_data"
+                android:layout_width="@dimen/_95sdp"
+                android:layout_height="match_parent"
+                android:minWidth="@dimen/_55sdp"
+                android:hint="Stock\n0"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp"
+                android:background="@drawable/back_round_corner_12"
+                android:padding="@dimen/_5sdp"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

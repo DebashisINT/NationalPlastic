@@ -108,16 +108,7 @@ class ActivityDetailsListFragment : BaseFragment(), DatePickerDialog.OnDateSetLi
         specifiedToDate = AppUtils.getCurrentDateForShopActi()
 
         tv_pick_date.setOnClickListener {
-            /*val datePicker = android.app.DatePickerDialog(mContext, R.style.DatePickerTheme, date, myCalendar.get(Calendar.YEAR),
-                    myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH))
-            //datePicker.datePicker.maxDate = Calendar.getInstance().timeInMillis
-            val cal = Calendar.getInstance()
-            cal.add(Calendar.DATE, -7)
-            datePicker.datePicker.minDate = cal.timeInMillis
-            datePicker.show()*/
-
-            val now = Calendar.getInstance(Locale.ENGLISH)
+            /*val now = Calendar.getInstance(Locale.ENGLISH)
             val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                     this,
                     now.get(Calendar.YEAR),
@@ -130,7 +121,7 @@ class ActivityDetailsListFragment : BaseFragment(), DatePickerDialog.OnDateSetLi
             /*val newCal = Calendar.getInstance()
             cal.timeInMillis = cal.timeInMillis*/
             dpd.minDate = cal
-            dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+            dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
         }
         rl_activity_details_mail.setOnClickListener(null)
     }

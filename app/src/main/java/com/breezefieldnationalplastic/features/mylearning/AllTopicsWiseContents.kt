@@ -18,8 +18,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.GridView
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +36,6 @@ import com.breezefieldnationalplastic.base.presentation.BaseActivity
 import com.breezefieldnationalplastic.base.presentation.BaseFragment
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.mylearning.apiCall.LMSRepoProvider
-import com.modigoldbreeze.features.mylearning.MyLearningProgressAdapter
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -67,11 +68,15 @@ class AllTopicsWiseContents : BaseFragment() , View.OnClickListener , MyLearning
     lateinit var et_search: EditText
     private var  suffixText:String = ""
     private lateinit var rv_mylearning_progress: RecyclerView
+    private lateinit var gv_topic_search: GridView
+    private lateinit var toggle_view: Switch
     private lateinit var ll_frag_search_root: LinearLayout
     private lateinit var ll_continue_learning: LinearLayout
     private lateinit var ll_no_data: LinearLayout
     private lateinit var final_dataL: ArrayList<LarningList>
     var contentL: ArrayList<ContentL> = ArrayList()
+    var isGridView:Boolean = false
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -143,6 +148,8 @@ class AllTopicsWiseContents : BaseFragment() , View.OnClickListener , MyLearning
         tv_lms_knowledgehub.setTextColor(getResources().getColor(R.color.toolbar_lms))
 
         rv_mylearning_progress = view.findViewById(R.id.rv_mylearning_progress)
+        gv_topic_search = view.findViewById(R.id.gv_topic_search)
+        toggle_view = view.findViewById(R.id.toggle_view)
         et_search = view.findViewById(R.id.et_frag_learning_search)
         ll_voice = view.findViewById(R.id.iv_frag_spk)
         ll_frag_search_root = view.findViewById(R.id.ll_frag_search_root)
@@ -185,6 +192,21 @@ class AllTopicsWiseContents : BaseFragment() , View.OnClickListener , MyLearning
         ll_voice.setOnClickListener(this)
         ll_frag_search_root.setOnClickListener(this)
 
+
+        // Now you can set a listener to respond to changes in the Switch state
+        toggle_view.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // The Switch is now in the "on" state
+                isGridView =true
+            } else {
+                // The Switch is now in the "off" state
+                isGridView =false
+            }
+
+            val sortedList = contentL.sortedBy { it.content_play_sequence.toInt() }.toCollection(ArrayList())
+            Log.d("sortedList", "" + sortedList)
+            setLearningData(sortedList , MyTopicsWiseContents.topic_name)
+        }
     }
 
     private fun getMyLarningInfoAPI() {
@@ -238,9 +260,39 @@ class AllTopicsWiseContents : BaseFragment() , View.OnClickListener , MyLearning
 
     private fun setLearningData(finalDatal: ArrayList<ContentL>, topic_name: String) {
 
-        rv_mylearning_progress.layoutManager = LinearLayoutManager(mContext)
-        val adapter = MyLearningProgressAdapter(mContext, finalDatal,topic_name, this)
-        rv_mylearning_progress.adapter = adapter
+        if (isGridView){
+
+            val adapter = GridViewMyLearningProgressAdapter(
+                mContext,
+                finalDatal,
+                object : GridViewMyLearningProgressAdapter.OnItemClickListener {
+                    override fun onItemClick(position: Int, item: ContentL) {
+                        // Handle the click event here
+                        //Toast.makeText(mContext, "Clicked on item $position: ${courseModel?.content_title}", Toast.LENGTH_SHORT).show()
+
+                        val store_topic_id = topic_id
+                        val store_topic_name = Companion.topic_name
+                        val store_content_id = item.content_id
+                        //getwiselistAPIcalling(store_topic_id.toInt(),store_content_id.toInt(),store_topic_name)
+                        VideoPlayLMS.loadedFrom = "AllTopicsWiseContents"
+                        CustomStatic.VideoPosition = position
+                        Pref.videoCompleteCount = "0"
+                        (mContext as DashboardActivity).loadFragment(FragType.VideoPlayLMS, true, topic_id +"~"+ Companion.topic_name/*+"~"+position*/)
+                    }
+                }
+            )
+            gv_topic_search.setAdapter(adapter)
+            rv_mylearning_progress.visibility =View.GONE
+            gv_topic_search.visibility =View.VISIBLE
+            //gv_topic_search.visibility =View.GONE
+        }
+        else {
+            rv_mylearning_progress.layoutManager = LinearLayoutManager(mContext)
+            val adapter = MyLearningProgressAdapter(mContext, finalDatal, topic_name, this)
+            rv_mylearning_progress.adapter = adapter
+            rv_mylearning_progress.visibility =View.VISIBLE
+            gv_topic_search.visibility =View.GONE
+        }
     }
 
     override fun onClick(p0: View?) {
@@ -353,5 +405,12 @@ class AllTopicsWiseContents : BaseFragment() , View.OnClickListener , MyLearning
         Pref.videoCompleteCount = "0"
         (mContext as DashboardActivity).loadFragment(FragType.VideoPlayLMS, true, topic_id +"~"+ topic_name/*+"~"+position*/)
     }
+
+
+
+     override fun onRetryClick(item: ContentL, position: Int) {
+         Toast.makeText(mContext, "click", Toast.LENGTH_SHORT).show()
+
+     }
     //Code end for particular selected content play in exo player
 }

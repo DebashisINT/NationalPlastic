@@ -1,6 +1,7 @@
 package com.breezefieldnationalplastic.features.addshop.model
 
 import com.breezefieldnationalplastic.app.domain.ShopAudioEntity
+import com.breezefieldnationalplastic.app.domain.StockAllEntity
 import com.breezefieldnationalplastic.base.BaseResponse
 import java.io.Serializable
 
@@ -45,5 +46,10 @@ var PLAN_ASSNROUTEName:String)
 data class AudioFetchDataCLass(var audio_list:ArrayList<AudioFetchData> = ArrayList()):BaseResponse()
 
 data class AudioFetchData(var shop_id:String="",var audio_path:String="",var isUploaded:String="",var datetime:String="",var revisitORvisit:String="")
+
+data class StockAllResponse (var stock_list:ArrayList<StockAllEntity>):BaseResponse()
+
+/*data class StockData(var stock_shopcode:String="",var stock_shopentitycode:String = "",var stock_productid:String = "",
+                     var stock_productname:String="",var stock_productqty:String="",var stock_productbalqty:String="")*/
 
 

@@ -56,12 +56,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.github.gcacace.signaturepad.views.SignaturePad
+            <!--    <com.github.gcacace.signaturepad.views.SignaturePad
                     android:id="@+id/signature_pad"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:penColor="@color/colorPrimary"
-                    android:layout_above="@+id/bottom_layout_LL"/>
+                    android:layout_above="@+id/bottom_layout_LL"/>-->
 
                 <LinearLayout
                     android:id="@+id/bottom_layout_LL"

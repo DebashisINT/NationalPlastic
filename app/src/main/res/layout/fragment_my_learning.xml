@@ -28,7 +28,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_90sdp"
+                    android:layout_height="@dimen/_80sdp"
                     android:background="@drawable/my_topics_bg"
                     android:layout_gravity="center"
                     android:orientation="horizontal"
@@ -124,7 +124,7 @@
             android:orientation="horizontal"
             android:layout_marginLeft="@dimen/_8sdp"
             android:layout_marginRight="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_5sdp">
+            >
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -262,6 +262,111 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/cv_lms_bookmaark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_70sdp"
+                    android:background="@drawable/saved_content_bg"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp">
+
+                    <Space
+                        android:layout_width="@dimen/_240sdp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.1"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+
+                            android:layout_marginBottom="@dimen/_4sdp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_save_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="0"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:gravity="center|bottom|end"
+                                android:textSize="@dimen/_25sdp"
+                                android:textColor="@color/white"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="Saved"
+                                android:layout_gravity="center"
+                                android:gravity="center|start|bottom"
+                                android:textSize="@dimen/_14sdp"
+                                android:textColor="@color/white"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:layout_marginBottom="@dimen/_2sdp"/>
+
+                        </LinearLayout>
+
+                        <!--<Space
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"/>-->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1.5">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="Contents"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:gravity="center|top"
+                                android:textSize="@dimen/_16sdp"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_10sdp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_105sdp"
+                    android:src="@drawable/bookmark_save"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -270,13 +375,13 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_25sdp"/>
+            android:layout_marginTop="@dimen/_5sdp"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_last_vid_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_7sdp"
             android:layout_marginBottom="0dp"
             app:cardBackgroundColor="#55e3f0"
             app:cardCornerRadius="@dimen/_10sdp"

@@ -24,6 +24,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.MySingleton
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.AppDatabase
@@ -42,18 +43,24 @@ import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardA
 import com.breezefieldnationalplastic.features.location.LocationWizard
 import com.breezefieldnationalplastic.widgets.AppCustomEditText
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_shop_detail.retailer_header_TV
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 /**
@@ -106,7 +113,6 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
         rl_leave_main = view.findViewById(R.id.rl_leave_main)
         progress_wheel = view.findViewById(R.id.progress_wheel)
         progress_wheel.stopSpinning()
-
         checkForLeaveTypeData()
 
         et_leave_reason_text.setOnTouchListener(View.OnTouchListener { v, event ->
@@ -130,7 +136,23 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
     }
 
     private fun openDateRangeCalendar() {
-        val now = Calendar.getInstance(Locale.ENGLISH)
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val tomorrow = today + (24 * 60 * 60 * 1000)
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setStart(tomorrow)
+            //.setValidator(DateValidatorPointForward.now())
+            .setValidator(DateValidatorPointForward.from(tomorrow))
+        DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager,constraintsBuilder){ startDate, endDate ->
+            val date = "Leave: From " + AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+            tv_show_date_range.visibility = View.VISIBLE
+            tv_show_date_range.text = date
+
+            this.startDate = startDate
+            this.endDate = endDate
+        }
+        return
+
+/*        val now = Calendar.getInstance(Locale.ENGLISH)
         now.add(Calendar.DAY_OF_MONTH, +1)
         val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                 this,
@@ -143,7 +165,7 @@ class ApplyLeaveFragment : BaseFragment(), View.OnClickListener, DatePickerDialo
         val cal = Calendar.getInstance(Locale.ENGLISH)
         cal.timeInMillis = tomorrowsDateLong
         dpd.minDate = cal
-        dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+        dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
     }
 
     private fun checkForLeaveTypeData() {

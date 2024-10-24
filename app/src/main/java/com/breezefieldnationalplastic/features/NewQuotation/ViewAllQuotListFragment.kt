@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
@@ -39,6 +40,7 @@ import com.breezefieldnationalplastic.features.NewQuotation.model.shop_wise_quot
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.member.model.TeamShopListDataModel
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
+import com.google.android.gms.security.ProviderInstaller
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.itextpdf.text.*
 import com.itextpdf.text.pdf.PdfPCell
@@ -54,6 +56,19 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Properties
+import javax.activation.DataHandler
+import javax.activation.FileDataSource
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeBodyPart
+import javax.mail.internet.MimeMessage
+import javax.mail.internet.MimeMultipart
 
 //Revision History
 // 1.0 ViewAllQuotListFragment  AppV 4.0.6  Saheli    09/01/2023 Pdf template work
@@ -146,7 +161,7 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
         myshop_name_TV.text = shop_name
         tv_contact_number.text = shop_contact_number
         val drawable = TextDrawable.builder()
-                .buildRoundRect(shop_name!!.toUpperCase().take(1), ColorGenerator.MATERIAL.randomColor, 120)
+            .buildRoundRect(shop_name!!.toUpperCase().take(1), ColorGenerator.MATERIAL.randomColor, 120)
         shop_IV.setImageDrawable(drawable)
     }
 
@@ -165,37 +180,37 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
             progress_wheel.spin()
             val repository = GetQuotRegProvider.provideSaveButton()
             BaseActivity.compositeDisposable.add(
-                    repository.viewQuot(shopId)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                val addQuotResult = result as ViewQuotResponse
-                                progress_wheel.stopSpinning()
-                                if (addQuotResult!!.status == NetworkConstant.SUCCESS) {
-                                    if (addQuotResult!!.shop_wise_quotation_list!!.size > 0) {
-                                        quot_list_rv.visibility = View.VISIBLE
-                                        no_quot_tv.visibility = View.GONE
-                                        addedQuotList.clear()
-                                        addedQuotList.addAll(addQuotResult!!.shop_wise_quotation_list!!)
+                repository.viewQuot(shopId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val addQuotResult = result as ViewQuotResponse
+                        progress_wheel.stopSpinning()
+                        if (addQuotResult!!.status == NetworkConstant.SUCCESS) {
+                            if (addQuotResult!!.shop_wise_quotation_list!!.size > 0) {
+                                quot_list_rv.visibility = View.VISIBLE
+                                no_quot_tv.visibility = View.GONE
+                                addedQuotList.clear()
+                                addedQuotList.addAll(addQuotResult!!.shop_wise_quotation_list!!)
 
-                                        addedQuotList.reverse()
+                                addedQuotList.reverse()
 
-                                        setAdapter()
-                                    }
+                                setAdapter()
+                            }
 
-                                } else {
-                                    quot_list_rv.visibility = View.GONE
-                                    no_quot_tv.visibility = View.VISIBLE
+                        } else {
+                            quot_list_rv.visibility = View.GONE
+                            no_quot_tv.visibility = View.VISIBLE
 //                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                }
-                                BaseActivity.isApiInitiated = false
-                            }, { error ->
-                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                progress_wheel.stopSpinning()
-                                BaseActivity.isApiInitiated = false
-                                if (error != null) {
-                                }
-                            })
+                        }
+                        BaseActivity.isApiInitiated = false
+                    }, { error ->
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        progress_wheel.stopSpinning()
+                        BaseActivity.isApiInitiated = false
+                        if (error != null) {
+                        }
+                    })
             )
         }catch (ex: Exception){
             ex.printStackTrace()
@@ -258,28 +273,28 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
             progress_wheel.spin()
             val repository = GetQuotRegProvider.provideSaveButton()
             BaseActivity.compositeDisposable.add(
-                    repository.delQuot(quotId)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                val delQuotResult = result as BaseResponse
-                                progress_wheel.stopSpinning()
-                                if (delQuotResult!!.status == NetworkConstant.SUCCESS) {
-                                    (mContext as DashboardActivity).showSnackMessage(delQuotResult.message!!)
-                                    simpleDialog.cancel()
-                                    updateView()
+                repository.delQuot(quotId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val delQuotResult = result as BaseResponse
+                        progress_wheel.stopSpinning()
+                        if (delQuotResult!!.status == NetworkConstant.SUCCESS) {
+                            (mContext as DashboardActivity).showSnackMessage(delQuotResult.message!!)
+                            simpleDialog.cancel()
+                            updateView()
 
-                                } else {
-                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                }
-                                BaseActivity.isApiInitiated = false
-                            }, { error ->
-                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                progress_wheel.stopSpinning()
-                                BaseActivity.isApiInitiated = false
-                                if (error != null) {
-                                }
-                            })
+                        } else {
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        }
+                        BaseActivity.isApiInitiated = false
+                    }, { error ->
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        progress_wheel.stopSpinning()
+                        BaseActivity.isApiInitiated = false
+                        if (error != null) {
+                        }
+                    })
             )
         }catch (ex: Exception){
             ex.printStackTrace()
@@ -294,28 +309,28 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
             progress_wheel.spin()
             val repository = GetQuotRegProvider.provideSaveButton()
             BaseActivity.compositeDisposable.add(
-                    repository.viewDetailsQuot(obj.quotation_number!!)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({ result ->
-                                val addQuotResult = result as ViewDetailsQuotResponse
-                                addQuotEditResult = addQuotResult
-                                progress_wheel.stopSpinning()
-                                if (addQuotResult!!.status == NetworkConstant.SUCCESS) {
-                                    // 2.0 ViewAllQuotListFragment  AppV 4.0.6 Pdf template function modification work
-                                    pdfTemplateName = addQuotResult.sel_quotation_pdf_template!!
-                                    saveDataAsPdfN(addQuotEditResult,pdfTemplateName)
-                                } else {
-                                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                }
-                                BaseActivity.isApiInitiated = false
-                            }, { error ->
-                                (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
-                                progress_wheel.stopSpinning()
-                                BaseActivity.isApiInitiated = false
-                                if (error != null) {
-                                }
-                            })
+                repository.viewDetailsQuot(obj.quotation_number!!)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val addQuotResult = result as ViewDetailsQuotResponse
+                        addQuotEditResult = addQuotResult
+                        progress_wheel.stopSpinning()
+                        if (addQuotResult!!.status == NetworkConstant.SUCCESS) {
+                            // 2.0 ViewAllQuotListFragment  AppV 4.0.6 Pdf template function modification work
+                            pdfTemplateName = addQuotResult.sel_quotation_pdf_template!!
+                            saveDataAsPdfN(addQuotEditResult,pdfTemplateName)
+                        } else {
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        }
+                        BaseActivity.isApiInitiated = false
+                    }, { error ->
+                        (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong))
+                        progress_wheel.stopSpinning()
+                        BaseActivity.isApiInitiated = false
+                        if (error != null) {
+                        }
+                    })
             )
         }catch (ex: Exception){
             ex.printStackTrace()
@@ -723,15 +738,15 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
             billing.spacingAfter = 2f
             document.add(billing)
 
-          /*  val product_tolerance_of_thickness = Paragraph("Product Tolerance of Thickness          :     " + addQuotEditResult.product_tolerance_of_thickness, font2Big)
-            product_tolerance_of_thickness.alignment = Element.ALIGN_LEFT
-            product_tolerance_of_thickness.spacingAfter = 2f
-            document.add(product_tolerance_of_thickness)
+            /*  val product_tolerance_of_thickness = Paragraph("Product Tolerance of Thickness          :     " + addQuotEditResult.product_tolerance_of_thickness, font2Big)
+              product_tolerance_of_thickness.alignment = Element.ALIGN_LEFT
+              product_tolerance_of_thickness.spacingAfter = 2f
+              document.add(product_tolerance_of_thickness)
 
-            val product_tolerance_of_coating = Paragraph("Tolerance of Coating Thickness          :     " + addQuotEditResult.tolerance_of_coating_thickness, font2Big)
-            product_tolerance_of_coating.alignment = Element.ALIGN_LEFT
-            product_tolerance_of_coating.spacingAfter = 6f
-            document.add(product_tolerance_of_coating)*/
+              val product_tolerance_of_coating = Paragraph("Tolerance of Coating Thickness          :     " + addQuotEditResult.tolerance_of_coating_thickness, font2Big)
+              product_tolerance_of_coating.alignment = Element.ALIGN_LEFT
+              product_tolerance_of_coating.spacingAfter = 6f
+              document.add(product_tolerance_of_coating)*/
 
             // rev 4.0 ViewAllQuotListFragment  AppV 4.0.8  Saheli    16/05/2023 pdf remark field mantis 26139
 
@@ -765,9 +780,9 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
             // Hardcoded for EuroBond
             var companyName = Paragraph()
             if(Pref.IsShowQuotationFooterforEurobond){
-                 companyName = Paragraph("EURO PANEL PRODUCTS LIMITED", fontB1)
+                companyName = Paragraph("EURO PANEL PRODUCTS LIMITED", fontB1)
             }else{
-                 companyName = Paragraph(getString(R.string.app_name), fontB1)
+                companyName = Paragraph(getString(R.string.app_name), fontB1)
             }
             companyName.alignment = Element.ALIGN_LEFT
             companyName.spacingAfter = 2f
@@ -813,9 +828,9 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
             //Hardcoded for EuroBond
             var bm1: Bitmap
             if(Pref.IsShowQuotationFooterforEurobond){
-                 bm1 = BitmapFactory.decodeResource(resources, R.drawable.footer_icon_euro)
+                bm1 = BitmapFactory.decodeResource(resources, R.drawable.footer_icon_euro)
             }else{
-                 bm1 = BitmapFactory.decodeResource(resources, R.drawable.ics_image)
+                bm1 = BitmapFactory.decodeResource(resources, R.drawable.ics_image)
             }
 //            val bm1: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.bar)
             val bitmap1 = Bitmap.createScaledBitmap(bm1, 850, 120, true)
@@ -959,10 +974,77 @@ class ViewAllQuotListFragment : BaseFragment(), View.OnClickListener {
                         m.setBody("Hello Team,  \n Please find attached Quotation No. ${addQuotEditResult.quotation_number} Dated ${addQuotEditResult.save_date_time!!.split(" ").get(0)} for $shop_name \n\n\n Regards \n${Pref.user_name}.")
                         //m.send()
                         val fileUrl = Uri.parse(sendingPath)
-                        m.send(fileUrl.path)
+                        //m.send(fileUrl.path)
+
+
+                        try{
+                            var emailRecpL = Pref.recipient_email_ids.split(",")
+                            var toArr = arrayOf("")
+                            toArr = Array<String>(emailRecpL.size){""}
+                            for(i in 0..emailRecpL.size-1){
+                                toArr[i]=emailRecpL[i]
+                            }
+
+                            val props = Properties().apply {
+                                put("mail.smtp.host", "smtp.gmail.com")  // SMTP server host
+                                put("mail.smtp.port", "587")                      // SMTP port
+                                put("mail.smtp.auth", "true")
+                                put("mail.smtp.starttls.enable", "true")          // Enable STARTTLS
+                                put("mail.smtp.ssl.protocols", "TLSv1.2")         // Specify TLS version
+                                put("mail.smtp.ssl.trust", "smtp.gmail.com")  // Trust the server
+                            }
+                            if (Build.VERSION.SDK_INT < 21) {
+                                try {
+                                    ProviderInstaller.installIfNeeded(mContext)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                            val session = Session.getInstance(props, object : Authenticator() {
+                                override fun getPasswordAuthentication(): PasswordAuthentication {
+                                    return PasswordAuthentication("eurobondacp02@gmail.com", "nuqfrpmdjyckkukl")
+                                }
+                            })
+                            try {
+                                val message = MimeMessage(session).apply {
+                                    setFrom(InternetAddress("eurobondacp02@gmail.com"))            // Sender's email
+                                    //setRecipients(Message.RecipientType.TO, InternetAddress.parse("sumanbacharofc@gmail.com"))  // Recipient's email
+                                    setRecipients(Message.RecipientType.TO, InternetAddress.parse(Pref.recipient_email_ids))  // Recipient's email
+                                    subject = "Quotation for $shop_name created on dated ${addQuotEditResult.save_date_time!!.split(" ").get(0)}."                                    // Email subject
+                                    //setText("Quotation Generated by  ${Pref.user_name} dated  ${AppUtils.getCurrentDate_DD_MM_YYYY()}.")  // Email body
+                                }
+
+                                val textPart = MimeBodyPart().apply {
+                                    setText("Hello Team,  \n Please find attached Quotation No. ${addQuotEditResult.quotation_number} Dated ${addQuotEditResult.save_date_time!!.split(" ").get(0)} for $shop_name \n\n\n Regards \n${Pref.user_name}.")
+                                }
+                                val file = File(fileUrl.path)
+                                // Create the attachment part
+                                val attachmentPart = MimeBodyPart().apply {
+                                    val source = FileDataSource(File(fileUrl.path)) // Load the file from the file path
+                                    dataHandler = DataHandler(source)           // Attach the file
+                                    //fileName = File(fileUrl.path).name              // Set the file name
+                                    fileName = file.name              // Set the file name
+                                }
+
+                                attachmentPart.fileName = file.name
+
+                                // Combine the parts into a multipart
+                                val multipart = MimeMultipart().apply {
+                                    addBodyPart(textPart)        // Add the text part
+                                    addBodyPart(attachmentPart)  // Add the file attachment part
+                                }
+                                message.setContent(multipart)
+                                // Send the message
+                                Transport.send(message)
+                                println("Email sent successfully!")
+                            } catch (e: MessagingException) {
+                                e.printStackTrace()
+                                println("Failed to send email: ${e.message}")
+                            }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
                     }
-
-
                 }catch (ex:Exception){
                     ex.printStackTrace()
                 }

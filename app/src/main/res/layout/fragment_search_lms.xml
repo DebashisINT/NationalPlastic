@@ -105,7 +105,7 @@
                                 android:singleLine="true"
                                 android:paddingLeft="@dimen/_10sdp" />
 
-                            <!-- <com.breezebppoddar.widgets.AppCustomEditText
+                            <!-- <com.breezefieldnationalplastic.widgets.AppCustomEditText
                                  android:id="@+id/et_frag_contacts_search"
                                  android:layout_weight="1"
                                  android:layout_width="match_parent"
@@ -168,7 +168,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_marginTop="@dimen/_7sdp"/>
+
+
 
                 <com.pnikosis.materialishprogress.ProgressWheel
                     android:id="@+id/ll_frag_search_lms_search"

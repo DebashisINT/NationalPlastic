@@ -27,9 +27,6 @@ import com.breezefieldnationalplastic.base.presentation.BaseFragment
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.mylearning.apiCall.LMSRepoProvider
 import com.breezefieldnationalplastic.widgets.AppCustomEditText
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -43,6 +40,7 @@ class SearchLmsFrag : BaseFragment() , View.OnClickListener, LmsSearchAdapter.On
     lateinit var tv_next_afterSearch_lms: LinearLayout
     lateinit var ll_my_learning_topic_list: LinearLayout
     lateinit var courseList: List<LmsSearchData>
+    lateinit var sortedCourseList: List<LmsSearchData>
     lateinit var lmsSearchAdapter: LmsSearchAdapter
     lateinit var progress_wheel: ProgressWheel
     lateinit var ll_search: LinearLayout
@@ -136,7 +134,7 @@ class SearchLmsFrag : BaseFragment() , View.OnClickListener, LmsSearchAdapter.On
         et_search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-               // AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
+                // AppUtils.hideSoftKeyboard(mContext as DashboardActivity)
                 if (!et_search.text.toString().trim().equals("")) {
                     progress_wheel.spin()
                     doAsync {
@@ -219,15 +217,21 @@ class SearchLmsFrag : BaseFragment() , View.OnClickListener, LmsSearchAdapter.On
                     .subscribe({ result ->
                         val response = result as TopicListResponse
                         if (response.status == NetworkConstant.SUCCESS) {
+                            sortedCourseList  = ArrayList<LmsSearchData>()
                             courseList = ArrayList<LmsSearchData>()
                             for (i in 0..response.topic_list.size - 1) {
                                 if (response.topic_list.get(i).video_count!= 0) {
-                                    courseList = courseList + LmsSearchData(
+                                    sortedCourseList = sortedCourseList + LmsSearchData(
                                         response.topic_list.get(i).topic_id.toString(),
                                         response.topic_list.get(i).topic_name,
                                         response.topic_list.get(i).video_count,
-                                        response.topic_list.get(i).topic_parcentage
+                                        response.topic_list.get(i).topic_parcentage,
+                                        response.topic_list.get(i).topic_sequence,
                                     )
+                                    //code start by Puja date 25.09.2024 mantis - 0027716
+                                    // Sorting the topic list by topic_sequence
+                                    courseList = sortedCourseList.sortedBy { it.topic_sequence }
+                                    //code end by Puja date 25.09.2024 mantis - 0027716
                                 }
                             }
                             (mContext as DashboardActivity).setTopBarTitle("My Topics")
@@ -307,9 +311,9 @@ class SearchLmsFrag : BaseFragment() , View.OnClickListener, LmsSearchAdapter.On
                                 }
                             }
                         }
-                       /* else{
-                            Toast.makeText(mContext, "No data found", Toast.LENGTH_SHORT).show()
-                        }*/
+                        /* else{
+                             Toast.makeText(mContext, "No data found", Toast.LENGTH_SHORT).show()
+                         }*/
                     }
                 }
             }
@@ -327,10 +331,7 @@ class SearchLmsFrag : BaseFragment() , View.OnClickListener, LmsSearchAdapter.On
 
     fun setTopicAdapter(list:List<LmsSearchData>) {
         gv_search.visibility =View.VISIBLE
-        val layoutManager = FlexboxLayoutManager(mContext)
-        layoutManager.flexDirection = FlexDirection.COLUMN
-        layoutManager.justifyContent = JustifyContent.FLEX_END
-        gv_search.layoutManager = FlexboxLayoutManager(mContext)
+
         lmsSearchAdapter = LmsSearchAdapter(mContext, list, FragType.SearchLmsFrag,this)
         gv_search.adapter = lmsSearchAdapter
 

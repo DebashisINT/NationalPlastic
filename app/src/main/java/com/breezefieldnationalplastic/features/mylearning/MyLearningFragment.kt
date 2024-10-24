@@ -32,7 +32,6 @@ import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardA
 import com.breezefieldnationalplastic.features.mylearning.apiCall.LMSRepoProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -41,7 +40,6 @@ import timber.log.Timber
 
 class MyLearningFragment : BaseFragment(),OnClickListener {
     private lateinit var mContext: Context
-    private lateinit var bottomNavigation: MeowBottomNavigation
     private lateinit var cv_lms_learner_space: LinearLayout
     private lateinit var ll_lms_dash_performance_ins: LinearLayout
     private lateinit var cv_lms_leaderboard: CardView
@@ -69,6 +67,8 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
     private lateinit var tv_content: TextView
     private lateinit var tv_content_learning: TextView
     private lateinit var tv_content_knowledge: TextView
+    private lateinit var tv_save_content: TextView
+    private lateinit var cv_lms_bookmaark: LinearLayout
     lateinit var courseList: List<LmsSearchData>
     lateinit var courseListLearning: List<LmsSearchData>
     private lateinit var final_dataL: ArrayList<LarningList>
@@ -159,6 +159,8 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
         tv_lastVid_contentName = view.findViewById(R.id.tv_frag_my_learning_last_content_name)
         tv_lastVid_contentDesc = view.findViewById(R.id.tv_frag_my_learning_last_content_desc)
         iv_lastVid_thumbnail = view.findViewById(R.id.iv_frag_my_learning_last_topic_img)
+        tv_save_content = view.findViewById(R.id.tv_save_content)
+        cv_lms_bookmaark = view.findViewById(R.id.cv_lms_bookmaark)
        // lpi_frag_my_learning_last_content_parcentage = view.findViewById(R.id.lpi_frag_my_learning_last_content_parcentage)
       //  tv_frag_my_learning_last_content_prcntg = view.findViewById(R.id.tv_frag_my_learning_last_content_prcntg)
       //  tv_frag_my_learning_last_content_prcntg_status = view.findViewById(R.id.tv_frag_my_learning_last_content_prcntg_status)
@@ -235,6 +237,7 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
         ll_lms_knowledgehub.setOnClickListener(this)
         ll_myLearning.setOnClickListener(this)
         cv_frag_search_mylearning_root.setOnClickListener(this)
+        cv_lms_bookmaark.setOnClickListener(this)
 
         if (AppUtils.isOnline(mContext)) {
            // sc_vw.visibility =View.VISIBLE
@@ -278,7 +281,7 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
                 contentCountSaveAPICalling()
         }
 
-
+        tv_save_content.setText(Pref.CurrentBookmarkCount.toString())
 
     }
 
@@ -302,7 +305,11 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
 
         //code start for update bookmark count show mantis -
         try {
-            (mContext as DashboardActivity).updateBookmarkCnt()
+            if (AppUtils.isOnline(mContext)) {
+                (mContext as DashboardActivity).updateBookmarkCnt()
+            }else{
+                    (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))
+            }
         } catch (e: Exception) {
             Pref.CurrentBookmarkCount = 0
         }
@@ -512,6 +519,7 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
             //Leaderboard for LMS page redirection mantis - 0027571
             cv_lms_leaderboard.id -> {
                 setHomeClickFalse()
+                CustomStatic.LMSLeaderboardFromMenu = false
                 (mContext as DashboardActivity).loadFragment(FragType.LeaderboardLmsFrag, true, "")
             }
             //My assigned topics page redirection -> Assigned to user mantis - 0027573
@@ -521,7 +529,13 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
             }
 
             //All topics page redirection  mantis - 0027570
+
             ll_knowledgeHub.id -> {
+                setHomeClickFalse()
+                (mContext as DashboardActivity).loadFragment(FragType.SearchLmsKnowledgeFrag, true, "")
+            }
+
+            ll_lms_knowledgehub.id -> {
                 setHomeClickFalse()
                 (mContext as DashboardActivity).loadFragment(FragType.SearchLmsKnowledgeFrag, true, "")
             }
@@ -534,7 +548,14 @@ class MyLearningFragment : BaseFragment(),OnClickListener {
             //My Performance  page redirection mantis - 0027576
             cv_frag_search_mylearning_root.id -> {
                 setHomeClickFalse()
+                CustomStatic.LMSMyPerformanceFromMenu = false
                 (mContext as DashboardActivity).loadFragment(FragType.MyPerformanceFrag, true, "")
+            }
+
+            //Bookmark  page redirection mantis - 0027576
+            cv_lms_bookmaark.id -> {
+                setHomeClickFalse()
+                (mContext as DashboardActivity).loadFragment(FragType.BookmarkFrag, true, "")
             }
         }
     }

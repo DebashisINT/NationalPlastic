@@ -130,14 +130,15 @@
         <LinearLayout
             android:id="@+id/ll_row_ord_pro_list_mrp_discount_root"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_35sdp"
+            android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp">
 
             <LinearLayout
                 android:id="@+id/ll_row_ord_pro_list_mrp_root"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center|start"
@@ -156,7 +157,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
                     android:layout_marginLeft="@dimen/_3sdp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -164,7 +164,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        style="@style/CustomHintTextAppearance"
+                        android:gravity="center|start|bottom"
                         android:hint="MRP"
                         android:enabled="false"
                         android:imeOptions="actionNext"
@@ -182,7 +183,7 @@
             <LinearLayout
                 android:id="@+id/ll_row_ord_pro_list_discount_root"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -202,15 +203,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+                    android:layout_marginLeft="@dimen/_3sdp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_row_ord_pro_list_discount"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        style="@style/CustomHintTextAppearance"
+                        android:gravity="center|start|bottom"
                         android:hint="Discount"
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_10sdp"
@@ -427,15 +428,36 @@
         </LinearLayout>-->
 
         <LinearLayout
+            android:id="@+id/ll_all_stock"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_35sdp"
+            android:layout_height="@dimen/_38sdp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <TextView
+                android:id="@+id/tv_all_stock_data"
+                android:layout_width="@dimen/_95sdp"
+                android:layout_height="match_parent"
+                android:minWidth="@dimen/_55sdp"
+                android:hint="Stock\n0"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp"
+                android:background="@drawable/back_round_corner_12"
+                android:padding="@dimen/_5sdp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginTop="@dimen/_5sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -461,8 +483,9 @@
                         android:id="@+id/tv_row_ord_opti_product_list_qty"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        style="@style/CustomHintTextAppearance"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        android:gravity="center|start|bottom"
                         android:hint="Qty"
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_10sdp"
@@ -479,7 +502,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -507,7 +530,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        style="@style/CustomHintTextAppearance"
+                        android:gravity="center|start|bottom"
                         android:hint="Rate"
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_10sdp"

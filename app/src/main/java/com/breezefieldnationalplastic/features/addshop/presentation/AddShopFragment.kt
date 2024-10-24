@@ -151,10 +151,11 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     private lateinit var GSTINNumberRL: RelativeLayout
     private lateinit var FSSAILicNumberRL: RelativeLayout
     private lateinit var PANNumberRL: RelativeLayout
+    private lateinit var iv_drop_down: ImageView
 
     private var shopLongitude: Double = 0.0
     private var shopLatitude: Double = 0.0
-    private lateinit var shop_type_RL: RelativeLayout
+    private lateinit var shop_type_RL: LinearLayout
     private lateinit var assign_to_rl: RelativeLayout
     private lateinit var mReceiverAddshop: BroadcastReceiver
     private lateinit var type_TV: AppCustomTextView
@@ -330,6 +331,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
     private lateinit var contactHeader: AppCustomTextView
 
     private lateinit var owneremailLL: LinearLayout
+    private lateinit var ll_other_info_root: LinearLayout
 
     private lateinit var ownerNumberLL: RelativeLayout
 
@@ -657,6 +659,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         iv_frag_add_shop_mic.setOnClickListener(this)  // 5.0 AddShopFragment AppV 4.0.7  add feedback voice added mantis 0025684
         PANNumberRL = view.findViewById(R.id.PANNumberRL)
         GSTINNumberRL = view.findViewById(R.id.GSTINNumberRL)
+        iv_drop_down = view.findViewById(R.id.iv_drop_down)
         FSSAILicNumberRL = view.findViewById(R.id.FSSAILicNumberRL)
         assign_to_tv = view.findViewById(R.id.assign_to_tv)
         captureShopImage = view.findViewById(R.id.capture_shop_image_IV)
@@ -785,6 +788,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         questionnaire = view.findViewById(R.id.questionnaire_TV)
         contactHeader = view.findViewById(R.id.contact_only)
         owneremailLL = view.findViewById(R.id.owneremailLL)
+        ll_other_info_root = view.findViewById(R.id.ll_other_info_root)
         ownerNumberLL = view.findViewById(R.id.ownerNumberRL)
         rl_upload = view.findViewById(R.id.rl_upload)
         rl_upload_image1 = view.findViewById(R.id.rl_upload_image1)
@@ -1823,6 +1827,14 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
             til_no.hint = Pref.contactNumberText + " Number"
         }
 
+
+        if(Pref.loginID.equals("breezefsm",ignoreCase = true)){
+            GSTINNumberRL.visibility = View.GONE
+            PANNumberRL.visibility = View.GONE
+            owneremailLL.visibility = View.GONE
+            ll_other_info_root.visibility = View.GONE
+            iv_drop_down.visibility = View.GONE
+        }
     }
 
     override fun onResume() {
@@ -3317,7 +3329,11 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
                 try {
                     AppUtils.isRevisit = false
                     //filePathNewAudio = Environment.getExternalStorageDirectory().toString() + "/${System.currentTimeMillis()}recorded_audio.wav"
-                    filePathNewAudio = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/recorded_audio${System.currentTimeMillis()}.mp3"
+                    //filePathNewAudio = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/recorded_audio${System.currentTimeMillis()}.mp3"
+
+                    var audFile = File("/data/user/0/com.breezefieldnationalplastic/files", "recorded_audio${System.currentTimeMillis()}.mp3")
+                    filePathNewAudio = audFile.path
+
                     val color = resources.getColor(R.color.deep_green)
                     val requestCode = PermissionHelper.REQUEST_CODE_AUDIO_REC_NW
 
@@ -4969,7 +4985,7 @@ class AddShopFragment : BaseFragment(), View.OnClickListener {
         }.show((mContext as DashboardActivity).supportFragmentManager, "")
     }
 
-    private fun getShopTypeListApi(shop_type_RL: RelativeLayout, isFromRefresh: Boolean) {
+    private fun getShopTypeListApi(shop_type_RL: LinearLayout, isFromRefresh: Boolean) {
 
         if (!AppUtils.isOnline(mContext)) {
             (mContext as DashboardActivity).showSnackMessage(getString(R.string.no_internet))

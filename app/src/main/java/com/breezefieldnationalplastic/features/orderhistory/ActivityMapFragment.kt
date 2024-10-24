@@ -16,11 +16,13 @@ import com.google.android.gms.maps.model.*
 
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.breezefieldnationalplastic.R
+import com.breezefieldnationalplastic.app.Pref
 import com.breezefieldnationalplastic.app.utils.AppUtils.Companion.bitmapDescriptorFromVector
 import com.breezefieldnationalplastic.base.presentation.BaseFragment
 import com.breezefieldnationalplastic.features.location.LocationWizard
 import com.breezefieldnationalplastic.features.location.UserLocationDataEntity
 import com.breezefieldnationalplastic.features.member.model.TeamLocDataModel
+import com.breezefieldnationalplastic.features.orderhistory.model.LocationData
 import org.jetbrains.anko.collections.forEachWithIndex
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions

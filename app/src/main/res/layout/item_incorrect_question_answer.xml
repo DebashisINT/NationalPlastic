@@ -1,0 +1,32 @@
+<!-- res/layout/item_question_answer.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_incorrect_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/_13sdp"/>
+
+    <TextView
+        android:id="@+id/tv_incorrect_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_11sdp"/>
+
+    <Button
+        android:id="@+id/bt_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retry"
+        android:textColor="@color/red_dot"
+        android:textSize="@dimen/_12sdp"
+        android:fontFamily="@font/poppins_medium"
+        android:backgroundTint="@color/color_star_leader"
+        android:layout_marginTop="@dimen/_6sdp"/>
+</LinearLayout>

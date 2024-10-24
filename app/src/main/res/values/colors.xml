@@ -85,6 +85,7 @@
     <color name="toolbar_lms">#0D308A</color>
 -->
     <color name="toolbar_lms">#E11F5C</color>
+    <color name="toolbar_lms1">#80E11F5C</color>
     <color name="toolbar_FSM">#E11F5C</color>
     <color name="toolbartransparent_lms">#00E11F5C</color>
 

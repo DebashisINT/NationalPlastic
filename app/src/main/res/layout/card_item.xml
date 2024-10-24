@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><!-- XML implementation of Card Layout -->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:layout_gravity="center"
+    app:cardCornerRadius="5dp"
+    android:layout_marginStart="@dimen/_12sdp"
+    android:layout_marginEnd="@dimen/_12sdp"
+    app:cardElevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            app:cardCornerRadius="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/_2sdp">
+
+        <ImageView
+            android:id="@+id/idIVcourse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_medium"
+            android:textAlignment="center" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

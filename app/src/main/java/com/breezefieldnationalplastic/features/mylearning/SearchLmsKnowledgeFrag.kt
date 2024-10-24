@@ -29,9 +29,6 @@ import com.breezefieldnationalplastic.base.presentation.BaseFragment
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.mylearning.apiCall.LMSRepoProvider
 import com.breezefieldnationalplastic.widgets.AppCustomEditText
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -45,6 +42,7 @@ class SearchLmsKnowledgeFrag : BaseFragment() , View.OnClickListener, LmsSearchA
     lateinit var tv_next_afterSearch_lms: LinearLayout
     lateinit var ll_my_learning_topic_list: LinearLayout
     lateinit var courseList: List<LmsSearchData>
+    lateinit var sortedCourseList: List<LmsSearchData>
     lateinit var lmsSearchAdapter: LmsSearchAdapter
 
     private lateinit var ll_lms_performance: LinearLayout
@@ -197,14 +195,20 @@ class SearchLmsKnowledgeFrag : BaseFragment() , View.OnClickListener, LmsSearchA
                         val response = result as TopicListResponse
                         if (response.status == NetworkConstant.SUCCESS) {
                             courseList = ArrayList<LmsSearchData>()
+                            sortedCourseList = ArrayList<LmsSearchData>()
                             for (i in 0..response.topic_list.size - 1) {
                                 if (response.topic_list.get(i).video_count!= 0) {
-                                    courseList = courseList + LmsSearchData(
+                                    sortedCourseList = sortedCourseList + LmsSearchData(
                                         response.topic_list.get(i).topic_id.toString(),
                                         response.topic_list.get(i).topic_name,
                                         response.topic_list.get(i).video_count,
-                                        response.topic_list.get(i).topic_parcentage
+                                        response.topic_list.get(i).topic_parcentage,
+                                        response.topic_list.get(i).topic_sequence
                                     )
+                                    //code start by Puja date 25.09.2024 mantis - 0027716
+                                    // Sorting the topic list by topic_sequence
+                                    courseList = sortedCourseList.sortedBy { it.topic_sequence }
+                                    //code end by Puja date 25.09.2024 mantis - 0027716
                                 }
                             }
                             progress_wheel.stopSpinning()
@@ -230,10 +234,10 @@ class SearchLmsKnowledgeFrag : BaseFragment() , View.OnClickListener, LmsSearchA
     fun setTopicAdapter(list:List<LmsSearchData>) {
         progress_wheel.stopSpinning()
         gv_search.visibility =View.VISIBLE
-        val layoutManager = FlexboxLayoutManager(mContext)
-        layoutManager.flexDirection = FlexDirection.COLUMN
-        layoutManager.justifyContent = JustifyContent.FLEX_END
-        gv_search.layoutManager = FlexboxLayoutManager(mContext)
+        //val layoutManager = FlexboxLayoutManager(mContext)
+        //layoutManager.flexDirection = FlexDirection.COLUMN
+        //layoutManager.justifyContent = JustifyContent.FLEX_END
+        //gv_search.layoutManager = FlexboxLayoutManager(mContext)
         lmsSearchAdapter = LmsSearchAdapter(mContext, list, FragType.SearchLmsKnowledgeFrag, this)
         gv_search.adapter = lmsSearchAdapter
 

@@ -151,19 +151,19 @@ class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
                 }
                 var unuiqPPListObj :ArrayList<AssignToPPEntity> = ArrayList()
 
-                    for(i in 0..unuiqPPList.size-1){
-                        // start rev 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
-                        try {
-                            unuiqPPListObj.add(
-                                AppDatabase.getDBInstance()?.ppListDao()
-                                    ?.getSingleValue(unuiqPPList.get(i).toString())!!
-                            )
-                        }
-                        catch (ex:Exception){
-                            ex.printStackTrace()
-                        }
-                        //end rev 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
+                for(i in 0..unuiqPPList.size-1){
+                    // start rev 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
+                    try {
+                        unuiqPPListObj.add(
+                            AppDatabase.getDBInstance()?.ppListDao()
+                                ?.getSingleValue(unuiqPPList.get(i).toString())!!
+                        )
                     }
+                    catch (ex:Exception){
+                        ex.printStackTrace()
+                    }
+                    //end rev 3.0  DistributorwiseorderlistFragment App V 4.1.6 saheli 04-07-2023 0026504: Distributor wise order list click on assign party list app getting crash.
+                }
 
                 //var assignPPList = AppDatabase.getDBInstance()?.ppListDao()?.getAll()
                 var assignPPList = unuiqPPListObj
@@ -270,38 +270,44 @@ class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
         var shopL=AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopByDD(assignedToDDId) as List<AddShopDBModelEntity>
         if(shopL.size>0){
             for(i in 0..shopL.size-1){
-               var ordL= AppDatabase.getDBInstance()!!.orderDetailsListDao().getListAccordingTodateonOrderDD(fromDateSel,toDateSel,shopL.get(i).shop_id.toString()) as List<OrderDetailsListEntity>
+                var ordL= AppDatabase.getDBInstance()!!.orderDetailsListDao().getListAccordingTodateonOrderDD(fromDateSel,toDateSel,shopL.get(i).shop_id.toString()) as List<OrderDetailsListEntity>
                 var objOrderList = OrderList()
                 for(j in 0..ordL.size-1){
-                   objOrderList.ordNo = ordL.get(j).order_id.toString()
-                   objOrderList.ordDate=AppDatabase.getDBInstance()!!.orderDetailsListDao().getSingleOrder(ordL.get(j).order_id.toString()).only_date.toString()
+                    objOrderList.ordNo = ordL.get(j).order_id.toString()
+                    objOrderList.ordDate=AppDatabase.getDBInstance()!!.orderDetailsListDao().getSingleOrder(ordL.get(j).order_id.toString()).only_date.toString()
                     if(AppDatabase.getDBInstance()!!.billingDao().getInvoice(ordL.get(j).order_id.toString()) != null){
                         objOrderList.invNo = AppDatabase.getDBInstance()!!.billingDao().getInvoice(ordL.get(j).order_id.toString())
                         objOrderList.invDate = AppDatabase.getDBInstance()!!.billingDao().getInvoiceDate(ordL.get(j).order_id.toString())
                     }
 
-                   objOrderList.shop_id=AppDatabase.getDBInstance()!!.orderDetailsListDao().getSingleOrder(ordL.get(j).order_id.toString()).shop_id.toString()
-                   var objShopDtls = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopByIdN(objOrderList.shop_id)!!
+                    objOrderList.shop_id=AppDatabase.getDBInstance()!!.orderDetailsListDao().getSingleOrder(ordL.get(j).order_id.toString()).shop_id.toString()
+                    var objShopDtls = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopByIdN(objOrderList.shop_id)!!
                     objOrderList.shop_name = objShopDtls.shopName
                     objOrderList.shop_addr = objShopDtls.address
                     objOrderList.shop_ph = objShopDtls.ownerContactNumber
                     // 2.0 NewOrderListFragment AppV 4.0.6 Pdf module updation mantis 25595
-                    objOrderList.shopOwner_PAN = objShopDtls.shopOwner_PAN
-                    objOrderList.gstN_Number = objShopDtls.gstN_Number
+                    try {
+                        objOrderList.shopOwner_PAN = objShopDtls.shopOwner_PAN
+                        objOrderList.gstN_Number = objShopDtls.gstN_Number
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        objOrderList.shopOwner_PAN = ""
+                        objOrderList.gstN_Number = ""
+                    }
 
-                   var objProductsL = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToOrderId(objOrderList.ordNo)
-                   for(k in 0..objProductsL.size-1){
-                       var productList = ProductList()
-                       productList.item_desc=objProductsL.get(k).product_name.toString()
-                       productList.qty=objProductsL.get(k).qty.toString()
-                       productList.unit=objProductsL.get(k).watt.toString()
-                       productList.rate=objProductsL.get(k).rate.toString()
-                       productList.amt=objProductsL.get(k).total_price.toString()
-                       productList.order_mrp=objProductsL.get(k).order_mrp.toString()
-                       productList.order_discount=objProductsL.get(k).order_discount.toString()
-                       objOrderList.productList.add(productList)
-                   }
-               }
+                    var objProductsL = AppDatabase.getDBInstance()!!.orderProductListDao().getDataAccordingToOrderId(objOrderList.ordNo)
+                    for(k in 0..objProductsL.size-1){
+                        var productList = ProductList()
+                        productList.item_desc=objProductsL.get(k).product_name.toString()
+                        productList.qty=objProductsL.get(k).qty.toString()
+                        productList.unit=objProductsL.get(k).watt.toString()
+                        productList.rate=objProductsL.get(k).rate.toString()
+                        productList.amt=objProductsL.get(k).total_price.toString()
+                        productList.order_mrp=objProductsL.get(k).order_mrp.toString()
+                        productList.order_discount=objProductsL.get(k).order_discount.toString()
+                        objOrderList.productList.add(productList)
+                    }
+                }
                 if(!objOrderList.ordNo.equals("")){
                     pdfDataRoot.ordList.add(objOrderList)
                 }
@@ -527,11 +533,13 @@ class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
                 var mrp: String = ""
                 var discount: String = ""
                 var tAmt="0"
+                var totalQty = 0.0
                 var tempProductObj = objData.ordList.get(i).productList!!
                 for (j in 0..tempProductObj.size - 1) {
                     srNo = (j + 1).toString() + " "
                     item = tempProductObj.get(j).item_desc + "       "
                     qty = tempProductObj.get(j).qty + " "
+                    totalQty = totalQty + qty.toDouble()
                     //unit = "KG" + " "
                     unit = tempProductObj.get(j).unit+ " "
                     rate =
@@ -544,8 +552,8 @@ class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
 
                     // AppV 4.0.6  mantis 25601
                     try{
-                    mrp = getString(R.string.rupee_symbol_with_space)+" "+tempProductObj!!.get(i).order_mrp+" "
-                    discount = getString(R.string.rupee_symbol_with_space)+" "+tempProductObj!!.get(i).order_discount +" "
+                        mrp = getString(R.string.rupee_symbol_with_space)+" "+tempProductObj!!.get(i).order_mrp+" "
+                        discount = getString(R.string.rupee_symbol_with_space)+" "+tempProductObj!!.get(i).order_discount +" "
                         // mrp fix Suman 22-02-2024 mantis id 0027271 begin
                         mrp = getString(R.string.rupee_symbol_with_space)+" "+tempProductObj!!.get(j).order_mrp+" "
                         discount = getString(R.string.rupee_symbol_with_space)+" "+tempProductObj!!.get(j).order_discount +" "
@@ -614,6 +622,25 @@ class DistributorwiseorderlistFragment : BaseFragment(), View.OnClickListener {
                 val xffx = Paragraph("", font)
                 xffx.spacingAfter = 12f
                 document.add(xffx)
+
+
+                //code start by Puja date 01.10.2024 mantis - 0027739
+                try {
+
+                    val paraQnty = Paragraph()
+                    val glueQnty = Chunk(VerticalPositionMark())
+                    val ph1Qnty = Phrase()
+                    val mainQnty = Paragraph()
+                    ph1Qnty.add(glueQnty) // Here I add special chunk to the same phrase.
+
+                    ph1Qnty.add(Chunk("Total Quantity: " + "\u20B9" + totalQty.toInt().toString(), font))
+                    paraQnty.add(ph1Qnty)
+                    document.add(paraQnty)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                //code end by Puja date 01.10.2024 mantis - 0027739
+
 
                 val para1 = Paragraph()
                 val glue1 = Chunk(VerticalPositionMark())

@@ -396,9 +396,9 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_lms_leaderboard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/cv_lms_leaderboard"
                     android:layout_weight="1"
                     app:cardCornerRadius="@dimen/_10sdp"
                     android:elevation="@dimen/_10sdp"
@@ -441,7 +441,7 @@
                                     android:id="@+id/tv_leader_rank"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="0/0"
+                                    android:text=""
                                     android:layout_marginTop="@dimen/_5sdp"
                                     android:layout_gravity="center"
                                     android:textStyle="bold"

@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.NetworkConstant
 import com.breezefieldnationalplastic.app.Pref
@@ -29,6 +30,9 @@ import com.breezefieldnationalplastic.features.report.api.GetMISRepositoryProvid
 import com.breezefieldnationalplastic.features.report.model.MISResponse
 import com.breezefieldnationalplastic.features.report.model.MISShopListCount
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.rackspira.kristiawan.rackmonthpicker.RackMonthPicker
 import com.rackspira.kristiawan.rackmonthpicker.listener.DateMonthDialogListener
 import com.rackspira.kristiawan.rackmonthpicker.listener.OnCancelMonthDialogListener
@@ -197,7 +201,25 @@ class ReportFragment : BaseFragment(), View.OnClickListener, DatePickerDialog.On
     }
 
     private fun callDateRangePicker() {
-        val now = Calendar.getInstance(Locale.ENGLISH)
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val tomorrow = today
+        val constraintsBuilder = CalendarConstraints.Builder()
+            .setEnd(today)
+            .setValidator(DateValidatorPointBackward.now())
+        DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager,constraintsBuilder){ startDate, endDate ->
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val startTime = dateFormat.parse(startDate).time
+            val endTime = dateFormat.parse(endDate).time
+
+            val diffInMillis = endTime - startTime
+            val date = "Leave: From "+AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+
+            selectedDate.text = date
+            getMISDetail("", startDate, endDate)
+        }
+
+
+        /*val now = Calendar.getInstance(Locale.ENGLISH)
         val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                 this,
                 now.get(Calendar.YEAR),
@@ -206,7 +228,7 @@ class ReportFragment : BaseFragment(), View.OnClickListener, DatePickerDialog.On
         )
         dpd.isAutoHighlight = true
         dpd.maxDate = Calendar.getInstance(Locale.ENGLISH)
-        dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+        dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
     }
 
     override fun onDateSet(datePickerDialog: DatePickerDialog, year: Int, monthOfYear: Int, dayOfMonth: Int, yearEnd: Int, monthOfYearEnd: Int, dayOfMonthEnd: Int) {

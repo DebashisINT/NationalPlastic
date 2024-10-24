@@ -27,9 +27,6 @@ import com.breezefieldnationalplastic.base.presentation.BaseActivity
 import com.breezefieldnationalplastic.base.presentation.BaseFragment
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.mylearning.apiCall.LMSRepoProvider
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -71,6 +68,7 @@ class MyLearningTopicList : BaseFragment(), View.OnClickListener , LmsSearchAdap
     private lateinit var ll_no_data: LinearLayout
     private lateinit var final_dataL: ArrayList<LarningList>
     lateinit var courseList: ArrayList<LmsSearchData>
+    lateinit var sortedCourseList: ArrayList<LmsSearchData>
     lateinit var courseListF: ArrayList<LmsSearchData>
     lateinit var tv_next_afterSearch_lms: LinearLayout
     lateinit var lmsSearchAdapter: LmsSearchAdapter
@@ -211,14 +209,20 @@ class MyLearningTopicList : BaseFragment(), View.OnClickListener , LmsSearchAdap
                         val response = result as TopicListResponse
                         if (response.status == NetworkConstant.SUCCESS) {
                             courseList = ArrayList<LmsSearchData>()
+                            sortedCourseList = ArrayList<LmsSearchData>()
                             for (i in 0..response.topic_list.size - 1) {
                                 if (response.topic_list.get(i).video_count!= 0 && response.topic_list.get(i).topic_parcentage!=0) {
-                                    courseList = (courseList + LmsSearchData(
+                                    sortedCourseList = ((sortedCourseList + LmsSearchData(
                                         response.topic_list.get(i).topic_id.toString(),
                                         response.topic_list.get(i).topic_name,
                                         response.topic_list.get(i).video_count,
-                                        response.topic_list.get(i).topic_parcentage
-                                    )) as ArrayList<LmsSearchData>
+                                        response.topic_list.get(i).topic_parcentage,
+                                        response.topic_list.get(i).topic_sequence
+                                    )) as ArrayList<LmsSearchData>)
+                                    //code start by Puja date 25.09.2024 mantis - 0027716
+                                    // Sorting the topic list by topic_sequence
+                                    courseList = ArrayList(sortedCourseList.sortedBy { it.topic_sequence })  // Convert to ArrayList after sorting
+                                    //code end by Puja date 25.09.2024 mantis - 0027716
                                 }
                             }
                             (mContext as DashboardActivity).setTopBarTitle("My Learning")
@@ -243,10 +247,10 @@ class MyLearningTopicList : BaseFragment(), View.OnClickListener , LmsSearchAdap
 
     fun setTopicAdapter(list:List<LmsSearchData>) {
         gv_search.visibility =View.VISIBLE
-        val layoutManager = FlexboxLayoutManager(mContext)
-        layoutManager.flexDirection = FlexDirection.COLUMN
-        layoutManager.justifyContent = JustifyContent.FLEX_END
-        gv_search.layoutManager = FlexboxLayoutManager(mContext)
+        //val layoutManager = FlexboxLayoutManager(mContext)
+        //layoutManager.flexDirection = FlexDirection.COLUMN
+        //layoutManager.justifyContent = JustifyContent.FLEX_END
+        //gv_search.layoutManager = FlexboxLayoutManager(mContext)
         lmsSearchAdapter = LmsSearchAdapter(mContext, list, FragType.MyLearningTopicList, this)
         gv_search.adapter = lmsSearchAdapter
 

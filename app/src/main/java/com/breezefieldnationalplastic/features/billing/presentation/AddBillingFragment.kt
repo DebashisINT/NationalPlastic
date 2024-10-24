@@ -37,6 +37,7 @@ import com.breezefieldnationalplastic.app.utils.AppUtils
 import com.breezefieldnationalplastic.app.utils.ImagePickerManager
 import com.breezefieldnationalplastic.app.utils.InputFilterDecimal
 import com.breezefieldnationalplastic.app.utils.PermissionUtils
+import com.breezefieldnationalplastic.app.utils.ToasterCustom
 import com.breezefieldnationalplastic.app.utils.swipemenulayout.SwipeMenuRecyclerView
 import com.breezefieldnationalplastic.base.BaseResponse
 import com.breezefieldnationalplastic.base.presentation.BaseActivity
@@ -62,6 +63,7 @@ import com.breezefieldnationalplastic.features.location.shopdurationapi.ShopDura
 import com.breezefieldnationalplastic.features.viewAllOrder.api.addorder.AddOrderRepoProvider
 import com.breezefieldnationalplastic.features.viewAllOrder.model.AddOrderInputParamsModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.AddOrderInputProductList
+import com.breezefieldnationalplastic.features.viewAllOrder.orderOptimized.OrderProductCartFrag
 import com.breezefieldnationalplastic.widgets.AppCustomEditText
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
 import com.themechangeapp.pickimage.PermissionHelper
@@ -249,7 +251,7 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
 
     private fun initAdapter() {
         rv_cart_list.setItemViewCacheSize(productList?.size!!)
-        rv_cart_list.adapter = AddBillingCartAdapter(mContext, productList, object : AddBillingCartAdapter.OnProductClickListener {
+        rv_cart_list.adapter = AddBillingCartAdapter(mContext,order!!.shop_id!!, productList, object : AddBillingCartAdapter.OnProductClickListener {
             override fun onDelete(adapterPosition: Int) {
                 showDeleteAlert(adapterPosition)
             }
@@ -458,6 +460,49 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
                 billingProductEntity.watt_id = productList?.get(i)?.watt_id
 
                 AppDatabase.getDBInstance()!!.billProductDao().insert(billingProductEntity)
+            }
+
+            //stock entry
+            try {
+                if (Pref.IsStockCheckFeatureOn && Pref.StockCheckOnOrder1OrInvioce0==false) {
+
+                    for(l in 0..productList!!.size-1){
+                        var stock :StockAllEntity = StockAllEntity()
+                        if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                            stock = (AppDatabase.getDBInstance()!!.stockAllDao().getStockDtlsForDD(productList!!.get(l).product_id!!,productList!!.get(l).shop_id!!  ) as ArrayList<StockAllEntity>).first()
+                        }else{
+                            stock = (AppDatabase.getDBInstance()!!.stockAllDao().getStockDtls(productList!!.get(l).product_id!!,productList!!.get(l).shop_id!!  ) as ArrayList<StockAllEntity>).first()
+                        }
+
+                        var objStock: StockTransEntity = StockTransEntity()
+                        objStock.order_id = order?.order_id!!
+                        objStock.stock_shopcode = stock.stock_shopcode
+                        objStock.stock_productid = stock.stock_productid
+                        objStock.stock_productqty = stock.stock_productqty
+
+                        objStock.stock_productOrderqty = (mContext as DashboardActivity).qtyList[l]
+                        objStock.isUploaded = false
+
+
+                        var stockOb = AppDatabase.getDBInstance()?.stockAllDao()!!
+                            .getParticularStock(
+                                objStock.stock_productid,
+                                objStock.stock_shopcode
+                            )
+                        var currentStock =
+                            stockOb.stock_productbalqty.toDouble() - objStock.stock_productOrderqty.toDouble()
+                        var cs = String.format("%.02f", currentStock)
+                        objStock.stock_productbalqty = cs
+                        AppDatabase.getDBInstance()?.stockTransDao()!!.insert(objStock)
+
+                        AppDatabase.getDBInstance()?.stockAllDao()!!.updateStock(
+                            String.format("%.02f", currentStock).toString(),
+                            objStock.stock_productid, objStock.stock_shopcode
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
 
             uiThread {
@@ -1568,6 +1613,33 @@ class AddBillingFragment : BaseFragment(), View.OnClickListener {
     }
 
     fun onConfirmClick() {
+
+        // stock check work
+        try {
+            if(Pref.IsStockCheckFeatureOn && Pref.StockCheckOnOrder1OrInvioce0 == false){
+                var temp = productList!!
+
+                for(i in 0..temp.size-1){
+                    var ob = temp.get(i)
+                    var stock :StockAllEntity = StockAllEntity()
+                    if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                        stock = (AppDatabase.getDBInstance()!!.stockAllDao().getStockDtlsForDD(ob.product_id!!,ob.shop_id!!  ) as ArrayList<StockAllEntity>).first()
+                    }else{
+                        stock = (AppDatabase.getDBInstance()!!.stockAllDao().getStockDtls(ob.product_id!!,ob.shop_id!!  ) as ArrayList<StockAllEntity>).first()
+                    }
+                    if(stock!=null && Pref.IsAllowNegativeStock == false){
+                        var balanceStock = stock.stock_productbalqty.toDouble()
+                        var enteringQty = (mContext as DashboardActivity).qtyList[i].toDouble()
+                        if(enteringQty>balanceStock){
+                            ToasterCustom.msgShort(mContext,"Stock not available.")
+                            return
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         //begin 2.0 AddBillingFragment AppV 4.2.2 Suman 16-10-2023 mantis id 26908
         var ordAmt = 0.0

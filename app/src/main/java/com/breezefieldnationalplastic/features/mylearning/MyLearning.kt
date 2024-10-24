@@ -29,7 +29,7 @@ data class OptionL(var question_id:String="",var option_id:String="",
                    var option_no_3:String="",var option_point_3:String="",var isCorrect_3:Boolean=false,var isSelected_3: Boolean,
                    var option_no_4:String="",var option_point_4:String="",var isCorrect_4:Boolean=false,var isSelected_4: Boolean)
 
-data class TopicList(var topic_id:Int=0,var topic_name:String="",var video_count:Int=0,var no_of_pending_video_count:Int =0, var topic_parcentage:Int=0)
+data class TopicList(var topic_id:Int=0,var topic_name:String="",var video_count:Int=0,var no_of_pending_video_count:Int =0, var topic_parcentage:Int=0 , var topic_sequence:Int=0)
 data class LarningList(var topic_id:Int=0,var topic_name:String="",var content_id:Int=0,var content_url:String="",var content_title:String="",var content_description:String="", var content_length:String="", var content_watch_length:String="", var content_watch_completed:Boolean=false,var content_last_view_date_time:String="",
                        var WatchStartTime:String="",var WatchEndTime:String="",var WatchedDuration:String="",var Timestamp:String="",var DeviceType:String="",var Operating_System:String="",var Location:String="",var PlaybackSpeed:String="",var Watch_Percentage:String="",var QuizAttemptsNo:Int=0,var QuizScores:Int=0,var CompletionStatus:Boolean=false)
 

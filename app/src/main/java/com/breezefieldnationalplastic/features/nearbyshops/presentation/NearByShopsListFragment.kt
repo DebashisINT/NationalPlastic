@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
@@ -87,6 +88,17 @@ import com.breezefieldnationalplastic.features.viewAllOrder.interf.QaOnCLick
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
 import com.github.clans.fab.FloatingActionButton
 import com.github.clans.fab.FloatingActionMenu
+import com.itextpdf.text.BadElementException
+import com.itextpdf.text.BaseColor
+import com.itextpdf.text.Chunk
+import com.itextpdf.text.Document
+import com.itextpdf.text.Element
+import com.itextpdf.text.Font
+import com.itextpdf.text.Image
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.Phrase
+import com.itextpdf.text.pdf.PdfPCell
+import com.itextpdf.text.pdf.PdfWriter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.doAsync
@@ -1253,7 +1265,7 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     pdfBody += "\n\n${Pref.shopText} Created Date: " + AppUtils.convertDateTimeToCommonFormat(list[position].added_date)
 
 
-                if (!TextUtils.isEmpty(list[position].shopImageLocalPath)) {
+                /*if (!TextUtils.isEmpty(list[position].shopImageLocalPath)) {
                     var image: Bitmap? = null//BitmapFactory.decodeResource(mContext.resources, R.mipmap.ic_launcher)
                     Glide.with(mContext)
                         .asBitmap()
@@ -1306,6 +1318,109 @@ class NearByShopsListFragment : BaseFragment(), View.OnClickListener {
                     } else {
                         (mContext as DashboardActivity).showSnackMessage("Pdf can not be sent.")
                     }
+                }*/
+
+                //create pdf
+                val shop = AppDatabase.getDBInstance()?.addShopEntryDao()?.getShopByIdN(list[position].shop_id)
+                var document: Document = Document()
+                var fileName = "FTS"+ "_" + shop!!.shop_id
+                fileName = fileName.replace("/", "_")
+                val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() +"/breezefieldnationalplasticApp/SHOPDtls/"
+                var pathNew = ""
+                val dir = File(path)
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
+                try {
+                    try {
+                        PdfWriter.getInstance(document, FileOutputStream(path + fileName + ".pdf"))
+                    }catch (ex:Exception){
+                        ex.printStackTrace()
+                        pathNew = mContext.filesDir.toString() + "/" + fileName+".pdf"
+                        PdfWriter.getInstance(document, FileOutputStream(pathNew))
+                    }
+                    document.open()
+                    var font: Font = Font(Font.FontFamily.HELVETICA, 10f, Font.BOLD)
+                    var fontBoldU: Font = Font(Font.FontFamily.HELVETICA, 12f, Font.UNDERLINE or Font.BOLD)
+
+                    val bm: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.breezelogo)
+                    //code end by Puja mantis-0027395 date-23.04.24 v4.2.6
+                    val bitmap = Bitmap.createScaledBitmap(bm, 80, 80, true);
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    var img: Image? = null
+                    val byteArray: ByteArray = stream.toByteArray()
+                    try {
+                        img = Image.getInstance(byteArray)
+                        img.scaleToFit(110f, 110f)
+                        img.scalePercent(70f)
+                        img.alignment = Image.ALIGN_LEFT
+                    } catch (e: BadElementException) {
+                        e.printStackTrace()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                    val h = Paragraph("${Pref.shopText} Details", fontBoldU)
+                    h.alignment = Element.ALIGN_CENTER
+                    val pHead = Paragraph()
+                    pHead.add(Chunk(img, 0f, -30f))
+                    pHead.add(h)
+                    document.add(pHead)
+
+                    val xz = Paragraph("", font)
+                    xz.spacingAfter = 20f
+                    document.add(xz)
+
+                    val parties = Paragraph("${Pref.shopText} Name     :     " + shop?.shopName, font)
+                    parties.alignment = Element.ALIGN_LEFT
+                    parties.spacingAfter = 2f
+                    document.add(parties)
+
+                    val addr = Paragraph("Address     :     " + shop?.address, font)
+                    addr.alignment = Element.ALIGN_LEFT
+                    addr.spacingAfter = 2f
+                    document.add(addr)
+
+                    val owner = Paragraph("Owner Name     :     " + shop?.ownerName, font)
+                    owner.alignment = Element.ALIGN_LEFT
+                    owner.spacingAfter = 2f
+                    document.add(owner)
+
+                    val ownerPh = Paragraph("Owner Contact     :     " + shop?.ownerContactNumber, font)
+                    ownerPh.alignment = Element.ALIGN_LEFT
+                    ownerPh.spacingAfter = 2f
+                    document.add(ownerPh)
+
+                    var typeN = AppDatabase.getDBInstance()!!.shopTypeDao().getShopTypeNameById(shop.shop_id)
+                    val shopType = Paragraph("${Pref.shopText} Type     :     " + typeN, font)
+                    shopType.alignment = Element.ALIGN_LEFT
+                    shopType.spacingAfter = 2f
+                    document.add(shopType)
+
+                    document.close()
+
+                    var sendingPath = path + fileName + ".pdf"
+                    if(!pathNew.equals("")){
+                        sendingPath = pathNew
+                    }
+                    if (!TextUtils.isEmpty(sendingPath)) {
+                        try {
+                            val shareIntent = Intent(Intent.ACTION_SEND)
+                            val fileUrl = Uri.parse(sendingPath)
+                            val file = File(fileUrl.path)
+                            val uri: Uri = FileProvider.getUriForFile(mContext, mContext.applicationContext.packageName.toString() + ".provider", file)
+                            shareIntent.type = "image/png"
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+                            startActivity(Intent.createChooser(shareIntent, "Share pdf using"))
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            (mContext as DashboardActivity).showSnackMessage(getString(R.string.something_went_wrong1))
+                        }
+                    }
+
+                }catch (e:Exception){
+                    e.printStackTrace()
                 }
             }
 

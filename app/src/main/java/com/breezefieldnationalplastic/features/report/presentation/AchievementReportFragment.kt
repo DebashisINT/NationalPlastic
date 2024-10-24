@@ -143,7 +143,7 @@ class AchievementReportFragment : BaseFragment(), View.OnClickListener, DatePick
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
-            R.id.tv_pick_date_range -> {
+            R.id.tv_pick_date_range -> {/*
                 val now = Calendar.getInstance(Locale.ENGLISH)
                 val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                         this,
@@ -153,7 +153,7 @@ class AchievementReportFragment : BaseFragment(), View.OnClickListener, DatePick
                 )
                 dpd.isAutoHighlight = false
                 //dpd.maxDate = Calendar.getInstance()
-                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
             }
         }
     }

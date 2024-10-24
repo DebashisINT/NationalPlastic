@@ -3,17 +3,13 @@
 // update version retrofit_version,dagger_version
 buildscript {
     ext.kotlin_version = '1.7.20'
-    //ext.kotlin_version = '1.3.72'
-    //ext.dagger_version = '2.40'
-    ext.dagger_version = '2.46.1'
+    ext.dagger_version = '2.51.1'
     ext.arch_version = "1.0.0"
     ext.support_version = "27.1.1"
     ext.rxjava_version = "2.1.6"
-    ext.rxandroid_version = "2.0.1"
+    ext.rxandroid_version = "2.1.1"
     ext.junit_version = "4.12"
     ext.espresso_version = "3.0.0"
-    //Begin Rev 1.0 App v 4.1.3 Retrofit V update 28-04-2023 mantis id 25956
-    //ext.retrofit_version = "2.3.0"
     ext.retrofit_version = "2.9.0"
     //End of Rev 1.0 Project build.gradle App v 4.1.3 Retrofit V update 28-04-2023 mantis id 25956
     ext.mockito_version = "2.7.19"
@@ -38,7 +34,7 @@ buildscript {
     }
     dependencies {
 //        classpath 'com.android.tools.build:gradle:7.2.0'
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:7.1.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.13'
 //        classpath 'io.fabric.tools:gradle:1.29.0'

@@ -1100,6 +1100,25 @@ object Pref : PreferenceHolder() {
 
     //Suman 17-09-2024 mantis 27700
     var IsRetailOrderStatusRequired: Boolean by bindToPreferenceField(false, "IsRetailOrderStatusRequired")
+
+    var loginID: String by bindToPreferenceField("", "loginID")
+
+    var IsStockCheckFeatureOn: Boolean by bindToPreferenceField(false, "IsStockCheckFeatureOn")
+    var IsShowDistributorWiseCurrentStockInOrder: Boolean by bindToPreferenceField(false, "IsShowDistributorWiseCurrentStockInOrder")
+    var IsAllowNegativeStock: Boolean by bindToPreferenceField(false, "IsAllowNegativeStock")
+    var StockCheckOnOrder1OrInvioce0: Boolean by bindToPreferenceField(true, "StockCheckOnOrder1OrInvioce0")
+
+    var WillCreditDaysFollow: Boolean by bindToPreferenceField(false, "WillCreditDaysFollow")
+    var AllowOrderOnOutstandingAndClosingStockDifference: Boolean by bindToPreferenceField(false, "AllowOrderOnOutstandingAndClosingStockDifference")
+    var AllowedCreditDays : String by bindToPreferenceField("", "AllowedCreditDays")
+    var WillCreditDaysFollowUserWise: Boolean by bindToPreferenceField(false, "WillCreditDaysFollowUserWise")
+    var AllowOrderOnOutstandingAndClosingStockDifferenceUserWise: Boolean by bindToPreferenceField(false, "AllowOrderOnOutstandingAndClosingStockDifferenceUserWise")
+
+    //Mantis 0027717 Puja 07.10.2024
+    var IsVideoAutoPlayInLMS : Boolean by bindToPreferenceField(true, "IsVideoAutoPlayInLMS")
+
+    //Mantis 0027772 Puja 17.10.2024
+    var ShowRetryIncorrectQuiz : Boolean by bindToPreferenceField(false, "ShowRetryIncorrectQuiz")
 }
 
 

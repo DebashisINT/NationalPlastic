@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.NetworkConstant
 import com.breezefieldnationalplastic.app.types.FragType
@@ -27,6 +28,7 @@ import com.breezefieldnationalplastic.widgets.AppCustomTextView
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -146,7 +148,23 @@ class TargetVsAchvFragment : BaseFragment(), View.OnClickListener, DatePickerDia
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.tv_pick_date_range -> {
-                val now = Calendar.getInstance(Locale.ENGLISH)
+                DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager){ startDate, endDate ->
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val startTime = dateFormat.parse(startDate).time
+                    val endTime = dateFormat.parse(endDate).time
+
+                    val diffInMillis = endTime - startTime
+                    if (TimeUnit.MILLISECONDS.toDays(diffInMillis) > 7) {
+                        (mContext as DashboardActivity).showSnackMessage("Report must be generated for 7 Days")
+                    }else{
+                        val date = "Leave: From "+AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                        tv_pick_date_range.text = date
+                        getTargVsAchvReport(startDate,endDate)
+                    }
+                }
+
+
+                /*val now = Calendar.getInstance(Locale.ENGLISH)
                 val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                         this,
                         now.get(Calendar.YEAR),
@@ -155,7 +173,7 @@ class TargetVsAchvFragment : BaseFragment(), View.OnClickListener, DatePickerDia
                 )
                 dpd.isAutoHighlight = false
                 //dpd.maxDate = Calendar.getInstance()
-                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
             }
         }
     }

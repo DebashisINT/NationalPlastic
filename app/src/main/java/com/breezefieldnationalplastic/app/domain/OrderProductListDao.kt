@@ -29,4 +29,8 @@ interface OrderProductListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     @JvmSuppressWildcards
     abstract fun insertAll(kist: List<OrderProductListEntity>)
+
+    @Query("select sum(qty) as totalQty from order_product_list where order_id=:order_id")
+    fun getTotalQnty(order_id: String): String
+
 }

@@ -3,7 +3,7 @@ package com.breezefieldnationalplastic.features.mylearning
 import com.breezefieldnationalplastic.app.domain.LMSNotiEntity
 import com.breezefieldnationalplastic.base.BaseResponse
 
-data class LmsSearchData(val searchid: String,val courseName: String, var video_count: Int = 0,var topic_parcentage: Int =0, var isSelected: Boolean = false, )
+data class LmsSearchData(val searchid: String,val courseName: String, var video_count: Int = 0,var topic_parcentage: Int =0,var topic_sequence: Int =0, var isSelected: Boolean = false )
 data class HeaderItem(val headerText: String, val valueItems: List<ValueItem>)
 data class ValueItem(val valueHeader: String, val valueText: String, val imageResId: Int)
 

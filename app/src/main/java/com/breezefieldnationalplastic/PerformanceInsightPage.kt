@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.breezefieldnationalplastic.app.types.FragType
 import com.breezefieldnationalplastic.base.presentation.BaseFragment
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
+import com.breezefieldnationalplastic.features.mylearning.LeaderboardLmsFrag
 import com.breezefieldnationalplastic.features.mylearning.SearchLmsFrag
 
 class PerformanceInsightPage : BaseFragment() , View.OnClickListener {
@@ -115,6 +116,8 @@ class PerformanceInsightPage : BaseFragment() , View.OnClickListener {
             //Leaderboard for LMS page redirection mantis - 0027571
             cv_lms_leaderboard.id -> {
                 setHomeClickFalse()
+                LeaderboardLmsFrag.loadedFrom = "PerformanceInsightPage"
+                CustomStatic.LMSLeaderboardFromMenu = false
                 (mContext as DashboardActivity).loadFragment(FragType.LeaderboardLmsFrag, true, "")
             }
 
@@ -137,6 +140,7 @@ class PerformanceInsightPage : BaseFragment() , View.OnClickListener {
             //My Performance  page redirection mantis - 0027576
             cv_frag_search_mylearning_root.id -> {
                 setHomeClickFalse()
+                CustomStatic.LMSMyPerformanceFromMenu = false
                 (mContext as DashboardActivity).loadFragment(FragType.MyPerformanceFrag, true, "")
             }
             //My learning topic list page redirection mantis - 0027574

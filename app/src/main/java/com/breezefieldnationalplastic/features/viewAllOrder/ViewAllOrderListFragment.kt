@@ -1,8 +1,10 @@
 package com.breezefieldnationalplastic.features.viewAllOrder
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -316,8 +318,54 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
     }
 
 
+
     private fun setData() {
-//        progress_wheel.stopSpinning()
+        if(AppUtils.isOnline(mContext) && Pref.IsRetailOrderStatusRequired){
+            orderStatusUpdateApi()
+        }else{
+            setAdapter()
+        }
+    }
+
+    private fun orderStatusUpdateApi() {
+        val repository = OrderDetailsListRepoProvider.provideOrderDetailsListRepository()
+        progress_wheel.spin()
+        BaseActivity.compositeDisposable.add(
+            repository.getOrderStatusL()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    val response = result as OrdResponse
+                    if (response.status == NetworkConstant.SUCCESS) {
+                        progress_wheel.stopSpinning()
+                        doAsync {
+                            try {
+                                if(response.order_status_list.size>0){
+                                    for(i in 0..response.order_status_list.size-1){
+                                        var obj = response.order_status_list.get(i)
+                                        AppDatabase.getDBInstance()!!.orderDetailsListDao().updateOrdStatus(obj.Order_Code,obj.OrderStatus)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                            uiThread {
+                                setAdapter()
+                            }
+                        }
+
+                    } else {
+                        progress_wheel.stopSpinning()
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    progress_wheel.stopSpinning()
+                })
+        )
+    }
+
+    fun setAdapter(){
+        //        progress_wheel.stopSpinning()
         try {
             //generateOrderListDate()
 
@@ -468,8 +516,8 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             myshop_name_TV.text = shopName
 
             val drawable = TextDrawable.builder()
-                    //.buildRoundRect(shopName.toUpperCase().take(1), ColorGenerator.MATERIAL.randomColor, 120)
-                    .buildRoundRect(shopName.toUpperCase().take(1), mContext.getColor(R.color.dark_gray), 120)
+                //.buildRoundRect(shopName.toUpperCase().take(1), ColorGenerator.MATERIAL.randomColor, 120)
+                .buildRoundRect(shopName.toUpperCase().take(1), mContext.getColor(R.color.dark_gray), 120)
 
             shop_IV.setImageDrawable(drawable)
 
@@ -665,6 +713,91 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                 //AddOrderDialog()
 
                 try {
+                    //Suman 14-10-2024 mantyis id 27758
+                    if(Pref.WillCreditDaysFollow && Pref.WillCreditDaysFollowUserWise){
+                        val simpleDialog = Dialog(mContext)
+                        simpleDialog.setCancelable(false)
+                        simpleDialog.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                        simpleDialog.setContentView(R.layout.dialog_yes_no)
+                        val tv_header = simpleDialog.findViewById(R.id.dialog_yes_no_headerTV) as AppCustomTextView
+                        val tv_body = simpleDialog.findViewById(R.id.dialog_cancel_order_header_TV) as AppCustomTextView
+                        tv_header.text = "Hi "+Pref.user_name!!+"!"
+                        tv_body.text = "Credit Days limit is (${Pref.AllowedCreditDays}) days, Do you want to Proceed?"
+                        val dialogYes = simpleDialog.findViewById(R.id.tv_dialog_yes_no_yes) as AppCustomTextView
+                        val dialogNo = simpleDialog.findViewById(R.id.tv_dialog_yes_no_no) as AppCustomTextView
+                        dialogYes.setOnClickListener({ view ->
+                            simpleDialog.cancel()
+                            if(Pref.AllowOrderOnOutstandingAndClosingStockDifference && Pref.AllowOrderOnOutstandingAndClosingStockDifferenceUserWise){
+                                val simpleDialogInner = Dialog(mContext)
+                                simpleDialogInner.setCancelable(false)
+                                simpleDialogInner.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                simpleDialogInner.setContentView(R.layout.dialog_yes_no)
+                                val tv_header = simpleDialogInner.findViewById(R.id.dialog_yes_no_headerTV) as AppCustomTextView
+                                val tv_body = simpleDialogInner.findViewById(R.id.dialog_cancel_order_header_TV) as AppCustomTextView
+                                tv_header.text = "Hi "+Pref.user_name!!+"!"
+                                tv_body.text = "Is there any difference between Outstanding value and Closing Stock value ?"
+                                val dialogYesInner = simpleDialogInner.findViewById(R.id.tv_dialog_yes_no_yes) as AppCustomTextView
+                                val dialogNoInner = simpleDialogInner.findViewById(R.id.tv_dialog_yes_no_no) as AppCustomTextView
+                                dialogNoInner.setOnClickListener({ view ->
+                                    simpleDialogInner.cancel()
+                                })
+                                dialogYesInner.setOnClickListener({ view ->
+                                    simpleDialogInner.cancel()
+
+                                    if (!Pref.isAddAttendence)
+                                        (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                                    else{
+                                        progress_wheel.spin()
+                                        if(Pref.IsShowNewOrderCart){
+                                            Pref.savefromOrderOrStock = true
+                                            (mContext as DashboardActivity).loadFragment(FragType.OrderProductListFrag, true, shopId)
+                                            progress_wheel.stopSpinning()
+                                        }else{
+                                            (mContext as DashboardActivity).loadFragment(FragType.OrderTypeListFragment, true, shopId)
+                                            progress_wheel.stopSpinning()
+                                        }
+                                    }
+                                })
+                                simpleDialogInner.show()
+                            }else{
+                                if (!Pref.isAddAttendence)
+                                    (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                                else{
+                                    progress_wheel.spin()
+                                    if(Pref.IsShowNewOrderCart){
+                                        Pref.savefromOrderOrStock = true
+                                        (mContext as DashboardActivity).loadFragment(FragType.OrderProductListFrag, true, shopId)
+                                        progress_wheel.stopSpinning()
+                                    }else{
+                                        (mContext as DashboardActivity).loadFragment(FragType.OrderTypeListFragment, true, shopId)
+                                        progress_wheel.stopSpinning()
+                                    }
+                                }
+                            }
+
+
+
+                        })
+                        dialogNo.setOnClickListener({ view ->
+                            simpleDialog.cancel()
+                        })
+                        simpleDialog.show()
+                    }else{
+                        if (!Pref.isAddAttendence)
+                            (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
+                        else{
+                            progress_wheel.spin()
+                            if(Pref.IsShowNewOrderCart){
+                                Pref.savefromOrderOrStock = true
+                                (mContext as DashboardActivity).loadFragment(FragType.OrderProductListFrag, true, shopId)
+                                progress_wheel.stopSpinning()
+                            }else{
+                                (mContext as DashboardActivity).loadFragment(FragType.OrderTypeListFragment, true, shopId)
+                                progress_wheel.stopSpinning()
+                            }
+
+                        }
+                    }
 
                     /*AddOrderDialog.getInstance(mShopActivityEntity, true, shopName, object : AddOrderDialog.AddOrderClickLisneter {
                         override fun onUpdateClick(amount: String, desc: String, collection: String) {
@@ -788,7 +921,7 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
 
                     }).show((mContext as DashboardActivity).supportFragmentManager, "AddOrderDialog")*/
 
-                    if (!Pref.isAddAttendence)
+                    /*if (!Pref.isAddAttendence)
                         (mContext as DashboardActivity).checkToShowAddAttendanceAlert()
                     else{
                         progress_wheel.spin()
@@ -801,7 +934,7 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
                             progress_wheel.stopSpinning()
                         }
 
-                    }
+                    }*/
 
 
 
@@ -816,6 +949,8 @@ class ViewAllOrderListFragment : BaseFragment(), View.OnClickListener {
             }*/
         }
     }
+
+
 
     private fun syncShop(addShop: AddShopDBModelEntity, shop_id: String?, order_id: String?, amount: String, desc: String, collection: String,
                          currentDateForShopActi: String) {

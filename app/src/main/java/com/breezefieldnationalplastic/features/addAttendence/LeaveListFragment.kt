@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.NetworkConstant
 import com.breezefieldnationalplastic.app.types.FragType
@@ -25,9 +26,13 @@ import com.breezefieldnationalplastic.features.addAttendence.model.LeaveListResp
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.login.presentation.LoginActivity
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -146,7 +151,23 @@ class LeaveListFragment : BaseFragment(), View.OnClickListener, DatePickerDialog
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.tv_pick_date_range -> {
-                val now = Calendar.getInstance(Locale.ENGLISH)
+                DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager){ startDate, endDate ->
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val startTime = dateFormat.parse(startDate).time
+                    val endTime = dateFormat.parse(endDate).time
+
+                    val diffInMillis = endTime - startTime
+                    if (TimeUnit.MILLISECONDS.toDays(diffInMillis) > 120) {
+                        (mContext as DashboardActivity).showSnackMessage("Leave list must be generated for 3 months")
+                    }else{
+                        tv_pick_date_range.text = AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                        getLeaveList(startDate,endDate)
+                    }
+
+                }
+                return
+
+                /*val now = Calendar.getInstance(Locale.ENGLISH)
                 //now.add(Calendar.DAY_OF_MONTH, +1)
                 val dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
                         this,
@@ -155,11 +176,11 @@ class LeaveListFragment : BaseFragment(), View.OnClickListener, DatePickerDialog
                         now.get(Calendar.DAY_OF_MONTH)
                 )
                 dpd.isAutoHighlight = false
-               /* val tomorrowsDateLong = Calendar.getInstance().timeInMillis + (1000 * 60 * 60 * 24)
+               *//* val tomorrowsDateLong = Calendar.getInstance().timeInMillis + (1000 * 60 * 60 * 24)
                 val cal = Calendar.getInstance()
                 cal.timeInMillis = tomorrowsDateLong
-                dpd.minDate = cal*/
-                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
+                dpd.minDate = cal*//*
+                dpd.show((context as Activity).fragmentManager, "Datepickerdialog")*/
             }
 
             R.id.fab -> {

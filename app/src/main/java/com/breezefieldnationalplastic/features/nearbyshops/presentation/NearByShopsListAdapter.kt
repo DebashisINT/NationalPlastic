@@ -46,6 +46,7 @@ import kotlinx.android.synthetic.main.inflate_registered_shops.view.call_ll
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.call_log_his_ll
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.call_log_his_view
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.call_tv
+import kotlinx.android.synthetic.main.inflate_registered_shops.view.call_view
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.collection_view
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.direction_ll
 import kotlinx.android.synthetic.main.inflate_registered_shops.view.direction_view
@@ -448,6 +449,12 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     itemView.call_iv.setColorFilter( Color.parseColor("#000000"), PorterDuff.Mode.SRC_IN)
                 }
 
+                if(Pref.loginID.equals("breezefsm",ignoreCase = true)){
+                    itemView.share_icon.visibility = View.GONE
+                    itemView.call_ll.visibility = View.GONE
+                    itemView.call_view.visibility = View.GONE
+                }
+
                 val orderList = AppDatabase.getDBInstance()!!.orderDetailsListDao().getListAccordingToShopId(list[adapterPosition].shop_id) as ArrayList<OrderDetailsListEntity>
                 if (orderList != null && orderList.isNotEmpty()) {
                     /*itemView.order_amount_tv.visibility = View.VISIBLE
@@ -658,7 +665,7 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     val str9 = SpannableString("Month of High value Business: ")
                     builder.append(str9)
 
-                    val str10 = SpannableString("N.A.")
+                    val str10 = SpannableString("No data found.")
                     str10.setSpan(ForegroundColorSpan(Color.BLACK), 0, str10.length, 0)
                     builder.append(str10)
                     itemView.high_value_month_tv.setText(builder, TextView.BufferType.SPANNABLE)
@@ -667,7 +674,7 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     val str11 = SpannableString("Month of Low value Business: ")
                     builder.append(str11)
 
-                    val str12 = SpannableString("N.A.")
+                    val str12 = SpannableString("No data found.")
                     str12.setSpan(ForegroundColorSpan(Color.BLACK), 0, str12.length, 0)
                     builder.append(str12)
                     itemView.low_value_month_tv.setText(builder, TextView.BufferType.SPANNABLE)
@@ -950,24 +957,24 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                     itemView.tv_entity_type.text = entity?.name
                 }
                 else
-                    itemView.tv_entity_type.text = "N.A."
+                    itemView.tv_entity_type.text = "No data found."
 
                 if (!TextUtils.isEmpty(list[adapterPosition].party_status_id)) {
                     val partyStatus = AppDatabase.getDBInstance()?.partyStatusDao()?.getSingleItem(list[adapterPosition].party_status_id)
                     itemView.tv_party_status.text = partyStatus?.name
                 }
                 else
-                    itemView.tv_party_status.text = "N.A."
+                    itemView.tv_party_status.text = "No data found."
 
                 itemView.tv_retailer_entity_headerr.text = "Party Category: "
                 try{
                     if(list[adapterPosition].retailer_id == null || list[adapterPosition].retailer_id.equals("")){
-                        itemView.tv_retailer_entity.text = "N.A."
+                        itemView.tv_retailer_entity.text = "No data found."
                     }else{
                         itemView.tv_retailer_entity.text = AppDatabase.getDBInstance()?.retailerDao()?.getSingleItem(list[adapterPosition].retailer_id.toString())!!.name
                     }
                 }catch (ex:Exception){
-                    itemView.tv_retailer_entity.text = "N.A."
+                    itemView.tv_retailer_entity.text = "No data found."
                 }
 
                 itemView.update_party_status_TV.setOnClickListener {
@@ -1070,7 +1077,7 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                         itemView.myshop_Gstin_TV.text = "GSTIN : " + list[adapterPosition].gstN_Number
                         itemView.myshop_Gstin_TV.visibility = View.VISIBLE
                     } else {
-                        itemView.myshop_Gstin_TV.text = "GSTIN : " + "N.A"
+                        itemView.myshop_Gstin_TV.text = "GSTIN : " + "No data found."
                         itemView.myshop_Gstin_TV.visibility = View.VISIBLE
                     }
                 }else{
@@ -1081,7 +1088,7 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                         itemView.myshop_Pan_TV.text = "PAN     : " + list[adapterPosition].shopOwner_PAN
                         itemView.myshop_Pan_TV.visibility = View.VISIBLE
                     } else {
-                        itemView.myshop_Pan_TV.text = "PAN     : " + "N.A"
+                        itemView.myshop_Pan_TV.text = "PAN     : " + "No data found."
                         itemView.myshop_Pan_TV.visibility = View.VISIBLE
                     }
                 }else{
@@ -1089,8 +1096,8 @@ class NearByShopsListAdapter(context: Context, list: List<AddShopDBModelEntity>,
                 }
             }
             catch (ex:Exception){
-                itemView.myshop_Gstin_TV.text =  "GSTIN : "+"N.A"
-                itemView.myshop_Pan_TV.text = "PAN     : "+"N.A"
+                itemView.myshop_Gstin_TV.text =  "GSTIN : "+"No data found."
+                itemView.myshop_Pan_TV.text = "PAN     : "+"No data found."
             }
 
 

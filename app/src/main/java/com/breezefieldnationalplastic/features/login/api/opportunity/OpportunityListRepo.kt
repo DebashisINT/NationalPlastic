@@ -4,6 +4,7 @@ import com.breezefieldnationalplastic.app.Pref
 import com.breezefieldnationalplastic.app.utils.AppUtils
 import com.breezefieldnationalplastic.base.BaseResponse
 import com.breezefieldnationalplastic.features.addshop.model.AudioFetchDataCLass
+import com.breezefieldnationalplastic.features.addshop.model.StockAllResponse
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import com.breezefieldnationalplastic.features.login.model.opportunitymodel.OpportunityStatusListResponseModel
 import com.breezefieldnationalplastic.features.login.model.productlistmodel.ProductListResponseModel
@@ -43,5 +44,9 @@ class OpportunityListRepo(val apiService: OpportunityListApi) {
 
     fun saveLMSModuleInfo(obj: DashboardActivity.LMSModule): Observable<BaseResponse> {
         return apiService.saveLMSModuleInfoApi(obj)
+    }
+
+    fun getAllStock(user_id: String): Observable<StockAllResponse> {
+        return apiService.getAllStockApi(user_id)
     }
 }

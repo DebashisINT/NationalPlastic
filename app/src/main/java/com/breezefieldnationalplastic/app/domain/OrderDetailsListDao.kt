@@ -233,6 +233,9 @@ interface OrderDetailsListDao {
             ")")
     fun getOrdCntByDateRange(shop_id: String,fromD:String,toD:String): String
 
+    @Query("update order_details_list set orderStatus = :orderStatus where order_id = :order_id ")
+    fun updateOrdStatus(order_id:String,orderStatus:String)
+
 
     /*@Query("update order_details_list set date =:date where \n" +
             "shop_id =:shop_id and order_id =:order_id ")

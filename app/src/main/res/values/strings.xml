@@ -1,7 +1,7 @@
 <resources>
     <!--<string name="app_name">Field Tracking System</string>-->
     <string name="app_name" translatable="false">Breeze-National Plastic</string>
-<!--
+    <!--
     <string name="app_name" translatable="false">MobiLearn-INT</string>
 -->
     <!--<string name="app_name" translatable="false">Breeze-Demo</string>-->
@@ -475,7 +475,9 @@
     <string name="calender_permission" translatable="false">Allow add event in calender</string>
 
     <string name="daywise" translatable="false">Day Wise</string>
+    <string name="correct" translatable="false">Correct</string>
     <string name="consolidated" translatable="false">Consolidated</string>
+    <string name="incorrect" translatable="false">Incorrect</string>
 
     <!--DashBoard-->
     <string name="login_time" translatable="false">Last login time:</string>

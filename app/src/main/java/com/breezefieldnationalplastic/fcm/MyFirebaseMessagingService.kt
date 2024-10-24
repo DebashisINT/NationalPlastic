@@ -197,6 +197,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val intent = Intent()
                 intent.action = "FCM_ACTION_RECEIVER"
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+            }else if(remoteMessage?.data?.get("type").equals("UpdateOrderStatus")){
+                notification.sendFCMNotificaiton(applicationContext, remoteMessage)
+                val intent = Intent()
+                intent.action = "FCM_ACTION_RECEIVER"
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
             }
             else {
                 notification.sendFCMNotificaiton(applicationContext, remoteMessage)

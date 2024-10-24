@@ -19,7 +19,7 @@
         <LinearLayout
             android:id="@+id/avg_day_RL"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="@dimen/_43sdp"
             android:layout_below="@id/headersectionlL"
             android:background="@drawable/shape_custom_border_blue_button"
             android:gravity="center"

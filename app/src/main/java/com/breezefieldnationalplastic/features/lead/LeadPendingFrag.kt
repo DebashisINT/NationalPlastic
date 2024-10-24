@@ -19,6 +19,7 @@ import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.recyclerview.widget.RecyclerView
 import com.borax12.materialdaterangepicker.date.DatePickerDialog
 import com.breezefieldnationalplastic.CustomStatic
+import com.breezefieldnationalplastic.DateProperty
 import com.breezefieldnationalplastic.R
 import com.breezefieldnationalplastic.app.MaterialSearchView
 import com.breezefieldnationalplastic.app.NetworkConstant
@@ -41,9 +42,14 @@ import com.breezefieldnationalplastic.features.lead.model.CustomerListReq
 import com.breezefieldnationalplastic.features.performanceAPP.model.ChartDataModelNew.Companion.now
 import com.breezefieldnationalplastic.widgets.AppCustomEditText
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.pnikosis.materialishprogress.ProgressWheel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -196,6 +202,29 @@ class LeadPendingFrag : BaseFragment(), DatePickerDialog.OnDateSetListener, View
         when (v?.id) {
             R.id.frag_lead_pending_date_range -> {
                 if (!isChkChanged) {
+                    val today = MaterialDatePicker.todayInUtcMilliseconds()
+                    val tomorrow = today
+                    val constraintsBuilder = CalendarConstraints.Builder()
+                        .setEnd(today)
+                        .setValidator(DateValidatorPointBackward.now())
+
+                    DateProperty.showDateRangePickerDialog((mContext as DashboardActivity).supportFragmentManager,constraintsBuilder){ startDate, endDate ->
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        val startTime = dateFormat.parse(startDate).time
+                        val endTime = dateFormat.parse(endDate).time
+
+                        val diffInMillis = endTime - startTime
+                        val date = "From "+AppUtils.getFormatedD(startDate).toString() + " To " + AppUtils.getFormatedD(endDate).toString()
+                        date_rangeDisplay.text = date
+                        this.fromDate = startDate
+                        this.toDate = endDate
+                    }
+                }else{
+                    isChkChanged = false
+                }
+
+
+                /*if (!isChkChanged) {
                     date_range.isChecked = true
                     val now = Calendar.getInstance(Locale.ENGLISH)
                     val dpd = DatePickerDialog.newInstance(
@@ -209,7 +238,7 @@ class LeadPendingFrag : BaseFragment(), DatePickerDialog.OnDateSetListener, View
                     dpd.show((context as Activity).fragmentManager, "Datepickerdialog")
                 } else {
                     isChkChanged = false
-                }
+                }*/
             }
 
             R.id.frag_lead_pending_spinnerType->{

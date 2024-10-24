@@ -56,14 +56,15 @@
         <LinearLayout
             android:id="@+id/ll_row_ord_opti_cart_mrp_discount_root"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_35sdp"
+            android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_1sdp">
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginBottom="@dimen/_5sdp">
 
             <LinearLayout
                 android:id="@+id/ll_row_ord_opti_cart_mrp_root"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center|start"
@@ -81,15 +82,15 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="@dimen/_70sdp"
                     android:layout_height="match_parent"
-                    app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
                     android:layout_marginLeft="@dimen/_3sdp">
-                <!--mantis 25788-->
+                    <!--mantis 25788-->
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_row_ord_opti_cart_mrp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:gravity="start"
+                        style="@style/CustomHintTextAppearance"
+                        android:gravity="center|start|bottom"
                         android:hint="MRP"
                         android:enabled="false"
                         android:imeOptions="actionNext"
@@ -107,7 +108,7 @@
             <LinearLayout
                 android:id="@+id/ll_row_ord_opti_cart_discount_root"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -134,8 +135,9 @@
                         android:id="@+id/et_row_ord_opti_cart_discount"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        style="@style/CustomHintTextAppearance"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        android:gravity="center|start|bottom"
                         android:hint="Discount"
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_10sdp"
@@ -360,14 +362,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_35sdp"
+            android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="@dimen/_1sdp">
+            android:layout_marginTop="@dimen/_5sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -393,8 +395,9 @@
                         android:id="@+id/et_row_ord_opti_cart_qty"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        style="@style/CustomHintTextAppearance"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        android:gravity="center|start|bottom"
                         android:hint="Qty"
                         android:imeOptions="actionNext"
                         android:textSize="@dimen/_10sdp"
@@ -411,7 +414,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -438,8 +441,9 @@
                         android:id="@+id/et_row_ord_opti_cart_rate"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        style="@style/CustomHintTextAppearance"
                         android:background="@android:color/transparent"
-                        android:gravity="center|start|top"
+                        android:gravity="center|start|bottom"
                         android:hint="Rate"
                         android:imeOptions="actionNext"
                         android:inputType="numberDecimal"

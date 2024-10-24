@@ -9,17 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.breezefieldnationalplastic.R
+import com.breezefieldnationalplastic.app.AppDatabase
+import com.breezefieldnationalplastic.app.Pref
 import com.breezefieldnationalplastic.app.domain.OrderProductListEntity
 import com.breezefieldnationalplastic.app.domain.ProductListEntity
+import com.breezefieldnationalplastic.app.domain.StockAllEntity
 import com.breezefieldnationalplastic.app.utils.CustomSpecialTextWatcher
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
 import kotlinx.android.synthetic.main.cart_adapter_body_layout.view.*
 import kotlinx.android.synthetic.main.item_right_menu.view.*
+import kotlinx.android.synthetic.main.row_ord_opti_product_list.view.ll_all_stock
+import kotlinx.android.synthetic.main.row_ord_opti_product_list.view.tv_all_stock_data
 
 /**
  * Created by Saikat on 24-10-2019.
  */
-class AddBillingCartAdapter(private val context: Context, private val selectedProductList: List<OrderProductListEntity>?, private val listener: OnProductClickListener) :
+class AddBillingCartAdapter(private val context: Context,val shopID:String, private val selectedProductList: List<OrderProductListEntity>?, private val listener: OnProductClickListener) :
         RecyclerView.Adapter<AddBillingCartAdapter.MyViewHolder>() {
 
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
@@ -34,7 +39,7 @@ class AddBillingCartAdapter(private val context: Context, private val selectedPr
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bindItems(context, selectedProductList, listener)
+        holder.bindItems(context,shopID, selectedProductList, listener)
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +47,7 @@ class AddBillingCartAdapter(private val context: Context, private val selectedPr
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(context: Context, categoryList: List<OrderProductListEntity>?, listener: OnProductClickListener) {
+        fun bindItems(context: Context,shopID:String, categoryList: List<OrderProductListEntity>?, listener: OnProductClickListener) {
 
             try {
 
@@ -137,6 +142,30 @@ class AddBillingCartAdapter(private val context: Context, private val selectedPr
                 //(context as DashboardActivity).totalPrice.add(totalPrice.toDouble())
 
                 //(context as DashboardActivity).totalPrice[adapterPosition] = 0.00
+
+                // show stock
+                if(Pref.IsStockCheckFeatureOn){
+                    itemView.ll_all_stock.visibility = View.VISIBLE
+                    try {
+                        var stock :ArrayList<StockAllEntity> = ArrayList()
+                        if(Pref.IsShowDistributorWiseCurrentStockInOrder){
+                            stock = AppDatabase.getDBInstance()!!.stockAllDao().getStockDtlsForDD(categoryList?.get(adapterPosition)!!.product_id!!,shopID  ) as ArrayList<StockAllEntity>
+                        }else{
+                            stock = AppDatabase.getDBInstance()!!.stockAllDao().getStockDtls(categoryList?.get(adapterPosition)!!.product_id!!,shopID  ) as ArrayList<StockAllEntity>
+                        }
+                        if (stock.size>0){
+                            var objStock = stock.first()
+                            itemView.tv_all_stock_data.text = "Stock Qty\n${objStock.stock_productbalqty}"
+                        }else{
+                            itemView.tv_all_stock_data.hint = "Stock Qty\n0"
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                }else{
+                    itemView.ll_all_stock.visibility = View.GONE
+                }
 
             } catch (e: Exception) {
                 e.printStackTrace()

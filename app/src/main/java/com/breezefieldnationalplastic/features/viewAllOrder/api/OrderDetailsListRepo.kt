@@ -2,6 +2,7 @@ package com.breezefieldnationalplastic.features.viewAllOrder.api
 
 import com.breezefieldnationalplastic.app.Pref
 import com.breezefieldnationalplastic.features.login.model.productlistmodel.NewOdrScrOrderListModel
+import com.breezefieldnationalplastic.features.viewAllOrder.OrdResponse
 import com.breezefieldnationalplastic.features.viewAllOrder.model.NewOrderDataModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.NewOrderOrderHistoryModel
 import com.breezefieldnationalplastic.features.viewAllOrder.model.ViewAllOrderListResponseModel
@@ -25,6 +26,10 @@ class OrderDetailsListRepo(val apiService: OrderDetailsListApi) {
 
     fun getNewOrderHistoryDataSimplefied(): Observable<NewOdrScrOrderListModel> {
         return apiService.getNewOrderHistoryDataSimplefied(Pref.session_token!!, Pref.user_id!!)
+    }
+
+    fun getOrderStatusL(): Observable<OrdResponse> {
+        return apiService.getOrderStatusLApi(Pref.user_id!!)
     }
 
 }

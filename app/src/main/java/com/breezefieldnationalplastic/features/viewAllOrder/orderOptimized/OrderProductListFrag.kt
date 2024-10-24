@@ -30,7 +30,9 @@ import com.breezefieldnationalplastic.app.utils.AppUtils
 import com.breezefieldnationalplastic.app.utils.ToasterMiddle
 import com.breezefieldnationalplastic.base.presentation.BaseActivity
 import com.breezefieldnationalplastic.base.presentation.BaseFragment
+import com.breezefieldnationalplastic.features.addshop.model.StockAllResponse
 import com.breezefieldnationalplastic.features.dashboard.presentation.DashboardActivity
+import com.breezefieldnationalplastic.features.login.api.opportunity.OpportunityRepoProvider
 import com.breezefieldnationalplastic.features.login.api.productlistapi.ProductListRepoProvider
 import com.breezefieldnationalplastic.features.login.model.productlistmodel.ProductRateDataModel
 import com.breezefieldnationalplastic.features.login.model.productlistmodel.ProductRateListResponseModel
@@ -149,16 +151,24 @@ class OrderProductListFrag : BaseFragment(), View.OnClickListener {
 
         finalOrderDataList = ArrayList()
 
-        if(Pref.isRateOnline){
-            if(AppUtils.isOnline(mContext)){
-                progrwss_wheel.stopSpinning()
-                getProductRateListByShopID()
-            }else{
-                ToasterMiddle.msgShort(mContext,"Internet not connected.")
+        doAsync {
+            if(Pref.IsStockCheckFeatureOn && AppUtils.isOnline(mContext)){
+                getAllStock()
             }
-        }else{
-            initProduct()
+            uiThread {
+                if(Pref.isRateOnline){
+                    if(AppUtils.isOnline(mContext)){
+                        progrwss_wheel.stopSpinning()
+                        getProductRateListByShopID()
+                    }else{
+                        ToasterMiddle.msgShort(mContext,"Internet not connected.")
+                    }
+                }else{
+                    initProduct()
+                }
+            }
         }
+
 
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -179,6 +189,32 @@ class OrderProductListFrag : BaseFragment(), View.OnClickListener {
             }
         })
     }
+
+    private fun getAllStock(){
+        try {
+            val repository = OpportunityRepoProvider.opportunityListRepo()
+            BaseActivity.compositeDisposable.add(
+                repository.getAllStock(Pref.user_id!!)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ result ->
+                        val response = result as StockAllResponse
+                        if (response.status == NetworkConstant.SUCCESS) {
+                            var stock_list = response.stock_list
+                            if (stock_list != null && stock_list.isNotEmpty()) {
+                                AppDatabase.getDBInstance()?.stockAllDao()?.deleteAll()
+                                AppDatabase.getDBInstance()?.stockAllDao()?.insertAll(stock_list)
+                            }
+                        }
+                    }, { error ->
+                        error.printStackTrace()
+                    })
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     fun filterAutoSearchData(){
         if (etSearch.text.toString().equals("")) {
             if(Pref.isRateOnline){
