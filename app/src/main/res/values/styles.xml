@@ -52,6 +52,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonStyled</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonStyled</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/DialogButtonStyled</item>
+    </style>
+
+    <style name="DialogButtonStyled" parent="Theme.MaterialComponents.Bridge">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:backgroundTint">@color/transparent</item>
     </style>
 
     <style name="MyActionBarWidgetTheme">

@@ -496,7 +496,9 @@ class DayWiseFragment : BaseFragment(), View.OnClickListener {
         tv_total_distance.text = "$finalDistance Km(s)"
 
         try {
-            val dist = AppDatabase.getDBInstance()!!.userLocationDataDao().getTotalDistForDay(AppUtils.getCurrentDateForShopActi()).toString().toDouble()
+            var dt = AppUtils.getFormattedDateString(myCalendar)
+            println("tag_dt_sel $dt")
+            val dist = AppDatabase.getDBInstance()!!.userLocationDataDao().getTotalDistForDay(AppUtils.getFormattedDateString(myCalendar)).toString().toDouble()
             println("tag_dist ${String.format("%.2f", dist)}")
             tv_total_distance.text = "${String.format("%.2f", dist)} Km(s)"
         }catch (ex:Exception){

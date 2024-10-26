@@ -3,10 +3,12 @@ package com.breezefieldnationalplastic.features.viewAllOrder.orderNew
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -34,13 +36,26 @@ import com.breezefieldnationalplastic.features.viewAllOrder.model.NewOrderCartMo
 import com.breezefieldnationalplastic.features.viewAllOrder.model.ProductOrder
 import com.breezefieldnationalplastic.features.viewAllOrder.presentation.AdapterNewOrdScrOrdList
 import com.breezefieldnationalplastic.widgets.AppCustomTextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.itextpdf.text.BadElementException
+import com.itextpdf.text.Chunk
+import com.itextpdf.text.Document
+import com.itextpdf.text.Element
+import com.itextpdf.text.Font
+import com.itextpdf.text.Image
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfWriter
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
     private lateinit var mContext: Context
 
     private lateinit var mRv_orderDetails: RecyclerView
     private lateinit var ll_Add: LinearLayout
+    private lateinit var fab_Add: FloatingActionButton
 
     private lateinit var myshop_name_TV: AppCustomTextView
     private lateinit var myshop_addr_TV: AppCustomTextView
@@ -93,7 +108,9 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
         mRv_orderDetails=view!!.findViewById(R.id.rv_new_order_list)
         mRv_orderDetails.layoutManager= LinearLayoutManager(mContext)
         ll_Add=view!!.findViewById(R.id.ll_frag_new_order_detalis_add)
+        fab_Add=view.findViewById<FloatingActionButton>(R.id.add_new_order_tv)
         ll_Add.setOnClickListener(this)
+        fab_Add.setOnClickListener(this)
 
         myshop_name_TV = view!!.findViewById(R.id.myshop_name_TV)
         myshop_addr_TV = view!!.findViewById(R.id.myshop_address_TV)
@@ -258,7 +275,7 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         if(v!=null){
             when(v.id){
-                R.id.ll_frag_new_order_detalis_add -> {
+                R.id.ll_frag_new_order_detalis_add,R.id.add_new_order_tv -> {
                     (mContext as DashboardActivity).loadFragment(FragType.NewOrderScrActiFragment, true, shop_id)
                 }
                 R.id.add_new_order_share->{
@@ -292,14 +309,10 @@ class NewOrderScrOrderDetailsFragment : BaseFragment(), View.OnClickListener {
             pdfBody=pdfBody+content
         }
 
-
         val image = BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher)
 
         val path = FTStorageUtils.stringToPdf(pdfBody, mContext, "OrderDetalis" +
                 "_" + Pref.user_id+AppUtils.getCurrentDateTime().toString().replace(" ","R").replace(":","_") + ".pdf", image, heading, 3.7f)
-
-
-
 
 
         if (!TextUtils.isEmpty(path)) {
